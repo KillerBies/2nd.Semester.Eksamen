@@ -2,5 +2,5 @@
 
 public class Class1
 {
-
+    //dette er en dum kommentar
 }
