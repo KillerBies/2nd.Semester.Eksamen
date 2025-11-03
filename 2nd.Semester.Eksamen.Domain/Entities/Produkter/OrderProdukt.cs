@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
+{
+    public class OrderProdukt : Base_Produkt
+    {
+        public int Antal { get; set; }
+    }
+}

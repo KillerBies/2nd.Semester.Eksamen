@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace _2nd.Semester.Eksamen.Domain.Entities.Personer
+{
+    public class Medarbejder : Person
+    {
+        public enum Type { Freelancerne, Fastansatte }
+        public Ekspertise Ekspertise { get; set; }
+
+    }
+}
