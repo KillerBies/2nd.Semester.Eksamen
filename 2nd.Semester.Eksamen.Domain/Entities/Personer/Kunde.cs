@@ -9,9 +9,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Personer
 {
     public class Kunde : Person
     {
-        public DateOnly Fødselsdag { get; set; }
-        public List<Booking> BesøgHistorik { get; set; }
-        public decimal PointSaldo { get; set; }
-        public string Notater { get; set; }
+        public DateOnly Fødselsdag { get; private set; }
+        public List<Booking> BesøgHistorik { get; private set; }
+        public decimal PointSaldo { get; private set; }
+        public string Notater { get; private set; }
+        public List<Klippekort> Klippekort { get; private set; }
     }
 }

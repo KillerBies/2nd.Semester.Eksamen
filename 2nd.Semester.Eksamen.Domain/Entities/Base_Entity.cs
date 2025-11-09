@@ -8,6 +8,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities
 {
     public abstract class Base_Entity
     {
-        public int Id { get; set; }
+        public int Id { get; private set; }
     }
 }
