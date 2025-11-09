@@ -8,10 +8,12 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Personer
 {
     public abstract class Person : Base_Entity
     {
-        public Adresse Adresse { get; set; }
-        public string Fornavn { get; set; }
-        public string Efternavn { get; set; }
-        public string Telefonnummer { get; set; }
-        public string Email { get; set; }
+        public Adresse Adresse { get; private set; }
+        public string Fornavn { get; private set; }
+        public string Efternavn { get; private set; }
+        public string Telefonnummer { get; private set; }
+        public string Email { get; private set; }
+        public string Køn { get; private set; }
+        public int Alder { get; private set; }
     }
 }

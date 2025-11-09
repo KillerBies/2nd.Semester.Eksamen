@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 {
-    public class Produkt : Base_Produkt
+    public class Kørsel: Produkt
     {
-        public int Antal { get; set; }
+        public decimal Afstand { get; set; }
+        public TimeSpan Varighed { get; set; }
     }
 }
