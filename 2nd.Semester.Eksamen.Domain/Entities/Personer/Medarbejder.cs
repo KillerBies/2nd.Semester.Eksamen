@@ -9,8 +9,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Personer
 {
     public class Medarbejder : Person
     {
-        public enum Type { Freelancerne, Fastansatte }
-        public enum Fagområde { IT, Marketing, Økonomi, HR, Salg }
+        public Medarbejder_Type Type { get; private set; }
+        public Fagområder Fagområde { get; private set; }
+        public int Erfaringsniveau { get; private set; }
         public List<Booking> Bookinger { get; private set; }
 
     }

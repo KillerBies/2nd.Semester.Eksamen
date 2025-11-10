@@ -12,6 +12,5 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
         public string Navn { get;  set; }
         public string Beskrivelse { get; set; }
         public decimal Pris { get; set; }
-        public Rabat Rabat { get; set; }
     }
 }

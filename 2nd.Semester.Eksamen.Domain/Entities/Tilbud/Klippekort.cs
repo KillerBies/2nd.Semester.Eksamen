@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
-    public class Klippekort
+    public class Klippekort : Base_Entity
     {
         public Kunde Kunde { get; private set; }
         public int AntalKlip { get; private set; }

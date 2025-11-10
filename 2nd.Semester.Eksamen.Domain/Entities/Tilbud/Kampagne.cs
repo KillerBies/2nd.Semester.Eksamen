@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
-    public class Kampagne: Rabat
+    public class Kampagne: Base_Rabat
     {
-
-        public void CheckStatus()
-        {
-        }
+        public DateTime StartDato { get; private set; }
+        public DateTime SlutDato { get; private set; }
     }
 }

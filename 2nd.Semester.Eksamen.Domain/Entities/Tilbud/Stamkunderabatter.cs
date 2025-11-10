@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
-    public class Rabat: Base_Rabat
+    public enum Stamkunderabattype
     {
-        public Stamkunderabattype Rabat_Type { get; private set; }
+        Guld,
+        Sølv,
+        Bronze
     }
 }

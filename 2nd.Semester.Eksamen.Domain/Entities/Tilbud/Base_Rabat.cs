@@ -8,7 +8,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
     public class Base_Rabat : Base_Entity
     {
-        public bool Status { get; private set; }
+        public string Navn { get; private set; }
         public decimal RabatProcent { get; private set; }
     }
 }
