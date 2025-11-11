@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
-    public class Klippekort : Base_Entity
+    public class Punch_Card : Base_Entity
     {
-        public Kunde Kunde { get; private set; }
-        public int AntalKlip { get; private set; }
-        public Behandling Behandling { get; private set; }
+        public Customer Customer { get; private set; }
+        public int Punch_Number { get; private set; }
+        public Treatment Treatment { get; private set; }
     }
 }

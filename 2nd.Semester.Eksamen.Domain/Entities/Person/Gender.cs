@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Personer
+namespace _2nd.Semester.Eksamen.Domain.Entities.Person
 {
-    public enum Fagområder { IT, Marketing, Økonomi, HR, Salg }
+    public enum Gender
+    {
+        Male,
+        Female
+    }
 }

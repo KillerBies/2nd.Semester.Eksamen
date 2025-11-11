@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
-    public class Rabat: Base_Rabat
+    public class Base_Discount : Base_Entity
     {
-        public Stamkunderabattype Rabat_Type { get; private set; }
+        public string Navn { get; private set; }
+        public decimal RabatProcent { get; private set; }
     }
 }
