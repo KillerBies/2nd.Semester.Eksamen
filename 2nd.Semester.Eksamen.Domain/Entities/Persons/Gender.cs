@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Personer
+namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
-    public enum Employee_Type { Freelancerne, Fastansatte }
+    public enum Gender
+    {
+        Male,
+        Female
+    }
 }

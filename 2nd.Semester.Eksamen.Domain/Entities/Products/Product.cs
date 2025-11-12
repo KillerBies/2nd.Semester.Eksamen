@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 {
-    public class Product : Base_Product
+    public class Product : BaseProduct
     {
-        public string Name { get; set; }
-        public int Number_Sold { get; set; }
+        //Products sold or used
+        public int NumberSold { get; set; }
     }
 }

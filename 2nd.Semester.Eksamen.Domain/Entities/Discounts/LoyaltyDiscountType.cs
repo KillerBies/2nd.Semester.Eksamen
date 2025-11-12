@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
-    public class Base_Discount : Base_Entity
+    public enum LoyaltyDiscountType
     {
-        public string Navn { get; private set; }
-        public decimal RabatProcent { get; private set; }
+        Gold,
+        Silver,
+        Bronze
     }
 }

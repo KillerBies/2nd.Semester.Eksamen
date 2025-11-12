@@ -4,11 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Person
+namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
-    public enum Gender
-    {
-        Male,
-        Female
-    }
+    public enum Specialties { IT, Marketing, Økonomi, HR, Salg }
 }

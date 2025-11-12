@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities
 {
-    public abstract class Base_Entity
+    public abstract class BaseEntity
     {
         public int Id { get; private set; }
     }

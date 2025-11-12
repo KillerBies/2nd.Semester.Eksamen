@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Personer;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +8,17 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 {
-    public class Booking : Base_Entity
+    public class Booking : BaseEntity
     {
+        //Elements of a booking
+        //Customer who made the booking
         public Customer Customer { get; private set; }
-        public string Customer_Firstname { get; private set; }
-        public string Customer_Lastname { get; private set; }
-        public Adress Customer_Adress { get; private set; }
+        public string CustomerName { get; private set; }
+        public Address CustomerAddress { get; private set; }
+        //Start end of booking date and time
         public DateTime Start { get; private set; }
         public DateTime End { get; private set; }
-        public decimal Total { get; private set; }
+        //Treatments included in the booking
         public List<Treatment> Treatments { get; private set; }
     }
 }
