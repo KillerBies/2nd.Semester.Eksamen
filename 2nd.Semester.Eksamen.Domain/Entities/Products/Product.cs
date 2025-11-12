@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 {
-    public class Order : Base_Entity
+    public class Product : Base_Product
     {
-        public Booking Booking { get; set; }
-        public List<OrderProdukt> Produkter { get; set; }
+        public string Name { get; set; }
+        public int Number_Sold { get; set; }
     }
 }

@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities
+namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
-    public abstract class Base_Entity
+    public enum Stamkunderabattype
     {
-        public int Id { get; private set; }
+        Guld,
+        Sølv,
+        Bronze
     }
 }

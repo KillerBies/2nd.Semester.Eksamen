@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities
+namespace _2nd.Semester.Eksamen.Domain.Entities.Person
 {
-    public abstract class Base_Entity
+    public enum Gender
     {
-        public int Id { get; private set; }
+        Male,
+        Female
     }
 }

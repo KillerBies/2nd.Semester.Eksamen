@@ -6,10 +6,5 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Personer
 {
-    public class Medarbejder : Person
-    {
-        public enum Type { Freelancerne, Fastansatte }
-        public Ekspertise Ekspertise { get; set; }
-
-    }
+    public enum Employee_Type { Freelancerne, Fastansatte }
 }

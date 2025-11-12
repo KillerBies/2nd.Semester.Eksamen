@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 {
-    public abstract class Base_Produkt : Base_Entity
+    public class Driving_Service: Product
     {
-        public string Navn { get; set; }
-        public string Beskrivelse { get; set; }
-        public decimal Pris { get; set; }
+        public decimal Distance { get; set; }
+        public TimeSpan Duration { get; set; }
     }
 }

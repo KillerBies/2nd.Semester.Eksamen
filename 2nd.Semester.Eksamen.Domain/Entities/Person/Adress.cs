@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Personer
 {
-    public class Adresse
+    public class Adress : Base_Entity
     {
-        public string Postnummer { get; set; }
-        public string By { get; set; }
-        public int husnummer { get; set; }
+        public string Postal_Code { get; set; }
+        public string City { get; set; }
+        public int House_Number { get; set; }
     }
 }

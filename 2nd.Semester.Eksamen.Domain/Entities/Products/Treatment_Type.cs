@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 {
-    public class Produkt : Base_Produkt
+    public enum  Treatment_Type 
     {
-        public decimal Lager_antal { get; set; }
+        Massage,
+        Ansigtsbehandling,
+        Manicure,
+        Pedicure,
+        Hårfjerning,
+        Spa_Terapi
     }
 }

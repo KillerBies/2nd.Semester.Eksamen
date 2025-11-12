@@ -6,12 +6,5 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Personer
 {
-    public enum Ekspertise
-    {
-        Hår,
-        Negle,
-        Makeup,
-        Massage,
-        Ansigt,
-    }
+    public enum Specialties { IT, Marketing, Økonomi, HR, Salg }
 }
