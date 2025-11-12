@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 {
-    public abstract class BaseProduct : BaseEntity
+    public class BaseProduct : BaseEntity
     {
         //Basic elements of a product
         public string Name { get; set; }
