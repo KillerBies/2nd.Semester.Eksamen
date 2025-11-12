@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 {
-    public abstract class Base_Product : Base_Entity
+    public abstract class BaseProduct : BaseEntity
     {
-        public string Description { get; set; }
+        //Basic elements of a product
+        public string Name { get; set; }
         public decimal Price { get; set; }
+        public string Description { get; set; }
     }
 }

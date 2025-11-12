@@ -1,14 +1,17 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Person;
+using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Personer
+namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
-    public class Private : Person
+    public class Private : Customer
     {
+        //Customer who is a private person
         public Gender Gender { get; private set; }
         public int Age { get; private set; }
         public DateOnly Birthday { get; private set; }

@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 {
-    public enum  Treatment_Type 
+    public enum  TreatmentType 
     {
         Massage,
         Ansigtsbehandling,
         Manicure,
+        Blowjob,
+        Sex,
+        Rimjob,
         Pedicure,
         Hårfjerning,
         Spa_Terapi

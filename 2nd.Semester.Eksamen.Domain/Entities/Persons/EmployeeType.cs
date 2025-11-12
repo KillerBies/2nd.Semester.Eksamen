@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Personer
+namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
-    public enum Specialties { IT, Marketing, Økonomi, HR, Salg }
+    public enum EmployeeType { Freelance, Staff }
 }
