@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 {
-    public class BookingTreatment:Treatment
+    public class BookingTreatment
     {
         //Elements of a booked treatment. It contains products used and the employee doing the treatment.
         public Employee Employee { get; private set; }
         public string EmployeeName { get; private set; }
         public Address EmployeeAddress { get; private set; }
         public List<Product> Products { get; private set; }
+        public Treatment Treatment { get; private set; }
     }
 }
