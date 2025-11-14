@@ -1,5 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Person;
-using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
