@@ -9,11 +9,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Commands\" />
-    <Folder Include="RepositoryInterfaces\" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>_2nd.Semester.Eksamen.Application</RootNamespace>

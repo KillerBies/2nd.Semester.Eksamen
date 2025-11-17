@@ -1,4 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Person;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
@@ -14,5 +14,16 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         //Customer who is a company
         public string CVRNumber { get; private set; }
 
+        public Company(
+            string name,
+            Address address,
+            string phoneNumber,
+            string email,
+            string notes,
+            string cvrNumber
+            ) : base (name, address, phoneNumber, email, notes)
+        {
+            CVRNumber = cvrNumber;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Person;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
 using System;
 using System.Collections.Generic;
@@ -18,5 +18,29 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public Gender Gender { get; private set; }
         public int Age { get; private set; }
         public decimal BasePriceMultiplier { get; private set; }
+
+        public Employee(
+            string name,
+            Address address,
+            string phoneNumber,
+            string email,
+            EmployeeType type,
+            TreatmentType specialty,
+            ExperienceLevels experienceLevel,
+            Gender gender,
+            int age,
+            decimal basePriceMultiplier
+        ) : base(name, address, phoneNumber, email)
+        {
+            Type = type;
+            Specialty = specialty;
+            ExperienceLevel = experienceLevel;
+            Gender = gender;
+            Age = age;
+            BasePriceMultiplier = basePriceMultiplier;
+
+            TreatmentHistory = new List<Treatment>();
+        }
+
     }
 }

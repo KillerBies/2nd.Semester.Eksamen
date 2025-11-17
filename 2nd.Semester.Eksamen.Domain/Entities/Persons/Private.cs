@@ -1,4 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Person;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
@@ -15,5 +15,21 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public Gender Gender { get; private set; }
         public int Age { get; private set; }
         public DateOnly Birthday { get; private set; }
+
+        public Private(
+            string name,
+            Address address,
+            string phoneNumber,
+            string email,
+            string notes,
+            Gender gender,
+            int age,
+            DateOnly birthday
+        ) : base(name, address, phoneNumber, email, notes)
+        {
+            Gender = gender;
+            Age = age;
+            Birthday = birthday;
+        }
     }
 }

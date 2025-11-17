@@ -17,5 +17,21 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public Dictionary<TreatmentType, PunchCard> PunchCards { get; private set; }
         public string Notes { get; private set; }
 
+        protected Customer(
+            string name,
+            Address adress,
+            string phoneNumber,
+            string email,
+            string notes
+        ) : base(name, adress, phoneNumber, email)
+        {
+            BookingHistory = new List<Booking>();
+            PunchCards = new Dictionary<TreatmentType, PunchCard>();
+            PointBalance = 0;
+            Notes = notes;
+        }
+
     }
+
+
 }
