@@ -11,3 +11,5 @@ namespace _2nd.Semester.Eksamen.Domain.Entities
         public int Id { get; private set; }
     }
 }
+
+// test
