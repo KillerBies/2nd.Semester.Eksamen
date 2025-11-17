@@ -4,5 +4,6 @@
     {
         //Base entity
         public int Id { get; private set; }
+        //dum kommentar
     }
 }
