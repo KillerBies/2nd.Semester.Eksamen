@@ -13,5 +13,13 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public string PostalCode { get; set; }
         public string StreetName { get; set; }
         public int HouseNumber { get; set; }
+
+        public Address(string city, string postalCode, string streetName, int houseNumber)
+        {
+            City = city;
+            PostalCode = postalCode;
+            StreetName = streetName;
+            HouseNumber = houseNumber;
+        }
     }
 }

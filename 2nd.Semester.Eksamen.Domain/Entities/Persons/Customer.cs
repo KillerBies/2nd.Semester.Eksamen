@@ -17,5 +17,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public Dictionary<TreatmentType, PunchCard> PunchCards { get; private set; }
         public string Notes { get; private set; }
 
+        public Customer(string name, Address address, string phoneNumber, string email) :base(name, address, phoneNumber, email)
+        {
+
+        }
     }
 }

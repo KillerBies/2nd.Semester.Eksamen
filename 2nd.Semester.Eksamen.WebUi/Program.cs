@@ -1,10 +1,14 @@
+using System;
+using System.Configuration;
 using _2nd.Semester.Eksamen.WebUi.Components;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 var app = builder.Build();
 
