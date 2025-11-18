@@ -1,0 +1,65 @@
+﻿@page "/create-company-customer"
+@using _2nd.Semester.Eksamen.Application.DTO
+@using _2nd.Semester.Eksamen.Application.Interfaces
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons
+
+
+<EditForm Model="@companyCustomerDTO" OnValidSubmit="@HandleValidSubmit">
+	<div>
+		<label>Navn:</label>
+		<InputText @bind-Value="companyCustomerDTO.Name" />
+	</div>
+	
+	<div>
+		<label>By:</label>
+		<InputText @bind-Value="companyCustomerDTO.City" />
+	</div>
+
+	<div>
+		<label>Postnummer:</label>
+		<InputText @bind-Value="companyCustomerDTO.PostalCode" />
+	</div>
+	
+	<div>
+		<label>Vej:</label>
+		<InputText @bind-Value="companyCustomerDTO.StreetName" />
+	</div>
+
+	<div>
+		<label>Husnr:</label>
+		<InputText @bind-Value="companyCustomerDTO.HouseNumber" />
+	</div>
+
+	<div>
+		<label>Telefonnummer:</label>
+		<InputText @bind-Value="companyCustomerDTO.PhoneNumber" />
+	</div>
+
+	<div>
+		<label>Email:</label>
+		<InputText @bind-Value="companyCustomerDTO.Email" />
+	</div>
+
+	<div>
+		<label>CVR-Nummer:</label>
+		<InputText @bind-Value="companyCustomerDTO.CVRNumber" />
+	</div>
+
+	<button type="submit">Opret kunde</button>
+</EditForm>
+
+
+
+
+@code {
+	public CompanyCustomerDTO companyCustomerDTO = new();
+
+	//TODO Remember to prepare the injection in DI-Container
+	[Inject]
+	public ICreateCustomerService CreateCustomerService { get; set; }
+
+	private async Task HandleValidSubmit()
+	{
+		await CreateCustomerService.CreateCompanyCustomerAsync(companyCustomerDTO);
+	}
+}

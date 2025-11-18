@@ -12,9 +12,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public string City { get; set; }
         public string PostalCode { get; set; }
         public string StreetName { get; set; }
-        public int HouseNumber { get; set; }
+        public string HouseNumber { get; set; }
 
-        public Address(string city, string postalCode, string streetName, int houseNumber)
+        public Address(string city, string postalCode, string streetName, string houseNumber)
         {
             City = city;
             PostalCode = postalCode;

@@ -17,7 +17,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure
         {
             _dbContext = dbContext; 
         }
-
+        
         public async Task CreateNewCustomer(Customer customer)
         {
             //Adds Customer to Customers table in Database.

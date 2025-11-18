@@ -9,7 +9,7 @@ namespace _2nd.Semester.Eksamen.Application.Interfaces
 {
     public interface ICustomerRepository
     {
-         Task CreateNewCustomer(Customer customer);
+         Task CreateNewCustomerAsync(Customer customer);
 
     }
 }

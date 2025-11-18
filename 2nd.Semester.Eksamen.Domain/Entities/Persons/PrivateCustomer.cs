@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
-    public class Private : Customer
+    public class PrivateCustomer : Customer
     {
         //Customer who is a private person
         public Gender Gender { get; private set; }
         public int Age { get; private set; }
         public DateOnly Birthday { get; private set; }
-    public Private(string name, Address address, string phoneNumber, string email, Gender gender, DateOnly birthday) : base (name, address, phoneNumber, email)
+    public PrivateCustomer(string name, Address address, string phoneNumber, string email, Gender gender, DateOnly birthday) : base (name, address, phoneNumber, email)
     {
             Gender = gender;
             Birthday = birthday;

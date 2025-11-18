@@ -9,7 +9,7 @@ namespace _2nd.Semester.Eksamen.Application.Interfaces
 {
     public interface ICreateCustomerService
     {
-        Task CreatePrivateCustomerAsync(PrivateCustomerDTO privateCustomerDTO);
-        Task CreateCompanyCustomerAsync(CompanyCustomerDTO companyCustomerDTO);
+        public Task CreatePrivateCustomerAsync(PrivateCustomerDTO privateCustomerDTO);
+        public Task CreateCompanyCustomerAsync(CompanyCustomerDTO companyCustomerDTO);
     }
 }

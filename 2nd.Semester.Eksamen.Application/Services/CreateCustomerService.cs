@@ -22,14 +22,17 @@ namespace _2nd.Semester.Eksamen.Application.Services
         {   //Creates Address for private customer
             Address address = new Address(DTO.City, DTO.PostalCode, DTO.StreetName, DTO.HouseNumber);
             //Creates Private Customer
-            Private privateCustomer = new Private(DTO.Name, address, DTO.PhoneNumber, DTO.Email, DTO.Gender, DTO.Birthday);
+            PrivateCustomer privateCustomer = new PrivateCustomer(DTO.Name, address, DTO.PhoneNumber, DTO.Email, DTO.Gender, DTO.Birthday);
             await _customerRepository.CreateNewCustomerAsync(privateCustomer); 
 
         }
 
         public async Task CreateCompanyCustomerAsync(CompanyCustomerDTO DTO)
         {
-            //TODO Create ComapnyCustomer
+            Address address = new Address(DTO.City, DTO.PostalCode, DTO.StreetName, DTO.HouseNumber);
+            //Creates Company Customer
+            CompanyCustomer companyCustomer = new CompanyCustomer(DTO.Name, address, DTO.PhoneNumber, DTO.Email, DTO.CVRNumber);
+            await _customerRepository.CreateNewCustomerAsync(companyCustomer);
 
         }
     }

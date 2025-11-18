@@ -29,7 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\2nd.Semester.Eksamen.Application\2nd.Semester.Eksamen.Application.csproj" />
     <ProjectReference Include="..\2nd.Semester.Eksamen.Domain\2nd.Semester.Eksamen.Domain.csproj" />
+    <ProjectReference Include="..\2nd.Semester.Eksamen.Infrastructure\2nd.Semester.Eksamen.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
