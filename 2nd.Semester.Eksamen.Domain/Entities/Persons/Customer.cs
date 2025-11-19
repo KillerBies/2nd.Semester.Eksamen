@@ -2,12 +2,14 @@
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
+    [NotMapped]
     public abstract class Customer : Person
     {
         //Base class for customers

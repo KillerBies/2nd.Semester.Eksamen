@@ -45,9 +45,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>().UseTptMappingStrategy();
+            modelBuilder.Entity<Customer>().UseTptMappingStrategy();
 
             modelBuilder.Entity<PrivateCustomer>().ToTable("PrivateCustomers");
             modelBuilder.Entity<CompanyCustomer>().ToTable("CompanyCustomers");
+            modelBuilder.Entity<Campaign>().ToTable("Campaigns");
+            modelBuilder.Entity<LoyaltyDiscount>().ToTable("LoyaltyDiscounts");
 
             //Booking model
             modelBuilder.Entity<Booking>()
