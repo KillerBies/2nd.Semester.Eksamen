@@ -1,9 +1,8 @@
 ﻿namespace _2nd.Semester.Eksamen.Domain.Entities
 {
-    public abstract class BaseEntity
+    public class BaseEntity
     {
-        //Base entity
-        public int Id { get; private set; }
-        //dum kommentar
+        public int Id { get; set; }
+
     }
 }

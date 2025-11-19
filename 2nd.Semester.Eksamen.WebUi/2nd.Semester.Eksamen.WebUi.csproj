@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
+    <Content Include="Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\2nd.Semester.Eksamen.Application\2nd.Semester.Eksamen.Application.csproj" />
     <ProjectReference Include="..\2nd.Semester.Eksamen.Domain\2nd.Semester.Eksamen.Domain.csproj" />
     <ProjectReference Include="..\2nd.Semester.Eksamen.Infrastructure\2nd.Semester.Eksamen.Infrastructure.csproj" />

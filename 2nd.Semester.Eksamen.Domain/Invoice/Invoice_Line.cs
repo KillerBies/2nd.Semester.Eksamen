@@ -10,6 +10,6 @@ namespace _2nd.Semester.Eksamen.Domain.Invoice
 {
     public class Invoice_Item
     {
-        public BaseProduct Product { get; set; }
+        public Product? Product { get; set; }
     }
 }
