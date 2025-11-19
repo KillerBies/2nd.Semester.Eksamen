@@ -14,13 +14,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
     {
         //Elements of a treatment. Its info is stored in the database.
         //Treatment details
-        public string Category { get; private set; }
         public TimeSpan Duration { get; private set; }
         public List<ProductSnapshot>? Products { get; internal set; }
 
-        public Treatment(string name, decimal price, string discription, string category, TimeSpan duration) : base(name, price, discription)
+        public Treatment(string name, decimal price, string discription, string category, TimeSpan duration) : base(name, price, discription, category)
         {
-            Category = category;
             Duration = duration;
         }
         public Treatment() { }

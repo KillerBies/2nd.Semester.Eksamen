@@ -10,15 +10,17 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
     public class Product : BaseEntity 
     {
         //Product details
-        public string? Name { get; private set; }
-        public decimal? Price { get; private set; }
-        public string? Description { get; set; }
+        public string Name { get; private set; } = string.Empty;
+        public decimal Price { get; private set; }
+        public string Description { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
 
-        public Product(string name, decimal price, string description)
+        public Product(string name, decimal price, string description, string category)
         {
             Name = name;
             Price = price;
             Description = description;
+            Category = category;
         }
         public Product() { }
 
