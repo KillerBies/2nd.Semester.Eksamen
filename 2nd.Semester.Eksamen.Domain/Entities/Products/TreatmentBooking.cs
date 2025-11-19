@@ -1,5 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +11,15 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
     public class TreatmentBooking : BaseEntity
     {
         //This is a booking of a treatment it contians info about the planned date and time of the treatment
+        public int BookingID { get; set; }
         public Booking Booking { get; set; } = null!;
         
         //Employee details
-        public int EmployeeID { get; private set; }
-        public PersonSnapshot? Employee { get; private set; }
-
-
+        public Employee Employee { get; private set; } = null!;
+        
         //Treatment info
-        public int TreatmentID { get; private set; }
-        public TreatmentSnapshot? Treatment { get; private set; }
-        public List<ProductSnapshot>? ProductsUsed { get; private set; }
+        public Treatment Treatment { get; private set; } = null!;
+        public List<Product> ProductsUsed { get; private set; } = new List<Product>();
 
 
         //Treatment booking details
@@ -32,10 +30,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
         public TreatmentBooking() { }
         public TreatmentBooking(Treatment treatment, Person employee)
         {
-            Employee = new PersonSnapshot(employee);
-            EmployeeID = employee.Id;
-            ProductsUsed = treatment.Products;
-            Treatment = new TreatmentSnapshot(treatment);
+            Employee = Employee;
+            Treatment = treatment;
         }
 
 
@@ -56,6 +52,19 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
                 return true;
             }
             return false; //if start and end are the same
+        }
+        public bool ChangeEmployee(Employee employee)
+        {
+            if (!employee.Appointments.Any(a => a.Overlaps(Start, End)))
+            {
+                Employee = employee;
+                return true;
+            }
+            return false;
+        }
+        public bool Overlaps(DateTime start, DateTime end)
+        {
+            return Start < end && start < End;
         }
     }
 }

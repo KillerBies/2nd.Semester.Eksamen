@@ -8,16 +8,14 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
     public class Appointment : BaseEntity
     {
-        public int? EmployeeId { get; private set; }
-        public DateTime? Start { get; private set; }
-        public DateTime? End { get; private set; }
-
-        public Employee? Employee { get; private set; }
+        public Employee Employee { get; private set; } = null!;
+        public DateTime Start { get; private set; }
+        public DateTime End { get; private set; }
 
         public Appointment() { }
-        public Appointment(int employeeId, DateTime start, DateTime end)
+        public Appointment(Employee employee, DateTime start, DateTime end)
         {
-            EmployeeId = employeeId;
+            Employee = employee;
             Start = start;
             End = end;
         }

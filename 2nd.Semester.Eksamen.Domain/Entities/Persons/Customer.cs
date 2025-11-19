@@ -1,5 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
@@ -12,10 +11,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public abstract class Customer : Person
     {
         //Base class for customers
-        public List<Booking>? BookingHistory { get; private set; }
-        public decimal? PointBalance { get; private set; }
-        public List<PunchCard>? PunchCards { get; private set; }
-        public string? Notes { get; set; }
+        public List<Booking> BookingHistory { get; private set; } = new List<Booking>();
+        public int NumberOfVisists { get; private set; } 
+        public decimal PointBalance { get; private set; } 
+        public List<PunchCard> PunchCards { get; private set; } = new List<PunchCard>();
+        public string Notes { get; set; } = string.Empty;
 
         public Customer() { }
         public Customer(string name, Address address, string phoneNumber, string email) : base(name, address, phoneNumber, email) 
@@ -56,7 +56,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         //method to add to booking history
         public bool TryAddToBookingHistory(Booking booking)
         {
-            if(booking.Status == Products.BookingStatus.Completed)
+            if(booking.Status == BookingStatus.Completed)
             {
                 BookingHistory.Add(booking);
                 return true;
