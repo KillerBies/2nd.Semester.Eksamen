@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
-    public class Discount: BaseDiscount
+    public class Discount : BaseEntity
     {
-        public LoyaltyDiscountType DiscountType { get; private set; }
-        public int MinimumVisits { get; private set; }
+        //Basic elements of a discount
+        public string Name { get; set; } = null!;
+        public decimal DiscountAmount { get; set; }
+        //Bools representing if the campaign is for products or treatments
+        public bool Product { get; set; }
+        public bool Treatment { get; set; }
+        //Times the discount has been used
+        public int NumberOfUses { get; set; }
+
+        public Discount() { }
+
     }
 }

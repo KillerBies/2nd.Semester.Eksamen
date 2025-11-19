@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
@@ -11,14 +12,61 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
     public class Booking : BaseEntity
     {
         //Elements of a booking
-        //Customer who made the booking
-        public Customer Customer { get; private set; }
-        public string CustomerName { get; private set; }
-        public Address CustomerAddress { get; private set; }
-        //Start end of booking date and time
-        public DateTime Start { get; private set; }
-        public DateTime End { get; private set; }
-        //Treatments included in the booking
-        public List<Treatment> Treatments { get; private set; }
+
+
+        //Customer details
+        public int? CustomerID { get; set; } //both ID and snapshot for data integrity
+        public PersonSnapshot? Customer { get; set; } = null!;
+
+        //Booking details
+        public DateTime? Start { get; set; }
+        public DateTime? End { get; set; }
+        public TimeSpan? Duration => End - Start;
+        public BookingStatus? Status { get; set; }
+
+        //Treatment details
+        public List<TreatmentBooking>? Treatments { get; set; }
+
+
+
+
+        public Booking() { }
+        public Booking(Customer customer, DateTime start, DateTime end)
+        {
+            CustomerID = customer.Id;
+            Customer = new PersonSnapshot(customer);
+            Start = start;
+            End = end;
+            Treatments = new List<TreatmentBooking>();
+            Status = BookingStatus.Pending;
+        }
+
+
+
+        //method to change booking status
+        public bool TryChangeStatus(BookingStatus newStatus)
+        {
+            Status = newStatus;
+            return true;
+        }
+
+        //method to add treatment to booking
+        public bool TryAddTreatment(TreatmentBooking treatment)
+        {
+            if (treatment == null) return false;
+            Treatments.Add(treatment);
+            return true;
+        }
+
+        //method to finish booking
+        public void FinishBooking()
+        {
+            Status = BookingStatus.Completed;
+        }
+
+        public bool Overlaps(Booking other)
+        {
+            return Start < other.End && End > other.Start;
+        }
     }
 }

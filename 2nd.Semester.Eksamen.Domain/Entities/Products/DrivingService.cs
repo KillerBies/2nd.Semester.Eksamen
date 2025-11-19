@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 {
-    public class DrivingService: Product
+    public class DrivingService: ProductSnapshot
     {
         //Driving service for customers who want distant service
         //Distance in kilometers
-        public decimal Distance { get; set; }
-        public TimeSpan Duration { get; set; }
-        public Address ServiceAddress { get; set; }
+        public decimal? Distance { get; set; }
+        public TimeSpan? Duration { get; set; }
+        public Address? ServiceAddress { get; set; }
     }
 }

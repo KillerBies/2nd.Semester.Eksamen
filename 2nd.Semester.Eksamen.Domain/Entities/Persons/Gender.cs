@@ -9,6 +9,18 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public enum Gender
     {
         Male,
-        Female
+        Female,
+        Female_Female,
+        Male_Female_Female,
+        Female_Male_Female,
+        SigmaMale,
+        SigmaFemale,
+        SigmaMale_Female,
+        SigmaMale_Male,
+        AlphaleMale,
+        BetaMale,
+        Cuck,
+        MailBoxMale,
+        MailBoxFemale
     }
 }
