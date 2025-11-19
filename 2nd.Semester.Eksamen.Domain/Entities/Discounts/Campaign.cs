@@ -31,12 +31,23 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 
         public DiscountResult GetOrderDiscount(Order order)
         {
-            decimal discount = 0;
+            if (CheckTime())
+            {
+                return new DiscountResult(false, 0, this);
+            }
+
+            decimal discountedPrice = 0;
             foreach (ProductSnapshot product in order.Products)
             {
-                product.PricePerUnit * 
+                if (CheckProduct(product))
+                    discountedPrice += product.PricePerUnit * discount;
             }
-            return null;
+
+            foreach (TreatmentBooking treatment in order.Booking.Treatments)
+            {
+                discountedPrice += treatment.Treatment.BasePrice * discount;
+            }
+            return new DiscountResult(true, discountedPrice, this);
         }
     }
 }
