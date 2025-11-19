@@ -63,5 +63,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
         {
             Status = BookingStatus.Completed;
         }
+
+        public bool Overlaps(Booking other)
+        {
+            return Start < other.End && End > other.Start;
+        }
     }
 }
