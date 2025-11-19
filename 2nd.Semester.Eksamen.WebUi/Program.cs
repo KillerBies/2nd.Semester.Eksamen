@@ -11,6 +11,7 @@ builder.Services.AddDbContextFactory<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), 
     b => b.MigrationsAssembly("2nd.Semester.Eksamen.Infrastructure")));
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

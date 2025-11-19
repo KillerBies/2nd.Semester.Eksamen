@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Person;
+using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 
 
         public PrivateCustomer(string firstname, string lastname, Gender gender, DateOnly birthday, int age,Address address,string phonenumber,string email) : base(firstname,address,phonenumber,email)
-        {
+    {
             TrySetLastName(firstname, lastname);
             Gender = gender;
             SetBirthDate(birthday, age);
@@ -28,7 +29,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public PrivateCustomer()
         {
         }
-
+               
 
 
 
@@ -41,9 +42,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             {
                 LastName = lastname.Trim();
                 return true;
-            }
+    }
             return false;
-        }
+    }
 
 
         //method to get age
