@@ -12,10 +12,69 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public abstract class Customer : Person
     {
         //Base class for customers
-        public List<Booking> BookingHistory { get; private set; }
-        public decimal PointBalance { get; private set; }
-        public Dictionary<TreatmentType, PunchCard> PunchCards { get; private set; }
-        public string Notes { get; private set; }
+        public List<Booking>? BookingHistory { get; private set; }
+        public decimal? PointBalance { get; private set; }
+        public List<PunchCard>? PunchCards { get; private set; }
+        public string? Notes { get; set; }
 
+        public Customer() { }
+        public Customer(string name, Address address, string phoneNumber, string email) : base(name, address, phoneNumber, email) 
+        {
+            BookingHistory = new List<Booking>();
+            PointBalance = 0;
+            PunchCards = new List<PunchCard>();
+            Notes = string.Empty;
+        }
+
+
+
+
+
+        //method to change point balance
+        public bool TryAddToPointBalance(decimal points)
+        {
+            if(points < 0) return false;
+            PointBalance += points;
+            return true;
+        }
+
+
+
+        //method to redeem points from point balance
+        public bool TryRedeemPoints(decimal points)
+        {
+            if(points <= PointBalance)
+            {
+                PointBalance -= points;
+                return true;
+            }
+            return false;
+        }
+
+
+
+        //method to add to booking history
+        public bool TryAddToBookingHistory(Booking booking)
+        {
+            if(booking.Status == Products.BookingStatus.Completed)
+            {
+                BookingHistory.Add(booking);
+                return true;
+            }
+            return false;
+        }
+
+
+
+        //method to add a punchcard
+        public bool TryAddPunchCard(Treatment treatment)
+        {
+            if(!PunchCards.Any(Card=>Card.Treatment==treatment))
+            {
+                PunchCards.Add(new PunchCard(this, 1, treatment));
+                return true;
+            }
+            return false;
+        }
     }
 }

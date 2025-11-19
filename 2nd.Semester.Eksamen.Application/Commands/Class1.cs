@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities
+namespace _2nd.Semester.Eksamen.Application.Commands
 {
-    public class BaseEntity
+    internal class Class1
     {
-        public int Id { get; set; }
     }
 }

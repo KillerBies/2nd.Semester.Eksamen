@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities
+namespace _2nd.Semester.Eksamen.Domain
 {
-    public class BaseEntity
+    public class Filter
     {
-        public int Id { get; set; }
     }
 }

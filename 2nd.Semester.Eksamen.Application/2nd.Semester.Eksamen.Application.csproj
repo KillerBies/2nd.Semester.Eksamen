@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <Folder Include="Commands\" />
-    <Folder Include="RepositoryInterfaces\" />
   </ItemGroup>
 
   <PropertyGroup>

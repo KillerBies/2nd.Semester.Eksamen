@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities
+namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 {
-    public class BaseEntity
+    public enum BookingStatus
     {
-        public int Id { get; set; }
+        Pending,
+        Completed
     }
 }
