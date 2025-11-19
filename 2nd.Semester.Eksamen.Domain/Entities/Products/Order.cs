@@ -10,10 +10,12 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 {
     public class Order: BaseEntity
     {
-        public Booking Booking { get; private set; }
-        public List<Product> Products { get; private set; }
-        public decimal Total { get; private set; }
-        public decimal DiscountedTotal { get; private set; }
-        public BaseDiscount AppliedDiscount { get; private set; }
+        public Booking? Booking { get; private set; }
+        public List<ProductSnapshot>? Products { get; private set; }
+        public decimal? Total { get; private set; }
+        public decimal? DiscountedTotal { get; private set; }
+        public Discount? AppliedDiscount { get; private set; }
+
+        public Order() { }
     }
 }

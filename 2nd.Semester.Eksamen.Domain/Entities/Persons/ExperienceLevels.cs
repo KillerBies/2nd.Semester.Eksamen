@@ -14,6 +14,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         Expert,
         Grandmaster,
         God,
-        UniverseEnding
+        GoonLord,
+        JelKing
     }
 }
