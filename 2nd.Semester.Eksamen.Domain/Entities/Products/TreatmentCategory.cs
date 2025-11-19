@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 {
-    public enum  TreatmentType 
+    public enum  TreatmentCategory 
     {
-        Hircut,
+        Haircut,
         Makeup,
-        Styling
+        Styling,
     }
 }
