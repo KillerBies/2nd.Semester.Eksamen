@@ -1,7 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Application.Commands;
 using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using Microsoft.AspNetCore.Components;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 

@@ -1,5 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,8 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         public string Email { get; set; }
         public Gender Gender { get; set; }
         public List<Appointment> Appointments { get; set; } = new();
+
+        //takes a DTO model as input value to store multiple variables in 1
         public AddressInputModel Address { get; set; } = new AddressInputModel();
         public string PhoneNumber { get; set; }
         public decimal BasePriceMultiplier { get; set; }

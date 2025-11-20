@@ -9,6 +9,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
     public enum EmployeeType 
     {
+        // Description value for EnumExtensions.cs helper method to use to take string from enum value
         [Description("Freelance")]
         Freelance,
         [Description("Staff")]

@@ -67,7 +67,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<Campaign>()
                 .HasMany(T => T.ProductsInCampaign);
 
-
             //Order
             modelBuilder.Entity<Order>()
                 .HasMany(o => o.Products)
@@ -85,11 +84,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasOne(tb => tb.Employee)
                 .WithMany(e => e.Appointments)
                 .OnDelete(DeleteBehavior.NoAction);
-                .Property(t => t.Employee)
-                .HasConversion(
-                    v => System.Text.Json.JsonSerializer.Serialize(v, new System.Text.Json.JsonSerializerOptions { WriteIndented = false }),
-                    v => System.Text.Json.JsonSerializer.Deserialize<PersonSnapshot>(v, new System.Text.Json.JsonSerializerOptions())
-                );
+
             modelBuilder.Entity<Employee>()
                 .Property(e => e.Type)
                 .HasConversion<string>();
@@ -102,8 +97,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .Property(e => e.Gender)
                 .HasConversion<string>();
 
-
-
             modelBuilder.Entity<Employee>()
                 .HasMany(b => b.TreatmentHistory);
 
@@ -111,12 +104,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany(b => b.BookingHistory);
             modelBuilder.Entity<CompanyCustomer>()
                 .HasMany(b => b.BookingHistory);
-
-
-
-
-
-
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.BasePriceMultiplier)
@@ -130,6 +117,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .Property(o => o.Total)
                 .HasPrecision(18, 2);
 
+
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasPrecision(18, 2);
@@ -138,7 +126,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<Discount>()
                 .Property(d => d.DiscountAmount)
                 .HasPrecision(18, 2);
-
 
             base.OnModelCreating(modelBuilder);
         }

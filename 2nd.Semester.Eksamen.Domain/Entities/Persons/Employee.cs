@@ -12,14 +12,12 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public class Employee : Person
     {
         //Employee details
-        [Column(TypeName = "nvarchar(50)")]
-        public string? Type { get; private set; }
+        public string? Type { get; private set; } // Shown as an enum in DTO and blazor
         public string? LastName { get; private set; }
         public string? Specialty { get; private set; }
-        [Column(TypeName = "nvarchar(50)")]
-        public string? ExperienceLevel { get; private set; }
-        [Column(TypeName = "nvarchar(50)")]
-        public string? Gender { get; private set; }
+        public string? ExperienceLevel { get; private set; } // Shown as an enum in DTO and blazor
+        public string? Gender { get; private set; } // Shown as an enum in DTO and blazor
+
 
 
 
@@ -30,9 +28,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 
 
         public Employee() { }
-        public Employee(string firstname, string lastname, EmployeeType type, string specialty, ExperienceLevels experience, Gender gender,Address address)
+        public Employee(string firstname, string lastname, string type, string specialty, string experience, string gender/*,Address address*/)
         {
-            Address = address;
+            //Address = address;
             TrySetLastName(firstname, lastname);
             Type = type;
             Specialty = specialty;

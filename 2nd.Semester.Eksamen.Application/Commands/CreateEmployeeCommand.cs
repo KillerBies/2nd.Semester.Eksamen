@@ -33,7 +33,7 @@ namespace _2nd.Semester.Eksamen.Application.Commands
             var employee = new Domain.Entities.Persons.Employee(
                 firstname: dto.FirstName,
                 lastname: dto.LastName,
-                type: dto.Type.GetDescription(),
+                type: dto.Type.GetDescription(), // Takes string from enum description
                 specialty: dto.Specialty,
                 experience: dto.ExperienceLevel.GetDescription(),
                 gender: dto.Gender.GetDescription(),
@@ -46,13 +46,8 @@ namespace _2nd.Semester.Eksamen.Application.Commands
                 
             );
 
-            // These collections depend on how Employee handles them:
-            // If Employee exposes AddAppointment, AddTreatment, etc:
-            //foreach (var appt in dto.Appointments)
-            //    employee.AddAppointment(appt);
+            // TODO: Add way to add appointments
 
-            //foreach (var treatment in dto.TreatmentHistory)
-            //    employee.AddTreatment(treatment);
 
             await _repo.CreateNewAsync(employee);
         }

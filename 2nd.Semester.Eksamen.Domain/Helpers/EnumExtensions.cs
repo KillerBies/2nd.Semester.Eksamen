@@ -10,7 +10,7 @@ namespace _2nd.Semester.Eksamen.Domain.Helpers
 {
     public static class EnumExtensions
     {
-        public static string GetDescription(this Enum value)
+        public static string GetDescription(this Enum value) // Takes string from enum description
         {
             var field = value.GetType().GetField(value.ToString());
             var attribute = field.GetCustomAttribute<DescriptionAttribute>();

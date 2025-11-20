@@ -9,6 +9,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
     public enum Gender
     {
+        // Description value for EnumExtensions.cs helper method to use to take string from enum value
         [Description("Male")]
         Male,
         [Description("Female")]

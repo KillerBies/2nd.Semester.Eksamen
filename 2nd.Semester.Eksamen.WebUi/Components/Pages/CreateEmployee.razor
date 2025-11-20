@@ -14,9 +14,10 @@
 <input @bind="Input.Address.City" placeholder="City" />
 <input @bind="Input.Address.HouseNumber" placeholder="House number" />
 
-<select @bind="Input.Gender">
+<select @bind="Input.Gender"> 
     @foreach (var gender in Enum.GetValues(typeof(Gender)).Cast<Gender>())
     {
+        <!--Shows enum description-->
         <option value="@gender">@gender.GetDescription()</option>
     }
 </select>
