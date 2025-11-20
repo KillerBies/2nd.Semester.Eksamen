@@ -1,11 +1,11 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Products
+namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public class TreatmentSnapshot : BaseEntity
     {
@@ -18,8 +18,12 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
         public TreatmentSnapshot(Treatment treatment)
         {
             Name = treatment.Name;
-            BasePrice = treatment.Price;
             Category = treatment.Category;
+        }
+
+        public void Snap(decimal price) 
+        {
+            BasePrice = price;
         }
     }
 }

@@ -1,18 +1,19 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
+﻿
+using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
+namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 {
     public class Product : BaseEntity 
     {
         //Product details
-        public string? Name { get; private set; }
-        public decimal? Price { get; private set; }
-        public string? Description { get; set; }
+        public string Name { get; private set; } = string.Empty;
+        public decimal Price { get; private set; }
+        public string Description { get; set; } = string.Empty;
 
         public Product(string name, decimal price, string description)
         {
