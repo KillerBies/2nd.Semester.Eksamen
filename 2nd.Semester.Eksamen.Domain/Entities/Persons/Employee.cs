@@ -1,4 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,30 +11,32 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public class Employee : Person
     {
         //Employee details
-        public EmployeeType? Type { get; private set; }
-        public string? LastName { get; private set; }
+        public EmployeeType Type { get; private set; } = EmployeeType.Staff;
+        public string LastName { get; private set; } = null!;
         public string? Specialty { get; private set; }
-        public ExperienceLevels? ExperienceLevel { get; private set; }
-        public Gender? Gender { get; private set; }
+        public ExperienceLevels ExperienceLevel { get; private set; } = ExperienceLevels.Expert;
+        public Gender Gender { get; private set; } = Gender.Male;
+        public Address Address { get; private set; } = null!;
 
 
 
         //Treatment details
-        public List<Appointment>? Appointments { get; private set; }
-        public List<Booking>? TreatmentHistory { get; private set; }
-        public decimal? BasePriceMultiplier { get; private set; }
+        public List<TreatmentBooking> Appointments { get; private set; } = new List<TreatmentBooking>();
+        public List<Booking> TreatmentHistory { get; private set; } = new List<Booking>();
+        public decimal BasePriceMultiplier { get; private set; } = 0;
 
 
         public Employee() { }
-        public Employee(string firstname, string lastname, EmployeeType type, string specialty, ExperienceLevels experience, Gender gender)
+        public Employee(string firstname, string lastname, EmployeeType type, string specialty, ExperienceLevels experience, Gender gender,Address address)
         {
+            Address = address;
             TrySetLastName(firstname, lastname);
             Type = type;
             Specialty = specialty;
             ExperienceLevel = experience;
             Gender = gender;
             TreatmentHistory = new List<Booking>();
-            Appointments = new List<Appointment>();
+            Appointments = new List<TreatmentBooking>();
 
         }
 
@@ -67,7 +69,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         {
             if (IsAvailable(start, end)) //checks if new time range overlaps with any existing time ranges
             {
-                Appointments.Add(new Appointment(Id,start,end));
+                //Appointments.Add(new TreatmentBooking(this,start,end));
                 return true;
             }
             return false;
@@ -82,7 +84,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         //method to add to treatment history
         public bool TryAddToTreatmentHistory(Booking booking)
         {
-            if (booking != null && booking.Status == Products.BookingStatus.Completed)
+            if (booking != null && booking.Status == BookingStatus.Completed)
             {
                 TreatmentHistory.Add(booking);
                 return true;

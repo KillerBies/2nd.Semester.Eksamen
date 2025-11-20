@@ -1,5 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +10,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public abstract class Person : BaseEntity
     {
         //Basic elements of a person
-        public string? Name { get; private set; }
-        public Address? Address { get; private set; }
-        public string? PhoneNumber { get; private set; }
-        public string? Email { get; private set; }
+        public string Name { get; private set; } = null!;
+        public Address Address { get; private set; } = null!;
+        public string PhoneNumber { get; private set; } = null!;
+        public string Email { get; private set; } = null!;
 
 
         public Person() { }
@@ -43,14 +42,14 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         //method to check if name is valid
         protected bool NameCheck(string name) //protected so it can be used in derived classes
         {
-            return name.Trim(new Char[] { ' ', '-', '.', '\'' }).All(Char.IsLetter); //checks if name (without special characters) only contains letters
+            return name.Trim(new char[] { ' ', '-', '.', '\'' }).All(char.IsLetter); //checks if name (without special characters) only contains letters
         }
 
 
         //method to set phone number of person
         public bool TrySetPhoneNumber(string phoneNumber)
         {
-            if(phoneNumber.Trim().All(Char.IsDigit) && phoneNumber.Trim().Length == 8) //checks if phonenumber (without empty space) only contains digits and is 8 digits long
+            if(phoneNumber.Trim().All(char.IsDigit) && phoneNumber.Trim().Length == 8) //checks if phonenumber (without empty space) only contains digits and is 8 digits long
             {
                 PhoneNumber = phoneNumber.Trim();
                 return true;

@@ -1,5 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
+namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 {
     public class Booking : BaseEntity
     {
@@ -15,17 +15,17 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
 
 
         //Customer details
-        public int? CustomerID { get; set; } //both ID and snapshot for data integrity
-        public PersonSnapshot? Customer { get; set; } = null!;
+        public int CustomerId { get; set; }
+        public Customer Customer { get; set; } = null!;
 
         //Booking details
-        public DateTime? Start { get; set; }
-        public DateTime? End { get; set; }
-        public TimeSpan? Duration => End - Start;
-        public BookingStatus? Status { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public TimeSpan Duration {  get; set; }
+        public BookingStatus Status { get; set; } = BookingStatus.Pending;
 
         //Treatment details
-        public List<TreatmentBooking>? Treatments { get; set; }
+        public List<TreatmentBooking> Treatments { get; set; } = new List<TreatmentBooking>();
 
 
 
@@ -33,10 +33,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
         public Booking() { }
         public Booking(Customer customer, DateTime start, DateTime end)
         {
-            CustomerID = customer.Id;
-            Customer = new PersonSnapshot(customer);
+            Customer = customer;
             Start = start;
             End = end;
+            Duration = ComputeDuration(start, end);
             Treatments = new List<TreatmentBooking>();
             Status = BookingStatus.Pending;
         }
@@ -67,6 +67,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
         public bool Overlaps(Booking other)
         {
             return Start < other.End && End > other.Start;
+        }
+
+        private TimeSpan ComputeDuration(DateTime start, DateTime end)
+        {
+            return end - start;
         }
     }
 }

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
+namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public class PersonSnapshot
     {
