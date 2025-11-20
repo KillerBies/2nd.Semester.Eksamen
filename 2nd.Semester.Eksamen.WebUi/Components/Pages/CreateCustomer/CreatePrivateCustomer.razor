@@ -1,77 +1,88 @@
 ﻿@page "/create-private-customer"
 @using _2nd.Semester.Eksamen.Application.DTO
-@using _2nd.Semester.Eksamen.Application.Interfaces
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons
+@inject IPrivateCustomerService createCustomerService
 <h3>CreatePrivateCustomer</h3>
 
-<EditForm Model = "@privateCustomerDTO" OnValidSubmit="@HandleValidSubmit">
+<EditForm Model="@privateCustomerDTO" OnValidSubmit="@HandleValidSubmit" FormName="CreatePrivateCustomerForm">
+	
 	<div>
-		<label>Navn:</label>
-		<InputText @bind-Value="privateCustomerDTO.Name" />
+		<label>Fornavn:</label>
+		<InputText id="forNavn" @bind-Value="@privateCustomerDTO.FirstName" placeholder "Fornavn ..." />
 	</div>
 	
 	<div>
+		<label>Efternavn:</label>
+		<InputText @bind-Value="@privateCustomerDTO.LastName" />
+	</div>
+
+	<div>
 		<label>By:</label>
-		<InputText @bind-Value="privateCustomerDTO.City" />
+		<InputText @bind-Value="@privateCustomerDTO.City" />
 	</div>
 
 	<div>
 		<label>Postnummer:</label>
-		<InputText @bind-Value="privateCustomerDTO.PostalCode" />
+		<InputText @bind-Value="@privateCustomerDTO.PostalCode" />
 	</div>
 	
 	<div>
 		<label>Vej:</label>
-		<InputText @bind-Value="privateCustomerDTO.StreetName" />
+		<InputText @bind-Value="@privateCustomerDTO.StreetName" />
 	</div>
 
 	<div>
 		<label>Husnr:</label>
-		<InputText @bind-Value="privateCustomerDTO.HouseNumber" />
+		<InputText @bind-Value="@privateCustomerDTO.HouseNumber" />
 	</div>
 
 	<div>
 		<label>Telefonnummer:</label>
-		<InputText @bind-Value="privateCustomerDTO.PhoneNumber" />
+		<InputText @bind-Value="@privateCustomerDTO.PhoneNumber" />
 	</div>
 
 	<div>
 		<label>Email:</label>
-		<InputText @bind-Value="privateCustomerDTO.Email" />
+		<InputText id="Email" @bind-Value="@privateCustomerDTO.Email">
+		</InputText>
 	</div>
 
 	<div>
 		<label>Køn:</label>
-		<InputSelect @bind-Value="privateCustomerDTO.Gender">
+		<InputSelect @bind-Value="@privateCustomerDTO.Gender">
 			@foreach (var gender in Enum.GetValues<Gender>())
 			{
 				<option value="@gender">@gender</option>
 			}
 		</InputSelect>
 	</div>
-	
+
 	<div>
 		<label>Birthday:</label>
-		<InputDate @bind-Value="privateCustomerDTO.Birthday" />
+		<InputDate @bind-Value="@privateCustomerDTO.Birthday" />
 	</div>
 
 	<button type="submit">Opret kunde</button>
 
 </EditForm>
 
-
+<p>@privateCustomerDTO.FirstName</p>
 
 
 @code {
-
-	public PrivateCustomerDTO privateCustomerDTO = new();
-
-		//TODO Remember to prepare the injection in DI-Container
-	[Inject]
-	public ICreateCustomerService CreateCustomerService { get; set; }
-
-	private async Task HandleValidSubmit()
+	
+	public PrivateCustomerDTO privateCustomerDTO = new PrivateCustomerDTO();
+	protected override void OnInitialized()
 	{
-		await CreateCustomerService.CreatePrivateCustomerAsync(privateCustomerDTO);
+			
+	}
+		//TODO Remember to prepare the injection in DI-Container
+	
+
+	private void HandleValidSubmit()
+	{
+
+		 createCustomerService.CreatePrivateCustomerAsync(privateCustomerDTO);
 	}
 }

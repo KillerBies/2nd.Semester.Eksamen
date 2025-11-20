@@ -1,4 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Person;
+﻿
 using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
@@ -14,17 +14,18 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         //Customer who is a private person
         public string? LastName { get; private set; }
         public Gender? Gender { get; set; }
-        public int? Age { get { return GetAge(); } }
+       // int? Age { get { return GetAge(); } }
         public DateOnly BirthDate { get; private set; }
+        public DateOnly Birthday {  get; set; }
 
 
 
-
-        public PrivateCustomer(string firstname, string lastname, Gender gender, DateOnly birthday, int age,Address address,string phonenumber,string email) : base(firstname,address,phonenumber,email)
+        public PrivateCustomer(string lastname, Gender gender, DateOnly birthday, string name, Address address,string phonenumber,string email) : base(name,address,phonenumber,email)
     {
-            TrySetLastName(firstname, lastname);
+            TrySetLastName(name, lastname);
             Gender = gender;
-            SetBirthDate(birthday, age);
+            Birthday = birthday;
+           // SetBirthDate(birthday, age);
         }
         public PrivateCustomer()
         {
@@ -47,7 +48,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     }
 
 
-        //method to get age
+        //method to get age 
         protected int GetAge()
         {
             //if age is just a number it can become out of date so we calculate it from birthdate

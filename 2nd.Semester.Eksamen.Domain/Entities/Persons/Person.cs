@@ -11,7 +11,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public abstract class Person : BaseEntity
     {
         //Basic elements of a person
-        public string? Name { get; private set; }
+        public string Name { get; private set; }
         public Address? Address { get; private set; }
         public string? PhoneNumber { get; private set; }
         public string? Email { get; private set; }
@@ -20,7 +20,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public Person() { }
         public Person(string name, Address address, string phoneNumber, string email)
         {
-            TrySetName(name);
+            Name = name;
+          //  TrySetName(name);
             Address = address;
             TrySetPhoneNumber(phoneNumber);
             TrySetEmail(email);

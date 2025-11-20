@@ -12,8 +12,8 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251119083316_Initial")]
-    partial class Initial
+    [Migration("20251119130501_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -415,6 +415,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer");
 
                     b.Property<DateOnly>("BirthDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("Birthday")
                         .HasColumnType("date");
 
                     b.Property<int?>("Gender")

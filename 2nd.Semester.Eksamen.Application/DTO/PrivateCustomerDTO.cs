@@ -11,7 +11,9 @@ namespace _2nd.Semester.Eksamen.Application.DTO
     public class PrivateCustomerDTO
     {
         [Required]
-        public string Name { get;  set; }
+        public string FirstName { get; set; }
+        [Required]
+        public string LastName { get; set; }
         [Required]
         public string City { get; set; }
         [Required]
@@ -20,17 +22,28 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         public string StreetName { get; set; }
         [Required]
         public string HouseNumber { get; set; }
-        [Phone]
+        //[Phone]
         [Required]
-        public string PhoneNumber { get;  set; }
+        public string PhoneNumber { get; set; }
         [Required]
-        [EmailAddress]
-        public string Email { get;  set; }
+        // [EmailAddress]
+        public string Email { get; set; }
         [Required]
         public Gender Gender { get; set; }
-        [Required]
+        //[Required]
+        
         public DateOnly Birthday { get; set; }
 
-        public PrivateCustomerDTO() { }
+        [Required]
+        public DateTime BirthdayWrapper
+        {
+            get => Birthday.ToDateTime(TimeOnly.MinValue);
+            set => Birthday = DateOnly.FromDateTime(value);
+        }
+
+        public PrivateCustomerDTO()
+        {
+
+        }
     }
 }
