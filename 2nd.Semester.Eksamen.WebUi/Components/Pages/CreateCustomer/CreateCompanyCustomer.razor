@@ -1,0 +1,71 @@
+﻿@page "/create-company-customer"
+@using _2nd.Semester.Eksamen.Application.DTO
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons
+@inject ICompanyCustomerService createCustomerService
+@rendermode InteractiveServer
+<EditForm Model="@companyCustomerDTO" OnValidSubmit="@HandleValidSubmit" class="col-6 p-0" FormName="CreatePrivateCustomerForm">
+	
+	
+	<div class="Form-group">
+		<label for="Name">Navn:</label>
+		<InputText id="Name" @bind-Value="companyCustomerDTO.Name" class="form-control" placeholder="Firmanavn..." />
+	</div>
+	
+	<div class="Form-group">
+		<label for="City">By:</label>
+		<InputText id="City" @bind-Value="companyCustomerDTO.City" class="form-control" placeholder="By..."/>
+	</div>
+
+	<div class="Form-group">
+		<label for="Form-group">Postnummer:</label>
+		<InputText id="PostalCode" @bind-Value="companyCustomerDTO.PostalCode" class="form-control" placeholder="Postnummer..." />
+	</div>
+	
+	<div class="Form-group">
+		<label for="StreetName">Vej:</label>
+		<InputText id="StreetName" @bind-Value="companyCustomerDTO.StreetName" class="form-control" placeholder="Vejnavn..."/>
+	</div>
+
+	<div class="Form-group">
+		<label for="HouseNumber">Husnr:</label>
+		<InputText id="HouseNumber" @bind-Value="companyCustomerDTO.HouseNumber" class="form-control" placeholder="Husnr..." />
+	</div>
+
+	<div class="Form-group">
+		<label for="PhoneNumber">Telefonnummer:</label>
+		<InputText id="PhoneNumber" @bind-Value="companyCustomerDTO.PhoneNumber" class="form-control" placeholder="Tlfnummer..."/>
+	</div>
+
+	<div class="Form-group">
+		<label for="Email">Email:</label>
+		<InputText id="Email" @bind-Value="companyCustomerDTO.Email" class="form-control" placeholder="Email" />
+	</div>
+
+	<div class="Form-group">
+		<label for="CVR-Nummer">CVR-nummer:</label>
+		<InputText id="CVR-Nummer" @bind-Value="companyCustomerDTO.CVRNumber" class="form-control" placeholder="CVR-nummer..." />
+	</div>
+
+	<div class="form-group">
+		<button type="submit" class="btn btn-primary">Opret firmakunde</button>
+	</div>
+</EditForm>
+
+
+
+
+@code {
+	
+
+	public CompanyCustomerDTO companyCustomerDTO = new();
+
+	//TODO Remember to prepare the injection in DI-Container
+	
+	
+
+	private async Task HandleValidSubmit()
+	{
+		await createCustomerService.CreateCompanyCustomerAsync(companyCustomerDTO);
+	}
+}
