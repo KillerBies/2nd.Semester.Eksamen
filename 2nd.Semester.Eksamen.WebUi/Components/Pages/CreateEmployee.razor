@@ -1,0 +1,42 @@
+﻿@page "/employees"
+@rendermode InteractiveServer
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+@using _2nd.Semester.Eksamen.Domain.Helpers;
+
+<h3>Create Employee</h3>
+
+<input @bind="Input.FirstName" placeholder="First Name" />
+<input @bind="Input.LastName" placeholder="Last Name" />
+<input @bind="Input.Email" placeholder="Email" />
+<input @bind="Input.PhoneNumber" placeholder="Phone Number" />
+<input @bind="Input.Address.StreetName" placeholder="Street name" />
+<input @bind="Input.Address.PostalCode" placeholder="Postal Code" />
+<input @bind="Input.Address.City" placeholder="City" />
+<input @bind="Input.Address.HouseNumber" placeholder="House number" />
+
+<select @bind="Input.Gender">
+    @foreach (var gender in Enum.GetValues(typeof(Gender)).Cast<Gender>())
+    {
+        <option value="@gender">@gender.GetDescription()</option>
+    }
+</select>
+
+<select @bind="Input.ExperienceLevel">
+    @foreach (var level in Enum.GetValues(typeof(ExperienceLevels)).Cast<ExperienceLevels>())
+    {
+        <option value="@level">@level.GetDescription()</option>
+    }
+</select>
+
+<select @bind="Input.Type">
+    @foreach (var type in Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>())
+    {
+        <option value="@type">@type.GetDescription()</option>
+    }
+</select>
+
+<input @bind="Input.Specialty" placeholder="Specialty" />
+
+<button @onclick="CreateEmployeeAsync">Create</button>
+
+

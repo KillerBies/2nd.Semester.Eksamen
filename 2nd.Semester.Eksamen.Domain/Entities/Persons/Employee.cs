@@ -1,6 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +12,14 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public class Employee : Person
     {
         //Employee details
-        public EmployeeType? Type { get; private set; }
+        [Column(TypeName = "nvarchar(50)")]
+        public string? Type { get; private set; }
         public string? LastName { get; private set; }
         public string? Specialty { get; private set; }
-        public ExperienceLevels? ExperienceLevel { get; private set; }
-        public Gender? Gender { get; private set; }
+        [Column(TypeName = "nvarchar(50)")]
+        public string? ExperienceLevel { get; private set; }
+        [Column(TypeName = "nvarchar(50)")]
+        public string? Gender { get; private set; }
 
 
 
@@ -26,7 +30,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 
 
         public Employee() { }
-        public Employee(string firstname, string lastname, EmployeeType type, string specialty, ExperienceLevels experience, Gender gender)
+        public Employee(string firstname, string lastname, string type, string specialty, string experience, string gender)
         {
             TrySetLastName(firstname, lastname);
             Type = type;
@@ -37,6 +41,27 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             Appointments = new List<Appointment>();
 
         }
+        public Employee(
+            string firstname,
+            string lastname,
+            string email,
+            string phoneNumber,
+            Address address,
+            decimal basePriceMultiplier,
+            string experience,
+            string type,
+            string specialty,
+            string gender
+        ) : base(firstname, address, phoneNumber, email)
+            {
+                TrySetLastName(firstname, lastname);
+                ExperienceLevel = experience;
+                Type = type;
+                Specialty = specialty;
+                Gender = gender;
+
+                TrySetBasePriceMultiplier(basePriceMultiplier);
+            }
 
 
         //method to set last and first name of private person

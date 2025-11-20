@@ -74,6 +74,17 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                     v => System.Text.Json.JsonSerializer.Serialize(v, new System.Text.Json.JsonSerializerOptions { WriteIndented = false }),
                     v => System.Text.Json.JsonSerializer.Deserialize<PersonSnapshot>(v, new System.Text.Json.JsonSerializerOptions())
                 );
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.Type)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.ExperienceLevel)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.Gender)
+                .HasConversion<string>();
 
             // Employee.Appointments
             modelBuilder.Entity<Employee>()
