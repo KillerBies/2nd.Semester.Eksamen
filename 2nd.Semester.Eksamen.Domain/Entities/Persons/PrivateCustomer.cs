@@ -22,7 +22,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     {
             TrySetLastName(name, lastname);
             Gender = gender;
-            Birthday = birthday;
+            BirthDate = birthday;
            // SetBirthDate(birthday, age);
         }
         public PrivateCustomer()
