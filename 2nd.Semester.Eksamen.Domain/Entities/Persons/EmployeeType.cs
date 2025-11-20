@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
-    public enum EmployeeType {
+    public enum EmployeeType 
+    {
         [Description("Freelance")]
         Freelance,
         [Description("Staff")]
-        Staff }
+        Staff,
+        [Description("Apprentice")]
+        Apprentice
+    }
 }

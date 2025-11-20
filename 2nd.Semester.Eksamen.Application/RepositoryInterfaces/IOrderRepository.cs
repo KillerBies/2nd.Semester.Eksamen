@@ -1,6 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Domain;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
 using System;
 using System.Collections.Generic;
 using System.Linq;

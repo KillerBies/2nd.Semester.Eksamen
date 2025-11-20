@@ -1,7 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
-using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Data
 {
@@ -44,31 +44,47 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Booking.Customer
+            modelBuilder.Entity<Customer>().UseTptMappingStrategy();
+            modelBuilder.Entity<Customer>().UseTptMappingStrategy();
+
+            modelBuilder.Entity<PrivateCustomer>().ToTable("PrivateCustomers");
+            modelBuilder.Entity<CompanyCustomer>().ToTable("CompanyCustomers");
+            modelBuilder.Entity<Campaign>().ToTable("Campaigns");
+            modelBuilder.Entity<LoyaltyDiscount>().ToTable("LoyaltyDiscounts");
+
+            //Booking model
             modelBuilder.Entity<Booking>()
-                .Property(b => b.Customer)
-                .HasConversion(
-                    v => System.Text.Json.JsonSerializer.Serialize(v, new System.Text.Json.JsonSerializerOptions { WriteIndented = false }),
-                    v => System.Text.Json.JsonSerializer.Deserialize<PersonSnapshot>(v, new System.Text.Json.JsonSerializerOptions())
-                );
+                .HasMany(b => b.Treatments)
+                .WithOne(tb => tb.Booking)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // TreatmentBooking.ProductsUsed
-            modelBuilder.Entity<TreatmentBooking>()
-                .Property(t => t.ProductsUsed)
-                .HasConversion(
-                    v => System.Text.Json.JsonSerializer.Serialize(v, new System.Text.Json.JsonSerializerOptions { WriteIndented = false }),
-                    v => System.Text.Json.JsonSerializer.Deserialize<List<ProductSnapshot>>(v, new System.Text.Json.JsonSerializerOptions())
-                )
-                .Metadata.SetValueComparer(
-                    new ValueComparer<List<ProductSnapshot>>(
-                        (c1, c2) => c1.SequenceEqual(c2),
-                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                        c => c.ToList()
-                    )
-                );
+            modelBuilder.Entity<Booking>()
+                .HasOne<Customer>(b => b.Customer)
+                .WithMany(c => c.BookingHistory)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // TreatmentBooking.Employee
+            //Campaign 
+            modelBuilder.Entity<Campaign>()
+                .HasMany(T => T.ProductsInCampaign);
+
+
+            //Order
+            modelBuilder.Entity<Order>()
+                .HasMany(o => o.Products)
+                .WithOne(p => p.Order)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Booking);
+
+            //Treatment booking
             modelBuilder.Entity<TreatmentBooking>()
+                .HasOne(tb => tb.Treatment);
+            modelBuilder.Entity<TreatmentBooking>()
+                .HasMany(tb => tb.ProductsUsed);
+            modelBuilder.Entity<TreatmentBooking>()
+                .HasOne(tb => tb.Employee)
+                .WithMany(e => e.Appointments)
+                .OnDelete(DeleteBehavior.NoAction);
                 .Property(t => t.Employee)
                 .HasConversion(
                     v => System.Text.Json.JsonSerializer.Serialize(v, new System.Text.Json.JsonSerializerOptions { WriteIndented = false }),
@@ -86,39 +102,21 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .Property(e => e.Gender)
                 .HasConversion<string>();
 
-            // Employee.Appointments
+
+
             modelBuilder.Entity<Employee>()
-                .Property(e => e.Appointments)
-                .HasConversion(
-                    v => System.Text.Json.JsonSerializer.Serialize(v, new System.Text.Json.JsonSerializerOptions { WriteIndented = false }),
-                    v => System.Text.Json.JsonSerializer.Deserialize<List<Appointment>>(v, new System.Text.Json.JsonSerializerOptions())
-                )
-                .Metadata.SetValueComparer(
-                    new ValueComparer<List<Appointment>>(
-                        (c1, c2) => c1.SequenceEqual(c2),
-                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                        c => c.ToList()
-                    )
-                );
+                .HasMany(b => b.TreatmentHistory);
 
-            // Order.Products
-            modelBuilder.Entity<Order>()
-                .Property(o => o.Products)
-                .HasConversion(
-                    v => System.Text.Json.JsonSerializer.Serialize(v, new System.Text.Json.JsonSerializerOptions()),
-                    v => System.Text.Json.JsonSerializer.Deserialize<List<ProductSnapshot>>(v, new System.Text.Json.JsonSerializerOptions())
-                )
-                .Metadata.SetValueComparer(
-                    new ValueComparer<List<ProductSnapshot>>(
-                        (c1, c2) => c1.SequenceEqual(c2),
-                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                        c => c.ToList()
-                    )
-                );
+            modelBuilder.Entity<PrivateCustomer>()
+                .HasMany(b => b.BookingHistory);
+            modelBuilder.Entity<CompanyCustomer>()
+                .HasMany(b => b.BookingHistory);
 
-            modelBuilder.Entity<Customer>()
-                .Property(c => c.PointBalance)
-                .HasPrecision(18, 2);
+
+
+
+
+
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.BasePriceMultiplier)
@@ -132,17 +130,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .Property(o => o.Total)
                 .HasPrecision(18, 2);
 
-            modelBuilder.Entity<TreatmentSnapshot>()
-                .Property(t => t.BasePrice)
-                .HasPrecision(18, 2);
-
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasPrecision(18, 2);
 
-            modelBuilder.Entity<ProductSnapshot>()
-                .Property(p => p.PricePerUnit)
-                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Discount>()
                 .Property(d => d.DiscountAmount)
@@ -153,3 +144,95 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         }
     }
 }
+
+
+//modelBuilder.Entity<ProductSnapshot>()
+//    .Property(p => p.PricePerUnit)
+//    .HasPrecision(18, 2);
+
+//modelBuilder.Entity<TreatmentSnapshot>()
+//    .Property(t => t.BasePrice)
+//    .HasPrecision(18, 2);
+
+//  var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = false };
+//// Booking.Customer
+//  modelBuilder.Entity<Booking>()
+//      .Property(b => b.Customer)
+//      .HasConversion(
+//          v => System.Text.Json.JsonSerializer.Serialize(v, options),
+//          v => System.Text.Json.JsonSerializer.Deserialize<PersonSnapshot>(v, options)
+//      );
+
+
+
+
+
+//// TreatmentBooking:
+//  // ProductsUsed
+//  modelBuilder.Entity<TreatmentBooking>()
+//      .Property(t => t.ProductsUsed)
+//      .HasConversion(
+//          v => System.Text.Json.JsonSerializer.Serialize(v, options),
+//          v => System.Text.Json.JsonSerializer.Deserialize<List<ProductSnapshot>>(v, options)
+//      )
+//      .Metadata.SetValueComparer(
+//          new ValueComparer<List<ProductSnapshot>>(
+//              (c1, c2) => c1.SequenceEqual(c2),
+//              c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+//              c => c.ToList()
+//          )
+//      );
+//  // TreatmentBooking.Employee
+//  modelBuilder.Entity<TreatmentBooking>()
+//      .Property(t => t.Employee)
+//      .HasConversion(
+//          v => System.Text.Json.JsonSerializer.Serialize(v, options),
+//          v => System.Text.Json.JsonSerializer.Deserialize<PersonSnapshot>(v, options)
+//      );
+//  modelBuilder.Entity<TreatmentBooking>()
+//      .Property(t => t.Treatment)
+//      .HasConversion(
+//          v=> System.Text.Json.JsonSerializer.Serialize(v, options),
+//          v=> System.Text.Json.JsonSerializer.Deserialize<TreatmentSnapshot>(v, options)
+//      );
+
+
+
+
+//// Employee.Appointments
+//modelBuilder.Entity<Employee>()
+//    .Property(e => e.Appointments)
+//    .HasConversion(
+//        v => System.Text.Json.JsonSerializer.Serialize(v, options),
+//        v => System.Text.Json.JsonSerializer.Deserialize<List<Appointment>>(v, options)
+//    )
+//    .Metadata.SetValueComparer(
+//        new ValueComparer<List<Appointment>>(
+//            (c1, c2) => c1.SequenceEqual(c2),
+//            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+//            c => c.ToList()
+//        )
+//    );
+
+
+
+
+
+//// Order.Products
+//modelBuilder.Entity<Order>()
+//    .Property(o => o.Products)
+//    .HasConversion(
+//        v => System.Text.Json.JsonSerializer.Serialize(v, options),
+//        v => System.Text.Json.JsonSerializer.Deserialize<List<ProductSnapshot>>(v, options)
+//    )
+//    .Metadata.SetValueComparer(
+//        new ValueComparer<List<ProductSnapshot>>(
+//            (c1, c2) => c1.SequenceEqual(c2),
+//            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+//            c => c.ToList()
+//        )
+//);
+
+//modelBuilder.Entity<Customer>()
+//    .Property(c => c.PointBalance)
+//    .HasPrecision(18, 2);

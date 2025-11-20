@@ -1,4 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,21 +24,22 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 
 
         //Treatment details
-        public List<Appointment>? Appointments { get; private set; }
-        public List<Booking>? TreatmentHistory { get; private set; }
-        public decimal? BasePriceMultiplier { get; private set; }
+        public List<TreatmentBooking> Appointments { get; private set; } = new List<TreatmentBooking>();
+        public List<Booking> TreatmentHistory { get; private set; } = new List<Booking>();
+        public decimal BasePriceMultiplier { get; private set; } = 0;
 
 
         public Employee() { }
-        public Employee(string firstname, string lastname, string type, string specialty, string experience, string gender)
+        public Employee(string firstname, string lastname, EmployeeType type, string specialty, ExperienceLevels experience, Gender gender,Address address)
         {
+            Address = address;
             TrySetLastName(firstname, lastname);
             Type = type;
             Specialty = specialty;
             ExperienceLevel = experience;
             Gender = gender;
             TreatmentHistory = new List<Booking>();
-            Appointments = new List<Appointment>();
+            Appointments = new List<TreatmentBooking>();
 
         }
         public Employee(
@@ -92,7 +93,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         {
             if (IsAvailable(start, end)) //checks if new time range overlaps with any existing time ranges
             {
-                Appointments.Add(new Appointment(Id,start,end));
+                //Appointments.Add(new TreatmentBooking(this,start,end));
                 return true;
             }
             return false;
@@ -107,7 +108,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         //method to add to treatment history
         public bool TryAddToTreatmentHistory(Booking booking)
         {
-            if (booking != null && booking.Status == Products.BookingStatus.Completed)
+            if (booking != null && booking.Status == BookingStatus.Completed)
             {
                 TreatmentHistory.Add(booking);
                 return true;

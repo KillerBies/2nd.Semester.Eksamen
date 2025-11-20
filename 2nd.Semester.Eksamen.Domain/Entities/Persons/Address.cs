@@ -9,10 +9,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public class Address : BaseEntity
     {
         //Adress of an entity
-        public string? City { get; private set; } = null!;
-        public string? PostalCode { get; private set; } = null!;
-        public string? StreetName { get; private set; } = null!;
-        public string? HouseNumber { get; set; } = null!;
+        public string City { get; private set; } = null!;
+        public string PostalCode { get; private set; } = null!;
+        public string StreetName { get; private set; } = null!;
+        public string HouseNumber { get; set; } = null!;
 
         public Address() { }
         public Address(string city, string postalCode, string streetName, string houseNumber)
