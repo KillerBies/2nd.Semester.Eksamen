@@ -1,5 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
-using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +10,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public class PrivateCustomer : Customer
     {
         //Customer who is a private person
-        public string? LastName { get; private set; }
+        public string LastName { get; private set; } = null!;
         public Gender? Gender { get; set; }
-        public int? Age { get { return GetAge(); } }
-        public DateOnly BirthDate { get; private set; }
+        public int Age { get { return GetAge(); } }
+        public DateOnly BirthDate { get;  set; }
+        
 
 
 
@@ -52,7 +52,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             //if age is just a number it can become out of date so we calculate it from birthdate
             DateTime CurrentTime = DateTime.Now;
             int age = CurrentTime.Year - BirthDate.Year;
-            if (CurrentTime.Month < BirthDate.Month || (CurrentTime.Month == BirthDate.Month && CurrentTime.Day < BirthDate.Day))//birthdate has yet accured this year subtract 1 year from age
+            if (CurrentTime.Month < BirthDate.Month || CurrentTime.Month == BirthDate.Month && CurrentTime.Day < BirthDate.Day)//birthdate has yet accured this year subtract 1 year from age
             {
                 age--;
             }

@@ -1,5 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
@@ -8,14 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
+namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 {
     public class Treatment : Product
     {
         //Elements of a treatment. Its info is stored in the database.
         //Treatment details
         public TimeSpan Duration { get; private set; }
-        public List<ProductSnapshot>? Products { get; internal set; }
+        public List<Product> Products { get; internal set; } = new List<Product>();
 
         public Treatment(string name, decimal price, string discription, string category, TimeSpan duration) : base(name, price, discription, category)
         {

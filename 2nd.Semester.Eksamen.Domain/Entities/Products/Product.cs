@@ -1,11 +1,12 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
+﻿
+using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
+namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 {
     public class Product : BaseEntity 
     {
@@ -23,14 +24,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
             Category = category;
         }
         public Product() { }
-
-
-
-
-
-
-
-
 
 
 

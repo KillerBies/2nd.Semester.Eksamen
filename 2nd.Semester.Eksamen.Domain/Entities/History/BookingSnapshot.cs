@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
+namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
-    public enum EmployeeType { Freelance, Staff, Apprentice }
+    internal class BookingSnapshot
+    {
+    }
 }

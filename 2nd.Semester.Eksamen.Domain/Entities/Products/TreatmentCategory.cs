@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Produkter
+namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 {
     public enum  TreatmentCategory 
     {
