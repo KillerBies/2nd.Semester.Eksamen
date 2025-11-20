@@ -14,22 +14,16 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
         public string Name { get; private set; } = string.Empty;
         public decimal Price { get; private set; }
         public string Description { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
 
-        public Product(string name, decimal price, string description)
+        public Product(string name, decimal price, string description, string category)
         {
             Name = name;
             Price = price;
             Description = description;
+            Category = category;
         }
         public Product() { }
-
-
-
-
-
-
-
-
 
 
 
