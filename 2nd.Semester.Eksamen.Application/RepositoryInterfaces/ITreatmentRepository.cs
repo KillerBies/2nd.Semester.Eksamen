@@ -1,11 +1,11 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using _2nd.Semester.Eksamen.Domain;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 
 namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
 {
