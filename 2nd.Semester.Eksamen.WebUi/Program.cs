@@ -17,6 +17,8 @@ builder.Services.AddDbContextFactory<AppDbContext>(options =>
     b => b.MigrationsAssembly("2nd.Semester.Eksamen.Infrastructure")));
 
 builder.Services.AddScoped<CreateEmployeeCommand>();
+builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
+
 
 var app = builder.Build();
 

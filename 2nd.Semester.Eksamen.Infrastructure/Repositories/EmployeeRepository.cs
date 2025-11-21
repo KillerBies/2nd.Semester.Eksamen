@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
+﻿using _2nd.Semester.Eksamen.Application.DTO;
+using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Domain;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
@@ -55,6 +56,19 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         public async Task<Employee?> GetByIDAsync(int id)
         {
             return await _context.Employees.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<EmployeeUserCardModel>> GetAllUserCards()
+        {
+            return await _context.Employees
+                .Select(e => new EmployeeUserCardModel
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Type = e.Type,
+                    PhoneNumber = e.PhoneNumber
+                })
+                .ToListAsync();
         }
 
     }
