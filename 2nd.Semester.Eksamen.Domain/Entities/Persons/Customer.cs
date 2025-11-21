@@ -24,9 +24,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         }
 
 
-
-
-
         //method to change point balance
         public bool TryAddToPointBalance(decimal points)
         {
@@ -34,7 +31,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             PointBalance += points;
             return true;
         }
-
 
 
         //method to redeem points from point balance
@@ -49,7 +45,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         }
 
 
-
         //method to add to booking history.
         public bool TryAddToBookingHistory(Booking booking)
         {
@@ -60,7 +55,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             }
             return false;
         }
-
 
 
         //method to add a punchcard

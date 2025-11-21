@@ -1,9 +1,4 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
@@ -12,10 +7,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
         // Elements of a campaign
         //Start and end date of the campaign
         public DateTime Start { get; set; }
-        public DateTime End { get;  set; }
+        public DateTime End { get; set; }
         public string Description { get; set; } = string.Empty;
         //Lists of product categories and treatments that the campaign applies to
-        public List<Product> ProductsInCampaign{ get; set; } = new List<Product>();
+        public List<Product> ProductsInCampaign { get; set; } = new List<Product>();
 
         public Campaign() { }
 
@@ -36,7 +31,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
             return false;
         }
 
-        public Campaign() { }
 
         public bool CheckTime()
         {
@@ -47,7 +41,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 
         public bool CheckProduct(Product product)
         {
-            if (ProductInCampaign.Contains(product))
+            if (ProductsInCampaign.Contains(product))
                 return true;
             return false;
         }
@@ -60,15 +54,16 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
             }
 
             decimal discountedPrice = 0;
-            foreach (ProductSnapshot product in order.Products)
+            foreach (OrderLine orderLine in order.Products)
             {
-                if (CheckProduct(product))
-                    discountedPrice += product.PricePerUnit * discount;
+                if (CheckProduct(orderLine.LineProduct))
+                    discountedPrice += (orderLine.LineProduct.Price * orderLine.NumberOfProducts) * DiscountAmount;
             }
 
             foreach (TreatmentBooking treatment in order.Booking.Treatments)
             {
-                discountedPrice += treatment.Treatment.BasePrice * discount;
+                if (CheckProduct(treatment.Treatment))
+                    discountedPrice += treatment.Treatment.Price * DiscountAmount;
             }
             return new DiscountResult(true, discountedPrice, this);
         }
