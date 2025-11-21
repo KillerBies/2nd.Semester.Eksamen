@@ -14,6 +14,7 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         //public Task<IEnumerable<Customer?>> GetAllAsync();
         //public Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(CompanyCustomer Customer);
+        public Task<bool> PhoneAlreadyExistsAsync(string PhoneNumber);
         //public Task UpdateAsync(CompanyCustomer Customer);
         //public Task DeleteAsync(CompanyCustomer Customer);
     }

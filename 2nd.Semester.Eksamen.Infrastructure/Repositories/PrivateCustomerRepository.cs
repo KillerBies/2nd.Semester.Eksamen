@@ -41,8 +41,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
             //Adds Customer to PrivateCustomers table in Database.
             _dbContext.PrivateCustomers.Add(customer);
             await _dbContext.SaveChangesAsync();
+        }
 
-
+        public async Task<bool> PhoneAlreadyExistsAsync(string phone)
+        {
+            return await _dbContext.PrivateCustomers.AnyAsync(c => c.PhoneNumber == phone);
         }
         //public async Task UpdateAsync(PrivateCustomer Customer)
         //{

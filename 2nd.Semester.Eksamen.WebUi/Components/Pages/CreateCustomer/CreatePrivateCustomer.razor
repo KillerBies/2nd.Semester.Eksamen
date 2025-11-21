@@ -1,55 +1,65 @@
-﻿@page "/create-private-customer"
+﻿@page "/Create-private-customer"
 @using _2nd.Semester.Eksamen.Application.DTO
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons
 @inject IPrivateCustomerService createCustomerService
-<h3>CreatePrivateCustomer</h3>
+@rendermode InteractiveServer
 
-<EditForm Model="@privateCustomerDTO" OnValidSubmit="@HandleValidSubmit" FormName="CreatePrivateCustomerForm">
+<h1>Opret privatkunde</h1>
+<EditForm Model="@privateCustomerDTO" OnValidSubmit="@HandleValidSubmit"  class="col-10 p-0" formname="CreateCustomerForm">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+<div class="whole-form">
 	
-	<div>
-		<label>Fornavn:</label>
-		<InputText id="forNavn" @bind-Value="@privateCustomerDTO.FirstName" placeholder "Fornavn ..." />
-	</div>
-	
-	<div>
-		<label>Efternavn:</label>
-		<InputText @bind-Value="@privateCustomerDTO.LastName" />
-	</div>
+	<div class="form-group">
+			<label for="FirstName" class="form-labels"> Fornavn </label>
+		<InputText id="FirstName" @bind-Value="@privateCustomerDTO.FirstName" class="form-control" placeholder="Fornavn..."/>
+			
+	</div> 
 
-	<div>
-		<label>By:</label>
-		<InputText @bind-Value="@privateCustomerDTO.City" />
-	</div>
+	<div class="form-group">
+			<label for="LastName" class="form-labels"> Efternavn </label>
+		<InputText id="LastName" @bind-Value="@privateCustomerDTO.LastName" class="form-control" placeholder="Efternavn..." />
 
-	<div>
-		<label>Postnummer:</label>
-		<InputText @bind-Value="@privateCustomerDTO.PostalCode" />
 	</div>
 	
-	<div>
-		<label>Vej:</label>
-		<InputText @bind-Value="@privateCustomerDTO.StreetName" />
+	<div class="form-group">
+			<label for="City" class="form-labels"> By </label>
+		<InputText id="City" @bind-Value="@privateCustomerDTO.City" class="form-control" placeholder="By..." />
+
 	</div>
 
-	<div>
-		<label>Husnr:</label>
-		<InputText @bind-Value="@privateCustomerDTO.HouseNumber" />
+	<div class="form-group">
+			<label for="PostalCode" class="form-labels"> Postnummer </label>
+		<InputText id="PostalCode" @bind-Value="@privateCustomerDTO.PostalCode" class="form-control" placeholder="Postnummer..." />
+
+	</div>
+	
+	<div class="form-group">
+			<label for="StreetName" class="form-labels"> Vejnavn </label>
+		<InputText id="StreetName" @bind-Value="@privateCustomerDTO.StreetName" class="form-control" placeholder="Vejnavn..." />
+
 	</div>
 
-	<div>
-		<label>Telefonnummer:</label>
-		<InputText @bind-Value="@privateCustomerDTO.PhoneNumber" />
+	<div class="form-group">
+			<label for="HouseNumber" class="form-labels"> Husnr</label>
+		<InputText id="HouseNumber" @bind-Value="@privateCustomerDTO.HouseNumber" class="form-control" placeholder="Husnr..." />
+
 	</div>
 
-	<div>
-		<label>Email:</label>
-		<InputText id="Email" @bind-Value="@privateCustomerDTO.Email">
-		</InputText>
+	<div class="form-group">
+			<label for="PhoneNumber" class="form-labels"> Tlfnrr</label>
+		<InputText id="PhoneNumber" @bind-Value="@privateCustomerDTO.PhoneNumber" class="form-control" placeholder="Tlfnummer..." />
+
+	</div>
+	<div class="form-group">
+			<label for="Email" class="form-labels"> Husnr</label>
+		<InputText id="Email" @bind-Value="@privateCustomerDTO.Email" class="form-control" placeholder="Email..." />
+
 	</div>
 
-	<div>
-		<label>Køn:</label>
+	<div class="form-group">
+			<label for="Gender" class="form-labels">Køn:</label>
 		<InputSelect @bind-Value="@privateCustomerDTO.Gender">
 			@foreach (var gender in Enum.GetValues<Gender>())
 			{
@@ -58,31 +68,33 @@
 		</InputSelect>
 	</div>
 
-	<div>
-		<label>Birthday:</label>
-		<InputDate @bind-Value="@privateCustomerDTO.Birthday" />
+	<div class="form-group">
+			<label for="BirthDayWrapper" class="form-labels"> Fødselsdag</label>
+		<InputDate id="BirthDayWrapper" @bind-Value="@privateCustomerDTO.BirthdayWrapper" class="form-control" min="1920-01-01"
+				   max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+
 	</div>
 
-	<button type="submit">Opret kunde</button>
-
+		<div class="form-btn">
+			<button type="submit" class="btn btn-primary">Opret firmakunde</button>
+		</div>
+</div>
 </EditForm>
 
-<p>@privateCustomerDTO.FirstName</p>
 
 
 @code {
-	
-	public PrivateCustomerDTO privateCustomerDTO = new PrivateCustomerDTO();
-	protected override void OnInitialized()
-	{
-			
-	}
-		//TODO Remember to prepare the injection in DI-Container
-	
+
+	public PrivateCustomerDTO privateCustomerDTO = new PrivateCustomerDTO()
+		{
+			BirthdayWrapper = new DateTime(1920, 1, 1)
+		};
 
 	private void HandleValidSubmit()
 	{
-
-		 createCustomerService.CreatePrivateCustomerAsync(privateCustomerDTO);
+		createCustomerService.CreatePrivateCustomerAsync(privateCustomerDTO);
 	}
+
+	
+
 }

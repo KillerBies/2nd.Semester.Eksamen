@@ -4,54 +4,60 @@
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons
 @inject ICompanyCustomerService createCustomerService
 @rendermode InteractiveServer
-<EditForm Model="@companyCustomerDTO" OnValidSubmit="@HandleValidSubmit" class="col-6 p-0" FormName="CreatePrivateCustomerForm">
+<body>
+<h1>Opret firmakunde</h1>
+	<EditForm Model="@companyCustomerDTO" OnValidSubmit="@HandleValidSubmit" class="col-10 p-0" FormName="CreateCompanyCustomerForm">
+		<DataAnnotationsValidator />
+		<ValidationSummary />
+	<div class="whole-form">
 	
-	
-	<div class="Form-group">
-		<label for="Name">Navn:</label>
+	<div class="form-group">
+		<label for="Name" class="form-labels">Navn:</label>
 		<InputText id="Name" @bind-Value="companyCustomerDTO.Name" class="form-control" placeholder="Firmanavn..." />
 	</div>
 	
-	<div class="Form-group">
-		<label for="City">By:</label>
+	<div class="form-group">
+			<label for="City" class="form-labels">By:</label>
 		<InputText id="City" @bind-Value="companyCustomerDTO.City" class="form-control" placeholder="By..."/>
 	</div>
 
-	<div class="Form-group">
-		<label for="Form-group">Postnummer:</label>
+	<div class="form-group">
+			<label for="Form-group" class="form-labels">Postnummer:</label>
 		<InputText id="PostalCode" @bind-Value="companyCustomerDTO.PostalCode" class="form-control" placeholder="Postnummer..." />
 	</div>
 	
-	<div class="Form-group">
-		<label for="StreetName">Vej:</label>
+	<div class="form-group">
+			<label for="StreetName" class="form-labels">Vej:</label>
 		<InputText id="StreetName" @bind-Value="companyCustomerDTO.StreetName" class="form-control" placeholder="Vejnavn..."/>
 	</div>
 
-	<div class="Form-group">
-		<label for="HouseNumber">Husnr:</label>
+	<div class="form-group">
+			<label for="HouseNumber" class="form-labels">Husnr:</label>
 		<InputText id="HouseNumber" @bind-Value="companyCustomerDTO.HouseNumber" class="form-control" placeholder="Husnr..." />
 	</div>
 
-	<div class="Form-group">
-		<label for="PhoneNumber">Telefonnummer:</label>
+	<div class="form-group">
+			<label for="PhoneNumber" class="form-labels">Telefonnummer:</label>
 		<InputText id="PhoneNumber" @bind-Value="companyCustomerDTO.PhoneNumber" class="form-control" placeholder="Tlfnummer..."/>
 	</div>
 
-	<div class="Form-group">
-		<label for="Email">Email:</label>
+	<div class="form-group">
+			<label for="Email" class="form-labels">Email:</label>
 		<InputText id="Email" @bind-Value="companyCustomerDTO.Email" class="form-control" placeholder="Email" />
 	</div>
 
-	<div class="Form-group">
-		<label for="CVR-Nummer">CVR-nummer:</label>
+	<div class="form-group">
+			<label for="CVR-Nummer" class="form-labels">CVR-nummer:</label>
 		<InputText id="CVR-Nummer" @bind-Value="companyCustomerDTO.CVRNumber" class="form-control" placeholder="CVR-nummer..." />
 	</div>
 
-	<div class="form-group">
+	<div class="form-btn">
 		<button type="submit" class="btn btn-primary">Opret firmakunde</button>
 	</div>
-</EditForm>
 
+	</div>
+</EditForm>
+</body>
 
 
 

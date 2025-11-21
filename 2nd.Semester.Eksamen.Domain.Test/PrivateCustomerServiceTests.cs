@@ -8,7 +8,7 @@ namespace _2nd.Semester.Eksamen.Domain.Test;
 
 
 [TestFixture]
-public class CreateCustomerServiceTests
+public class PrivateCustomerServiceTests
 {
     private Mock<IPrivateCustomerRepository> _mockRepository;
     private PrivateCustomerService _service;
