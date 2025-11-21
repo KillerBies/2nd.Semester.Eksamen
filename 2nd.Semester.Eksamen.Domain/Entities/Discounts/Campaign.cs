@@ -67,5 +67,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
             }
             return new DiscountResult(true, discountedPrice, this);
         }
+
     }
 }
