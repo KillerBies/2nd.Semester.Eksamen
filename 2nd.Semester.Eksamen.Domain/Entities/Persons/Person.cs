@@ -20,7 +20,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public Person() { }
         public Person(string name, Address address, string phoneNumber, string email)
         {
-            TrySetName(name);
+            Name = name;
+          //  TrySetName(name);
             Address = address;
             TrySetPhoneNumber(phoneNumber);
             TrySetEmail(email);
