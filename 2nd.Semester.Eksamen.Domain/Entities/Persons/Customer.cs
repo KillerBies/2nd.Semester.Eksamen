@@ -68,4 +68,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             return false;
         }
     }
+
+
 }
