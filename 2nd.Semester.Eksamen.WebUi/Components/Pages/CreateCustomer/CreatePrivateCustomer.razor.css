@@ -1,0 +1,39 @@
+﻿
+
+body {
+    background-color: #F3F2F2;
+}
+
+
+
+.form-labels {
+    color: white;
+}
+
+.form-group {
+    background-color: #034265;
+}
+
+.whole-form {
+    border-radius: 5px;
+    padding: 100px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    background-color: #F3F2F2;
+}
+
+
+.form-btn {
+}
+
+.btn {
+    color: white;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: block;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}

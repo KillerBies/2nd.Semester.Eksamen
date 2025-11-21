@@ -18,17 +18,17 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 
 
 
-
-        public PrivateCustomer(string firstname, string lastname, Gender gender, DateOnly birthday, int age,Address address,string phonenumber,string email) : base(firstname,address,phonenumber,email)
-        {
-            TrySetLastName(firstname, lastname);
+        public PrivateCustomer(string lastname, Gender gender, DateOnly birthday, string name, Address address,string phonenumber,string email) : base(name,address,phonenumber,email)
+    {
+            TrySetLastName(name, lastname);
             Gender = gender;
-            SetBirthDate(birthday, age);
+            BirthDate = birthday;
+           // SetBirthDate(birthday, age);
         }
         public PrivateCustomer()
         {
         }
-
+               
 
 
 
@@ -41,12 +41,12 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             {
                 LastName = lastname.Trim();
                 return true;
-            }
+    }
             return false;
-        }
+    }
 
 
-        //method to get age
+        //method to get age 
         protected int GetAge()
         {
             //if age is just a number it can become out of date so we calculate it from birthdate
