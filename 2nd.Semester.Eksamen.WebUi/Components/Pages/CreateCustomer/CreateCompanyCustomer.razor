@@ -4,6 +4,8 @@
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons
 @inject ICompanyCustomerService createCustomerService
 @rendermode InteractiveServer
+
+
 <body>
 <h1>Opret firmakunde</h1>
 	<EditForm Model="@companyCustomerDTO" OnValidSubmit="@HandleValidSubmit" class="col-10 p-0" FormName="CreateCompanyCustomerForm">
@@ -51,6 +53,11 @@
 		<InputText id="CVR-Nummer" @bind-Value="companyCustomerDTO.CVRNumber" class="form-control" placeholder="CVR-nummer..." />
 	</div>
 
+			<div class="form-group">
+				<label for="SaveAsCustomer" class="form-check-label">Gem kundeoplysninger:</label>
+				<InputCheckbox id="SaveAsCustomer" @bind-Value="companyCustomerDTO.SaveAsCustomer" class="form-check-input" />
+			</div>
+
 	<div class="form-btn">
 		<button type="submit" class="btn btn-primary">Opret firmakunde</button>
 	</div>
@@ -66,12 +73,13 @@
 
 	public CompanyCustomerDTO companyCustomerDTO = new();
 
-	//TODO Remember to prepare the injection in DI-Container
-	
-	
-
 	private async Task HandleValidSubmit()
 	{
 		await createCustomerService.CreateCompanyCustomerAsync(companyCustomerDTO);
 	}
 }
+
+
+
+
+
