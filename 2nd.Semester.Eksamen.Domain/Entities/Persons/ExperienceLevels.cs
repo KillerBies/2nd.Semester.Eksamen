@@ -8,13 +8,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
     public enum ExperienceLevels
     {
-        Junior,
-        MidLevel,
-        Senior,
+        Beginner,
+        Intermediate,
+        Advanced,
         Expert,
-        Grandmaster,
-        God,
-        GoonLord,
-        JelKing
     }
 }

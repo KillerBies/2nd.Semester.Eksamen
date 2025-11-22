@@ -13,7 +13,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         //Employee details
         public EmployeeType Type { get; private set; } = EmployeeType.Staff;
         public string LastName { get; private set; } = null!;
-        public string? Specialty { get; private set; }
+        public string Specialty { get; private set; } = null!;
         public ExperienceLevels ExperienceLevel { get; private set; } = ExperienceLevels.Expert;
         public Gender Gender { get; private set; } = Gender.Male;
         public Address Address { get; private set; } = null!;
