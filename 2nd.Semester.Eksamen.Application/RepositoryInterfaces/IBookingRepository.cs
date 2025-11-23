@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Domain;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,12 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
 {
     public interface IBookingRepository
     {
-        //Repository for Campaign. 
-        public Task<Campaign?> GetByIDAsync(int id);
-        public Task<IEnumerable<Campaign?>> GetAllAsync();
-        public Task<IEnumerable<Campaign?>> GetByFilterAsync(Filter filter);
-        public Task CreateNewAsync(Campaign Campaign);
-        public Task UpdateAsync(Campaign Campaign);
-        public Task DeleteAsync(Campaign Campaign);
+        //Repository for Bookings. 
+        public Task<Booking?> GetByIDAsync(int id);
+        public Task<IEnumerable<Booking?>> GetAllAsync();
+        public Task<IEnumerable<Booking?>> GetByFilterAsync(Filter filter);
+        public Task CreateNewAsync(Booking Booking);
+        public Task UpdateAsync(Booking Booking);
+        public Task DeleteAsync(Booking Booking);
     }
 }

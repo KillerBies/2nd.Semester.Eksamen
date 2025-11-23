@@ -11,8 +11,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
     public class Product : BaseEntity 
     {
         //Product details
-        public string Name { get; private set; } = string.Empty;
-        public decimal Price { get; private set; }
+        public string Name { get; set; } = string.Empty;
+        public decimal Price { get; set; }
         public string Description { get; set; } = string.Empty;
 
         public Product(string name, decimal price, string description)
