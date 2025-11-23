@@ -67,7 +67,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<Campaign>()
                 .HasMany(T => T.ProductsInCampaign);
 
-
             //Order
             modelBuilder.Entity<Order>()
                 .HasMany(o => o.Products)
@@ -83,9 +82,20 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany(tb => tb.ProductsUsed);
             modelBuilder.Entity<TreatmentBooking>()
                 .HasOne(tb => tb.Employee)
-                .WithMany(e=>e.Appointments)
+                .WithMany(e => e.Appointments)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.Type)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.ExperienceLevel)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.Gender)
+                .HasConversion<string>();
 
             modelBuilder.Entity<Employee>()
                 .HasMany(b => b.TreatmentHistory);
@@ -94,12 +104,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany(b => b.BookingHistory);
             modelBuilder.Entity<CompanyCustomer>()
                 .HasMany(b => b.BookingHistory);
-
-
-
-
-
-
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.BasePriceMultiplier)
@@ -113,6 +117,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .Property(o => o.Total)
                 .HasPrecision(18, 2);
 
+
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasPrecision(18, 2);
@@ -121,7 +126,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<Discount>()
                 .Property(d => d.DiscountAmount)
                 .HasPrecision(18, 2);
-
 
             base.OnModelCreating(modelBuilder);
         }
