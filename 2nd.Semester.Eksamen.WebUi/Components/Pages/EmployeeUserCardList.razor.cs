@@ -19,10 +19,13 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
         [Inject]
         private NavigationManager Navigation { get; set; } = null!; // Allows navigation to create employee
+
         public List<EmployeeUserCardModel> Employees { get; set; } = new();
 
         public string SearchTermName { get; set; } = "";
         public string SearchTermPhone { get; set; } = "";
+
+        public bool LoadFailed { get; set; }
 
         // Filtered list based on search term
 
@@ -68,17 +71,33 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var allEmployees = await EmployeeRepository.GetAllAsync();
+            try
+            {
+                LoadFailed = false;
+                var allEmployees = await EmployeeRepository.GetAllAsync();
 
-            Employees = allEmployees
-                .Select(e => new EmployeeUserCardModel
-                {
-                    Id = e!.Id,
-                    Name = e.Name + " " + e.LastName,
-                    PhoneNumber = e.PhoneNumber,
-                    Type = e.Type
-                })
-                .ToList();
+                Employees = allEmployees
+                    .Select(e => new EmployeeUserCardModel
+                    {
+                        Id = e!.Id,
+                        Name = e.Name + " " + e.LastName,
+                        PhoneNumber = e.PhoneNumber,
+                        Type = e.Type
+                    })
+                    .ToList();
+            }
+            catch (Exception ex) 
+            {
+                LoadFailed = true;
+                Console.WriteLine("Database error: " + ex.Message);
+            }
+        }
+
+        
+
+        private void GoToEmployee(int id)
+        {
+            Navigation.NavigateTo($"/employees/{id}");
         }
 
 

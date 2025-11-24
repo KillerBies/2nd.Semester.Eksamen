@@ -64,6 +64,7 @@ h1:focus {
 .title {
     font-size: 28px;
     font-weight: bold;
+    color: white;
 }
 
 .grid {
@@ -154,7 +155,7 @@ h1:focus {
 }
 
 .employee-nav {
-    background-color: #fff;
+    background-color: #034265;
     border-style: solid;
     border-width: 1px;
     border-color: #929292;

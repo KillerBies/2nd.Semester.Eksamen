@@ -18,17 +18,35 @@
     </div>
 </div>
 
-<div class="grid">
-    @foreach (var emp in Employees)
-    {
-        <div class="card">
-            <div class="color-box" style="background:@emp.Color"></div>
+@if (LoadFailed)
+{
+    <div class="alert alert-danger">
+        Could not connect to the database. Try again later.
+    </div>
+}
+else if (Employees == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <div class="grid">
+        @foreach (var emp in Employees)
+        {
+            <div class="grid">
+                <div class="card employee-card-clickable" @onclick="() => GoToEmployee(emp.Id)">
+                    <div class="color-box" style="background:@emp.Color"></div>
 
-            <div class="info">
-                <h4>@emp.Name</h4>
-                <p>@emp.Type</p>
+                    <div class="info">
+                        <h4>@emp.Name</h4>
+                        <p>@emp.Type</p>
+                    </div
+                    <div>
+                        <p>Visning af opkommende behandlinger</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}
 
