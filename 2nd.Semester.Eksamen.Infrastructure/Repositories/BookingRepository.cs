@@ -7,6 +7,7 @@ using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using Microsoft.EntityFrameworkCore;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
 {

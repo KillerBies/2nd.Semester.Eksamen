@@ -1,22 +1,20 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO;
-using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 
 namespace _2nd.Semester.Eksamen.Application.Services
 {
-    public class BookingFormService
+    public class BookingQueryService
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly ITreatmentRepository _treatmentRepository;
         private readonly ITreatmentBookingRepository _treatmentBookingRepository;
-        public BookingFormService(IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, ITreatmentBookingRepository treatmentBookingRepository)
+        public BookingQueryService(IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, ITreatmentBookingRepository treatmentBookingRepository)
         {
             _bookingRepository = bookingRepository;
             _employeeRepository = employeeRepository;
@@ -50,18 +48,6 @@ namespace _2nd.Semester.Eksamen.Application.Services
             });
             return treatmentDTOs;
         }
-        //public async Task CreateBookingAsync(BookingDTO bookingDTO)
-        //{
-        //}
-        //public async Task<IEnumerable<TreatmentBokingDTO>> GetAllTreatmentBookingsAsync()
-        //{
-        //    var bookings = await _bookingRepository.GetAllAsync();
-        //    var bookingDTOs = bookings.Select(b => new BookingDTO
-        //    {
-
-        //    });
-        //    return bookingDTOs;
-        //}
 
 
     }

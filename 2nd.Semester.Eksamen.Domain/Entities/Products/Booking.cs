@@ -64,9 +64,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
             Status = BookingStatus.Completed;
         }
 
-        public bool Overlaps(Booking other)
+        public bool Overlaps(DateTime start, DateTime end)
         {
-            return Start < other.End && End > other.Start;
+            return Start < end && End > start;
         }
 
         private TimeSpan ComputeDuration(DateTime start, DateTime end)

@@ -8,6 +8,7 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
 {

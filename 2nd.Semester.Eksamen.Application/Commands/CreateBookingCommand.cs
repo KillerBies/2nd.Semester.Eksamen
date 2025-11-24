@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Application.Commands
 {
-    public class CreateBookingCommand 
-    {
-
-    }
+    public record CreateBookingCommand(
+        Guid EmployeeId,
+        Guid CustomerId,
+        DateTime StartTime,
+        DateTime EndTime
+    );
 }

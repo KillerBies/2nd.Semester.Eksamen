@@ -1,90 +1,82 @@
-﻿@if (PossibleTreatments.Count() != 0 || PossibleEmployees.Count() != 0)
-{
-    <div>
-        <button type="button" class="btn btn-secondary mt-3" @onclick="Remove">Remove</button>
+﻿<div class="Treatment">
+    <div class="treatment-header">
+        <span class="title">Treatment</span>
+        <button type="button" class="close-btn" @onclick="Remove">✖</button>
     </div>
-    <div class="mb-2">
-        <label>Treatment category:</label>
-        <InputSelect class="form-control" @bind-Value="TreatmentBooking.Treatment.Category">
-            @foreach (var category in PossibleTreatments.Select(t => t.Category).Distinct())
+    <div class="Treatment-form">
+        <div class="mb-2">
+            <label>Behandlings Kategori:</label>
+            @if (AnyTreatments())
             {
-                <option value="@category">@category</option>
+                <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.Category">
+                    @foreach (var category in PossibleTreatments.Select(t => t.Category).Distinct())
+                    {
+                        <option value="@category">@category</option>
+                    }
+                </InputSelect>
             }
-        </InputSelect>
-    </div>
-    @if (!string.IsNullOrEmpty(TreatmentBooking.Treatment.Category))
-    {
+            else
+            {
+                <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.Category">
+                </InputText>
+            }
+        </div>
         <div class="mb-2">
-            <label>Treatment:</label>
-            <InputSelect @bind-Value="TreatmentBooking.Treatment.TreatmentId">
-                @foreach (var treatment in PossibleTreatments.Where(t => t.Category == TreatmentBooking.Treatment.Category))
+            @if (TreatmentCategorySelected())
+            {
+                <label>Treatment:</label>
+                @if (CanSelectTreatment())
                 {
-                    <option value="@treatment.TreatmentId">@treatment.Name</option>
+                    <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.TreatmentId">
+                        @foreach (var treatment in PossibleTreatments.Where(t => t.Category == TreatmentBooking.Treatment.Category))
+                        {
+                            <option value="@treatment.TreatmentId">@treatment.Name</option>
+                        }
+                    </InputSelect>
                 }
-            </InputSelect>
-        </div>
-    }
-    @if (TreatmentBooking.Treatment.TreatmentId != new int())
-    {
-        <div class="mb-2">
-            <label>Employee:</label>
-            <InputSelect @bind-Value="TreatmentBooking.Employee.EmployeeId">
-                @foreach (var Employee in PossibleEmployees.Where(e => e.Specialization == TreatmentBooking.Treatment.Category))
+                else
                 {
-                    <option value="@Employee.EmployeeId">@Employee.Name</option>
+                    <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.Name">
+                    </InputText>
                 }
-            </InputSelect>
+            }
         </div>
-    }
-    @if (TreatmentBooking.Employee.EmployeeId != new int())
-    {
         <div class="mb-2">
-            <label>Price:</label>
-            <InputNumber @bind-Value="TreatmentBooking.Price">
-                <span>@TreatmentBooking.Price kr.</span>
-            </InputNumber>
+            @if (TreatmentSelected() && TreatmentCategorySelected())
+            {
+                <label>Employee:</label>
+                @if (CanSelectEmployee())
+                {
+                    <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Employee.EmployeeId">
+                        @foreach (var Employee in PossibleEmployees.Where(e => e.Specialization == TreatmentBooking.Treatment.Category))
+                        {
+                            <option value="@Employee.EmployeeId">@Employee.Name</option>
+                        }
+                    </InputSelect>
+                }
+                else
+                {
+                    <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Employee.Name">
+                    </InputText>
+                }
+            }
         </div>
-    }
-}
-
-
-
-
-
-
-@if (PossibleTreatments.Count() == 0 || PossibleEmployees.Count() == 0)
-{
-    <div>
-        <button type="button" class="btn btn-secondary mt-3" @onclick="Remove">Remove</button>
+        <div class="mb-2">
+            @if (CanWritePrice())
+            {
+                <label>Price:</label>
+                @if (CanSelectPrice())
+                {
+                    <InputNumber class="form-control w-75" @bind-Value="TreatmentBooking.Price">
+                        <span>@TreatmentBooking.Price kr.</span>
+                    </InputNumber>
+                }
+                else
+                {
+                    <InputNumber class="form-control w-75" @bind-Value="TreatmentBooking.Price">
+                    </InputNumber>
+                }
+            }
+        </div>
     </div>
-    <div class="mb-2">
-        <label>Treatment category:</label>
-        <InputText class="form-control" @bind-Value="TreatmentBooking.Treatment.Category">
-        </InputText>
-    </div>
-    @if (!string.IsNullOrEmpty(TreatmentBooking.Treatment.Category))
-    {
-        <div class="mb-2">
-            <label>Treatment name:</label>
-            <InputText @bind-Value="TreatmentBooking.Treatment.Name">
-            </InputText>
-        </div>
-    }
-    @if (!string.IsNullOrEmpty(TreatmentBooking.Treatment.Name))
-    {
-        <div class="mb-2">
-            <label>Employee name:</label>
-            <InputText @bind-Value="TreatmentBooking.Employee.Name">
-            </InputText>
-        </div>
-    }
-    @if (!string.IsNullOrEmpty(TreatmentBooking.Employee.Name))
-    {
-        <div class="mb-2">
-            <label>Price:</label>
-            <InputNumber @bind-Value="TreatmentBooking.Price">
-                <span>@TreatmentBooking.Price kr.</span>
-            </InputNumber>
-        </div>
-    }
-}
+</div>

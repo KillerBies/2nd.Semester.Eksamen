@@ -30,5 +30,42 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
                 TreatmentBooking.UpdatePrice(PossibleTreatments, PossibleEmployees);
             }
         }
+
+        private bool AnyEmployees()
+        {
+            return PossibleEmployees.Count() != 0;
+        }
+        private bool AnyTreatments()
+        {
+            return PossibleTreatments.Count() != 0;
+        }
+        private bool TreatmentCategorySelected()
+        {
+            return (!string.IsNullOrEmpty(TreatmentBooking.Treatment.Category));
+        }
+        private bool CanSelectTreatment()
+        {
+            return (AnyTreatments() && TreatmentCategorySelected());
+        }
+        private bool TreatmentSelected()
+        {
+            return (TreatmentBooking.Treatment.TreatmentId != 0 || !string.IsNullOrEmpty(TreatmentBooking.Treatment.Name));
+        }
+        private bool CanSelectEmployee()
+        {
+            return (AnyEmployees() && TreatmentSelected() && TreatmentCategorySelected());
+        }
+        private bool EmployeeSelected()
+        {
+            return (TreatmentBooking.Employee.EmployeeId != 0 || !string.IsNullOrEmpty(TreatmentBooking.Employee.Name));
+        }
+        private bool CanSelectPrice()
+        {
+            return (EmployeeSelected() && TreatmentCategorySelected() && TreatmentSelected() && AnyTreatments());
+        }
+        private bool CanWritePrice()
+        {
+            return (EmployeeSelected() && TreatmentCategorySelected() && TreatmentSelected());
+        }
     }
 }

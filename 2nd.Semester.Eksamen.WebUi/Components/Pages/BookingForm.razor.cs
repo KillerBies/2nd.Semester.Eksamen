@@ -10,8 +10,10 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
     public partial class BookingForm
     {
         [Inject]
-        private BookingFormService BookingFormService { get; set; }
+        private BookingApplicationService BookingFormService { get; set; }
 
+
+        [Parameter] public CustomerDTO Customer { get; set; }
         private BookingDTO Booking = new();
         private List<TreatmentDTO> AllTreatments = new();
         private List<EmployeeDTO> AllEmployees = new();

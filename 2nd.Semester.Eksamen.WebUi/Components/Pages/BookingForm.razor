@@ -4,10 +4,10 @@
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 
-<h3>Opret Booking</h3>
-<h1 class="mb-3 mt-3">Behandling</h1>
-
-<EditForm EditContext="@EditContext" class="row p-3"
+<div class="page-header">
+    <span class="title">Kunde Navn</span>
+</div>
+<EditForm EditContext="@EditContext" class="row p-3" style="margin-left: 20%; margin-right: 20%;"
           OnValidSubmit="@HandleValidSubmit"
           OnInvalidSubmit="@HandleInvalidSubmit">
 
@@ -22,13 +22,21 @@
                          PossibleTreatments="AllTreatments">
         </TreatmentEditor>
     }
-    <button type="button" class="btn btn-secondary mt-3" @onclick="AddTreatment">+</button>
-    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    <button class="add-treatment" title="Tilføj Behandling" @onclick="AddTreatment">+</button>
+
+    <div class="page-header">
+        <span class="title">Mulige Tider</span>
+    </div>
+
+    <div class="btn-group">
+        <button type="reset" class="btn btn-primary mt-3" title="Anuller Booking">Slet</button>
+        <button type="submit" class="btn btn-primary mt-3" title="Lav Booking">Gem</button>
+    </div>
 </EditForm>
 @foreach (var treatmentBooking in Booking.TreatmentBookingDTOs)
 {
-    @treatmentBooking.Treatment.Name
-    @treatmentBooking.Price
+    <span>@treatmentBooking.Treatment.Name</span>
+    <span> @treatmentBooking.Price</span>
 }
 
 
