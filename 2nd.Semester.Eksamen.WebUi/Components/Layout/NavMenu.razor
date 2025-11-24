@@ -1,36 +1,71 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">2nd.Semester.Eksamen.WebUi</a>
-    </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+﻿@using _2nd.Semester.Eksamen.WebUi.Components.Shared;
+@rendermode InteractiveServer
+<!--Navbar-->
+<nav class="topnav">
+    <!---------------Navbar items contains--------------------------------------------------->
+    <div class="navbar-nav">
+        <!----------------------Logo container--------------------------------->
+        <div>
+            <!--Container being fluid means it addapts to the screen and navbar size dinamically (Doesn't do much but kept for safety)-->
+            <!--Logo anchore container (to attach a link)-->
+            <a href="/" class="navbar-brand">
+                <!--Logo image-->
+                <img src="Logo.png" style="height:40px;" />
+            </a>
+        </div>
+        <!----------------Each item is within a list element container---------------------->
+        <div class="nav-item px-3"> <!-- px-3 give horizontal padding -->
+            <!--Clickable navbar item (leads to home)------------------->
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All"> <!--Match...All to only match a link that is exactly like the href given (that being empty)-->
+                <span></span> Home
             </NavLink>
         </div>
-
+        <!--Repeats for the next items-->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+                <span></span> Counter
             </NavLink>
         </div>
-
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+                <span>Weather</span>
             </NavLink>
         </div>
-
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="employees">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Create employee
             </NavLink>
         </div>
-    </nav>
-</div>
+        <!--Dropdown for more options-->
+        <div class="nav-item px-3 dropdown" style="position: relative" @onmouseleave="CloseDropdown">  <!--When mouse moves out of this container close the menu. Element is set as the relativ object (meaning other objects that are absolute do so relative to them)-->
+            <!--Dropdown burger icon-->
+            <NavLink class="nav-link navbar-toggler-icon" style="font-size: 1.5rem;" @onclick="ToggleDropdown" />
+            <!--Drop down menu------------------------>
+            @if (Open)
+            {
+                <!--Container for the menu items------------------------>
+                <ul class="dropdown-menu show" style="display:block; position:absolute; top:100%; left:0;">
+                    @foreach (var item in items)
+                    {
+                        <li>
+                            <!--Each item. If an item is clicked on it redirects to the given link and closes the menu------->
+                            <NavLink class="dropdown-item" href="@item.Link" @onclick="CloseDropdown">
+                                @item.Text
+                            </NavLink>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+</nav>
 
+
+@code {
+    //a given list of dropdown items
+    [Parameter] public List<DropdownItem> items { get; set; } = new List<DropdownItem>();
+    //Controlls for the dropdown menu.
+    private bool Open = false;
+    private void ToggleDropdown() => Open = !Open;
+    private void CloseDropdown() => Open = false;
+}   
