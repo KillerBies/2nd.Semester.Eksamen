@@ -1,0 +1,28 @@
+﻿@inject NavigationManager Navi
+@rendermode InteractiveServer
+@page "/createcustomer"
+<button type="button" class="btn btn-primary" @onclick="GoToExistingCustomer">Opret privatkunde</button>
+<button type="button" class="btn btn-primary" @onclick="GoToCreatePrivateCustomer">Opret privatkunde</button>
+<button type="button" class="btn btn-primary" @onclick="GoToCreateCompanyCustomer">Opret firmakunde</button>
+
+
+@code {
+
+
+	private void GoToExistingCustomer()
+	{
+		
+		//TODO PAGE NOT YET IMPLEMENTED
+		Navi.NavigateTo("/existing-customer");
+	}
+
+	private void GoToCreatePrivateCustomer()
+	{
+		Navi.NavigateTo("/create-private-customer");
+	}
+
+	private void GoToCreateCompanyCustomer()
+	{
+		Navi.NavigateTo("/create-company-customer");
+	}
+}

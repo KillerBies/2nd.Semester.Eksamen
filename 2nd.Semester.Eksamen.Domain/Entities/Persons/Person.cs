@@ -19,7 +19,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public Person() { }
         public Person(string name, Address address, string phoneNumber, string email)
         {
-            TrySetName(name);
+            Name = name;
+          //  TrySetName(name);
             Address = address;
             TrySetPhoneNumber(phoneNumber);
             TrySetEmail(email);
@@ -39,7 +40,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         //method to check if name is valid
         protected bool NameCheck(string name) //protected so it can be used in derived classes
         {
-            return name.Trim(new char[] { ' ', '-', '.', '\'' }).All(char.IsLetter); //checks if name (without special characters) only contains letters
+            string nameTest = name.Trim(new char[] { ' ', '-', '.', '\'' });
+            if (nameTest.All(char.IsLetter) && nameTest != "")//checks if name (without special characters) only contains letters
+                return true;
+            return false;
         }
 
 
