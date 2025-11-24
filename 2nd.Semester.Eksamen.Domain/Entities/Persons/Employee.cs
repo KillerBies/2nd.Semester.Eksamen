@@ -13,7 +13,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     {
         //Employee details
 
-        public Address Address { get; private set; } = null!;
         public string Type { get; private set; }  = null!; // Shown as an enum in DTO and blazor
         public string LastName { get; private set; } = null!;
         public string Specialty { get; private set; } = null!;

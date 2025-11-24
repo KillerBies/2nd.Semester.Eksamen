@@ -30,7 +30,7 @@ namespace _2nd.Semester.Eksamen.Application.Services
             Address address = new Address(DTO.City, DTO.PostalCode, DTO.StreetName, DTO.HouseNumber);
             //Creates Private Customer
              PrivateCustomer privateCustomer = new PrivateCustomer(DTO.LastName, DTO.Gender, DTO.Birthday, DTO.Name, address, DTO.PhoneNumber, DTO.Email);
-             _customerRepository.CreateNewAsync(privateCustomer); 
+             await _customerRepository.CreateNewAsync(privateCustomer); 
         }
 
         

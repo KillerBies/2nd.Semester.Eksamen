@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +38,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
             throw new NotImplementedException();
         }
         public async Task UpdateAsync(Booking booking)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<IEnumerable<Booking>> GetByEmployeeId(int EmployeeId)
         {
             throw new NotImplementedException();
         }

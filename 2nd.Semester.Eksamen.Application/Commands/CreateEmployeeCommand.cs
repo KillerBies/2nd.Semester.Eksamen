@@ -1,5 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO;
-using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Domain.Helpers;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using System;

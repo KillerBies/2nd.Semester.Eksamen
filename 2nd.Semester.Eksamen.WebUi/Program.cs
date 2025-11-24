@@ -1,4 +1,3 @@
-using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Application.Commands;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
@@ -22,6 +21,7 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ITreatmentBookingRepository, TreatmentBookingRepository>();
 builder.Services.AddScoped<BookingApplicationService>();
+builder.Services.AddScoped<BookingQueryService>();
 builder.Services.AddScoped<CreateEmployeeCommand>();
 var app = builder.Build();
 

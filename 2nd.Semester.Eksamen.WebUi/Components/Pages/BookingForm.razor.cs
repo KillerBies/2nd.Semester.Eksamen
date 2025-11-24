@@ -9,10 +9,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 {
     public partial class BookingForm
     {
-        [Inject]
-        private BookingApplicationService BookingFormService { get; set; }
-
-
+        [Inject] private BookingQueryService _bookingQueryService { get; set; }
+        [Inject] private BookingApplicationService _bookingApplicationService { get; set; }
         [Parameter] public CustomerDTO Customer { get; set; }
         private BookingDTO Booking = new();
         private List<TreatmentDTO> AllTreatments = new();
@@ -25,8 +23,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         }
         private async Task GetData()
         {
-            AllTreatments = (await BookingFormService.GetAllTreatmentsAsync()).ToList();
-            AllEmployees = (await BookingFormService.GetAllEmployeesAsync()).ToList();
+            AllTreatments = (await _bookingQueryService.GetAllTreatmentsAsync()).ToList();
+            AllEmployees = (await _bookingQueryService.GetAllEmployeesAsync()).ToList();
         }
 
         private void HandleValidSubmit()
