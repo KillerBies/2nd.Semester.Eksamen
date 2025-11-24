@@ -1,3 +1,4 @@
+using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Domain;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
@@ -66,6 +67,20 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
             await using var _context = await _factory.CreateDbContextAsync();
             return await _context.Employees
                 .Where(e => e.Specialty == Category)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<EmployeeUserCardDTO>> GetAllUserCards()
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            return await _context.Employees
+                .Select(e => new EmployeeUserCardDTO
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Type = e.Type,
+                    PhoneNumber = e.PhoneNumber
+                })
                 .ToListAsync();
         }
 

@@ -26,6 +26,8 @@ builder.Services.AddScoped<BookingFormService>();
 
 
 builder.Services.AddScoped<CreateEmployeeCommand>();
+builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
+
 
 var app = builder.Build();
 
