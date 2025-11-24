@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Application
+namespace _2nd.Semester.Eksamen.Application.DTO
 {
     public class TreatmentDTO
     {

@@ -1,16 +1,20 @@
-using _2nd.Semester.Eksamen.Application;
 using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Application.Commands;
+using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories;
 using _2nd.Semester.Eksamen.WebUi.Components;
 using Microsoft.EntityFrameworkCore;
+using _2nd.Semester.Eksamen.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
 builder.Services.AddDbContextFactory<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), 
     b => b.MigrationsAssembly("2nd.Semester.Eksamen.Infrastructure")));
@@ -20,6 +24,8 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ITreatmentBookingRepository, TreatmentBookingRepository>();
 builder.Services.AddScoped<BookingFormService>();
 
+
+builder.Services.AddScoped<CreateEmployeeCommand>();
 
 var app = builder.Build();
 

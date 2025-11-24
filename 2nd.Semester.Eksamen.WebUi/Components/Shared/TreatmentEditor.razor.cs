@@ -1,4 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Application;
+﻿using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using Microsoft.AspNetCore.Components;

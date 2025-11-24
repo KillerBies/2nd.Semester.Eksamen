@@ -3,9 +3,9 @@
 <!--Navbar-->
 <nav class="topnav">
     <!---------------Navbar items contains--------------------------------------------------->
-    <ul class="navbar-nav">
+    <div class="navbar-nav">
         <!----------------------Logo container--------------------------------->
-        <div class="container-fluid">
+        <div>
             <!--Container being fluid means it addapts to the screen and navbar size dinamically (Doesn't do much but kept for safety)-->
             <!--Logo anchore container (to attach a link)-->
             <a href="/" class="navbar-brand">
@@ -14,25 +14,30 @@
             </a>
         </div>
         <!----------------Each item is within a list element container---------------------->
-        <li class="nav-item px-3"> <!-- px-3 give horizontal padding -->
+        <div class="nav-item px-3"> <!-- px-3 give horizontal padding -->
             <!--Clickable navbar item (leads to home)------------------->
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All"> <!--Match...All to only match a link that is exactly like the href given (that being empty)-->
                 <span></span> Home
             </NavLink>
-        </li>
+        </div>
         <!--Repeats for the next items-->
-        <li class="nav-item px-3">
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="counter">
                 <span></span> Counter
             </NavLink>
-        </li>
-        <li class="nav-item px-3">
+        </div>
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="weather">
                 <span>Weather</span>
             </NavLink>
-        </li>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="employees">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Create employee
+            </NavLink>
+        </div>
         <!--Dropdown for more options-->
-        <li class="nav-item px-3 dropdown" style="position: relative" @onmouseleave="CloseDropdown">  <!--When mouse moves out of this container close the menu. Element is set as the relativ object (meaning other objects that are absolute do so relative to them)-->
+        <div class="nav-item px-3 dropdown" style="position: relative" @onmouseleave="CloseDropdown">  <!--When mouse moves out of this container close the menu. Element is set as the relativ object (meaning other objects that are absolute do so relative to them)-->
             <!--Dropdown burger icon-->
             <NavLink class="nav-link navbar-toggler-icon" style="font-size: 1.5rem;" @onclick="ToggleDropdown" />
             <!--Drop down menu------------------------>
@@ -51,8 +56,8 @@
                     }
                 </ul>
             }
-        </li>
-    </ul>
+        </div>
+    </div>
 </nav>
 
 

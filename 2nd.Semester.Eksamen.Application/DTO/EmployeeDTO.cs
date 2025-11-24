@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Application
+namespace _2nd.Semester.Eksamen.Application.DTO
 {
     public class EmployeeDTO
     {
         public int EmployeeId { get; set; } = new();
         public string Name { get; set; } = null!;
-        public ExperienceLevels ExperienceLevel { get; set; } = new();
+        public string ExperienceLevel { get; set; } = "";
         public decimal BasePriceMultiplier { get; set; } = new();
         public string Specialization { get; set; } = null!;
     }

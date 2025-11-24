@@ -1,6 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,12 +12,13 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public class Employee : Person
     {
         //Employee details
-        public EmployeeType Type { get; private set; } = EmployeeType.Staff;
+
+        public Address Address { get; private set; } = null!;
+        public string Type { get; private set; }  = null!; // Shown as an enum in DTO and blazor
         public string LastName { get; private set; } = null!;
         public string Specialty { get; private set; } = null!;
-        public ExperienceLevels ExperienceLevel { get; private set; } = ExperienceLevels.Expert;
-        public Gender Gender { get; private set; } = Gender.Male;
-        public Address Address { get; private set; } = null!;
+        public string ExperienceLevel { get; private set; } = null!; // Shown as an enum in DTO and blazor
+        public string? Gender { get; private set; } // Shown as an enum in DTO and blazor
 
 
 
@@ -27,9 +29,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 
 
         public Employee() { }
-        public Employee(string firstname, string lastname, EmployeeType type, string specialty, ExperienceLevels experience, Gender gender,Address address)
+        public Employee(string firstname, string lastname, string type, string specialty, string experience, string gender/*,Address address*/)
         {
-            Address = address;
+            //Address = address;
             TrySetLastName(firstname, lastname);
             Type = type;
             Specialty = specialty;
@@ -39,6 +41,27 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             Appointments = new List<TreatmentBooking>();
 
         }
+        public Employee(
+            string firstname,
+            string lastname,
+            string email,
+            string phoneNumber,
+            Address address,
+            decimal basePriceMultiplier,
+            string experience,
+            string type,
+            string specialty,
+            string gender
+        ) : base(firstname, address, phoneNumber, email)
+            {
+                TrySetLastName(firstname, lastname);
+                ExperienceLevel = experience;
+                Type = type;
+                Specialty = specialty;
+                Gender = gender;
+
+                TrySetBasePriceMultiplier(basePriceMultiplier);
+            }
 
 
         //method to set last and first name of private person

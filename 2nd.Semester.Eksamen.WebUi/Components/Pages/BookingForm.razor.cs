@@ -1,8 +1,9 @@
-﻿using _2nd.Semester.Eksamen.Application;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using _2nd.Semester.Eksamen.WebUi.Components.Shared;
+using _2nd.Semester.Eksamen.Application.Services;
+using _2nd.Semester.Eksamen.Application.DTO;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 {
