@@ -19,7 +19,7 @@ namespace _2nd.Semester.Eksamen.Application.Commands
             _repo = repo;
         }
 
-        public async Task<IEnumerable<EmployeeUserCardModel>> ExecuteAsync()
+        public async Task<IEnumerable<EmployeeUserCardDTO>> ExecuteAsync()
         {
             // Just call the repository method that returns the DTOs
             var userCards = await _repo.GetAllUserCards();

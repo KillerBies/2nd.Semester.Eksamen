@@ -15,7 +15,7 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         //Repository for Employees. 
         public Task<Employee?> GetByIDAsync(int id);
         public Task<IEnumerable<Employee?>> GetAllAsync();
-        public Task<IEnumerable<EmployeeUserCardModel>> GetAllUserCards();
+        public Task<IEnumerable<EmployeeUserCardDTO>> GetAllUserCards();
         public Task<IEnumerable<Employee?>> GetByFilterAsync(Filter filter);
         public Task<IEnumerable<Employee?>> GetBySpecialtyAsync(string Category);
         public Task CreateNewAsync(Employee Employee); // Create employee

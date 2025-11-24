@@ -70,10 +70,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<EmployeeUserCardModel>> GetAllUserCards()
+        public async Task<IEnumerable<EmployeeUserCardDTO>> GetAllUserCards()
         {
+            await using var _context = await _factory.CreateDbContextAsync();
             return await _context.Employees
-                .Select(e => new EmployeeUserCardModel
+                .Select(e => new EmployeeUserCardDTO
                 {
                     Id = e.Id,
                     Name = e.Name,

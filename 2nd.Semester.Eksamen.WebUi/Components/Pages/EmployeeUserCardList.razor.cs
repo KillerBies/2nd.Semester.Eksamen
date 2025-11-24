@@ -20,7 +20,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         [Inject]
         private NavigationManager Navigation { get; set; } = null!; // Allows navigation to create employee
 
-        public List<EmployeeUserCardModel> Employees { get; set; } = new();
+        public List<EmployeeUserCardDTO> Employees { get; set; } = new();
 
         public string SearchTermName { get; set; } = "";
         public string SearchTermPhone { get; set; } = "";
@@ -29,7 +29,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
         // Filtered list based on search term
 
-        public IEnumerable<EmployeeUserCardModel> FilterEmployees(Func<EmployeeUserCardModel, string> selector, string searchTerm)
+        public IEnumerable<EmployeeUserCardDTO> FilterEmployees(Func<EmployeeUserCardDTO, string> selector, string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return Employees;
@@ -37,7 +37,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             return Employees.Where(e => selector(e).Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
         }
 
-        public IEnumerable<EmployeeUserCardModel> FilteredEmployees
+        public IEnumerable<EmployeeUserCardDTO> FilteredEmployees
         {
             get
             {
@@ -56,13 +56,13 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         protected override void OnInitialized()
         {
             // Example seed data
-            Employees.Add(new EmployeeUserCardModel
+            Employees.Add(new EmployeeUserCardDTO
             {
                 Name = "Anna Hansen",
                 Type = EmployeeType.Staff.GetDescription(),
             });
 
-            Employees.Add(new EmployeeUserCardModel
+            Employees.Add(new EmployeeUserCardDTO
             {
                 Name = "Maria Jensen",
                 Type = EmployeeType.Freelance.GetDescription()
@@ -77,7 +77,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
                 var allEmployees = await EmployeeRepository.GetAllAsync();
 
                 Employees = allEmployees
-                    .Select(e => new EmployeeUserCardModel
+                    .Select(e => new EmployeeUserCardDTO
                     {
                         Id = e!.Id,
                         Name = e.Name + " " + e.LastName,

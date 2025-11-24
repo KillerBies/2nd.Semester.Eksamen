@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Application.DTO
 {
-    public class EmployeeUserCardModel
+    public class EmployeeUserCardDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
