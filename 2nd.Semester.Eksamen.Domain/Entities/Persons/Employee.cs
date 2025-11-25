@@ -12,12 +12,13 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public class Employee : Person
     {
         //Employee details
-        public string? Type { get; private set; } // Shown as an enum in DTO and blazor
-        public string? LastName { get; private set; }
-        public string? Specialty { get; private set; }
-        public string? ExperienceLevel { get; private set; } // Shown as an enum in DTO and blazor
-        public string? Gender { get; private set; } // Shown as an enum in DTO and blazor
 
+        public Address Address { get; private set; } = null!;
+        public string Type { get; private set; }  = null!; // Shown as an enum in DTO and blazor
+        public string LastName { get; private set; } = null!;
+        public string Specialty { get; private set; } = null!;
+        public string ExperienceLevel { get; private set; } = null!; // Shown as an enum in DTO and blazor
+        public string? Gender { get; private set; } // Shown as an enum in DTO and blazor
 
 
 

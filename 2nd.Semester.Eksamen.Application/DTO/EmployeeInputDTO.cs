@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Application.DTO
 {
-    public class EmployeeInputModel
+    public class EmployeeInputDTO
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -17,7 +17,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         public List<Appointment> Appointments { get; set; } = new();
 
         //takes a DTO model as input value to store multiple variables in 1
-        public AddressInputModel Address { get; set; } = new AddressInputModel();
+        public AddressInputDTO Address { get; set; } = new AddressInputDTO();
         public string PhoneNumber { get; set; }
         public decimal BasePriceMultiplier { get; set; }
         public ExperienceLevels ExperienceLevel { get; set; }

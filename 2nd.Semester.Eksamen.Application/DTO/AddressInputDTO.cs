@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Application.DTO
 {
-    public class AddressInputModel
+    public class AddressInputDTO
     {
         public string City { get; set; }
         public string PostalCode { get; set; }

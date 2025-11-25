@@ -12,11 +12,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         [Inject]
         private CreateEmployeeCommand Command { get; set; }
 
-        protected EmployeeInputModel Employee { get; set; } = new();
+        protected EmployeeInputDTO Employee { get; set; } = new();
 
-        protected EmployeeInputModel Input { get; set; } = new EmployeeInputModel
+        protected EmployeeInputDTO Input { get; set; } = new EmployeeInputDTO
         {
-            Address = new AddressInputModel(),
+            Address = new AddressInputDTO(),
             Type = EmployeeType.Staff, // Default value
             Appointments = new List<Appointment>(),
             TreatmentHistory = new List<Treatment>(),
