@@ -18,7 +18,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         public decimal Price { get; set; } = new();
         public void UpdatePrice(List<TreatmentDTO> allTreatments, List<EmployeeDTO> allEmployees)
         {
-            if (Treatment.TreatmentId != null && Employee.EmployeeId != null)
+            if (Treatment.TreatmentId != 0 && Employee.EmployeeId != 0)
             {
                 Price = Employee.BasePriceMultiplier * Treatment.BasePrice;
             }

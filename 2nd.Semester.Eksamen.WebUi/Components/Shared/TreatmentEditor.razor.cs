@@ -19,17 +19,25 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
         {
             await OnRemove.InvokeAsync(TreatmentBooking);
         }
-        private void HandleFieldChanged(object sender, FieldChangedEventArgs e)
-        {
-            StateHasChanged();
-        }
         protected override void OnParametersSet()
         {
-            if (TreatmentBooking.Treatment.TreatmentId != null && TreatmentBooking.Employee.EmployeeId != null)
+            if (TreatmentBooking.Treatment.TreatmentId != 0 && TreatmentBooking.Employee.EmployeeId != 0)
             {
                 TreatmentBooking.UpdatePrice(PossibleTreatments, PossibleEmployees);
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
 
         private bool AnyEmployees()
         {

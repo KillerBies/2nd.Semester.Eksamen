@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
+using System.Reflection.Metadata.Ecma335;
 
 namespace _2nd.Semester.Eksamen.Application.Services
 {
@@ -48,6 +49,49 @@ namespace _2nd.Semester.Eksamen.Application.Services
             });
             return treatmentDTOs;
         }
+        public async Task<IEnumerable<AvailableBookingSpotDTO>> GetAvailableSpotsAsync(BookingDTO Booking,DateTime MinDate=default)
+        {
+            if (MinDate == default) MinDate = DateTime.Now;
+            List<AvailableBookingSpotDTO> spots = new();
+            EmployeeDTO RootEmp = Booking.TreatmentBookingDTOs.Select(t=>t.Employee).FirstOrDefault(e => e.EmployeeId != 0);
+            if(RootEmp==null)
+            {
+                while(RootEmp == null)
+                {
+
+                }
+                /*
+                 find an employee available tomorrow and start from there
+                if there are non then try again
+                 */
+            }
+
+            return await;
+            throw new NotImplementedException();
+        }
+
+        /*
+        Input minimum datetime (normalt sat til dagen efter datetime now)
+        Gør følgende indtil booking spot listen har en count på 30
+        BookingDTO = new();
+        Hvis en medarbejder er valgt
+            Find deres første åbne spot efter kl08:00
+            Udregn hvornår behandlingen slutter og se om hele bookingen kan passe ind og slutte før kl:20:00
+            Hvis den ikke kan søg efter deres næste tomme spot og check igen
+            Når et spot er fundet
+            Foreach(treatment in otherTreatments)
+                found=false
+                While(found==false)
+                    Brug start og end til at tjekke alle medarbejderes apointments for et spot available()
+                    Hvis et spot findes add dem til treatment booking dtoen i booking dto objektet
+                        found=true;
+            hvis et spot findes til alle treatments
+            Add booking spottet til listen af spots.
+
+            
+                
+         */
+
 
 
     }

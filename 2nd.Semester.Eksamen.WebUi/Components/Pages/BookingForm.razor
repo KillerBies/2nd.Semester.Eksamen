@@ -4,39 +4,53 @@
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger">
+        @_errorMessage
+    </div>
+}
 <div class="page-header">
     <span class="title">Kunde Navn</span>
 </div>
-<EditForm EditContext="@EditContext" class="row p-3" style="margin-left: 20%; margin-right: 20%;"
+<EditForm EditContext="@EditContext" class="row p-5" style="margin-left: 20%; margin-right: 20%;"
           OnValidSubmit="@HandleValidSubmit"
           OnInvalidSubmit="@HandleInvalidSubmit">
 
     <DataAnnotationsValidator />
     <ValidationSummary />
-
-    @foreach (var treatmentBooking in Booking.TreatmentBookingDTOs)
-    {
-        <TreatmentEditor TreatmentBooking="treatmentBooking"
-                         OnRemove="RemoveTreatment"
-                         PossibleEmployees="AllEmployees"
-                         PossibleTreatments="AllTreatments">
-        </TreatmentEditor>
-    }
-    <button class="add-treatment" title="Tilføj Behandling" @onclick="AddTreatment">+</button>
-
-    <div class="page-header">
-        <span class="title">Mulige Tider</span>
+    <div class="Treatments">
+        @foreach (var treatmentBooking in Booking.TreatmentBookingDTOs)
+        {
+            <TreatmentEditor TreatmentBooking="treatmentBooking"
+                             OnRemove="RemoveTreatment"
+                             PossibleEmployees="AllEmployees"
+                             PossibleTreatments="AllTreatments">
+            </TreatmentEditor>
+        }
+    </div>
+    <button class="add-treatment" type="button" title="Tilføj Behandling" @onclick="AddTreatment">+</button>
+    <div class="possible-times-container">
+        <div class="possible-times-header" style="border-radius:@(Open ? "12px 12px 0 0":"12px 12px 12px 12px");">
+            <span class="title">Mulige Tider</span>
+            <button type="button" class="dropdownbutton" @onclick="ToggleDropdown">▼</button>
+        </div>
+        @if (Open)
+        {
+            <div class="time-grid">
+                @foreach (var availableTime in AvailableBookingSpots)
+                {
+                    <TimeCard OnSelect="SelectTimeSlot"availableTime="availableTime"></TimeCard>
+                }
+            </div>
+        }
     </div>
 
     <div class="btn-group">
-        <button type="reset" class="btn btn-primary mt-3" title="Anuller Booking">Slet</button>
-        <button type="submit" class="btn btn-primary mt-3" title="Lav Booking">Gem</button>
+        <button type="button" class="btn btn-primary mt-3" title="Anuller Booking">Slet</button>
+        <button type="button" class="btn btn-primary mt-3" title="Lav Booking">Gem</button>
     </div>
 </EditForm>
-@foreach (var treatmentBooking in Booking.TreatmentBookingDTOs)
-{
-    <span>@treatmentBooking.Treatment.Name</span>
-    <span> @treatmentBooking.Price</span>
-}
-
-
+<p>@Booking.Start</p>
+<p>@Booking.End</p>

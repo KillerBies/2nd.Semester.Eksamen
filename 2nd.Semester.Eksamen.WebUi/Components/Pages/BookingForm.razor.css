@@ -1,8 +1,8 @@
 ﻿.page-header {
     width: 100%;
     height: 40px;
-    background-color: #034265; /* same color as your top border */
-    border-radius: 12px 12px 12px 12px; /* rounded top corners */
+    background-color: #034265; 
+    border-radius: 12px 12px 12px 12px; 
     box-shadow: 0 6px 6px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
@@ -17,6 +17,42 @@
     background: transparent;
     border: none;
     font-size: 100px;
-    cursor: pointer;
     color: #b55054;
+}
+.dropdownbutton {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: white;
+}
+    .dropdownbutton:hover {
+        color: #333;
+    }
+
+.possible-times-container {
+    display: block;
+    margin-top: 1rem;
+    flex-direction: row;
+}
+.time-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+    box-shadow: 0 6px 6px rgba(0,0,0,0.1);
+    border-radius: 0 0 12px 12px;
+}
+.possible-times-header {
+    width: 100%;
+    height: 40px;
+    background-color: #034265;
+    box-shadow: 0 6px 6px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    color: white;
+    font-weight: bold;
+    margin: 0;
+    box-sizing: border-box;
 }

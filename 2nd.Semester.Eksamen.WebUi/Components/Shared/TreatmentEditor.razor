@@ -22,61 +22,49 @@
             }
         </div>
         <div class="mb-2">
-            @if (TreatmentCategorySelected())
+            <label>Treatment:</label>
+            @if (CanSelectTreatment())
             {
-                <label>Treatment:</label>
-                @if (CanSelectTreatment())
-                {
-                    <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.TreatmentId">
-                        @foreach (var treatment in PossibleTreatments.Where(t => t.Category == TreatmentBooking.Treatment.Category))
-                        {
-                            <option value="@treatment.TreatmentId">@treatment.Name</option>
-                        }
-                    </InputSelect>
-                }
-                else
-                {
-                    <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.Name">
-                    </InputText>
-                }
+                <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.TreatmentId" disabled="@(!TreatmentCategorySelected())">
+                    @foreach (var treatment in PossibleTreatments.Where(t => t.Category == TreatmentBooking.Treatment.Category))
+                    {
+                        <option value="@treatment.TreatmentId">@treatment.Name</option>
+                    }
+                </InputSelect>
+            }
+            else
+            {
+                <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.Name" disabled="@(!TreatmentCategorySelected())">
+                </InputText>
             }
         </div>
         <div class="mb-2">
-            @if (TreatmentSelected() && TreatmentCategorySelected())
+            <label>Employee:</label>
+            @if (CanSelectEmployee())
             {
-                <label>Employee:</label>
-                @if (CanSelectEmployee())
-                {
-                    <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Employee.EmployeeId">
-                        @foreach (var Employee in PossibleEmployees.Where(e => e.Specialization == TreatmentBooking.Treatment.Category))
-                        {
-                            <option value="@Employee.EmployeeId">@Employee.Name</option>
-                        }
-                    </InputSelect>
-                }
-                else
-                {
-                    <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Employee.Name">
-                    </InputText>
-                }
+                <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Employee.EmployeeId" dafault="disabled="@(!(TreatmentSelected() && TreatmentCategorySelected()))">
+                    @foreach (var Employee in PossibleEmployees.Where(e => e.Specialization == TreatmentBooking.Treatment.Category))
+                    {
+                        <option value="@Employee.EmployeeId">@Employee.Name</option>
+                    }
+                </InputSelect>
+            }
+            else
+            {
+                <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Employee.Name" disabled="@(!(TreatmentSelected() && TreatmentCategorySelected()))">
+                </InputText>
             }
         </div>
         <div class="mb-2">
-            @if (CanWritePrice())
-            {
-                <label>Price:</label>
-                @if (CanSelectPrice())
-                {
-                    <InputNumber class="form-control w-75" @bind-Value="TreatmentBooking.Price">
-                        <span>@TreatmentBooking.Price kr.</span>
-                    </InputNumber>
-                }
-                else
-                {
-                    <InputNumber class="form-control w-75" @bind-Value="TreatmentBooking.Price">
-                    </InputNumber>
-                }
-            }
+            <label>Price:</label>
+            <InputNumber class="form-control w-75" @bind-Value="TreatmentBooking.Price" disabled="@(!CanWritePrice())">
+            </InputNumber>
         </div>
+        <p>Price: @TreatmentBooking.Price</p>
+        <p>Treatment: @TreatmentBooking.Treatment.Name</p>
+        <p>Category: @TreatmentBooking.Treatment.Category</p>
+        <p>End: @TreatmentBooking.End</p>
+        <p>Start: @TreatmentBooking.Start</p>
+        <p>Employee: @TreatmentBooking.Employee.Name</p>
     </div>
 </div>

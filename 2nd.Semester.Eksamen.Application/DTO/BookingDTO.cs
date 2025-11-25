@@ -19,11 +19,10 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         [Required]
         public List<TreatmentBookingDTO> TreatmentBookingDTOs { get; set; } = new List<TreatmentBookingDTO>(){new()};
         [Required]
-        public bool UsePoints { get; set; } = false;
-        [Required]
         public bool CustomerNotification { get; set; } = false;
-
         [Required]
         public WaitListDTO WaitList { get; set; } = new();
+        [Required]
+        public TimeSpan Duration { get; set; } = new();
     }
 }
