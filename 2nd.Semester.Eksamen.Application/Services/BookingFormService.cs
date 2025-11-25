@@ -16,12 +16,17 @@ namespace _2nd.Semester.Eksamen.Application.Services
         private readonly IEmployeeRepository _employeeRepository;
         private readonly ITreatmentRepository _treatmentRepository;
         private readonly ITreatmentBookingRepository _treatmentBookingRepository;
-        public BookingFormService(IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, ITreatmentBookingRepository treatmentBookingRepository)
+        private readonly ICompanyCustomerRepository _comCustomerRepository;
+        private readonly IPrivateCustomerRepository _priCustomerRepository;
+        public BookingFormService(IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, ITreatmentBookingRepository treatmentBookingRepository,
+            ICompanyCustomerRepository comCustomerRepository, IPrivateCustomerRepository priCustomerRepository)
         {
             _bookingRepository = bookingRepository;
             _employeeRepository = employeeRepository;
             _treatmentRepository = treatmentRepository;
             _treatmentBookingRepository = treatmentBookingRepository;
+            _comCustomerRepository = comCustomerRepository;
+            _priCustomerRepository = priCustomerRepository;
         }
 
         public async Task<IEnumerable<EmployeeDTO>> GetAllEmployeesAsync()
@@ -64,5 +69,40 @@ namespace _2nd.Semester.Eksamen.Application.Services
         //}
 
 
+        // Searches through customers using phonenumber. Returns customer with that phonenumber. If none found, returns null.
+        public async Task<Customer?> GetCustomerByPhoneNumberAsync(string phoneNumber)
+        {
+            var privateCustomer = await _priCustomerRepository.GetByPhoneAsync(phoneNumber);
+            if (privateCustomer != null)
+            {
+                return privateCustomer;
+            }
+            var companyCustomer = await _comCustomerRepository.GetByPhoneAsync(phoneNumber);
+            if (companyCustomer != null)
+            {
+                return companyCustomer;
+            }
+            return null;
+        }
+        public async Task<Customer?> GetCustomerByIDAsync(int id)
+        {
+            
+                var privateCustomer = await _priCustomerRepository.GetByIDAsync(id);
+                if (privateCustomer != null)
+                {
+                    return privateCustomer;
+                }
+
+                var companyCustomer = await _comCustomerRepository.GetByIDAsync(id);
+                if (companyCustomer != null)
+                {
+                    return companyCustomer;
+                }
+            return null;
+           
+
+
+
+        }
     }
 }
