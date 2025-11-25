@@ -20,7 +20,7 @@ namespace _2nd.Semester.Eksamen.Application.Commands
             _repo = repo;
         }
 
-        public async Task ExecuteAsync(EmployeeInputModel dto)
+        public async Task ExecuteAsync(EmployeeInputDTO dto)
         {
             // Map DTO -> Domain Address
             var domainAddress = new Domain.Entities.Persons.Address(

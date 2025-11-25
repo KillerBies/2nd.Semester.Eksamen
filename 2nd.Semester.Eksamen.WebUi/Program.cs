@@ -30,6 +30,8 @@ builder.Services.AddScoped<IPrivateCustomerService , PrivateCustomerService>();
 builder.Services.AddScoped<IPrivateCustomerRepository , PrivateCustomerRepository>();
 
 builder.Services.AddScoped<CreateEmployeeCommand>();
+builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
+
 
 var app = builder.Build();
 

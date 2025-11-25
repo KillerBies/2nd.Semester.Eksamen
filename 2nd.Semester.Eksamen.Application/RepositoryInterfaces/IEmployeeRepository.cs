@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain;
+﻿using _2nd.Semester.Eksamen.Application.DTO;
+using _2nd.Semester.Eksamen.Domain;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
@@ -14,6 +15,7 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         //Repository for Employees. 
         public Task<Employee?> GetByIDAsync(int id);
         public Task<IEnumerable<Employee?>> GetAllAsync();
+        public Task<IEnumerable<EmployeeUserCardDTO>> GetAllUserCards();
         public Task<IEnumerable<Employee?>> GetByFilterAsync(Filter filter);
         public Task<IEnumerable<Employee?>> GetBySpecialtyAsync(string Category);
         public Task CreateNewAsync(Employee Employee); // Create employee
