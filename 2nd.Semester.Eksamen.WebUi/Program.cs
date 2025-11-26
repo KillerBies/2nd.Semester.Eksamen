@@ -37,7 +37,7 @@ builder.Services.AddScoped<EmployeeSpecialtyService>();
 builder.Services.AddScoped<CreateEmployeeCommand>();
 builder.Services.AddScoped<UpdateEmployeeCommand>();
 builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
-
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 var app = builder.Build();
 
