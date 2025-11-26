@@ -130,12 +130,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 
         public bool TrySetSpecialty(string specialty)
         {
-            if (!string.IsNullOrWhiteSpace(specialty))
-            {
-                Specialty = specialty;
-                return true;
-            }
-            return false;
+            Specialty = specialty ?? ""; // default to empty string if null
+            return true;
         }
 
         public bool TrySetExperience(string experience)

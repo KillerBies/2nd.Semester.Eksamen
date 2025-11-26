@@ -22,9 +22,16 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         {
             _factory = factory;
         }
-        public async Task CreateNewAsync(Employee employee)
+        public async Task CreateNewAsync(Employee employee, Address address)
         {
             await using var _context = await _factory.CreateDbContextAsync();
+
+            // 1️⃣ Save the address first
+            _context.Adresses.Add(address);
+            await _context.SaveChangesAsync(); // address.Id is now set
+
+            // 2️⃣ Link employee to the new address
+            employee.AddressId = address.Id;
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
         }

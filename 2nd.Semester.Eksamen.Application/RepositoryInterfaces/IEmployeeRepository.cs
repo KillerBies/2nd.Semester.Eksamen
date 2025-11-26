@@ -18,7 +18,7 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         public Task<IEnumerable<Employee>> GetAllUserCardsAsync();
         public Task<IEnumerable<Employee?>> GetByFilterAsync(Filter filter);
         public Task<IEnumerable<Employee?>> GetBySpecialtyAsync(string Category);
-        public Task CreateNewAsync(Employee Employee); // Create employee
+        public Task CreateNewAsync(Employee Employee, Address Address); // Create employee
         public Task UpdateAsync(Employee Employee);
         public Task DeleteAsync(Employee Employee);
         public Task SaveChangesAsync();

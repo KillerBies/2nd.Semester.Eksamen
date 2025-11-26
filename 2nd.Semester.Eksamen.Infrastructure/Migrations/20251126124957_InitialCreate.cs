@@ -380,7 +380,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_AddressId",
                 table: "Employees",
-                column: "AddressId");
+                column: "AddressId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderLine_LineProductId",

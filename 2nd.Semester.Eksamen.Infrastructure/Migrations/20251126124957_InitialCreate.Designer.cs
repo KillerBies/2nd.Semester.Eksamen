@@ -12,7 +12,7 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251126112600_InitialCreate")]
+    [Migration("20251126124957_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -145,7 +145,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("AddressId")
+                        .IsUnique();
 
                     b.ToTable("Employees");
                 });
@@ -473,8 +474,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employee", b =>
                 {
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
+                        .WithOne()
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employee", "AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
