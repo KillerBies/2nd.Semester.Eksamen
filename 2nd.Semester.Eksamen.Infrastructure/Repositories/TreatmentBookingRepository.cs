@@ -25,7 +25,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         }
         public async Task DeleteAsync(TreatmentBooking treatmentBooking)
         {
-            throw new NotImplementedException();
+            
+            await using var _context = await _factory.CreateDbContextAsync();
+            _context.BookedTreatments.Remove(treatmentBooking);
+            await _context.SaveChangesAsync();
         }
         public async Task<TreatmentBooking> GetByIDAsync(int id)
         {

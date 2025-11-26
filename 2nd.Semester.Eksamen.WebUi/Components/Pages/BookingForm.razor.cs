@@ -1,9 +1,11 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
+﻿using _2nd.Semester.Eksamen.Application.DTO;
+using _2nd.Semester.Eksamen.Application.Services;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.WebUi.Components.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using _2nd.Semester.Eksamen.WebUi.Components.Shared;
-using _2nd.Semester.Eksamen.Application.Services;
-using _2nd.Semester.Eksamen.Application.DTO;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 {
@@ -46,5 +48,21 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         {
             Booking.TreatmentBookingDTOs.Add(new TreatmentBookingDTO());
         }
+
+        //Gets the CustomerID passed from url.
+        [Parameter]
+        public int CustomerId { get; set; }
+        private string ErrorMsg ="";
+        private Customer? selectedCustomer;
+        protected override async Task OnParametersSetAsync()
+        {
+           
+           selectedCustomer = await BookingFormService.GetCustomerByIDAsync(CustomerId);
+            if (selectedCustomer == null)
+            {
+                ErrorMsg = "Kunden kunne ikke findes. Prøv igen.";
+            }
+        }
+
     }
 }
