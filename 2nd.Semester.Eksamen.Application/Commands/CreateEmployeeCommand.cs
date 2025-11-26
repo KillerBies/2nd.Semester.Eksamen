@@ -22,34 +22,34 @@ namespace _2nd.Semester.Eksamen.Application.Commands
 
         public async Task ExecuteAsync(EmployeeInputDTO dto)
         {
+            // Convert specialties list -> string
+            var specialtyString = string.Join(", ", dto.Specialties.Select(s => s.Value));
+
             // Map DTO -> Domain Address
-            var domainAddress = new Domain.Entities.Persons.Address(
-                city: dto.Address.City,
-                postalCode: dto.Address.PostalCode,
-                streetName: dto.Address.StreetName,
-                houseNumber: dto.Address.HouseNumber
+            var domainAddress = new Address(
+                dto.Address.City,
+                dto.Address.PostalCode,
+                dto.Address.StreetName,
+                dto.Address.HouseNumber
             );
-            // Map DTO -> Domain Entity
-            var employee = new Domain.Entities.Persons.Employee(
+
+            var employee = new Employee(
                 firstname: dto.FirstName,
                 lastname: dto.LastName,
-                type: dto.Type.GetDescription(), // Takes string from enum description
-                specialty: dto.Specialty,
+                type: dto.Type.GetDescription(),
+                specialty: string.Join(", ", dto.Specialties.Select(s => s.Value)),
+                address: domainAddress,
                 experience: dto.ExperienceLevel.GetDescription(),
                 gender: dto.Gender.GetDescription(),
                 email: dto.Email,
                 phoneNumber: dto.PhoneNumber,
-                address: domainAddress,
                 basePriceMultiplier: dto.BasePriceMultiplier
-                
-                
-                
             );
 
             // TODO: Add way to add appointments
 
 
-            await _repo.CreateNewAsync(employee);
+            await _repo.CreateNewAsync(employee, domainAddress);
         }
 
     }

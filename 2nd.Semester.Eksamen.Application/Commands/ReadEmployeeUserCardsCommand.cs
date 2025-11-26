@@ -18,12 +18,17 @@ namespace _2nd.Semester.Eksamen.Application.Commands
         {
             _repo = repo;
         }
-
-        public async Task<IEnumerable<EmployeeUserCardDTO>> ExecuteAsync()
+        public async Task<IEnumerable<EmployeeUserCardDTO>> GetAllUserCardsAsync()
         {
-            // Just call the repository method that returns the DTOs
-            var userCards = await _repo.GetAllUserCards();
-            return userCards;
+            var employees = await _repo.GetAllUserCardsAsync(); // LISTE af Employee
+
+            return employees.Select(e => new EmployeeUserCardDTO
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Type = e.Type,
+                PhoneNumber = e.PhoneNumber
+            }).ToList();
         }
     }
 }

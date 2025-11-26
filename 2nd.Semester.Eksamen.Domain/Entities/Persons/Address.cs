@@ -53,5 +53,40 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             }
             return false;
         }
+        public bool TrySetHouseNumber(string houseNumber)
+        {
+            if (!string.IsNullOrWhiteSpace(houseNumber))
+            {
+                HouseNumber = houseNumber;
+                return true;
+            }
+            return false;
+        }
+
+        public void UpdateCity(string city)
+        {
+            if (!TrySetCity(city))
+                throw new ArgumentException("City cannot be empty");
+        }
+
+        public void UpdatePostalCode(string postalCode)
+        {
+            if (!TrySetPostalCode(postalCode))
+                throw new ArgumentException("Postal code cannot be empty");
+        }
+
+        public void UpdateStreetName(string streetName)
+        {
+            if (!TrySetStreetName(streetName))
+                throw new ArgumentException("Street name cannot be empty");
+        }
+
+        public void UpdateHouseNumber(string houseNumber)
+        {
+            if (string.IsNullOrWhiteSpace(houseNumber))
+                throw new ArgumentException("House number cannot be empty");
+            HouseNumber = houseNumber;
+        }
+
     }
 }

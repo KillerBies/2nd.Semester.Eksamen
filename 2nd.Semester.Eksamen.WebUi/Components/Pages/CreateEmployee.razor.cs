@@ -2,6 +2,7 @@
 using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.WebUi.Services;
 using Microsoft.AspNetCore.Components;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -12,6 +13,10 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         [Inject]
         private CreateEmployeeCommand Command { get; set; }
 
+        [Inject]
+        public EmployeeSpecialtyService SpecialtyService { get; set; }
+
+        [Inject] NavigationManager Nav { get; set; }
         protected EmployeeInputDTO Employee { get; set; } = new();
 
         protected EmployeeInputDTO Input { get; set; } = new EmployeeInputDTO
@@ -27,8 +32,19 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         protected async Task CreateEmployeeAsync()
         {
             await Command.ExecuteAsync(Input);
+            Nav.NavigateTo("/employees");
 
         }
+        public void AddSpecialty()
+        {
+            SpecialtyService.AddSpecialty(Input);
+        }
+
+        public void RemoveSpecialty(Guid id)
+        {
+            SpecialtyService.RemoveSpecialty(Input, id);
+        }
+
 
     }
 }
