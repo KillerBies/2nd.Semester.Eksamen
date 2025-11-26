@@ -3,6 +3,7 @@
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons
 @inject ICompanyCustomerService createCustomerService
+@inject NavigationManager Navi
 @rendermode InteractiveServer
 <body>
 <h1>Opret firmakunde</h1>
@@ -49,6 +50,11 @@
 	<div class="form-group">
 			<label for="CVR-Nummer" class="form-labels">CVR-nummer:</label>
 		<InputText id="CVR-Nummer" @bind-Value="companyCustomerDTO.CVRNumber" class="form-control" placeholder="CVR-nummer..." />
+	</div>
+
+	<div class=" = form-group">
+		<label for="form-check.label" class="form-labels">Gem kundeoplysninger</label>
+		<InputCheckbox id="SaveAsCustomer" @bind-Value="companyCustomerDTO.SaveAsCustomer" class="form-check-input"/>
 	</div>
 
 	<div class="form-btn">

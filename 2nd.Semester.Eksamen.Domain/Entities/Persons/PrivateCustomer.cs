@@ -18,7 +18,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 
 
 
-        public PrivateCustomer(string lastname, Gender gender, DateOnly birthday, string name, Address address,string phonenumber,string email) : base(name,address,phonenumber,email)
+        public PrivateCustomer(string lastname, Gender gender, DateOnly birthday, string name, Address address,string phonenumber,string email, bool saveAsCustomer) : base(name,address,phonenumber,email, saveAsCustomer)
     {
             TrySetLastName(name, lastname);
             Gender = gender;

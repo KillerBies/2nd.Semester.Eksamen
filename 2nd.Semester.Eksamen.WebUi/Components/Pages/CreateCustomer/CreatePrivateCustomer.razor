@@ -3,6 +3,7 @@
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons
 @inject IPrivateCustomerService createCustomerService
+@inject NavigationManager Navi
 @rendermode InteractiveServer
 
 <h1>Opret privatkunde</h1>
@@ -75,8 +76,13 @@
 
 	</div>
 
+	<div class=" = form-group">
+		<label for="form-check.label" class="form-labels">Gem kundeoplysninger</label>
+		<InputCheckbox id="SaveAsCustomer" @bind-Value="privateCustomerDTO.SaveAsCustomer" class="form-check-input"/>
+	</div>
+
 		<div class="form-btn">
-			<button type="submit" class="btn btn-primary">Opret firmakunde</button>
+			<button type="submit" class="btn btn-primary">Opret privatkunde</button>
 		</div>
 </div>
 </EditForm>

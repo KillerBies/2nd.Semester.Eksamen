@@ -11,9 +11,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.CreateCustomer
             BirthdayWrapper = new DateTime(1920, 1, 1)
         };
 
-        private void HandleValidSubmit()
+        private async Task HandleValidSubmit()
         {
-            createCustomerService.CreatePrivateCustomerAsync(privateCustomerDTO);
+            int id = await createCustomerService.CreatePrivateCustomerAsync(privateCustomerDTO);
+            
+            Navi.NavigateTo($"/BookingForm/{id}");
         }
     }
 }

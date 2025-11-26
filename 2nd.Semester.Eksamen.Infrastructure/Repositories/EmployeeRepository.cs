@@ -26,11 +26,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         {
             await using var _context = await _factory.CreateDbContextAsync();
 
-            // 1️⃣ Save the address first
+            //Save address 
             _context.Adresses.Add(address);
-            await _context.SaveChangesAsync(); // address.Id is now set
+            await _context.SaveChangesAsync(); 
 
-            // 2️⃣ Link employee to the new address
+            // Link employee to the new address
             employee.AddressId = address.Id;
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
