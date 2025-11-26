@@ -16,6 +16,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         [Inject]
         public EmployeeSpecialtyService SpecialtyService { get; set; }
 
+        [Inject] NavigationManager Nav { get; set; }
         protected EmployeeInputDTO Employee { get; set; } = new();
 
         protected EmployeeInputDTO Input { get; set; } = new EmployeeInputDTO
@@ -31,6 +32,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         protected async Task CreateEmployeeAsync()
         {
             await Command.ExecuteAsync(Input);
+            Nav.NavigateTo("/employees");
 
         }
         public void AddSpecialty()
