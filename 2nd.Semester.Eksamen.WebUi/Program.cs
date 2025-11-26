@@ -9,6 +9,8 @@ using _2nd.Semester.Eksamen.Infrastructure.Repositories;
 using _2nd.Semester.Eksamen.WebUi.Components;
 using _2nd.Semester.Eksamen.WebUi.Services;
 using Microsoft.EntityFrameworkCore;
+using _2nd.Semester.Eksamen.Application.Services;
+using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,11 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ITreatmentBookingRepository, TreatmentBookingRepository>();
 builder.Services.AddScoped<BookingFormService>();
+builder.Services.AddScoped<ICompanyCustomerService , CompanyCustomerService>();
+builder.Services.AddScoped<ICompanyCustomerRepository , CompanyCustomerRepository>();
+builder.Services.AddScoped<IPrivateCustomerService , PrivateCustomerService>();
+builder.Services.AddScoped<IPrivateCustomerRepository , PrivateCustomerRepository>();
+
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<EmployeeSpecialtyService>();
 builder.Services.AddScoped<CreateEmployeeCommand>();
