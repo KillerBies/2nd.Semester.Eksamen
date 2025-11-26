@@ -1,10 +1,13 @@
-using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.Commands;
 using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Application.Services;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories;
 using _2nd.Semester.Eksamen.WebUi.Components;
+using _2nd.Semester.Eksamen.WebUi.Services;
 using Microsoft.EntityFrameworkCore;
 using _2nd.Semester.Eksamen.Application.Services;
 using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
@@ -29,7 +32,10 @@ builder.Services.AddScoped<ICompanyCustomerRepository , CompanyCustomerRepositor
 builder.Services.AddScoped<IPrivateCustomerService , PrivateCustomerService>();
 builder.Services.AddScoped<IPrivateCustomerRepository , PrivateCustomerRepository>();
 
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<EmployeeSpecialtyService>();
 builder.Services.AddScoped<CreateEmployeeCommand>();
+builder.Services.AddScoped<UpdateEmployeeCommand>();
 builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
 
 

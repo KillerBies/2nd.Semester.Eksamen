@@ -18,7 +18,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         private ReadEmployeeUserCardsCommand ReadCardsCommand { get; set; } = null!;
 
         [Inject]
-        private NavigationManager Navigation { get; set; } = null!; // Allows navigation to create employee
+        private NavigationManager Nav { get; set; } = null!; // Allows navigation to create employee
 
         public List<EmployeeUserCardDTO> Employees { get; set; } = new();
 
@@ -53,22 +53,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             }
         }
 
-        protected override void OnInitialized()
-        {
-            // Example seed data
-            Employees.Add(new EmployeeUserCardDTO
-            {
-                Name = "Anna Hansen",
-                Type = EmployeeType.Staff.GetDescription(),
-            });
-
-            Employees.Add(new EmployeeUserCardDTO
-            {
-                Name = "Maria Jensen",
-                Type = EmployeeType.Freelance.GetDescription()
-            });
-        }
-
         protected override async Task OnInitializedAsync()
         {
             try
@@ -97,7 +81,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
         private void GoToEmployee(int id)
         {
-            Navigation.NavigateTo($"/employees/{id}");
+            Nav.NavigateTo($"/employees/{id}");
         }
 
 
@@ -107,7 +91,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         }
         private void GoToAddEmployee()
         {
-            Navigation.NavigateTo("/employees/create");
+            Nav.NavigateTo("/employees/create");
         }
 
 

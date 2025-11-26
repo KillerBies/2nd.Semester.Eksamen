@@ -1,43 +1,65 @@
 ﻿@page "/employees/create"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 @rendermode InteractiveServer
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 @using _2nd.Semester.Eksamen.Domain.Helpers;
+@using _2nd.Semester.Eksamen.WebUi.Services;
 
 <h3>Create Employee</h3>
 
-<input @bind="Input.FirstName" placeholder="First Name" />
-<input @bind="Input.LastName" placeholder="Last Name" />
-<input @bind="Input.Email" placeholder="Email" />
-<input @bind="Input.PhoneNumber" placeholder="Phone Number" />
-<input @bind="Input.Address.StreetName" placeholder="Street name" />
-<input @bind="Input.Address.PostalCode" placeholder="Postal Code" />
-<input @bind="Input.Address.City" placeholder="City" />
-<input @bind="Input.Address.HouseNumber" placeholder="House number" />
+<EditForm Model="Input" OnValidSubmit="CreateEmployeeAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-<select @bind="Input.Gender"> 
-    @foreach (var gender in Enum.GetValues(typeof(Gender)).Cast<Gender>())
+    <!-- Basic Info -->
+    <InputText @bind-Value="Input.FirstName" placeholder="First Name" class="form-control" />
+    <InputText @bind-Value="Input.LastName" placeholder="Last Name" class="form-control mt-2" />
+    <InputText @bind-Value="Input.Email" placeholder="Email" class="form-control mt-2" />
+    <InputText @bind-Value="Input.PhoneNumber" placeholder="Phone Number" class="form-control mt-2" />
+
+    <InputNumber @bind-Value="Input.BasePriceMultiplier"
+                 placeholder="Base Price Multiplier"
+                 class="form-control mt-2" />
+
+    <!-- Dropdowns -->
+    <select @bind="Input.Gender" class="form-select mb-2">
+        @foreach (var gender in Enum.GetValues(typeof(Gender)).Cast<Gender>())
+        {
+            <option value="@gender">@gender.GetDescription()</option>
+        }
+    </select>
+
+    <select @bind="Input.ExperienceLevel" class="form-select mb-2">
+        @foreach (var level in Enum.GetValues(typeof(ExperienceLevels)).Cast<ExperienceLevels>())
+        {
+            <option value="@level">@level.GetDescription()</option>
+        }
+    </select>
+
+    <select @bind="Input.Type" class="form-select mb-3">
+        @foreach (var type in Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>())
+        {
+            <option value="@type">@type.GetDescription()</option>
+        }
+    </select>
+
+    <!-- Address -->
+    <InputText @bind-Value="Input.Address.StreetName" placeholder="Street" class="form-control mt-2" />
+    <InputText @bind-Value="Input.Address.HouseNumber" placeholder="House #" class="form-control mt-2" />
+    <InputText @bind-Value="Input.Address.City" placeholder="City" class="form-control mt-2" />
+    <InputText @bind-Value="Input.Address.PostalCode" placeholder="Postal Code" class="form-control mt-2" />
+
+    <!-- Specialties -->
+    @for (int i = 0; i < Input.Specialties.Count; i++)
     {
-        <!--Shows enum description-->
-        <option value="@gender">@gender.GetDescription()</option>
+        var specialty = Input.Specialties[i];
+        <div class="mb-2 d-flex align-items-center" @key="specialty.Id">
+            <InputText @bind-Value="specialty.Value" placeholder="Specialty" class="form-control me-2" />
+            <button type="button" class="btn btn-danger" @onclick="() => RemoveSpecialty(specialty.Id)">X</button>
+        </div>
     }
-</select>
 
-<select @bind="Input.ExperienceLevel">
-    @foreach (var level in Enum.GetValues(typeof(ExperienceLevels)).Cast<ExperienceLevels>())
-    {
-        <option value="@level">@level.GetDescription()</option>
-    }
-</select>
+    <button type="button" class="btn btn-primary mb-3" @onclick="AddSpecialty">+ Add Specialty</button>
 
-<select @bind="Input.Type">
-    @foreach (var type in Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>())
-    {
-        <option value="@type">@type.GetDescription()</option>
-    }
-</select>
-
-<input @bind="Input.Specialty" placeholder="Specialty" />
-
-<button @onclick="CreateEmployeeAsync">Create</button>
-
-
+    <button class="btn btn-success mt-3" type="submit">Create</button>
+</EditForm>
