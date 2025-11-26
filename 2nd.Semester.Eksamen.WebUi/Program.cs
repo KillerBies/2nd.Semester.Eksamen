@@ -28,7 +28,7 @@ builder.Services.AddScoped<ICompanyCustomerService , CompanyCustomerService>();
 builder.Services.AddScoped<ICompanyCustomerRepository , CompanyCustomerRepository>();
 builder.Services.AddScoped<IPrivateCustomerService , PrivateCustomerService>();
 builder.Services.AddScoped<IPrivateCustomerRepository , PrivateCustomerRepository>();
-
+builder.Services.AddScoped<IBookingService , BookingService>();
 builder.Services.AddScoped<CreateEmployeeCommand>();
 builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
 

@@ -18,14 +18,15 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public decimal PointBalance { get; private set; } 
         public List<PunchCard> PunchCards { get; private set; } = new List<PunchCard>();
         public string Notes { get; set; } = string.Empty;
-
+        public bool SaveAsCustomer { get; set; }
         public Customer() { }
-        public Customer(string name, Address address, string phoneNumber, string email) : base(name, address, phoneNumber, email) 
+        public Customer(string name, Address address, string phoneNumber, string email, bool saveAsCustomer) : base(name, address, phoneNumber, email) 
         {
             BookingHistory = new List<Booking>();
             PointBalance = 0;
             PunchCards = new List<PunchCard>();
             Notes = string.Empty;
+            SaveAsCustomer = saveAsCustomer;
         }
 
 

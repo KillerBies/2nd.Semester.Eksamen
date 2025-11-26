@@ -40,11 +40,11 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         [RegularExpression(@"^\d{8}$", ErrorMessage = "CVR-nummer skal være 8 cifre")]
         public string CVRNumber {  get; set; }
         
-        
-        
-        
-        
-        
+        public bool SaveAsCustomer { get; set; }
+
+
+
+
         public CompanyCustomerDTO() { }
     }
 }

@@ -59,9 +59,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         //{
 
         //}
-        //public async Task DeleteAsync(PrivateCustomer Customer)
-        //{
-        //}
+        public async Task DeleteAsync(CompanyCustomer customer)
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            _context.CompanyCustomers.Remove(customer);
+            await _context.SaveChangesAsync();
+        }
 
 
     }

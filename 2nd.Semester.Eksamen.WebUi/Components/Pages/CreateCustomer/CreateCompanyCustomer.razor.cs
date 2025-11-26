@@ -12,13 +12,15 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.CreateCustomer
 
         public CompanyCustomerDTO companyCustomerDTO = new();
 
-        //TODO Remember to prepare the injection in DI-Container
+        
 
 
 
         private async Task HandleValidSubmit()
         {
-            await createCustomerService.CreateCompanyCustomerAsync(companyCustomerDTO);
+          int id = await createCustomerService.CreateCompanyCustomerAsync(companyCustomerDTO);
+            //INDSÆT Manglende TLF SØGNING UD FRA DTO PHONE
+            Navi.NavigateTo($"/BookingForm/{id}");
         }
 
     }

@@ -17,6 +17,6 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         public Task CreateNewAsync(CompanyCustomer Customer);
         public Task<bool> PhoneAlreadyExistsAsync(string PhoneNumber);
         //public Task UpdateAsync(CompanyCustomer Customer);
-        //public Task DeleteAsync(CompanyCustomer Customer);
+        public Task DeleteAsync(CompanyCustomer Customer);
     }
 }
