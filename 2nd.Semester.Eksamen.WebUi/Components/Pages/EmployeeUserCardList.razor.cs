@@ -53,22 +53,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             }
         }
 
-        protected override void OnInitialized()
-        {
-            // Example seed data
-            Employees.Add(new EmployeeUserCardDTO
-            {
-                Name = "Anna Hansen",
-                Type = EmployeeType.Staff.GetDescription(),
-            });
-
-            Employees.Add(new EmployeeUserCardDTO
-            {
-                Name = "Maria Jensen",
-                Type = EmployeeType.Freelance.GetDescription()
-            });
-        }
-
         protected override async Task OnInitializedAsync()
         {
             try

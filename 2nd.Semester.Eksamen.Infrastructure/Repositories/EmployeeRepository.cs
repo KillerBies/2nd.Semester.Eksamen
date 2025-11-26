@@ -33,12 +33,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
             await using var _context = await _factory.CreateDbContextAsync();
             return await _context.Employees.ToListAsync();
         }
-        public async Task UpdateAsync(Employee employee)
-        {
-            await using var _context = await _factory.CreateDbContextAsync();
-            _context.Employees.Update(employee);
-            await _context.SaveChangesAsync();
-        }
 
         public async Task DeleteAsync(Employee employee)
         {
@@ -57,11 +51,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
 
             return await query.ToListAsync();
         }
-        public async Task<Employee?> GetByIDAsync(int id)
-        {
-            await using var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees.FindAsync(id);
-        }
+
         public async Task<IEnumerable<Employee?>> GetBySpecialtyAsync(string Category)
         {
             await using var _context = await _factory.CreateDbContextAsync();
@@ -70,18 +60,32 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<EmployeeUserCardDTO>> GetAllUserCards()
+        public async Task<IEnumerable<Employee>> GetAllUserCardsAsync()
         {
             await using var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees
-                .Select(e => new EmployeeUserCardDTO
-                {
-                    Id = e.Id,
-                    Name = e.Name,
-                    Type = e.Type,
-                    PhoneNumber = e.PhoneNumber
-                })
-                .ToListAsync();
+
+            return await _context.Employees.ToListAsync();
+        }
+
+        public async Task<Employee?> GetByIDAsync(int id)
+        {
+            await using var ctx = await _factory.CreateDbContextAsync();
+
+            return await ctx.Employees
+                .Include(e => e.Address)
+                .FirstOrDefaultAsync(e => e.Id == id);
+        }
+        public async Task UpdateAsync(Employee employee)
+        {
+            await using var ctx = await _factory.CreateDbContextAsync();
+            ctx.Employees.Update(employee); 
+            await ctx.SaveChangesAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            await _context.SaveChangesAsync();
         }
 
     }

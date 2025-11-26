@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,13 +13,14 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public class Employee : Person
     {
         //Employee details
-
+        [ForeignKey(nameof(Address))]
+        public int AddressId { get; set; } // FK
         public Address Address { get; private set; } = null!;
         public string Type { get; private set; }  = null!; // Shown as an enum in DTO and blazor
         public string LastName { get; private set; } = null!;
         public string Specialty { get; private set; } = null!;
         public string ExperienceLevel { get; private set; } = null!; // Shown as an enum in DTO and blazor
-        public string? Gender { get; private set; } // Shown as an enum in DTO and blazor
+        public string Gender { get; private set; } // Shown as an enum in DTO and blazor
 
 
 
@@ -41,6 +43,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             Appointments = new List<TreatmentBooking>();
 
         }
+
         public Employee(
             string firstname,
             string lastname,
@@ -115,6 +118,60 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             return false;
         }
 
+        public bool TrySetType(string type)
+        {
+            if (!string.IsNullOrWhiteSpace(type))
+            {
+                Type = type;
+                return true;
+            }
+            return false;
+        }
+
+        public bool TrySetSpecialty(string specialty)
+        {
+            if (!string.IsNullOrWhiteSpace(specialty))
+            {
+                Specialty = specialty;
+                return true;
+            }
+            return false;
+        }
+
+        public bool TrySetExperience(string experience)
+        {
+            if (!string.IsNullOrWhiteSpace(experience))
+            {
+                ExperienceLevel = experience;
+                return true;
+            }
+            return false;
+        }
+
+        public bool TrySetGender(string gender)
+        {
+            if (!string.IsNullOrWhiteSpace(gender))
+            {
+                Gender = gender;
+                return true;
+            }
+            return false;
+        }
+        public void TrySetAddress(string city, string postalCode, string streetName, string houseNumber)
+        {
+            if (Address != null)
+            {
+                Address.UpdateCity(city);
+                Address.UpdatePostalCode(postalCode);
+                Address.UpdateStreetName(streetName);
+                Address.UpdateHouseNumber(houseNumber);
+            }
+            else
+            {
+                // Only create a new Address if there isn't one already
+                Address = new Address(city, postalCode, streetName, houseNumber);
+            }
+        }
 
     }
 }

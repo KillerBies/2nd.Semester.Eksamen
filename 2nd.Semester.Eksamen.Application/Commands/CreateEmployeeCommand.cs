@@ -22,6 +22,9 @@ namespace _2nd.Semester.Eksamen.Application.Commands
 
         public async Task ExecuteAsync(EmployeeInputDTO dto)
         {
+            // Convert specialties list -> string
+            var specialtyString = string.Join(", ", dto.Specialties.Select(s => s.Value));
+
             // Map DTO -> Domain Address
             var domainAddress = new Domain.Entities.Persons.Address(
                 city: dto.Address.City,
@@ -34,7 +37,7 @@ namespace _2nd.Semester.Eksamen.Application.Commands
                 firstname: dto.FirstName,
                 lastname: dto.LastName,
                 type: dto.Type.GetDescription(), // Takes string from enum description
-                specialty: dto.Specialty,
+                specialty: specialtyString,
                 experience: dto.ExperienceLevel.GetDescription(),
                 gender: dto.Gender.GetDescription(),
                 email: dto.Email,

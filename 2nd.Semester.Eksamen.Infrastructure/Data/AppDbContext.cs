@@ -100,6 +100,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<Employee>()
                 .HasMany(b => b.TreatmentHistory);
 
+            modelBuilder.Entity<Employee>()
+            .HasOne(e => e.Address)
+            .WithMany()
+            .HasForeignKey(e => e.AddressId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
             modelBuilder.Entity<PrivateCustomer>()
                 .HasMany(b => b.BookingHistory);
             modelBuilder.Entity<CompanyCustomer>()
