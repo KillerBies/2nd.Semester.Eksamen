@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initialmigration : Migration
+    public partial class initmigr : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -52,7 +52,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NumberOfVisists = table.Column<int>(type: "int", nullable: false),
                     PointBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SaveAsCustomer = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AddressId = table.Column<int>(type: "int", nullable: false),

@@ -12,8 +12,8 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251127092650_initialmigration")]
-    partial class initialmigration
+    [Migration("20251127104757_initmigr")]
+    partial class initmigr
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,7 +74,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NumberOfVisists")
