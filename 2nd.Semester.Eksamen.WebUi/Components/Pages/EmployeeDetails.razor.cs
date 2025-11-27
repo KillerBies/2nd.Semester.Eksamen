@@ -7,6 +7,7 @@ using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.WebUi.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
@@ -20,15 +21,23 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         [Inject]
         public IEmployeeService EmployeeService { get; set; }
 
-
+        [Inject] IJSRuntime JS { get; set; }
         protected override async Task OnInitializedAsync()
         {
             Employee = await _repo.GetByIDAsync(Id);
         } 
         private void StartEdit()
         {
-            // Navigate to your edit page, passing the employee ID
             Nav.NavigateTo($"/employees/edit/{Employee.Id}");
+        }
+
+        private async Task ConfirmDelete()
+        {
+            bool confirmed = await JS.InvokeAsync<bool>("confirm", "Er du sikker på at du vil slette denne medarbejder?");
+            if (confirmed)
+            {
+                await DeleteEmployee();
+            }
         }
         private async Task DeleteEmployee()
         {
