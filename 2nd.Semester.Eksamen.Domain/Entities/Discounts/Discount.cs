@@ -1,5 +1,6 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -44,9 +45,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
             return AppliesToTreatment;
         }
 
-        public decimal GetDiscountedPrice(ProductSnapshot product)
-        {
-            return DiscountAmount * product.Price;
-        }
+        //public decimal GetDiscountedPrice(ProductSnapshot product)
+        //{
+        //    return DiscountAmount * product.Price;
+        //}
     }
 }
