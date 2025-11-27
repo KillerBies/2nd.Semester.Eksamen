@@ -134,6 +134,31 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .Property(d => d.DiscountAmount)
                 .HasPrecision(18, 2);
 
+            //TODO: Add way to add these via a page for more control maybe
+            modelBuilder.Entity<LoyaltyDiscount>().HasData(
+                new LoyaltyDiscount
+                {
+                    Id = 1,
+                    Name = "Bronze",
+                    MinimumVisits = 5,
+                    DiscountType = "Bronze"
+                },
+                new LoyaltyDiscount
+                {
+                    Id = 2,
+                    Name = "Silver",
+                    MinimumVisits = 10,
+                    DiscountType = "Silver"
+                },
+                new LoyaltyDiscount
+                {
+                    Id = 3,
+                    Name = "Gold",
+                    MinimumVisits = 20,
+                    DiscountType = "Gold"
+                }
+            );
+
             base.OnModelCreating(modelBuilder);
         }
     }

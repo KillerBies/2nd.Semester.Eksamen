@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -53,6 +55,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     NumberOfVisists = table.Column<int>(type: "int", nullable: false),
                     PointBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SaveAsCustomer = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AddressId = table.Column<int>(type: "int", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -266,11 +269,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CampaignId = table.Column<int>(type: "int", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     TreatmentBookingId = table.Column<int>(type: "int", nullable: true),
                     TreatmentId = table.Column<int>(type: "int", nullable: true),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: true)
                 },
                 constraints: table =>
@@ -345,6 +348,26 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Discount",
+                columns: new[] { "Id", "AppliesToProduct", "AppliesToTreatment", "DiscountAmount", "Name", "NumberOfUses" },
+                values: new object[,]
+                {
+                    { 1, false, false, 0m, "Bronze", 0 },
+                    { 2, false, false, 0m, "Silver", 0 },
+                    { 3, false, false, 0m, "Gold", 0 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "LoyaltyDiscounts",
+                columns: new[] { "Id", "DiscountType", "MinimumVisits" },
+                values: new object[,]
+                {
+                    { 1, "Bronze", 5 },
+                    { 2, "Silver", 10 },
+                    { 3, "Gold", 20 }
                 });
 
             migrationBuilder.CreateIndex(

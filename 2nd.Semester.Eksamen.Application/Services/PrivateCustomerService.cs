@@ -28,7 +28,20 @@ namespace _2nd.Semester.Eksamen.Application.Services
             return (await _customerRepository.GetByPhoneAsync(DTO.PhoneNumber)).Id;
         }
 
-        
+        public async Task<PrivateCustomer?> GetByIDAsync(int customerId)
+        {
+            return await _customerRepository.GetByIDAsync(customerId) as PrivateCustomer;
+        }
+
+        public async Task UpdateAsync(PrivateCustomer customer)
+        {
+            await _customerRepository.UpdateAsync(customer);
+        }
+        public async Task DeleteAsync(PrivateCustomer customer)
+        {
+            await _customerRepository.DeleteAsync(customer);
+        }
+
     }
 
 

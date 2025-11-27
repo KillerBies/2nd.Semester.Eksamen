@@ -19,5 +19,7 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         public Task<bool> PhoneAlreadyExistsAsync(string PhoneNumber);
         //public Task UpdateAsync(PrivateCustomer Customer);
         public Task DeleteAsync(PrivateCustomer Customer);
+        public Task UpdateAsync(PrivateCustomer Customer);
+
     }
 }

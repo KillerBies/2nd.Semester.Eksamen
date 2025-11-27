@@ -68,6 +68,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             }
             return false;
         }
+        public bool AddVisit() //TODO: add check to see if the payment went through or/and if there was a valid booking
+        {
+            NumberOfVisists++;
+            return true;
+        }
     }
 
 

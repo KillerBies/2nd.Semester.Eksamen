@@ -10,6 +10,11 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
     public interface IPrivateCustomerService
     {
         public Task<int> CreatePrivateCustomerAsync(PrivateCustomerDTO privateCustomerDTO);
-        
+        public Task<PrivateCustomer?> GetByIDAsync(int id);
+        public Task UpdateAsync(PrivateCustomer customer);
+        public Task DeleteAsync(PrivateCustomer customer);
+
+
+
     }
 }

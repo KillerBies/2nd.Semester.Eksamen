@@ -25,7 +25,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         public async Task<Customer?> GetByIDAsync(int id)
         {
             await using var _context = await _factory.CreateDbContextAsync();
-            return await _context.CompanyCustomers.FirstOrDefaultAsync(c => c.Id == id);
+            return await _context.PrivateCustomers.FirstOrDefaultAsync(c => c.Id == id);
         }
         
         public async Task<PrivateCustomer?> GetByPhoneAsync(string phoneNumber)
@@ -66,7 +66,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
             _context.PrivateCustomers.Remove(customer);
             await _context.SaveChangesAsync();
         }
-
+        public async Task UpdateAsync(PrivateCustomer customer)
+        {
+            await using var context = await _factory.CreateDbContextAsync();
+            context.PrivateCustomers.Update(customer);
+            await context.SaveChangesAsync();
+        }
 
     }
 }

@@ -1,0 +1,16 @@
+﻿@page "/finalizepayment"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
+@rendermode InteractiveServer
+
+<h3>Finalize Payment (test)</h3>
+
+<button class="btn btn-primary" @onclick="FinalizePaymentAsync">
+    Finalize Payment
+</button>
+
+@if (message is not null)
+{
+    <p>@message</p>
+}
+
+
