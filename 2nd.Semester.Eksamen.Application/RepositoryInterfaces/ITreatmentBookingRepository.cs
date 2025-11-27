@@ -12,11 +12,11 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
     {
         //Repo for booked treatments. Used to get info about booked treatments (not treatment data)
         public Task<TreatmentBooking> GetByIDAsync(int id);
-        public Task<TreatmentBooking> GetByEmployeeIDAsync(int id);
+        public Task<IEnumerable<TreatmentBooking>> GetByEmployeeIDAsync(int id);
         public Task<IEnumerable<TreatmentBooking>> GetAllAsync();
         public Task<IEnumerable<TreatmentBooking>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(TreatmentBooking TreatmentBooking);
         public Task UpdateAsync(TreatmentBooking TreatmentBooking);
-        public Task DeleteAsync(TreatmentBooking TreatmentBooking);
+        public Task DeleteAsync(TreatmentBooking treatmentBooking);
     }
 }

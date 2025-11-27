@@ -12,7 +12,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         //Customer who is a company
         public string CVRNumber { get; private set; }  = null!;
 
-        public CompanyCustomer(string name, string cvrnumber, Address address, string phonenumber, string email) : base(name, address, phonenumber, email)
+        public CompanyCustomer(string name, string cvrnumber, Address address, string phonenumber, string email, bool saveAsCustomer) : base(name, address, phonenumber, email, saveAsCustomer)
         {
             TrySetCVRNumber(cvrnumber);
         }

@@ -98,6 +98,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasConversion<string>();
 
             modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Address)          // Employee has one Address
+                .WithOne()                        // Address does not need navigation back
+                .HasForeignKey<Employee>("AddressId") // optional if you want FK property
+                .OnDelete(DeleteBehavior.Cascade);   // optional: deletes Address if Employee deleted
+
+            modelBuilder.Entity<Employee>()
                 .HasMany(b => b.TreatmentHistory);
 
             modelBuilder.Entity<PrivateCustomer>()
@@ -108,6 +114,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<Employee>()
                 .Property(e => e.BasePriceMultiplier)
                 .HasPrecision(18, 4);
+
 
             modelBuilder.Entity<Order>()
                 .Property(o => o.DiscountedTotal)
@@ -131,95 +138,3 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         }
     }
 }
-
-
-//modelBuilder.Entity<ProductSnapshot>()
-//    .Property(p => p.PricePerUnit)
-//    .HasPrecision(18, 2);
-
-//modelBuilder.Entity<TreatmentSnapshot>()
-//    .Property(t => t.BasePrice)
-//    .HasPrecision(18, 2);
-
-//  var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = false };
-//// Booking.Customer
-//  modelBuilder.Entity<Booking>()
-//      .Property(b => b.Customer)
-//      .HasConversion(
-//          v => System.Text.Json.JsonSerializer.Serialize(v, options),
-//          v => System.Text.Json.JsonSerializer.Deserialize<PersonSnapshot>(v, options)
-//      );
-
-
-
-
-
-//// TreatmentBooking:
-//  // ProductsUsed
-//  modelBuilder.Entity<TreatmentBooking>()
-//      .Property(t => t.ProductsUsed)
-//      .HasConversion(
-//          v => System.Text.Json.JsonSerializer.Serialize(v, options),
-//          v => System.Text.Json.JsonSerializer.Deserialize<List<ProductSnapshot>>(v, options)
-//      )
-//      .Metadata.SetValueComparer(
-//          new ValueComparer<List<ProductSnapshot>>(
-//              (c1, c2) => c1.SequenceEqual(c2),
-//              c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-//              c => c.ToList()
-//          )
-//      );
-//  // TreatmentBooking.Employee
-//  modelBuilder.Entity<TreatmentBooking>()
-//      .Property(t => t.Employee)
-//      .HasConversion(
-//          v => System.Text.Json.JsonSerializer.Serialize(v, options),
-//          v => System.Text.Json.JsonSerializer.Deserialize<PersonSnapshot>(v, options)
-//      );
-//  modelBuilder.Entity<TreatmentBooking>()
-//      .Property(t => t.Treatment)
-//      .HasConversion(
-//          v=> System.Text.Json.JsonSerializer.Serialize(v, options),
-//          v=> System.Text.Json.JsonSerializer.Deserialize<TreatmentSnapshot>(v, options)
-//      );
-
-
-
-
-//// Employee.Appointments
-//modelBuilder.Entity<Employee>()
-//    .Property(e => e.Appointments)
-//    .HasConversion(
-//        v => System.Text.Json.JsonSerializer.Serialize(v, options),
-//        v => System.Text.Json.JsonSerializer.Deserialize<List<Appointment>>(v, options)
-//    )
-//    .Metadata.SetValueComparer(
-//        new ValueComparer<List<Appointment>>(
-//            (c1, c2) => c1.SequenceEqual(c2),
-//            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-//            c => c.ToList()
-//        )
-//    );
-
-
-
-
-
-//// Order.Products
-//modelBuilder.Entity<Order>()
-//    .Property(o => o.Products)
-//    .HasConversion(
-//        v => System.Text.Json.JsonSerializer.Serialize(v, options),
-//        v => System.Text.Json.JsonSerializer.Deserialize<List<ProductSnapshot>>(v, options)
-//    )
-//    .Metadata.SetValueComparer(
-//        new ValueComparer<List<ProductSnapshot>>(
-//            (c1, c2) => c1.SequenceEqual(c2),
-//            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-//            c => c.ToList()
-//        )
-//);
-
-//modelBuilder.Entity<Customer>()
-//    .Property(c => c.PointBalance)
-//    .HasPrecision(18, 2);

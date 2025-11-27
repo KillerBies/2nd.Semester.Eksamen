@@ -53,7 +53,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
             get => Birthday.ToDateTime(TimeOnly.MinValue);
             set => Birthday = DateOnly.FromDateTime(value);
         }
-
+        public bool SaveAsCustomer { get; set; }
         public PrivateCustomerDTO()
         {
 
