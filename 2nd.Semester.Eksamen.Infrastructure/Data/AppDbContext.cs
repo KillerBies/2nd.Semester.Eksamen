@@ -98,10 +98,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasConversion<string>();
 
             modelBuilder.Entity<Employee>()
-                .HasOne(e => e.Address)          // Employee has one Address
-                .WithOne()                        // Address does not need navigation back
-                .HasForeignKey<Employee>("AddressId") // optional if you want FK property
-                .OnDelete(DeleteBehavior.Cascade);   // optional: deletes Address if Employee deleted
+                .HasOne(e => e.Address)
+                .WithOne()
+                .HasForeignKey<Employee>(e => e.AddressId)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
             modelBuilder.Entity<Employee>()
                 .HasMany(b => b.TreatmentHistory);

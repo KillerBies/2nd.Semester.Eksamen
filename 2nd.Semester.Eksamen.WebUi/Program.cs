@@ -24,6 +24,7 @@ builder.Services.AddDbContextFactory<AppDbContext>(options =>
     b => b.MigrationsAssembly("2nd.Semester.Eksamen.Infrastructure")));
 builder.Services.AddScoped<ITreatmentRepository,TreatmentRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ITreatmentBookingRepository, TreatmentBookingRepository>();
 builder.Services.AddScoped<BookingFormService>();

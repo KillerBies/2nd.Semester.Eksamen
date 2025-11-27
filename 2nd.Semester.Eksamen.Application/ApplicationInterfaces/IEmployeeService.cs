@@ -9,6 +9,7 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {
     public interface IEmployeeService
     {
+        Task DeleteEmployeeAsync(int id);
         Task<EmployeeDetailsDTO> GetByIdAsync(int id);
         Task UpdateEmployeeAsync(EmployeeDetailsDTO dto);
 

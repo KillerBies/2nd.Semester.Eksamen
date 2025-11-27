@@ -1,10 +1,13 @@
-﻿using _2nd.Semester.Eksamen.Application.Commands;
+﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.Commands;
 using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Application.Services;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.WebUi.Services;
 using Microsoft.AspNetCore.Components;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 {
@@ -14,6 +17,9 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         [Inject] NavigationManager Nav { get; set; }
         private Employee Employee { get; set; }
         [Inject] private IEmployeeRepository _repo { get; set; }
+        [Inject]
+        public IEmployeeService EmployeeService { get; set; }
+
 
         protected override async Task OnInitializedAsync()
         {
@@ -24,5 +30,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             // Navigate to your edit page, passing the employee ID
             Nav.NavigateTo($"/employees/edit/{Employee.Id}");
         }
+        private async Task DeleteEmployee()
+        {
+            await EmployeeService.DeleteEmployeeAsync(Employee.Id);
+            Nav.NavigateTo("/employees");
+        }
+
     }
 }
