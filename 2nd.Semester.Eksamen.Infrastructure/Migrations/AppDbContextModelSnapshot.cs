@@ -84,6 +84,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<decimal>("PointBalance")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<bool>("SaveAsCustomer")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");

@@ -48,9 +48,14 @@
 	</div>
 
 	<div class="form-group">
-			<label for="CVR-Nummer" class="form-labels">CVR-nummer:</label>
+		<label for="CVR-Nummer" class="form-labels">CVR-nummer:</label>
 		<InputText id="CVR-Nummer" @bind-Value="companyCustomerDTO.CVRNumber" class="form-control" placeholder="CVR-nummer..." />
 	</div>
+			<div class="form-group">
+				<label for="Notes" class="form-labels"> Noter</label>
+				<InputTextArea id="Notes" @bind-Value="@companyCustomerDTO.Notes" maxlength="200" class="form-control" placeholder="Noter..." />
+
+			</div>
 
 	<div class=" = form-group">
 		<label for="form-check.label" class="form-labels">Gem kundeoplysninger</label>
@@ -63,7 +68,7 @@
 
 	</div>
 </EditForm>
-</body/>
+</body>
 
 
 

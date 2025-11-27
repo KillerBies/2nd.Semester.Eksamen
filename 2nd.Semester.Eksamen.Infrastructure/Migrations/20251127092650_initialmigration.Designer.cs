@@ -12,8 +12,8 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251126124957_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251127092650_initialmigration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,6 +86,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.Property<decimal>("PointBalance")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("SaveAsCustomer")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

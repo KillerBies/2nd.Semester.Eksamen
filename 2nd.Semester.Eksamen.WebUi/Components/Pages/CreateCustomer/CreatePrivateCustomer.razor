@@ -70,9 +70,14 @@
 	</div>
 
 	<div class="form-group">
-			<label for="BirthDayWrapper" class="form-labels"> Fødselsdag</label>
+		<label for="BirthDayWrapper" class="form-labels"> Fødselsdag</label>
 		<InputDate id="BirthDayWrapper" @bind-Value="@privateCustomerDTO.BirthdayWrapper" class="form-control" min="1920-01-01"
-				   max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+		           max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+
+	</div>
+	<div class="form-group">
+		<label for="Notes" class="form-labels"> Noter</label>
+		<InputTextArea id="Notes" @bind-Value="@privateCustomerDTO.Notes" maxlength="200" class="form-control" placeholder="Noter..." />
 
 	</div>
 

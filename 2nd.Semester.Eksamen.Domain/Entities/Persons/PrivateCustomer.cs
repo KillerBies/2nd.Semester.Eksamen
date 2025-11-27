@@ -1,11 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
+﻿namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 {
     public class PrivateCustomer : Customer
     {
@@ -13,22 +6,22 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public string LastName { get; private set; } = null!;
         public Gender? Gender { get; set; }
         public int Age { get { return GetAge(); } }
-        public DateOnly BirthDate { get;  set; }
-        
+        public DateOnly BirthDate { get; set; }
 
 
 
-        public PrivateCustomer(string lastname, Gender gender, DateOnly birthday, string name, Address address,string phonenumber,string email, bool saveAsCustomer) : base(name,address,phonenumber,email, saveAsCustomer)
-    {
+
+        public PrivateCustomer(string lastname, Gender gender, DateOnly birthday, string name, Address address, string phonenumber, string email, string notes, bool saveAsCustomer) : base(name, address, phonenumber, email, notes, saveAsCustomer)
+        {
             TrySetLastName(name, lastname);
             Gender = gender;
             BirthDate = birthday;
-           // SetBirthDate(birthday, age);
+            // SetBirthDate(birthday, age);
         }
         public PrivateCustomer()
         {
         }
-               
+
 
 
 
@@ -41,9 +34,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             {
                 LastName = lastname.Trim();
                 return true;
-    }
+            }
             return false;
-    }
+        }
 
 
         //method to get age 
