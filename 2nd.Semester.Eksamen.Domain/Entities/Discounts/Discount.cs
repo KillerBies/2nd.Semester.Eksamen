@@ -1,4 +1,6 @@
-﻿using System;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Produkter;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -35,5 +37,16 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
             NumberOfUses++;
         }
 
+        public bool CheckProduct(Product product)
+        {
+            if (product.GetType() == typeof(Product))
+                return AppliesToProduct;
+            return AppliesToTreatment;
+        }
+
+        public decimal GetDiscountedPrice(ProductSnapshot product)
+        {
+            return DiscountAmount * product.Price;
+        }
     }
 }

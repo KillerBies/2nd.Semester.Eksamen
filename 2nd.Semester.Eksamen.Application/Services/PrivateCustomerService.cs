@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO;
-using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 namespace _2nd.Semester.Eksamen.Application.Services
 {
     public class PrivateCustomerService : IPrivateCustomerService
-    { 
-      
-       private readonly IPrivateCustomerRepository _customerRepository;
-       public PrivateCustomerService(IPrivateCustomerRepository customerRepository)
+    {
+        private readonly IPrivateCustomerRepository _customerRepository;
+        public PrivateCustomerService(IPrivateCustomerRepository customerRepository)
         {
             _customerRepository = customerRepository;
         }
