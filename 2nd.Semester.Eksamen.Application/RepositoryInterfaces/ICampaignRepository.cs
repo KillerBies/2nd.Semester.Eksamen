@@ -1,11 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Domain;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
 {
@@ -16,7 +10,7 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         public Task<IEnumerable<Campaign?>> GetAllAsync();
         public Task<IEnumerable<Campaign?>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(Campaign Campaign);
-        public Task UpdateAsync(Campaign Campaign);
-        public Task DeleteAsync(Campaign Campaign);
+        public Task UpdateAsync(Campaign campaign);
+        public Task DeleteAsync(Campaign campaign);
     }
 }

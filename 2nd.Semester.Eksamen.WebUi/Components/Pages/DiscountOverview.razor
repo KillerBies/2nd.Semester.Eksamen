@@ -1,0 +1,105 @@
+﻿@page "/discountoverview/"
+@rendermode InteractiveServer
+@using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
+@using _2nd.Semester.Eksamen.Domain;
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@inject IDiscountService discountService;
+<h1>DiscountOverview</h1>
+<button ></button>
+
+@foreach (Campaign campaign in campaignList)
+{
+	<p>Fra @campaign.Start til @campaign.End</p>
+	<p><button @onclick="() => ShowCampaignOverlay(campaign)">Mere information</button></p>
+}
+
+@foreach (LoyaltyDiscount loyaltyDiscount in loyaltyDiscountList)
+{
+	<p><button @onclick="() => ShowLoyaltyDiscountOverlay(loyaltyDiscount)">Mere information</button></p>
+}
+
+@if (visibleOverlay == true)
+{
+	<div class="overlay" @onclick="HideOverlay">
+		@if (!string.IsNullOrEmpty(errorMessage))
+		{
+			<div class="alert alert-danger">@errorMessage</div>
+		}
+		<div class="overlay-content" @onclick:stopPropagation>
+			<h2>@selectedCampaign.Name</h2>
+			<p>@selectedCampaign.DiscountAmount</p>
+			<button @onclick="HideOverlay">Luk</button>
+			<button @onclick="DeleteDiscountWarning">Slet kampagne</button>
+			@* <button @onclick="">Ændre</button> *@
+			@if (toggleDiscountWarning == true)
+			{
+				<p>Er du sikker på du vil slette kampagnen?</p>
+				<button @onclick="() => toggleDiscountWarning = false">Annuller</button>
+				<button @onclick="ConfirmDeleteCampaign">Slet kampagne</button>
+			}
+		</div>
+	</div>
+}
+
+@code {
+
+	private Campaign? selectedCampaign;
+	List<Campaign> campaignList = new List<Campaign>();
+	private LoyaltyDiscount? selectedLoyaltyDiscount;
+	List<LoyaltyDiscount> loyaltyDiscountList = new List<LoyaltyDiscount>();
+	private string? errorMessage;
+
+	private bool toggleDiscountWarning = false;
+
+	private bool visibleOverlay = false;
+
+	void ShowCampaignOverlay(Campaign campaign)
+	{
+		visibleOverlay = true;
+		selectedCampaign = campaign;
+	}
+
+	void ShowLoyaltyDiscountOverlay(LoyaltyDiscount loyaltyDiscount)
+	{
+		visibleOverlay = true;
+		selectedLoyaltyDiscount = loyaltyDiscount;
+	}
+
+	void DeleteDiscountWarning()
+	{
+		toggleDiscountWarning = true;
+	}
+
+	void HideOverlay()
+	{
+		visibleOverlay = false;
+		errorMessage = null;
+		toggleDiscountWarning = false;
+	}
+
+	private async Task ConfirmDeleteCampaign()
+	{
+		try
+		{
+			await discountService.DeleteCampaignAsync(selectedCampaign);
+			campaignList.Remove(selectedCampaign);
+			selectedCampaign = null;
+			visibleOverlay = false;
+			toggleDiscountWarning = false;
+
+			StateHasChanged();
+		}
+		catch (Exception)
+		{
+			errorMessage = "Noget gik galt i forbindelse med at slette denne kampagne!";
+		}
+	}
+
+	// private async Task ConfirmUpdateLoyaltyDiscount()
+	// {
+	// 	try
+	// 	{
+			
+	// 	}
+	// }
+}
