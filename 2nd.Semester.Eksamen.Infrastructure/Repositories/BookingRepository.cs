@@ -41,7 +41,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         {
             throw new NotImplementedException();
         }
-        public async Task<IEnumerable<Booking>> GetByEmployeeId(int EmployeeId)
+        public async Task<IEnumerable<Booking>> GetByCustomerId(int CustomerId)
         {
             throw new NotImplementedException();
         }

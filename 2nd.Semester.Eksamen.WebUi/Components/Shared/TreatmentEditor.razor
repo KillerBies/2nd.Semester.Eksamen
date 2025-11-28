@@ -43,7 +43,7 @@
             @if (CanSelectEmployee())
             {
                 <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Employee.EmployeeId" dafault="disabled="@(!(TreatmentSelected() && TreatmentCategorySelected()))">
-                    @foreach (var Employee in PossibleEmployees.Where(e => e.Specialization == TreatmentBooking.Treatment.Category))
+                    @foreach (var Employee in PossibleEmployees.Where(e => TreatmentBooking.Treatment.RequiredSpecialties.All(tr=>e.Specialties.Contains(tr))))
                     {
                         <option value="@Employee.EmployeeId">@Employee.Name</option>
                     }

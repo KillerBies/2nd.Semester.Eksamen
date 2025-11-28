@@ -34,14 +34,29 @@
     <div class="possible-times-container">
         <div class="possible-times-header" style="border-radius:@(Open ? "12px 12px 0 0":"12px 12px 12px 12px");">
             <span class="title">Mulige Tider</span>
-            <button type="button" class="dropdownbutton" @onclick="ToggleDropdown">▼</button>
+            <div class="btn-group">
+                <button type="button" class="refesh" @onclick="refreshAvailableSlots" title="Opdater Mulige Tider">⟳</button>
+                <button type="button" class="dropdownbutton" @onclick="ToggleDropdown">▼</button>
+            </div>
         </div>
         @if (Open)
         {
             <div class="time-grid">
-                @foreach (var availableTime in AvailableBookingSpots)
+                @if (AvailableBookingSpots.Count == 0)
+                {   
+                    <div class="btn-group">
+                        <label style="align-content:center;">Fra:</label>
+                        <input type="datetime-local" @bind-value="Booking.Start" @onselect="GetEndTime"/>
+                        <label style ="align-content:center;">Til:</label>
+                        <input type="datetime-local" @bind-value="Booking.End" default="@DateTime.Now" />
+                    </div>
+                }
+                else
                 {
-                    <TimeCard OnSelect="SelectTimeSlot"availableTime="availableTime"></TimeCard>
+                    @foreach (var availableTime in AvailableBookingSpots)
+                    {
+                        <TimeCard OnSelect="SelectTimeSlot" availableTime="availableTime"></TimeCard>
+                    }
                 }
             </div>
         }

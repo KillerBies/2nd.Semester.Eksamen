@@ -17,7 +17,6 @@ namespace _2nd.Semester.Eksamen.Application.Services
         {
             _customerRepository = customerRepository;
         }
-        
 
 
 

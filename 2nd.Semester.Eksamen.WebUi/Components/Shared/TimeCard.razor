@@ -1,19 +1,21 @@
 ﻿@using _2nd.Semester.Eksamen.Application.DTO;
 @using System.Globalization;
-<div class="available-time" @onclick="() => Select()">
-    <div class="available-time-header @(availableTime.ContainsWantedEmployees ? "highlight" : "")">
-        <span><b>@availableTime.StartTime.ToString("ddd, MMM dd", Culture)</b></span>
+<div class="available-time @(IsSelected? "highlight" : "")" @onclick="() => Select()">
+    <div class="available-time-header)">
+        <span><b>@availableTime.Start.ToString("ddd, MMM dd", Culture)</b></span>
     </div>
     <div class="time-date">
-        <b><p>@(availableTime.StartTime.ToString("HH:mm")) - @availableTime.EndTime.ToString("HH:mm")</p></b>
+        <b><p>@(availableTime.Start.ToString("HH:mm")) - @availableTime.End.ToString("HH:mm")</p></b>
     </div>
 </div>
 @code {
     [Parameter, EditorRequired]
-    public AvailableBookingSpotDTO availableTime { get; set; } = null!;
-    [Parameter] public EventCallback<AvailableBookingSpotDTO> OnSelect { get; set; }
+    public BookingDTO availableTime { get; set; } = null!;
+    [Parameter] public EventCallback<BookingDTO> OnSelect { get; set; }
+    private bool IsSelected { get; set; } = false;
     private async Task Select()
     {
+        IsSelected = !IsSelected;
         await OnSelect.InvokeAsync(availableTime);
     }
     private CultureInfo Culture = new("da-DK");

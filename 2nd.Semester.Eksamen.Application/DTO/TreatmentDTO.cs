@@ -16,6 +16,8 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         [Required]
         public string Name { get; set; } = null!;
         [Required]
+        public List<string> RequiredSpecialties { get; set; } = new();
+        [Required]
         public TimeSpan Duration { get; set; } = new();
         [Required]
         public decimal BasePrice { get; set; } = new();

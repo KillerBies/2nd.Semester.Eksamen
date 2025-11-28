@@ -9,6 +9,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
     public partial class TreatmentEditor
     {
         [Parameter] public EventCallback<TreatmentBookingDTO> OnRemove { get; set; }
+        [Parameter] public EventCallback<TreatmentBookingDTO> OnSelectedParameterChange { get; set; }
         [Parameter] public List<TreatmentDTO> PossibleTreatments { get; set; }
         [Parameter] public List<EmployeeDTO> PossibleEmployees { get; set; }
         [Parameter] public TreatmentBookingDTO TreatmentBooking { get; set; }
@@ -19,13 +20,18 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
         {
             await OnRemove.InvokeAsync(TreatmentBooking);
         }
-        protected override void OnParametersSet()
+        protected async override void OnParametersSet()
         {
+            if (AllParametersSelected())
+            {
+                await OnSelectedParameterChange.InvokeAsync();
+            }
             if (TreatmentBooking.Treatment.TreatmentId != 0 && TreatmentBooking.Employee.EmployeeId != 0)
             {
                 TreatmentBooking.UpdatePrice(PossibleTreatments, PossibleEmployees);
             }
         }
+
 
 
 
@@ -74,6 +80,10 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
         private bool CanWritePrice()
         {
             return (EmployeeSelected() && TreatmentCategorySelected() && TreatmentSelected());
+        }
+        private bool AllParametersSelected()
+        {
+            return (CanSelectPrice() || CanWritePrice());
         }
     }
 }

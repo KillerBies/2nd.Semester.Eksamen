@@ -23,5 +23,6 @@ namespace _2nd.Semester.Eksamen.Application.DTO
                 Price = Employee.BasePriceMultiplier * Treatment.BasePrice;
             }
         }
+
     }
 }

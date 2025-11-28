@@ -6,6 +6,8 @@ using _2nd.Semester.Eksamen.WebUi.Components;
 using Microsoft.EntityFrameworkCore;
 using _2nd.Semester.Eksamen.Application.Services;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Domain.DomainInterfaces;
+using _2nd.Semester.Eksamen.Domain.DomainServices;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -23,6 +25,8 @@ builder.Services.AddScoped<ITreatmentBookingRepository, TreatmentBookingReposito
 builder.Services.AddScoped<BookingApplicationService>();
 builder.Services.AddScoped<BookingQueryService>();
 builder.Services.AddScoped<CreateEmployeeCommand>();
+builder.Services.AddScoped<ISuggestionService, BookingSuggestionService>();
+builder.Services.AddScoped<IBookingDomainService, BookingDomainService>();
 var app = builder.Build();
 
 

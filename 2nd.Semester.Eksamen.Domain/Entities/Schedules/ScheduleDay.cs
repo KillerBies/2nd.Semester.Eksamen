@@ -27,6 +27,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
             });
         }
 
+        public bool AvailableInTimeRange(TimeRange timerange)
+        {
+            return !(TimeRanges.Any(tr => tr.HasOverlap(timerange) && tr.Type!=TimeRangeType.Freetime));
+        }
         public bool CheckIfAvailable(TimeSpan duration)
         {
             return _timeRanges.Any(r => r.Type == TimeRangeType.Freetime && r.Duration >= duration);
@@ -42,13 +46,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
             return _timeRanges
                 .Where(r => r.Type == TimeRangeType.Freetime && r.Duration >= duration)
                 .OrderBy(r => r.Start);
-        }
-        public TimeRange? GetEarliestAvailableSlot(TimeSpan duration)
-        {
-            return _timeRanges
-                .Where(r => r.Type == TimeRangeType.Freetime && r.Duration >= duration)
-                .OrderBy(r => r.Start)
-                .FirstOrDefault();
         }
 
         public IEnumerable<TimeRange> GetOverlappingFreetime(TimeRange booking)
@@ -114,6 +111,25 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
             }
 
             _timeRanges = merged;
+        }
+        public bool DeleteBooking(DateTime start, DateTime end)
+        {
+            var booking = _timeRanges.FirstOrDefault(r => r.Type == TimeRangeType.Booked &&
+                                                          r.Start == start &&
+                                                          r.End == end);
+            if (booking == null) return false;
+
+            _timeRanges.Remove(booking);
+            _timeRanges.Add(new TimeRange
+            {
+                Name = "Freetime",
+                Type = TimeRangeType.Freetime,
+                Start = start,
+                End = end
+            });
+
+            MergeAdjacentFreetime();
+            return true;
         }
     }
 }

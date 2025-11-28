@@ -1,0 +1,19 @@
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Schedules;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace _2nd.Semester.Eksamen.Domain.DomainInterfaces
+{
+    public interface ISuggestionService
+    {
+        public Task<List<BookingSuggestion>> GetBookingSugestions(List<BookingTreatment> treatments,
+                                                                        DateOnly start,
+                                                                        int numberOfDaysToCheck,
+                                                                        int neededSuggestions,
+                                                                        int interval);
+    }
+}

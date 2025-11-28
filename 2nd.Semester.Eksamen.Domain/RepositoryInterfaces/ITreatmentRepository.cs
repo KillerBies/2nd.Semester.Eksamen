@@ -17,7 +17,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces
         public Task CreateNewAsync(Treatment treatment);
         public Task UpdateAsync(Treatment treatment);
         public Task DeleteAsync(Treatment treatment);
-        public Task<IEnumerable<Employee>> GetByCategory(string category);
+        public Task<IEnumerable<Treatment>> GetByCategory(string category);
 
     }
 }

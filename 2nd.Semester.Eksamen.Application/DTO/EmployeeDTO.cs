@@ -14,6 +14,6 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         public string Name { get; set; } = null!;
         public string ExperienceLevel { get; set; } = "";
         public decimal BasePriceMultiplier { get; set; } = 1;
-        public string Specialization { get; set; } = null!;
+        public List<string> Specialties { get; set; } = null!;
     }
 }

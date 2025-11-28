@@ -98,7 +98,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasConversion<string>();
 
             modelBuilder.Entity<Employee>()
-                .HasMany(b => b.TreatmentHistory);
+                .HasMany(b => b.Bookings);
 
             modelBuilder.Entity<PrivateCustomer>()
                 .HasMany(b => b.BookingHistory);

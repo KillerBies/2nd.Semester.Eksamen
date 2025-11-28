@@ -17,6 +17,6 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces
         public Task CreateNewAsync(Booking Booking);
         public Task UpdateAsync(Booking Booking);
         public Task DeleteAsync(Booking Booking);
-        public Task<IEnumerable<Booking>> GetByEmployeeId(int EmployeeId);
+        public Task<IEnumerable<Booking>> GetByCustomerId(int CustomerId);
     }
 }

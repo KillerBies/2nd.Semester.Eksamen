@@ -10,7 +10,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces
     public interface ICompanyCustomerRepository
     {
         //Repository for Customer. 
-        //public Task<Customer?> GetByIDAsync(int id);
+        public Task<Customer?> GetByIDAsync(int id);
         //public Task<IEnumerable<Customer?>> GetAllAsync();
         //public Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(CompanyCustomer Customer);

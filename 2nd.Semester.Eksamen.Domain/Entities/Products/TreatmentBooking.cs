@@ -28,8 +28,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 
 
         public TreatmentBooking() { }
-        public TreatmentBooking(Treatment treatment, Person employee)
+        public TreatmentBooking(Treatment treatment, Person employee, DateTime start, DateTime end)
         {
+            TrySetTimeRange(start, end);
             Employee = Employee;
             Treatment = treatment;
         }

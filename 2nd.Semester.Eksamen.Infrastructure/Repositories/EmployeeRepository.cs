@@ -61,12 +61,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
             await using var _context = await _factory.CreateDbContextAsync();
             return await _context.Employees.FindAsync(id);
         }
-        public async Task<IEnumerable<Employee?>> GetBySpecialtyAsync(string Category)
+        public async Task<IEnumerable<Employee?>> GetByTreatmentSpecialtiesAsync(List<string> specialties)
         {
             await using var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees
-                .Where(e => e.Specialty == Category)
-                .ToListAsync();
+            return await _context.Employees.Where(e => specialties.All(s=>e.Specialties.Contains(s))).ToListAsync();
         }
 
     }

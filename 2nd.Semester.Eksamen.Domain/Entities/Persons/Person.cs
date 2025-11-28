@@ -10,11 +10,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public abstract class Person : BaseEntity
     {
         //Basic elements of a person
-        public string Name { get; private set; } = null!;
+        public string Name { get; set; } = null!;
         public int AddressId { get; set; }
-        public Address Address { get; private set; } = null!;
-        public string PhoneNumber { get; private set; } = null!;
-        public string Email { get; private set; } = null!;
+        public Address Address { get;  set; } = null!;
+        public string PhoneNumber { get;  set; } = null!;
+        public string Email { get;  set; } = null!;
 
 
         public Person() { }

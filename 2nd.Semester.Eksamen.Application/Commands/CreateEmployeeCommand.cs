@@ -34,7 +34,7 @@ namespace _2nd.Semester.Eksamen.Application.Commands
                 firstname: dto.FirstName,
                 lastname: dto.LastName,
                 type: dto.Type.GetDescription(), // Takes string from enum description
-                specialty: dto.Specialty,
+                specialties: dto.Specialties,
                 experience: dto.ExperienceLevel.GetDescription(),
                 gender: dto.Gender.GetDescription(),
                 email: dto.Email,

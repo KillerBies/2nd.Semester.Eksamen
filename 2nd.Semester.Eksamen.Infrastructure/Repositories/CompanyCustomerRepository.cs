@@ -20,10 +20,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         }
 
 
-        //public async Task<Customer?> GetByIDAsync(int id)
-        //{
-
-        //}
+        public async Task<Customer?> GetByIDAsync(int id)
+        {
+            throw new Exception();
+        }
         //public async Task<IEnumerable<Customer?>> GetAllAsync()
         //{
 

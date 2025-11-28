@@ -13,9 +13,11 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         [Required]
         public int CustomerId { get; set; } = new();
         [Required]
-        public DateTime Start { get; set; } = new();
+        public CustomerDTO Customer { get; set; }
         [Required]
-        public DateTime End { get; set; } = new();
+        public DateTime Start { get; set; } = DateTime.Now;
+        [Required]
+        public DateTime End { get; set; } = DateTime.Now;
         [Required]
         public List<TreatmentBookingDTO> TreatmentBookingDTOs { get; set; } = new List<TreatmentBookingDTO>(){new()};
         [Required]

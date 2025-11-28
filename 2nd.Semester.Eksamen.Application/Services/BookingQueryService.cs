@@ -1,11 +1,18 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO;
+using _2nd.Semester.Eksamen.Domain.DomainInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Schedules;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
-using System.Reflection.Metadata.Ecma335;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using _2nd.Semester.Eksamen.Application.Adapters;
 
 namespace _2nd.Semester.Eksamen.Application.Services
 {
@@ -15,12 +22,17 @@ namespace _2nd.Semester.Eksamen.Application.Services
         private readonly IEmployeeRepository _employeeRepository;
         private readonly ITreatmentRepository _treatmentRepository;
         private readonly ITreatmentBookingRepository _treatmentBookingRepository;
-        public BookingQueryService(IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, ITreatmentBookingRepository treatmentBookingRepository)
+        private readonly ISuggestionService _BookingSuggestionService;
+        private readonly DTO_to_Domain ToDomainAdapter;
+        private readonly ISuggestionService _suggestionService;
+        public BookingQueryService(IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, ITreatmentBookingRepository treatmentBookingRepository, ISuggestionService suggestionService)
         {
             _bookingRepository = bookingRepository;
             _employeeRepository = employeeRepository;
             _treatmentRepository = treatmentRepository;
             _treatmentBookingRepository = treatmentBookingRepository;
+            _suggestionService = suggestionService;
+            ToDomainAdapter = new DTO_to_Domain();
         }
 
         public async Task<IEnumerable<EmployeeDTO>> GetAllEmployeesAsync()
@@ -32,7 +44,7 @@ namespace _2nd.Semester.Eksamen.Application.Services
                 Name = e.Name,
                 ExperienceLevel = e.ExperienceLevel,
                 BasePriceMultiplier = e.BasePriceMultiplier,
-                Specialization = e.Specialty
+                Specialties = e.Specialties
             });
             return employeeDTOs;
         }
@@ -49,50 +61,42 @@ namespace _2nd.Semester.Eksamen.Application.Services
             });
             return treatmentDTOs;
         }
-        public async Task<IEnumerable<AvailableBookingSpotDTO>> GetAvailableSpotsAsync(BookingDTO Booking,DateTime MinDate=default)
+        public async Task<List<BookingDTO>> GetBookingSuggestionsAsync(List<TreatmentBookingDTO> treatments, DateOnly startdate, int numberOfDaysToCheck, int numberOfSuggestions)
         {
-            if (MinDate == default) MinDate = DateTime.Now;
-            List<AvailableBookingSpotDTO> spots = new();
-            EmployeeDTO RootEmp = Booking.TreatmentBookingDTOs.Select(t=>t.Employee).FirstOrDefault(e => e.EmployeeId != 0);
-            if(RootEmp==null)
+
+            List<BookingTreatment> treatements = treatments.Select(t => new BookingTreatment
             {
-                while(RootEmp == null)
+                Treatment = ToDomainAdapter.DTOTreatmentToDomain(t.Treatment),
+                Employee = ToDomainAdapter.DTOEmployeeToDomain(t.Employee)
+            }).ToList();
+            List<BookingSuggestion> suggestions = await _suggestionService.GetBookingSugestions(treatements, startdate, numberOfDaysToCheck, numberOfSuggestions, 5);
+            List<BookingDTO> bookingDTOs = suggestions.Select(s => new BookingDTO
+            {
+                Start = s.Start,
+                End = s.End,
+                TreatmentBookingDTOs = s.Items.Select(i => new TreatmentBookingDTO
                 {
-
-                }
-                /*
-                 find an employee available tomorrow and start from there
-                if there are non then try again
-                 */
-            }
-
-            return await;
-            throw new NotImplementedException();
+                    Treatment = new TreatmentDTO
+                    {
+                        TreatmentId = i.Treatment.Id,
+                        Name = i.Treatment.Name,
+                        Category = i.Treatment.Category,
+                        Duration = i.Treatment.Duration,
+                        BasePrice = i.Treatment.Price
+                    },
+                    Employee = new EmployeeDTO
+                    {
+                        EmployeeId = i.Employee.Id,
+                        Name = i.Employee.Name,
+                        ExperienceLevel = i.Employee.ExperienceLevel,
+                        BasePriceMultiplier = i.Employee.BasePriceMultiplier,
+                        Specialties = i.Employee.Specialties
+                    },
+                    Start = i.Start,
+                    End = i.End,
+                }).ToList()
+            }).ToList();
+            return bookingDTOs;
         }
-
-        /*
-        Input minimum datetime (normalt sat til dagen efter datetime now)
-        Gør følgende indtil booking spot listen har en count på 30
-        BookingDTO = new();
-        Hvis en medarbejder er valgt
-            Find deres første åbne spot efter kl08:00
-            Udregn hvornår behandlingen slutter og se om hele bookingen kan passe ind og slutte før kl:20:00
-            Hvis den ikke kan søg efter deres næste tomme spot og check igen
-            Når et spot er fundet
-            Foreach(treatment in otherTreatments)
-                found=false
-                While(found==false)
-                    Brug start og end til at tjekke alle medarbejderes apointments for et spot available()
-                    Hvis et spot findes add dem til treatment booking dtoen i booking dto objektet
-                        found=true;
-            hvis et spot findes til alle treatments
-            Add booking spottet til listen af spots.
-
-            
-                
-         */
-
-
-
     }
 }

@@ -45,11 +45,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         {
             throw new NotImplementedException();
         }
-        public async Task<IEnumerable<Employee>> GetByCategory(string category)
+        public async Task<IEnumerable<Treatment>> GetByCategory(string category)
         {
             await using var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees
-                .Where(e => e.Specialty == category)
+            return await _context.Treatments.Where(t => t.Category == category)
                 .ToListAsync();
         }
     }

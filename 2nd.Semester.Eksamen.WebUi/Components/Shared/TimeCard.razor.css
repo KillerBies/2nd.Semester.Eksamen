@@ -8,11 +8,13 @@
     font-weight: bold;
     margin: 0;
     box-sizing: border-box;
+    cursor: pointer;
 }
     .available-time-header.highlight {
         background-color: #034265;
     }
 .available-time {
+    cursor: pointer;
     width: auto;
     height: auto;
     box-shadow: 0 6px 6px rgba(0,0,0,0.1);
