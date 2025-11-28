@@ -1,12 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
-using _2nd.Semester.Eksamen.Domain.Helpers;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain.Helpers;
 
 namespace _2nd.Semester.Eksamen.Application.Commands
 {

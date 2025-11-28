@@ -28,6 +28,8 @@ builder.Services.AddScoped<ICompanyCustomerService, CompanyCustomerService>();
 builder.Services.AddScoped<ICompanyCustomerRepository, CompanyCustomerRepository>();
 builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
 builder.Services.AddScoped<IPrivateCustomerRepository, PrivateCustomerRepository>();
+builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
+builder.Services.AddScoped<ILoyaltyDiscountRepository, LoyaltyDiscountRepository>();
 
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<EmployeeSpecialtyService>();
@@ -35,7 +37,7 @@ builder.Services.AddScoped<CreateEmployeeCommand>();
 builder.Services.AddScoped<UpdateEmployeeCommand>();
 builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
 builder.Services.AddScoped<IBookingService, BookingService>();
-builder.Services.AddScoped<IDiscountService, Disc>
+builder.Services.AddScoped<IDiscountService, DiscountService>();
 
 var app = builder.Build();
 
