@@ -13,18 +13,25 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
 {
     public class CompanyCustomerRepository : ICompanyCustomerRepository
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IDbContextFactory<AppDbContext> _factory;
 
-        public CompanyCustomerRepository(AppDbContext dbContext)
+        public CompanyCustomerRepository(IDbContextFactory<AppDbContext> factory)
         {
-            _dbContext = dbContext;
+            _factory = factory;
         }
 
 
-        //public async Task<Customer?> GetByIDAsync(int id)
-        //{
+        public async Task<Customer?> GetByIDAsync(int id)
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            return await  _context.CompanyCustomers.FirstOrDefaultAsync(c => c.Id == id);
+        }
 
-        //}
+        public async Task<CompanyCustomer?> GetByPhoneAsync(string phoneNumber)
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            return await _context.CompanyCustomers.FirstOrDefaultAsync(c => c.PhoneNumber == phoneNumber);
+        }
         //public async Task<IEnumerable<Customer?>> GetAllAsync()
         //{
 
@@ -39,20 +46,25 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
 
 
             //Adds Customer to Customers table in Database.
-            _dbContext.CompanyCustomers.Add(customer);
-            await _dbContext.SaveChangesAsync();
+            await using var _context = await _factory.CreateDbContextAsync();
+            _context.CompanyCustomers.Add(customer);
+            await _context.SaveChangesAsync();
         }
         public async Task<bool> PhoneAlreadyExistsAsync(string phone)
         {
-            return await _dbContext.CompanyCustomers.AnyAsync(c => c.PhoneNumber == phone);
+            await using var _context = await _factory.CreateDbContextAsync();
+            return await _context.CompanyCustomers.AnyAsync(c => c.PhoneNumber == phone);
         }
         //public async Task UpdateAsync(PrivateCustomer Customer)
         //{
 
         //}
-        //public async Task DeleteAsync(PrivateCustomer Customer)
-        //{
-        //}
+        public async Task DeleteAsync(CompanyCustomer customer)
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            _context.CompanyCustomers.Remove(customer);
+            await _context.SaveChangesAsync();
+        }
 
 
     }

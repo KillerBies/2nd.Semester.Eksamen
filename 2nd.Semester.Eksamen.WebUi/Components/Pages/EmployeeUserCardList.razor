@@ -7,13 +7,13 @@
     <div class="employee-nav-header">
         <h3 class="title">Medarbejdere</h3>
         <div class="input-group">
-            <input type="text" placeholder="Search Name..." @bind="SearchTermName" @bind:event="oninput" />
+            <input type="text" placeholder="Søg Navn..." @bind="SearchTermName" @bind:event="oninput" />
         </div>
         <div class="input-group">
-            <input type="text" placeholder="Search Phone Number..." @bind="SearchTermPhone" @bind:event="oninput" />
+            <input type="text" placeholder="Søg Tlf. Nummer..." @bind="SearchTermPhone" @bind:event="oninput" />
         </div>
         <button class="add-employee-btn" @onclick="GoToAddEmployee">
-            <i class="bi bi-plus-lg"></i> Add Employee
+            <i class="bi bi-plus-lg"></i> Tilføj Medarbejder
         </button>
     </div>
 </div>
@@ -21,12 +21,12 @@
 @if (LoadFailed)
 {
     <div class="alert alert-danger">
-        Could not connect to the database. Try again later.
+        Kunne ikke forbinde til databasen. Prøv igen senere
     </div>
 }
 else if (Employees == null)
 {
-    <div>Loading...</div>
+    <div>Loader...</div>
 }
 else
 {

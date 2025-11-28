@@ -17,6 +17,6 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         public Task<IEnumerable<TreatmentBooking>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(TreatmentBooking TreatmentBooking);
         public Task UpdateAsync(TreatmentBooking TreatmentBooking);
-        public Task DeleteAsync(TreatmentBooking TreatmentBooking);
+        public Task DeleteAsync(TreatmentBooking treatmentBooking);
     }
 }

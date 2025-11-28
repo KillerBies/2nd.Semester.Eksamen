@@ -1,0 +1,30 @@
+﻿@page "/createbooking"
+@inject NavigationManager Navi
+@using _2nd.Semester.Eksamen.Application.Services
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons
+@inject BookingFormService bookingFormService;
+@rendermode InteractiveServer
+
+
+<input @bind="phoneNumber" placeholder="Søg efter telefonnummer..." />
+<button type= "button" @onclick="SearchForPhoneNumber">Søg</button>
+
+@if (searchedCustomer != null)
+{
+	<p>Navn: @searchedCustomer.Name</p>
+	<p>Telefon: @searchedCustomer.PhoneNumber</p>
+	<p>Email: @searchedCustomer.Email</p>
+	<button type="button" @onclick="GoToExistingCustomer">Tilknyt booking</button>
+
+}
+else
+{
+	<p>Kunde ikke fundet</p>
+	<button type="button" @onclick="GoToCreatePrivateCustomer">Opret privatkunde</button>
+	<button type="button" @onclick="GoToCreateCompanyCustomer">Opret firmakunde</button>
+}
+
+
+
+
+@code {}

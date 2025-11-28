@@ -23,7 +23,7 @@ namespace _2nd.Semester.Eksamen.Application.Services
 
 
 
-        public async Task CreateCompanyCustomerAsync(CompanyCustomerDTO DTO)
+        public async Task<int> CreateCompanyCustomerAsync(CompanyCustomerDTO DTO)
         {
             //Checks if phonenumber already exists in database. If it doesn't already exist, it continues creating customer.
             bool PhoneAlreadyExists = await _customerRepository.PhoneAlreadyExistsAsync(DTO.PhoneNumber);
@@ -33,9 +33,9 @@ namespace _2nd.Semester.Eksamen.Application.Services
             }
             Address address = new Address(DTO.City, DTO.PostalCode, DTO.StreetName, DTO.HouseNumber);
             //Creates Company Customer
-            CompanyCustomer companyCustomer = new CompanyCustomer(DTO.Name, DTO.CVRNumber, address, DTO.PhoneNumber, DTO.Email);
+            CompanyCustomer companyCustomer = new CompanyCustomer(DTO.Name, DTO.CVRNumber, address, DTO.PhoneNumber, DTO.Email, DTO.SaveAsCustomer);
             await _customerRepository.CreateNewAsync(companyCustomer);
-
+            return  (await _customerRepository.GetByPhoneAsync(DTO.PhoneNumber)).Id;
         }
     }
 }

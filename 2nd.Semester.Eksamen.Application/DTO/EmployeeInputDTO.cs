@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Application.DTO
 {
-    public class EmployeeInputDTO
+    public class EmployeeInputDTO : IHasSpecialties
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -22,7 +22,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         public decimal BasePriceMultiplier { get; set; }
         public ExperienceLevels ExperienceLevel { get; set; }
         public EmployeeType Type { get; set; }
-        public string Specialty { get; set; }
+        public List<SpecialtyItemBase> Specialties { get; set; } = new();
         public List<Treatment> TreatmentHistory { get; set; } = new();
     }
 

@@ -98,6 +98,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasConversion<string>();
 
             modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Address)
+                .WithOne()
+                .HasForeignKey<Employee>(e => e.AddressId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            modelBuilder.Entity<Employee>()
                 .HasMany(b => b.TreatmentHistory);
 
             modelBuilder.Entity<PrivateCustomer>()
@@ -108,6 +115,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<Employee>()
                 .Property(e => e.BasePriceMultiplier)
                 .HasPrecision(18, 4);
+
 
             modelBuilder.Entity<Order>()
                 .Property(o => o.DiscountedTotal)

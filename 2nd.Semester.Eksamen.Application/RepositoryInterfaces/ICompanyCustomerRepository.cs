@@ -10,12 +10,13 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
     public interface ICompanyCustomerRepository
     {
         //Repository for Customer. 
-        //public Task<Customer?> GetByIDAsync(int id);
+        public Task<Customer?> GetByIDAsync(int id);
+        public Task<CompanyCustomer?> GetByPhoneAsync(string phoneNumber);
         //public Task<IEnumerable<Customer?>> GetAllAsync();
         //public Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(CompanyCustomer Customer);
         public Task<bool> PhoneAlreadyExistsAsync(string PhoneNumber);
         //public Task UpdateAsync(CompanyCustomer Customer);
-        //public Task DeleteAsync(CompanyCustomer Customer);
+        public Task DeleteAsync(CompanyCustomer Customer);
     }
 }
