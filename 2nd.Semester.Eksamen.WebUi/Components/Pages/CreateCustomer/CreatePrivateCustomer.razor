@@ -7,92 +7,98 @@
 @rendermode InteractiveServer
 
 <h1>Opret privatkunde</h1>
-<EditForm Model="@privateCustomerDTO" OnValidSubmit="@HandleValidSubmit"  class="col-10 p-0" formname="CreateCustomerForm">
+<EditForm Model="@privateCustomerDTO" OnValidSubmit="@HandleValidSubmit" class="col-10 p-0" formname="CreateCustomerForm">
 	<DataAnnotationsValidator />
 	<ValidationSummary />
-<div class="whole-form">
-	
-	<div class="form-group">
+	<div class="whole-form">
+
+		<div class="form-group">
 			<label for="FirstName" class="form-labels"> Fornavn </label>
-		<InputText id="FirstName" @bind-Value="@privateCustomerDTO.FirstName" class="form-control" placeholder="Fornavn..."/>
-			
-	</div> 
+			<InputText id="FirstName" @bind-Value="@privateCustomerDTO.FirstName" class="form-control" placeholder="Fornavn..." />
 
-	<div class="form-group">
+		</div>
+
+		<div class="form-group">
 			<label for="LastName" class="form-labels"> Efternavn </label>
-		<InputText id="LastName" @bind-Value="@privateCustomerDTO.LastName" class="form-control" placeholder="Efternavn..." />
+			<InputText id="LastName" @bind-Value="@privateCustomerDTO.LastName" class="form-control" placeholder="Efternavn..." />
 
-	</div>
-	
-	<div class="form-group">
+		</div>
+
+		<div class="form-group">
 			<label for="City" class="form-labels"> By </label>
-		<InputText id="City" @bind-Value="@privateCustomerDTO.City" class="form-control" placeholder="By..." />
+			<InputText id="City" @bind-Value="@privateCustomerDTO.City" class="form-control" placeholder="By..." />
 
-	</div>
+		</div>
 
-	<div class="form-group">
+		<div class="form-group">
 			<label for="PostalCode" class="form-labels"> Postnummer </label>
-		<InputText id="PostalCode" @bind-Value="@privateCustomerDTO.PostalCode" class="form-control" placeholder="Postnummer..." />
+			<InputText id="PostalCode" @bind-Value="@privateCustomerDTO.PostalCode" class="form-control" placeholder="Postnummer..." />
 
-	</div>
-	
-	<div class="form-group">
+		</div>
+
+		<div class="form-group">
 			<label for="StreetName" class="form-labels"> Vejnavn </label>
-		<InputText id="StreetName" @bind-Value="@privateCustomerDTO.StreetName" class="form-control" placeholder="Vejnavn..." />
+			<InputText id="StreetName" @bind-Value="@privateCustomerDTO.StreetName" class="form-control" placeholder="Vejnavn..." />
 
-	</div>
+		</div>
 
-	<div class="form-group">
+		<div class="form-group">
 			<label for="HouseNumber" class="form-labels"> Husnr</label>
-		<InputText id="HouseNumber" @bind-Value="@privateCustomerDTO.HouseNumber" class="form-control" placeholder="Husnr..." />
+			<InputText id="HouseNumber" @bind-Value="@privateCustomerDTO.HouseNumber" class="form-control" placeholder="Husnr..." />
 
-	</div>
+		</div>
 
-	<div class="form-group">
+		<div class="form-group">
 			<label for="PhoneNumber" class="form-labels"> Tlfnrr</label>
-		<InputText id="PhoneNumber" @bind-Value="@privateCustomerDTO.PhoneNumber" class="form-control" placeholder="Tlfnummer..." />
+			<InputText id="PhoneNumber" @bind-Value="@privateCustomerDTO.PhoneNumber" class="form-control" placeholder="Tlfnummer..." />
 
-	</div>
-	<div class="form-group">
+		</div>
+		<div class="form-group">
 			<label for="Email" class="form-labels"> Email</label>
-		<InputText id="Email" @bind-Value="@privateCustomerDTO.Email" class="form-control" placeholder="Email..." />
+			<InputText id="Email" @bind-Value="@privateCustomerDTO.Email" class="form-control" placeholder="Email..." />
 
-	</div>
+		</div>
 
-	<div class="form-group">
+		<div class="form-group">
 			<label for="Gender" class="form-labels">Køn:</label>
-		<InputSelect @bind-Value="@privateCustomerDTO.Gender">
-			@foreach (var gender in Enum.GetValues<Gender>())
-			{
-				<option value="@gender">@gender</option>
-			}
-		</InputSelect>
-	</div>
+			<InputSelect @bind-Value="@privateCustomerDTO.Gender">
+				@foreach (var gender in Enum.GetValues<Gender>())
+				{
+					<option value="@gender">@gender</option>
+				}
+			</InputSelect>
+		</div>
 
-	<div class="form-group">
+		<div class="form-group">
 			<label for="BirthDayWrapper" class="form-labels"> Fødselsdag</label>
-		<InputDate id="BirthDayWrapper" @bind-Value="@privateCustomerDTO.BirthdayWrapper" class="form-control" min="1920-01-01"
-				   max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+			<InputDate id="BirthDayWrapper" @bind-Value="@privateCustomerDTO.BirthdayWrapper" class="form-control" min="1920-01-01"
+					   max="@DateTime.Today.ToString("yyyy-MM-dd")" />
 
-	</div>
+		</div>
 
-	<div class=" = form-group">
-		<label for="form-check.label" class="form-labels">Gem kundeoplysninger</label>
-		<InputCheckbox id="SaveAsCustomer" @bind-Value="privateCustomerDTO.SaveAsCustomer" class="form-check-input"/>
-	</div>
+		<div class="form-group">
+			<label for="Notes" class="form-labels"> Noter</label>
+			<InputTextArea id="Notes" @bind-Value="@privateCustomerDTO.Notes" maxlength="200" class="form-control" placeholder="Noter..." />
+
+		</div>
+
+		<div class=" = form-group">
+			<label for="form-check.label" class="form-labels">Gem kundeoplysninger</label>
+			<InputCheckbox id="SaveAsCustomer" @bind-Value="privateCustomerDTO.SaveAsCustomer" class="form-check-input" />
+		</div>
 
 		<div class="form-btn">
 			<button type="submit" class="btn btn-primary">Opret privatkunde</button>
 		</div>
-</div>
+	</div>
 </EditForm>
 
 
 
 @code {
 
-	
 
-	
+
+
 
 }

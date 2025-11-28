@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+﻿using System.ComponentModel.DataAnnotations;
 namespace _2nd.Semester.Eksamen.Application.DTO
 {
     public class CompanyCustomerDTO
@@ -30,16 +24,18 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         //----------------------------------------------------------------------------
         [Required(ErrorMessage = "Indtast venligst telefonnummer")]
         [Phone(ErrorMessage = "Indtast venligst et gyldigt telefonnummer")]
-        public string PhoneNumber {  get; set; }
+        public string PhoneNumber { get; set; }
         //----------------------------------------------------------------------------
         [Required(ErrorMessage = "Indtast venligst email")]
         [EmailAddress(ErrorMessage = "Indtast venligst en gyldig email")]
-        public string Email {  get; set; }
+        public string Email { get; set; }
         //----------------------------------------------------------------------------
         [Required(ErrorMessage = "Indtast venligst dit CVR-nummer")]
         [RegularExpression(@"^\d{8}$", ErrorMessage = "CVR-nummer skal være 8 cifre")]
-        public string CVRNumber {  get; set; }
-        
+        public string CVRNumber { get; set; }
+        [MaxLength(200)]
+        public string? Notes { get; set; }
+
         public bool SaveAsCustomer { get; set; }
 
 

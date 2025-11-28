@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 
 namespace _2nd.Semester.Eksamen.Application.DTO
 {
     public class PrivateCustomerDTO
     {
-        
+
         [Required(ErrorMessage = "Udfyld venligst navn")]
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Kun bogstaver er tilladt")]
         public string FirstName { get; set; }
@@ -44,7 +39,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         //----------------------------------------------------------------------------
         [Required(ErrorMessage = "Vælg venligst et køn")]
         public Gender Gender { get; set; }
-        
+
         public DateOnly Birthday { get; set; }
 
         [Required(ErrorMessage = "")]
@@ -53,6 +48,8 @@ namespace _2nd.Semester.Eksamen.Application.DTO
             get => Birthday.ToDateTime(TimeOnly.MinValue);
             set => Birthday = DateOnly.FromDateTime(value);
         }
+        [MaxLength(200)]
+        public string? Notes { get; set; }
         public bool SaveAsCustomer { get; set; }
         public PrivateCustomerDTO()
         {
