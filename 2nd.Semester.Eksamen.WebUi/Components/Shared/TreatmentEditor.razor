@@ -5,9 +5,9 @@
     </div>
     <div class="Treatment-form">
         <div class="mb-2">
-            <label>Behandlings Kategori:</label>
             @if (AnyTreatments())
             {
+                <label>Behandlings Kategori:</label>
                 <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.Category">
                     @foreach (var category in PossibleTreatments.Select(t => t.Category).Distinct())
                     {
@@ -17,14 +17,15 @@
             }
             else
             {
-                <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.Category">
-                </InputText>
+                <span>Det ser ud til at ingen Behandlinger er registret:</span> <button type="button">Registrer ny behandling</button>
+@*                 <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.Category">
+                </InputText> *@
             }
         </div>
         <div class="mb-2">
-            <label>Treatment:</label>
             @if (CanSelectTreatment())
             {
+                <label>Treatment:</label>
                 <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.TreatmentId" disabled="@(!TreatmentCategorySelected())">
                     @foreach (var treatment in PossibleTreatments.Where(t => t.Category == TreatmentBooking.Treatment.Category))
                     {
@@ -34,14 +35,16 @@
             }
             else
             {
-                <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.Name" disabled="@(!TreatmentCategorySelected())">
-                </InputText>
+                <div style="display: flex; flex-direction: row;">
+                <span>Det ser ud til at ingen Behandlinger er registret:</span>
+                <button type="button">Registrer ny behandling</button>
+                </div>
             }
         </div>
         <div class="mb-2">
-            <label>Employee:</label>
             @if (CanSelectEmployee())
             {
+                <label>Employee:</label>
                 <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Employee.EmployeeId" dafault="disabled="@(!(TreatmentSelected() && TreatmentCategorySelected()))">
                     @foreach (var Employee in PossibleEmployees.Where(e => TreatmentBooking.Treatment.RequiredSpecialties.All(tr=>e.Specialties.Contains(tr))))
                     {
@@ -51,8 +54,9 @@
             }
             else
             {
-                <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Employee.Name" disabled="@(!(TreatmentSelected() && TreatmentCategorySelected()))">
-                </InputText>
+                <span>Det ser ud til at ingen Medarbejdere er registret:</span> <button type="button">Registrer ny Medarbejder</button>
+@*                 <InputText class="form-control w-75" @bind-Value="TreatmentBooking.Employee.Name" disabled="@(!(TreatmentSelected() && TreatmentCategorySelected()))">
+                </InputText> *@
             }
         </div>
         <div class="mb-2">
@@ -60,11 +64,5 @@
             <InputNumber class="form-control w-75" @bind-Value="TreatmentBooking.Price" disabled="@(!CanWritePrice())">
             </InputNumber>
         </div>
-        <p>Price: @TreatmentBooking.Price</p>
-        <p>Treatment: @TreatmentBooking.Treatment.Name</p>
-        <p>Category: @TreatmentBooking.Treatment.Category</p>
-        <p>End: @TreatmentBooking.End</p>
-        <p>Start: @TreatmentBooking.Start</p>
-        <p>Employee: @TreatmentBooking.Employee.Name</p>
     </div>
 </div>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _2nd.Semester.Eksamen.Domain.DomainInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 
@@ -13,22 +14,24 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly ITreatmentBookingRepository _treatmentBookingRepository;
-        public BookingDomainService(IBookingRepository bookingRepository, ITreatmentBookingRepository treatmentBookingRepository)
+        private readonly IEmployeeRepository _employeeRepository;
+        public BookingDomainService(IBookingRepository bookingRepository, ITreatmentBookingRepository treatmentBookingRepository, IEmployeeRepository employeeRepository)
         {
             _treatmentBookingRepository = treatmentBookingRepository;
             _bookingRepository = bookingRepository;
+            _employeeRepository = employeeRepository;
         }
-        public async Task<bool> IsBookingOverlappingAsync(Booking booking)
+        public async Task<bool> IsCustomerBookingOverlappingAsync(int customerId, DateTime bookingStart, DateTime bookingEnd)
         {
-            var bookings = await _bookingRepository.GetByCustomerId(booking.CustomerId);
-            if (!(bookings.Any(b => b.Overlaps(booking.Start, booking.End)))) return true;
-            foreach(var treatmentbooking in booking.Treatments)
-            {
-                var treatmentBookings = await _treatmentBookingRepository.GetByEmployeeIDAsync(treatmentbooking.Employee.Id);
-                if (treatmentBookings.Any(tb => treatmentbooking.Employee.Appointments.Any(a => a.Overlaps(tb.Start, tb.End)))) return true;
-            }
+            var bookings = await _bookingRepository.GetByCustomerId(customerId);
+            if (!(bookings.Any(b => b.Overlaps(bookingStart, bookingEnd)))) return true;
             return false;
         }
-        private 
+        public async Task<bool> IsEmployeeBookingOverlapping(int employeeId, DateTime start, DateTime end)
+        {
+            var Employee = await _employeeRepository.GetByIDAsync(employeeId);
+            if (Employee.Appointments.Any(tb => tb.Overlaps(start, end))) return true;
+            return false;
+        }
     }
 }

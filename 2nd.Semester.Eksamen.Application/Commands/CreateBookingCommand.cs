@@ -13,30 +13,18 @@ namespace _2nd.Semester.Eksamen.Application.Commands
 {
     public class CreateBookingCommand
     {
-        private readonly IBookingDomainService _bookingDomainService;
-        private readonly DTO_to_Domain ToDomainAdapter = new();
-        private readonly IBookingRepository _bookingRepository
-        public CreateBookingCommand(IBookingDomainService bookingDomainService, IBookingRepository bookingRepository)
+        public int CustomerId { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public List<CreateTreatmentBookingCommand> Treatments { get; set; }
+        public decimal Price { get; set; } 
+        public CreateBookingCommand(BookingDTO booking)
         {
-            _bookingRepository = bookingRepository;
-            _bookingDomainService = bookingDomainService;
-        }
-        public async Task<bool> CreateBooking(BookingDTO booking)
-        {
-            Booking DomainBooking = ToDomainAdapter.DTOBookingToDomain(booking);
-            if (await IsOverlapping(DomainBooking)) return false;
-            DomainBooking.Treatments.Select(t => t.Employee.Schedule.BookTreatmentOnDate(t));
-            _bookingRepository.CreateNewAsync(DomainBooking);
-            return true;
-            //book schedual
-            //Creat booking in db
-
-        }
-        private async Task<bool> IsOverlapping(Booking booking)
-        {
-            var tasks = booking.Treatments.Select(tb => _bookingDomainService.IsBookingOverlappingAsync(booking));
-            bool[] results = await Task.WhenAll(tasks);
-            return results.Any(r => r);
+            CustomerId = booking.CustomerId;
+            StartDate = booking.Start;
+            EndDate = booking.End;
+            Treatments = booking.TreatmentBookingDTOs.Select(tb => new CreateTreatmentBookingCommand(tb)).ToList();
+            Price = booking.Price;
         }
     }
 }

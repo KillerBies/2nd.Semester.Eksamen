@@ -22,10 +22,10 @@ namespace _2nd.Semester.Eksamen.Application.Services
         private readonly IEmployeeRepository _employeeRepository;
         private readonly ITreatmentRepository _treatmentRepository;
         private readonly ITreatmentBookingRepository _treatmentBookingRepository;
-        private readonly ISuggestionService _BookingSuggestionService;
+        private readonly IBookingDomainService _bookingDomainService;
         private readonly DTO_to_Domain ToDomainAdapter;
         private readonly ISuggestionService _suggestionService;
-        public BookingQueryService(IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, ITreatmentBookingRepository treatmentBookingRepository, ISuggestionService suggestionService)
+        public BookingQueryService(IBookingDomainService bookingDomainService, IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, ITreatmentBookingRepository treatmentBookingRepository, ISuggestionService suggestionService)
         {
             _bookingRepository = bookingRepository;
             _employeeRepository = employeeRepository;
@@ -33,6 +33,7 @@ namespace _2nd.Semester.Eksamen.Application.Services
             _treatmentBookingRepository = treatmentBookingRepository;
             _suggestionService = suggestionService;
             ToDomainAdapter = new DTO_to_Domain();
+            _bookingDomainService = bookingDomainService;
         }
 
         public async Task<IEnumerable<EmployeeDTO>> GetAllEmployeesAsync()
@@ -97,6 +98,36 @@ namespace _2nd.Semester.Eksamen.Application.Services
                 }).ToList()
             }).ToList();
             return bookingDTOs;
+        }
+        public async Task<List<TreatmentBookingDTO>> ArangeTreatments(BookingDTO booking)
+        {
+            var arranged = new List<TreatmentBookingDTO>();
+            var remaining = booking.TreatmentBookingDTOs.ToList();
+            var start = booking.Start;
+
+            while (remaining.Any())
+            {
+                bool scheduledAny = false;
+
+                for (int i = 0; i < remaining.Count; i++)
+                {
+                    var treatment = remaining[i];
+                    bool isOverlapping = await _bookingDomainService.IsEmployeeBookingOverlapping(
+                        treatment.Employee.EmployeeId, start, start.Add(treatment.Treatment.Duration));
+
+                    if (!isOverlapping)
+                    {
+                        treatment.Start = start;
+                        treatment.End = start.Add(treatment.Treatment.Duration);
+                        arranged.Add(treatment);
+                        start = treatment.End;
+                        remaining.RemoveAt(i);
+                        scheduledAny = true;
+                        break; // exit for-loop and start from updated start time
+                    }
+                }
+            }
+            return arranged;
         }
     }
 }

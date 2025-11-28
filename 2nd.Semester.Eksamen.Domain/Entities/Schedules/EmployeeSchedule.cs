@@ -10,9 +10,14 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
 {
-    public class EmployeeSchedule
+    public class EmployeeSchedule : BaseEntity
     {
+        public EmployeeSchedule()
+        {
+        }
+        public int EmployeeId { get; set; }
         public Employee Employee { get; }
+        public List<ScheduleDay> Days { get; set; }
 
         private Dictionary<DateOnly, ScheduleDay> _days = new();
         public ScheduleDay GetOrCreateDay(DateOnly date, TimeOnly workStart, TimeOnly workEnd)
@@ -25,14 +30,14 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
             return day;
         }
 
-        public bool BookTreatmentOnDate(TreatmentBooking bookedTreatment)
+        public bool BookTreatmentOnDate(DateTime start, DateTime end)
         {
-            if(_days[DateOnly.FromDateTime(bookedTreatment.Start)].AddBooking(new TimeRange() { Name = bookedTreatment.Treatment.Name, Start = bookedTreatment.Start, End = bookedTreatment.End, Type = TimeRangeType.Booked })) return true;
+            if(_days[DateOnly.FromDateTime(start)].AddBooking(new TimeRange(start, end) {Type = TimeRangeType.Booked })) return true;
             return false;
         }
-        public bool CancelBookedTreatment(TreatmentBooking bookedTreatment)
+        public bool CancelBookedTreatment(DateTime start, DateTime end)
         {
-            if (_days[DateOnly.FromDateTime(bookedTreatment.Start)].DeleteBooking(bookedTreatment.Start,bookedTreatment.End)) return true;
+            if (_days[DateOnly.FromDateTime(start)].DeleteBooking(start, end)) return true;
             return false;
         }
         public IEnumerable<ScheduleDay> GetUpcomingDays(DateOnly startDate, int numberOfDays)
@@ -54,6 +59,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
             var date = DateOnly.FromDateTime(timeRange.Start);
             return (!(_days.ContainsKey((date))) || _days[date].AvailableInTimeRange(timeRange));
         }
-        public bool 
+       
     }
 }

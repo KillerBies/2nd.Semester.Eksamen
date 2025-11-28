@@ -9,6 +9,7 @@ namespace _2nd.Semester.Eksamen.Domain.DomainInterfaces
 {
     public interface IBookingDomainService
     {
-        public Task<bool> IsBookingOverlappingAsync(Booking booking);
+        public Task<bool> IsCustomerBookingOverlappingAsync(int customerId, DateTime bookingStart, DateTime bookingEnd);
+        public Task<bool> IsEmployeeBookingOverlapping(int employeeId, DateTime start, DateTime end);
     }
 }

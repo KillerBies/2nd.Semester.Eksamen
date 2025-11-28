@@ -11,11 +11,14 @@ namespace _2nd.Semester.Eksamen.Application.DTO
 {
     public class TreatmentBookingDTO
     {
+        [Required]
         public TreatmentDTO Treatment { get; set; } = new();
+        [Required]
         public EmployeeDTO Employee { get; set; } = new();
         public DateTime Start { get; set; } = new();
         public DateTime End { get; set; } = new();
-        public decimal Price { get; set; } = new();
+        [Required]
+        public decimal Price { get; set; } 
         public void UpdatePrice(List<TreatmentDTO> allTreatments, List<EmployeeDTO> allEmployees)
         {
             if (Treatment.TreatmentId != 0 && Employee.EmployeeId != 0)

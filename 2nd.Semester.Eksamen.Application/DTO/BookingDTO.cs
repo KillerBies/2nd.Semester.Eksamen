@@ -11,7 +11,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
     public class BookingDTO
     {
         [Required]
-        public int CustomerId { get; set; } = new();
+        public int CustomerId { get; set; }
         [Required]
         public CustomerDTO Customer { get; set; }
         [Required]
@@ -26,5 +26,6 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         public WaitListDTO WaitList { get; set; } = new();
         [Required]
         public TimeSpan Duration { get; set; } = new();
+        public decimal Price => TreatmentBookingDTOs.Select(tb => tb.Price).Sum();
     }
 }

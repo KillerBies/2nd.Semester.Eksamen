@@ -5,6 +5,7 @@ using _2nd.Semester.Eksamen.WebUi.Components.Shared;
 using _2nd.Semester.Eksamen.Application.Services;
 using _2nd.Semester.Eksamen.Application.DTO;
 using System.Globalization;
+using System.Security.Principal;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 {
@@ -39,8 +40,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             catch (Exception ex)
             {
                 Console.WriteLine($"Database connection failed: {ex.Message}");
-
-                // Fallback: keep lists empty so UI can still load
                 AllTreatments = new List<TreatmentDTO>();
                 AllEmployees = new List<EmployeeDTO>();
 
@@ -48,16 +47,35 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             }
         }
 
-        private void GetEndTime()
+        private async Task Arrange()
         {
-            Booking.End = Booking.Start.Add(Booking.Duration);
+            Booking.TreatmentBookingDTOs = await _bookingQueryService.ArangeTreatments(Booking);
+        }
+        private async Task CreateBooking()
+        {
+            if(EditContext.Validate())
+            {
+                try
+                {
+                    await _bookingApplicationService.CreateBookingAsync(Booking);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Booking creation failed: {ex.Message}");
+                    _errorMessage = "Booking creation failed. Please try again.";
+                }
+            }
+        }
+        private void OnCancel()
+        {
+            Navi.NavigateTo("/");
         }
 
         private async void refreshAvailableSlots()
         {
             bool isValid = EditContext.Validate();
 
-            if (!isValid)
+            if (isValid)
             {
                 try
                 {

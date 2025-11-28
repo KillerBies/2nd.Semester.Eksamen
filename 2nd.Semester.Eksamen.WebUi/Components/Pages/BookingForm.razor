@@ -3,6 +3,7 @@
 @using System.ComponentModel.DataAnnotations
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@inject NavigationManager Navi
 
 
 @if (!string.IsNullOrEmpty(_errorMessage))
@@ -44,12 +45,11 @@
             <div class="time-grid">
                 @if (AvailableBookingSpots.Count == 0)
                 {   
-                    <div class="btn-group">
-                        <label style="align-content:center;">Fra:</label>
-                        <input type="datetime-local" @bind-value="Booking.Start" @onselect="GetEndTime"/>
-                        <label style ="align-content:center;">Til:</label>
-                        <input type="datetime-local" @bind-value="Booking.End" default="@DateTime.Now" />
+                    <div>
+                        <label style="align-content:center;">Start Tidspunkt:</label>
+                        <input type="datetime-local" @bind-value="Booking.Start" @onselect="Arrange"/>
                     </div>
+
                 }
                 else
                 {
@@ -63,8 +63,8 @@
     </div>
 
     <div class="btn-group">
-        <button type="button" class="btn btn-primary mt-3" title="Anuller Booking">Slet</button>
-        <button type="button" class="btn btn-primary mt-3" title="Lav Booking">Gem</button>
+        <button type="button" class="btn btn-primary mt-3" title="Anuller Booking" @onclick="OnCancel">Anuller</button>
+        <button type="button" class="btn btn-primary mt-3" title="Lav Booking" @onclick="CreateBooking">Lav Booking</button>
     </div>
 </EditForm>
 <p>@Booking.Start</p>

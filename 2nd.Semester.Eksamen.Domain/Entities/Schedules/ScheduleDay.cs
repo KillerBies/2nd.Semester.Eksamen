@@ -1,6 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
 {
-    public class ScheduleDay
+    public class ScheduleDay : BaseEntity
     {
+        public EmployeeSchedule Schedule { get; set; }
         public DateOnly Date { get; private set; }
         private List<TimeRange> _timeRanges = new List<TimeRange>();
         public IReadOnlyList<TimeRange> TimeRanges => _timeRanges.OrderBy(r => r.Start).ToList();
+        public ScheduleDay() { }
         public ScheduleDay(DateTime date, TimeOnly workStart, TimeOnly workEnd)
         {
             Date = DateOnly.FromDateTime(date);
             var start = Date.ToDateTime(workStart);
             var end = Date.ToDateTime(workEnd);
-            _timeRanges.Add(new TimeRange
+            _timeRanges.Add(new TimeRange(start, end)
             {
                 Name = "Freetime",
                 Type = TimeRangeType.Freetime,
-                Start = start,
-                End = end
             });
         }
 
@@ -74,10 +75,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
             //If free time timerange Starts at booking start, no freetime before booking (only one free time needed after booking)
             // Split freetime if needed
             if (free.Start < booking.Start) //if freetime starts before booking start then we need a freetime timerange before booking
-                _timeRanges.Add(new TimeRange { Name = "Freetime", Type = TimeRangeType.Freetime, Start = free.Start, End = booking.Start });
+                _timeRanges.Add(new TimeRange(free.Start,booking.Start) { Name = "Freetime", Type = TimeRangeType.Freetime});
 
             if (free.End > booking.End)//if freetime ends after booking end then we need a freetime timerange after booking
-                _timeRanges.Add(new TimeRange { Name = "Freetime", Type = TimeRangeType.Freetime, Start = booking.End, End = free.End });
+                _timeRanges.Add(new TimeRange(booking.End, free.End) { Name = "Freetime", Type = TimeRangeType.Freetime});
 
             booking.Type = TimeRangeType.Booked;
             _timeRanges.Add(booking);
@@ -120,12 +121,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
             if (booking == null) return false;
 
             _timeRanges.Remove(booking);
-            _timeRanges.Add(new TimeRange
+            _timeRanges.Add(new TimeRange(start, end)
             {
                 Name = "Freetime",
                 Type = TimeRangeType.Freetime,
-                Start = start,
-                End = end
             });
 
             MergeAdjacentFreetime();

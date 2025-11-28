@@ -27,6 +27,8 @@ builder.Services.AddScoped<BookingQueryService>();
 builder.Services.AddScoped<CreateEmployeeCommand>();
 builder.Services.AddScoped<ISuggestionService, BookingSuggestionService>();
 builder.Services.AddScoped<IBookingDomainService, BookingDomainService>();
+builder.Services.AddScoped<ICompanyCustomerRepository, CompanyCustomerRepository>();
+builder.Services.AddScoped<ScheduleService>();
 var app = builder.Build();
 
 

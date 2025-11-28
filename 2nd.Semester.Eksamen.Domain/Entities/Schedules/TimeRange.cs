@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
 {
-    public class TimeRange
+    public class TimeRange : BaseEntity
     {
+        public ScheduleDay ScheduleDay { get; set; }
         public string Name { get; set; } = "";
         public TimeRangeType Type { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public TimeSpan Duration => End - Start;
+        public TimeRange()
+        { }
         public TimeRange(DateTime start, DateTime end)
         {
             Start = start;
@@ -22,6 +25,5 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
         {
             return Start < other.End && End > other.Start;
         }
-        public TimeRange() { }
     }
 }

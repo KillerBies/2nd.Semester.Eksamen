@@ -58,8 +58,7 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices
                         Enumerable.Range(0, (int)((slot.End - slot.Start).TotalMinutes / interval))
                             .Select(i => slot.Start.AddMinutes(i * interval))
                             .Where(start => start + first.Duration <= slot.End)
-                    )
-                    .ToList();
+                    ).ToList();
 
             foreach (var start in potentialStarts)
             {

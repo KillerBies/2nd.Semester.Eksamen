@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Schedules;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Data
 {
@@ -42,6 +43,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         public DbSet<LoyaltyDiscount> LoyaltyDiscounts { get; set; }
         public DbSet<Campaign> Campaigns { get; set; }
 
+        //Schedule data
+        public DbSet<EmployeeSchedule> EmployeeSchedules { get; set; }
+        public DbSet<ScheduleDay> ScheduleDays { get; set; }
+        public DbSet<TimeRange> TimeRanges { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>().UseTptMappingStrategy();
@@ -57,6 +63,20 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany(b => b.Treatments)
                 .WithOne(tb => tb.Booking)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Employee>()
+                .HasOne<EmployeeSchedule>(b => b.Schedule).WithOne(s => s.Employee)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<EmployeeSchedule>()
+                .HasMany(es => es.Days)
+                .WithOne(sd => sd.Schedule)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<ScheduleDay>()
+                .HasMany<TimeRange>(sd => sd.TimeRanges)
+                .WithOne(tr => tr.ScheduleDay)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Booking>()
                 .HasOne<Customer>(b => b.Customer)
