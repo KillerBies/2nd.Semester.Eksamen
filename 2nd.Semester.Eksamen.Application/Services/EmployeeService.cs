@@ -12,16 +12,18 @@ namespace _2nd.Semester.Eksamen.Application.Services
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly IEmployeeRepository _repo;
+        private readonly IEmployeeRepository _employeeRepo;
+        private readonly IAddressRepository _addressRepo;
 
-        public EmployeeService(IEmployeeRepository repo)
+        public EmployeeService(IEmployeeRepository employeeRepo, IAddressRepository addressRepo)
         {
-            _repo = repo;
+            _employeeRepo = employeeRepo;
+            _addressRepo = addressRepo;
         }
 
         public async Task<EmployeeDetailsDTO> GetByIdAsync(int id)
         {
-            var emp = await _repo.GetByIDAsync(id);
+            var emp = await _employeeRepo.GetByIDAsync(id);
 
             if (emp == null) return null;
 
@@ -47,7 +49,7 @@ namespace _2nd.Semester.Eksamen.Application.Services
 
         public async Task UpdateEmployeeAsync(EmployeeDetailsDTO dto)
         {
-            var emp = await _repo.GetByIDAsync(dto.Id);
+            var emp = await _employeeRepo.GetByIDAsync(dto.Id);
             if (emp == null) return;
 
             // Update basic properties
@@ -75,14 +77,23 @@ namespace _2nd.Semester.Eksamen.Application.Services
                 emp.Address.UpdateHouseNumber(dto.HouseNumber);
             }
 
-            await _repo.UpdateAsync(emp);
+            await _employeeRepo.UpdateAsync(emp);
         }
+        public async Task DeleteEmployeeAsync(int id)
+        {
+            var emp = await _employeeRepo.GetByIDAsync(id);
+            if (emp == null)
+                return;
 
+            var address = emp.Address;
 
+            await _employeeRepo.DeleteAsync(emp);
 
-
-
-
+            if (emp.Address != null)
+            {
+                await _addressRepo.DeleteAsync(address);
+            }
+        }
 
 
     }
