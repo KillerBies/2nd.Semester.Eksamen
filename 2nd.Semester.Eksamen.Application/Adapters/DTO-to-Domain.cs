@@ -19,43 +19,44 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         private readonly IBookingRepository _bookingRepository;
         private readonly IPrivateCustomerRepository _privateCustomerRepository;
         private readonly ICompanyCustomerRepository _companyCustomerRepository;
-        public DTO_to_Domain(IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, IPrivateCustomerRepository privateCustomerRepository, ICompanyCustomerRepository companyCustomerRepository)
+        private readonly ICustomerRepository _customerRepository;
+        public DTO_to_Domain(ICustomerRepository customerRepository,IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, IPrivateCustomerRepository privateCustomerRepository, ICompanyCustomerRepository companyCustomerRepository)
         {
             _bookingRepository = bookingRepository;
             _employeeRepository = employeeRepository;
             _treatmentRepository = treatmentRepository;
             _companyCustomerRepository = companyCustomerRepository;
             _privateCustomerRepository = privateCustomerRepository;
+            _customerRepository = customerRepository;
 
         }
-        public Treatment DTOTreatmentToDomain(TreatmentDTO treatmentDTO)
+        public async Task<Treatment> DTOTreatmentToDomain(TreatmentDTO treatmentDTO)
         {
-            return _treatmentRepository.GetByIDAsync(treatmentDTO.TreatmentId).Result;
+            return await _treatmentRepository.GetByIDAsync(treatmentDTO.TreatmentId);
         }
-        public Employee DTOEmployeeToDomain(EmployeeDTO employeeDTO)
+        public async Task<Employee> DTOEmployeeToDomain(EmployeeDTO employeeDTO)
         {
-            return _employeeRepository.GetByIDAsync(employeeDTO.EmployeeId).Result;
+            return await _employeeRepository.GetByIDAsync(employeeDTO.EmployeeId);
         }
-        public Booking DTOBookingToDomain(BookingDTO booking)
+        public async Task<Booking> DTOBookingToDomain(BookingDTO booking)
         {
-            var treatments = booking.TreatmentBookingDTOs.Select(tb=>DTOTreatmentBookingToDomain(tb)).ToList();
-            var customer = DTOCustomerToDomain(booking.Customer);
+            List<TreatmentBooking> treatments = new();
+            foreach(var treatment in booking.TreatmentBookingDTOs)
+            {
+                treatments.Add(await DTOTreatmentBookingToDomain(treatment));
+            }
+            var customer = await DTOCustomerToDomain(booking.CustomerId);
             return new Booking(customer, booking.Start, booking.End, treatments);
         }
-        public TreatmentBooking DTOTreatmentBookingToDomain(TreatmentBookingDTO treatmentBookingDTO)
+        public async Task<TreatmentBooking> DTOTreatmentBookingToDomain(TreatmentBookingDTO treatmentBookingDTO)
         {
-            var treatment = DTOTreatmentToDomain(treatmentBookingDTO.Treatment);
-            var employee = DTOEmployeeToDomain(treatmentBookingDTO.Employee);
+            var treatment = await DTOTreatmentToDomain(treatmentBookingDTO.Treatment);
+            var employee = await DTOEmployeeToDomain(treatmentBookingDTO.Employee);
             return new TreatmentBooking(treatment, employee, treatmentBookingDTO.Start, treatmentBookingDTO.End);
         }
-        public Customer DTOCustomerToDomain(CustomerDTO customer)
+        public async Task<Customer> DTOCustomerToDomain(int CustomerId)
         {
-            if(customer.GetType()==typeof(PrivateCustomerDTO))
-            {
-                return _privateCustomerRepository.GetByIDAsync(customer.id).Result;
-            }
-            return _companyCustomerRepository.GetByIDAsync(customer.id).Result;
-
+            return await _customerRepository.GetByIDAsync(CustomerId);
         }
         public DTO_to_Domain() { }
     }

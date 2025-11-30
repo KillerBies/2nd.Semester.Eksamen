@@ -10,7 +10,7 @@ namespace _2nd.Semester.Eksamen.Domain.DomainInterfaces
 {
     public interface ISuggestionService
     {
-        public Task<List<BookingSuggestion>> GetBookingSugestions(List<BookingTreatment> treatments,
+        public Task<List<BookingSuggestion>> GetBookingSugestions(List<TreatmentBooking> treatments,
                                                                         DateOnly start,
                                                                         int numberOfDaysToCheck,
                                                                         int neededSuggestions,

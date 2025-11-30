@@ -13,8 +13,6 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         [Required]
         public int CustomerId { get; set; }
         [Required]
-        public CustomerDTO Customer { get; set; }
-        [Required]
         public DateTime Start { get; set; } = DateTime.Now;
         [Required]
         public DateTime End { get; set; } = DateTime.Now;

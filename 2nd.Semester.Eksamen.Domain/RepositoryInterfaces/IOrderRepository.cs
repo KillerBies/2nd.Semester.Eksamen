@@ -11,7 +11,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces
     {
         //Repository for Order.
         public Task<Order?> GetByIDAsync(int id);
-        public Task<Order?> GetByCustomerIdAsync(int customerId);
+        public Task<IEnumerable<Order?>> GetByCustomerIdAsync(int customerId);
         public Task<IEnumerable<Order?>> GetAllAsync();
         public Task<IEnumerable<Order?>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(Order Order);

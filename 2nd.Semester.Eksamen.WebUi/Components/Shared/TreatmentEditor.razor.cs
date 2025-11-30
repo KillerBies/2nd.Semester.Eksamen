@@ -3,6 +3,8 @@ using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Mono.TextTemplating;
+using System.Text.RegularExpressions;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
 {
@@ -10,80 +12,101 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
     {
         [Parameter] public EventCallback<TreatmentBookingDTO> OnRemove { get; set; }
         [Parameter] public EventCallback<TreatmentBookingDTO> OnSelectedParameterChange { get; set; }
+        [Parameter] public EventCallback<TreatmentBookingDTO> OnChange { get; set; }
         [Parameter] public List<TreatmentDTO> PossibleTreatments { get; set; }
         [Parameter] public List<EmployeeDTO> PossibleEmployees { get; set; }
         [Parameter] public TreatmentBookingDTO TreatmentBooking { get; set; }
+        [Parameter] public EventCallback<int> OnUp { get; set; }
+        [Parameter] public EventCallback<int> OnDown { get; set; }
+        [Parameter] public int Index { get; set; }
         [CascadingParameter] EditContext EditContext { get; set; }
 
 
-        private async Task Remove()
+        private async Task UpPress() => await OnUp.InvokeAsync(Index);
+        private async Task DownPress() => await OnDown.InvokeAsync(Index);
+
+        private async Task Remove() => await OnRemove.InvokeAsync(TreatmentBooking);
+
+        private string SelectedTreatmentCategory
         {
-            await OnRemove.InvokeAsync(TreatmentBooking);
-        }
-        protected async override void OnParametersSet()
-        {
-            if (AllParametersSelected())
+            get => TreatmentBooking.Treatment.Category;
+            set
             {
-                await OnSelectedParameterChange.InvokeAsync();
-            }
-            if (TreatmentBooking.Treatment.TreatmentId != 0 && TreatmentBooking.Employee.EmployeeId != 0)
-            {
-                TreatmentBooking.UpdatePrice(PossibleTreatments, PossibleEmployees);
+                if (TreatmentBooking.Treatment.Category != value)
+                {
+                    TreatmentBooking.Treatment.Category = value;
+                    SelectedTreatmentId = 0;
+                    SelectedEmployeeId = 0;
+                    TreatmentBooking.Price = 0;
+                }
+                Change();
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        private bool AnyEmployees()
+        private int SelectedTreatmentId
         {
-            return PossibleEmployees.Count() != 0;
+            get => TreatmentBooking.Treatment.TreatmentId;
+            set
+            {
+                if (TreatmentBooking.Treatment.TreatmentId != value)
+                {
+                    TreatmentBooking.Treatment.TreatmentId = value;
+                    var selectedTreatment = PossibleTreatments.FirstOrDefault(pt => pt.TreatmentId == value);
+                    if (selectedTreatment != null)
+                    {
+                        TreatmentBooking.Treatment.BasePrice = selectedTreatment.BasePrice;
+                        TreatmentBooking.Treatment.Name = selectedTreatment.Name;
+                        TreatmentBooking.Treatment.Duration = selectedTreatment.Duration;
+                    }
+                    SelectedEmployeeId = 0;
+                    TreatmentBooking.Price = 0;
+                    Change();
+                }
+            }
+        }
+
+        private int SelectedEmployeeId
+        {
+            get => TreatmentBooking.Employee.EmployeeId;
+            set
+            {
+                if (TreatmentBooking.Employee.EmployeeId != value)
+                {
+                    TreatmentBooking.Employee.EmployeeId = value;
+                    var selectedEmployee = PossibleEmployees.FirstOrDefault(pt => pt.EmployeeId == value);
+                    if (selectedEmployee != null)
+                    {
+                        TreatmentBooking.Employee.BasePriceMultiplier = selectedEmployee.BasePriceMultiplier;
+                        TreatmentBooking.Employee.Name = selectedEmployee.Name;
+                        TreatmentBooking.Employee.ExperienceLevel = selectedEmployee.ExperienceLevel;
+                    }
+                    TreatmentBooking.UpdatePrice();
+                    Change();
+                }
+            }
+        }
+        private async Task NotifyChange()
+        {
+            await OnSelectedParameterChange.InvokeAsync(TreatmentBooking);
         }
         private bool AnyTreatments()
         {
             return PossibleTreatments.Count() != 0;
         }
-        private bool TreatmentCategorySelected()
+        protected override void OnAfterRender(bool firstRender)
         {
-            return (!string.IsNullOrEmpty(TreatmentBooking.Treatment.Category));
+            Console.WriteLine("Render!");
         }
-        private bool CanSelectTreatment()
+        private void Change()
         {
-            return (AnyTreatments() && TreatmentCategorySelected());
+            OnChange.InvokeAsync(TreatmentBooking);
         }
-        private bool TreatmentSelected()
-        {
-            return (TreatmentBooking.Treatment.TreatmentId != 0 || !string.IsNullOrEmpty(TreatmentBooking.Treatment.Name));
-        }
-        private bool CanSelectEmployee()
-        {
-            return (AnyEmployees() && TreatmentSelected() && TreatmentCategorySelected());
-        }
-        private bool EmployeeSelected()
-        {
-            return (TreatmentBooking.Employee.EmployeeId != 0 || !string.IsNullOrEmpty(TreatmentBooking.Employee.Name));
-        }
-        private bool CanSelectPrice()
-        {
-            return (EmployeeSelected() && TreatmentCategorySelected() && TreatmentSelected() && AnyTreatments());
-        }
-        private bool CanWritePrice()
-        {
-            return (EmployeeSelected() && TreatmentCategorySelected() && TreatmentSelected());
-        }
-        private bool AllParametersSelected()
-        {
-            return (CanSelectPrice() || CanWritePrice());
-        }
+
+
+
+
+
     }
 }
+
+

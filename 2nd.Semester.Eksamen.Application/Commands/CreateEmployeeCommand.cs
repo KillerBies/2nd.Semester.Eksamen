@@ -31,6 +31,8 @@ namespace _2nd.Semester.Eksamen.Application.Commands
             );
             // Map DTO -> Domain Entity
             var employee = new Domain.Entities.Persons.Employee(
+                workEnd: new(),
+                workStart: new(),
                 firstname: dto.FirstName,
                 lastname: dto.LastName,
                 type: dto.Type.GetDescription(), // Takes string from enum description

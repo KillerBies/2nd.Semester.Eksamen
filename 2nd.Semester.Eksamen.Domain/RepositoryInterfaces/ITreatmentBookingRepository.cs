@@ -14,8 +14,9 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces
         public Task<IEnumerable<TreatmentBooking>> GetByEmployeeIDAsync(int id);
         public Task<IEnumerable<TreatmentBooking>> GetAllAsync();
         public Task<IEnumerable<TreatmentBooking>> GetByFilterAsync(Filter filter);
-        public Task CreateNewAsync(TreatmentBooking TreatmentBooking);
+        public Task BookTreatmentAsync(TreatmentBooking TreatmentBooking);
         public Task UpdateAsync(TreatmentBooking TreatmentBooking);
-        public Task DeleteAsync(TreatmentBooking TreatmentBooking);
+        public Task CancleBookedTreatmentAsync(TreatmentBooking TreatmentBooking);
+        public Task<bool> TreatmentBookingOverlapsAsync(TreatmentBooking TreatmentBooking);
     }
 }

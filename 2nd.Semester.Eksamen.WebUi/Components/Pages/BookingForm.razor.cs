@@ -27,6 +27,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             _errorMessage = "";
+            Booking.CustomerId = 1;
             EditContext = new EditContext(Booking);
             await GetData();
         }
@@ -73,21 +74,34 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
         private async void refreshAvailableSlots()
         {
-            bool isValid = EditContext.Validate();
-
-            if (isValid)
+            try
             {
-                try
-                {
-                    AvailableBookingSpots = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, DateOnly.FromDateTime(DateTime.Now), 7, 30);
-                }
-                catch (Exception)
-                {
-                    timeCardError = "Could not load available time slots.";
-                }
+                AvailableBookingSpots = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, DateOnly.FromDateTime(DateTime.Now), 7, 30);
+            }
+            catch (Exception)
+            {
+                timeCardError = "Could not load available time slots.";
             }
         }
 
+        private void MoveUp(int index)
+        {
+            if (index == 0) return;
+
+            (Booking.TreatmentBookingDTOs[index - 1],
+             Booking.TreatmentBookingDTOs[index]) =
+             (Booking.TreatmentBookingDTOs[index],
+              Booking.TreatmentBookingDTOs[index - 1]);
+        }
+        private void MoveDown(int index)
+        {
+            if (index >= Booking.TreatmentBookingDTOs.Count - 1) return;
+
+            (Booking.TreatmentBookingDTOs[index + 1],
+             Booking.TreatmentBookingDTOs[index]) =
+             (Booking.TreatmentBookingDTOs[index],
+              Booking.TreatmentBookingDTOs[index + 1]);
+        }
         private void HandleValidSubmit()
         {
             Console.WriteLine("HandleValidSubmit Called...");
@@ -109,16 +123,18 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         }
         private void ToggleDropdown()
         {
-            if(AvailableBookingSpots.Count != 0)
-            {
-                refreshAvailableSlots();
-            }
+            refreshAvailableSlots();
             Open = !Open;
         } 
         private void SelectTimeSlot(BookingDTO slot)
         {
             Booking.Start = slot.Start;
             Booking.End = slot.End;
+        }
+        private void UpdateTreatment(TreatmentBookingDTO updated)
+        {
+            // Already updated because it's a reference
+            StateHasChanged();
         }
     }
 }

@@ -1,48 +1,45 @@
-﻿using System;
+﻿using _2nd.Semester.Eksamen.Domain;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using _2nd.Semester.Eksamen.Domain;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
 {
-    public class CompanyCustomerRepository : ICompanyCustomerRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly IDbContextFactory<AppDbContext> _factory;
-
-        public CompanyCustomerRepository(IDbContextFactory<AppDbContext> factory)
+        public ProductRepository(IDbContextFactory<AppDbContext> factory)
         {
             _factory = factory;
         }
-        public async Task<Customer?> GetByIDAsync(int id)
+        public async Task<Product?> GetByIDAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.CompanyCustomers.FindAsync(id);
+            return await _context.Products.FindAsync(id);
         }
-        public async Task<IEnumerable<Customer?>> GetAllAsync()
+        public async Task<IEnumerable<Product?>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.CompanyCustomers.ToListAsync();
+            return await _context.Products.ToListAsync();
         }
-        public async Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter)
+        public async Task<IEnumerable<Product?>> GetByFilterAsync(Filter filter)
         {
             var _context = await _factory.CreateDbContextAsync();
             throw new NotImplementedException();
         }
-
-        public async Task CreateNewAsync(CompanyCustomer customer)
+        public async Task CreateNewAsync(Product Product)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                await _context.CompanyCustomers.AddAsync(customer);
+                await _context.Products.AddAsync(Product);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -52,18 +49,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
                 throw;
             }
         }
-        public async Task<bool> PhoneAlreadyExistsAsync(string phone)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.CompanyCustomers.AnyAsync(c => c.PhoneNumber == phone);
-        }
-        public async Task UpdateAsync(PrivateCustomer Customer)
+        public async Task UpdateAsync(Product Product)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.PrivateCustomers.Update(Customer);
+                _context.Products.Update(Product);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -73,13 +65,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
                 throw;
             }
         }
-        public async Task DeleteAsync(PrivateCustomer Customer)
+        public async Task DeleteAsync(Product Product)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.PrivateCustomers.Remove(Customer);
+                _context.Products.Remove(Product);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -89,7 +81,5 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
                 throw;
             }
         }
-
-
     }
 }

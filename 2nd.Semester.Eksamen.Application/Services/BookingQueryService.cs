@@ -65,12 +65,21 @@ namespace _2nd.Semester.Eksamen.Application.Services
         public async Task<List<BookingDTO>> GetBookingSuggestionsAsync(List<TreatmentBookingDTO> treatments, DateOnly startdate, int numberOfDaysToCheck, int numberOfSuggestions)
         {
 
-            List<BookingTreatment> treatements = treatments.Select(t => new BookingTreatment
+            List<TreatmentBooking> TreatmentBookings = new();
+
+            if (treatments != null)
             {
-                Treatment = ToDomainAdapter.DTOTreatmentToDomain(t.Treatment),
-                Employee = ToDomainAdapter.DTOEmployeeToDomain(t.Employee)
-            }).ToList();
-            List<BookingSuggestion> suggestions = await _suggestionService.GetBookingSugestions(treatements, startdate, numberOfDaysToCheck, numberOfSuggestions, 5);
+                foreach (var treatment in treatments)
+                {
+                    if (treatment != null)
+                    {
+                        var domainTreatment = await ToDomainAdapter.DTOTreatmentBookingToDomain(treatment);
+                        if (domainTreatment != null)
+                            TreatmentBookings.Add(domainTreatment);
+                    }
+                }
+            }
+            List<BookingSuggestion> suggestions = await _suggestionService.GetBookingSugestions(TreatmentBookings, startdate, numberOfDaysToCheck, numberOfSuggestions, 5);
             List<BookingDTO> bookingDTOs = suggestions.Select(s => new BookingDTO
             {
                 Start = s.Start,

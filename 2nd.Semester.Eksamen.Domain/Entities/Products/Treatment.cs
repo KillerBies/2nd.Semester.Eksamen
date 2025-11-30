@@ -17,7 +17,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
         public List<string>? RequiredSpecialties { get; set; }
         public string Category { get; private set; } = string.Empty;
         public TimeSpan Duration { get; private set; }
-        public List<Product> Products { get; internal set; } = new List<Product>();
 
         public Treatment(string name, decimal price, string discription, string category, TimeSpan duration) : base(name, price, discription)
         {

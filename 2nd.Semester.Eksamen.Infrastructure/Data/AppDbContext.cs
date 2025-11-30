@@ -28,6 +28,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         //Treatment data
         public DbSet<Treatment> Treatments { get; set; }
         public DbSet<TreatmentBooking> BookedTreatments { get; set; }
+        public DbSet<TreatmentBookingProduct> TreatmentBookingProducts { get; set; }
 
         //Product data
         public DbSet<Product> Products { get; set; }
@@ -35,6 +36,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         //Person data
         public DbSet<PrivateCustomer> PrivateCustomers { get; set; }
         public DbSet<CompanyCustomer> CompanyCustomers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Address> Adresses { get; set; }
 
@@ -51,8 +53,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>().UseTptMappingStrategy();
-            modelBuilder.Entity<Customer>().UseTptMappingStrategy();
 
+            modelBuilder.Entity<Product>().UseTptMappingStrategy();
+            modelBuilder.Entity<Treatment>().ToTable("Treatments");
+            modelBuilder.Entity<Product>().ToTable("Products");
             modelBuilder.Entity<PrivateCustomer>().ToTable("PrivateCustomers");
             modelBuilder.Entity<CompanyCustomer>().ToTable("CompanyCustomers");
             modelBuilder.Entity<Campaign>().ToTable("Campaigns");
@@ -65,7 +69,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Employee>()
-                .HasOne<EmployeeSchedule>(b => b.Schedule).WithOne(s => s.Employee)
+                .HasOne<EmployeeSchedule>(b => b.Schedule)
+                .WithOne(s => s.Employee)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<EmployeeSchedule>()
@@ -92,18 +97,21 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany(o => o.Products)
                 .WithOne(p => p.Order)
                 .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Booking);
 
             //Treatment booking
             modelBuilder.Entity<TreatmentBooking>()
-                .HasOne(tb => tb.Treatment);
-            modelBuilder.Entity<TreatmentBooking>()
-                .HasMany(tb => tb.ProductsUsed);
-            modelBuilder.Entity<TreatmentBooking>()
                 .HasOne(tb => tb.Employee)
                 .WithMany(e => e.Appointments)
                 .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TreatmentBooking>()
+                .HasMany(tb => tb.ProductsUsed)
+                .WithOne(up => up.TreatmentBooking)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.Type)

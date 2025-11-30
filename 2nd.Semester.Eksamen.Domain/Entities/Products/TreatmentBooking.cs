@@ -19,7 +19,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
         
         //Treatment info
         public Treatment Treatment { get; private set; } = null!;
-        public List<Product> ProductsUsed { get; private set; } = new List<Product>();
+        public List<TreatmentBookingProduct> ProductsUsed { get; private set; } = new List<TreatmentBookingProduct>();
 
 
         //Treatment booking details

@@ -55,7 +55,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             string experience,
             string type,
             List<string> specialties,
-            string gender
+            string gender,
+            TimeOnly workStart, 
+            TimeOnly workEnd
         ) : base(firstname, address, phoneNumber, email)
             {
                 TrySetLastName(firstname, lastname);

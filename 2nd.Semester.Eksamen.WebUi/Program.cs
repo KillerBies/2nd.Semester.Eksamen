@@ -29,6 +29,8 @@ builder.Services.AddScoped<ISuggestionService, BookingSuggestionService>();
 builder.Services.AddScoped<IBookingDomainService, BookingDomainService>();
 builder.Services.AddScoped<ICompanyCustomerRepository, CompanyCustomerRepository>();
 builder.Services.AddScoped<ScheduleService>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 var app = builder.Build();
 
 

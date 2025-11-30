@@ -12,7 +12,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         [Required]
         public string Category { get; set; } 
         [Required]
-        public int TreatmentId { get; set; } 
+        public int TreatmentId { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

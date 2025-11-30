@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
@@ -12,47 +13,84 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
 {
     public class PrivateCustomerRepository : IPrivateCustomerRepository
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IDbContextFactory<AppDbContext> _factory;
 
-        public PrivateCustomerRepository(AppDbContext dbContext)
+        public PrivateCustomerRepository(IDbContextFactory<AppDbContext> factory)
         {
-            _dbContext = dbContext;
+            _factory = factory;
         }
 
 
         public async Task<Customer?> GetByIDAsync(int id)
         {
-             throw new Exception();
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.PrivateCustomers.FindAsync(id);
         }
-        //public async Task<IEnumerable<Customer?>> GetAllAsync()
-        //{
-
-        //}
-        //public async Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter)
-        //{
-
-        //}
+        public async Task<IEnumerable<Customer?>> GetAllAsync()
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.PrivateCustomers.ToListAsync();
+        }
+        public async Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            throw new NotImplementedException();
+        }
 
         public async Task CreateNewAsync(PrivateCustomer customer)
         {
-         
-
-            //Adds Customer to PrivateCustomers table in Database.
-            _dbContext.PrivateCustomers.Add(customer);
-            await _dbContext.SaveChangesAsync();
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                await _context.PrivateCustomers.AddAsync(customer);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<bool> PhoneAlreadyExistsAsync(string phone)
         {
-            return await _dbContext.PrivateCustomers.AnyAsync(c => c.PhoneNumber == phone);
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.PrivateCustomers.AnyAsync(c => c.PhoneNumber == phone);
         }
-        //public async Task UpdateAsync(PrivateCustomer Customer)
-        //{
-
-        //}
-        //public async Task DeleteAsync(PrivateCustomer Customer)
-        //{
-        //}
+        public async Task UpdateAsync(PrivateCustomer Customer)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                _context.PrivateCustomers.Update(Customer);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+        public async Task DeleteAsync(PrivateCustomer Customer)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                _context.PrivateCustomers.Remove(Customer);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
 
 
     }

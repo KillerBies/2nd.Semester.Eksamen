@@ -7,13 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace _2nd.Semester.Eksamen.Domain.DomainServices
 {
     public class BookingSuggestionService : ISuggestionService
     {
-        public async Task<List<BookingSuggestion>> GetBookingSugestions(List<BookingTreatment> treatments,
-                                                                        DateOnly start,
+        public async Task<List<BookingSuggestion>> GetBookingSugestions(List<TreatmentBooking> treatments,
+                                                                        DateOnly startdate,
                                                                         int numberOfDaysToCheck,
                                                                         int neededSuggestions,
                                                                         int interval)
@@ -26,92 +27,62 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices
                 Schedule = t.Employee.Schedule
             }).ToList();
 
-            var dayTasks = Enumerable
-                .Range(0, numberOfDaysToCheck)
-                .Select(offset => Task.Run(() =>
-                    ProcessSingleDay(plan, start.AddDays(offset), neededSuggestions, interval)
-                ))
-                .ToList();
-
-            var results = await Task.WhenAll(dayTasks);
-
-            return results
-                .SelectMany(r => r)
-                .OrderBy(r => r.Start)
-                .Take(neededSuggestions)
-                .ToList();
-        }
-
-        private List<BookingSuggestion> ProcessSingleDay(
-            List<PlanItem> plan,
-            DateOnly date,
-            int maxSuggestions,
-            int interval)
-        {
             var suggestions = new List<BookingSuggestion>();
-            var first = plan.First();
-            var day1 = first.Schedule.GetOrCreateDay(date, first.Employee.WorkStart, first.Employee.WorkEnd);
+            if (!plan.Any()) return suggestions;
 
-            var potentialStarts =
-                day1.GetAllAvailableSlots(first.Duration)
-                    .SelectMany(slot =>
-                        Enumerable.Range(0, (int)((slot.End - slot.Start).TotalMinutes / interval))
-                            .Select(i => slot.Start.AddMinutes(i * interval))
-                            .Where(start => start + first.Duration <= slot.End)
-                    ).ToList();
+            var first = plan.First();
+            var firstDay = first.Schedule.GetOrCreateDay(startdate, first.Employee.WorkStart, first.Employee.WorkEnd);
+
+            // Get all possible start times for the first treatment
+            var potentialStarts = firstDay.GetAllAvailableSlots(first.Duration)
+                .SelectMany(slot =>
+                    Enumerable.Range(0, (int)((slot.End - slot.Start).TotalMinutes / interval))
+                        .Select(i => slot.Start.AddMinutes(i * interval))
+                        .Where(start => start + first.Duration <= slot.End)
+                ).ToList();
 
             foreach (var start in potentialStarts)
             {
-                if (suggestions.Count >= maxSuggestions)
+                if (suggestions.Count >= neededSuggestions)
                     break;
 
-                var chain = plan.Aggregate(
-                    new
+                var currentStart = start;
+                var valid = true;
+                var items = new List<BookingItem>();
+
+                // Schedule treatments in order
+                foreach (var planItem in plan)
+                {
+                    var day = planItem.Schedule.GetOrCreateDay(startdate, planItem.Employee.WorkStart, planItem.Employee.WorkEnd);
+                    var currentEnd = currentStart + planItem.Duration;
+
+                    // Check if the time range is free for this employee
+                    var slotAvailable = day.TimeRanges.Any(r =>
+                        r.Type == TimeRangeType.Freetime &&
+                        r.Start <= currentStart &&
+                        currentEnd <= r.End
+                    );
+
+                    if (!slotAvailable)
                     {
-                        Valid = true,
-                        CurrentStart = start,
-                        CurrentEnd = start + first.Duration,
-                        Items = new List<BookingItem>
-                        {
-                        new BookingItem
-                        {
-                            Treatment = first.Treatment,
-                            Employee = first.Employee,
-                            Start = start,
-                            End = start + first.Duration
-                        }
-                        }
-                    },
-                    (acc, p) =>
+                        valid = false;
+                        break;
+                    }
+
+                    items.Add(new BookingItem
                     {
-                        if (!acc.Valid) return acc;
-                        if (p == first) return acc;
-
-                        var day = p.Schedule.GetOrCreateDay(date, p.Employee.WorkStart, p.Employee.WorkEnd);
-                        var nextEnd = acc.CurrentEnd + p.Duration;
-
-                        var valid = day.TimeRanges.Any(r =>
-                            r.Type == TimeRangeType.Freetime &&
-                            r.Start <= acc.CurrentEnd &&
-                            nextEnd <= r.End
-                        );
-
-                        if (!valid)
-                            return new { Valid = false, acc.CurrentStart, acc.CurrentEnd, acc.Items };
-
-                        acc.Items.Add(new BookingItem
-                        {
-                            Treatment = p.Treatment,
-                            Employee = p.Employee,
-                            Start = acc.CurrentEnd,
-                            End = nextEnd
-                        });
-
-                        return new { Valid = true, acc.CurrentStart, CurrentEnd = nextEnd, acc.Items };
+                        Treatment = planItem.Treatment,
+                        Employee = planItem.Employee,
+                        Start = currentStart,
+                        End = currentEnd
                     });
 
-                if (chain.Valid)
-                    suggestions.Add(new BookingSuggestion { Items = chain.Items });
+                    // Move start to end of this treatment for next treatment
+                    currentStart = currentEnd;
+                }
+
+                if (valid)
+                    suggestions.Add(new BookingSuggestion { Items = items });
             }
 
             return suggestions;

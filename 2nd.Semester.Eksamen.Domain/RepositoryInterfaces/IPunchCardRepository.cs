@@ -12,7 +12,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces
     {
         //Repository for PunchCards.
         public Task<PunchCard> GetByIDAsync(int id);
-        public Task<PunchCard> GetByCustomerIDAsync(int id);
+        public Task<IEnumerable<PunchCard>> GetByCustomerIDAsync(int id);
         public Task<IEnumerable<PunchCard>> GetAllAsync();
         public Task<IEnumerable<PunchCard>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(PunchCard PunchCard);
