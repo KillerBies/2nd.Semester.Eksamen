@@ -1,7 +1,7 @@
 ﻿@using _2nd.Semester.Eksamen.Application.DTO;
 @using System.Globalization;
-<div class="available-time @(IsSelected? "highlight" : "")" @onclick="() => Select()">
-    <div class="available-time-header)">
+<div class="available-time page-header" @onclick="() => Select()">
+    <div class="available-time-header" style="background-color: @(IsSelected ? "#034265" : "#b55054")">
         <span><b>@availableTime.Start.ToString("ddd, MMM dd", Culture)</b></span>
     </div>
     <div class="time-date">
@@ -12,7 +12,7 @@
     [Parameter, EditorRequired]
     public BookingDTO availableTime { get; set; } = null!;
     [Parameter] public EventCallback<BookingDTO> OnSelect { get; set; }
-    private bool IsSelected { get; set; } = false;
+    [Parameter] public bool IsSelected { get; set; }
     private async Task Select()
     {
         IsSelected = !IsSelected;

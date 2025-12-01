@@ -1,15 +1,16 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Schedules;
+using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using _2nd.Semester.Eksamen.Domain.Entities.History;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Schedules;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Data
 {
@@ -68,6 +69,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .WithOne(tb => tb.Booking)
                 .OnDelete(DeleteBehavior.NoAction);
 
+
             modelBuilder.Entity<Employee>()
                 .HasOne<EmployeeSchedule>(b => b.Schedule)
                 .WithOne(s => s.Employee)
@@ -82,6 +84,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany<TimeRange>(sd => sd.TimeRanges)
                 .WithOne(tr => tr.ScheduleDay)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+
+
+
 
             modelBuilder.Entity<Booking>()
                 .HasOne<Customer>(b => b.Customer)

@@ -1,6 +1,6 @@
 ﻿<div class="Treatment">
     <div class="treatment-header">
-        <span class="title">Treatment</span>
+        <span class="title">Treatment - @(Index+1)</span>
         <div class="btn-group">
            <button class="btn btn-light" style="background-color:transparent; border: none;" @onclick="() => OnUp.InvokeAsync(Index)">▲</button>
            <button class="btn btn-light" style="background-color:transparent; border: none;" @onclick="() => OnDown.InvokeAsync(Index)">▼</button>
@@ -56,6 +56,7 @@
                         <option value="@Employee.EmployeeId">@Employee.Name</option>
                     }
                 </InputSelect>
+                @(TreatmentBooking.Employee.Name)
             }
             else
             {

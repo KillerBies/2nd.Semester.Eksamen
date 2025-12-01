@@ -19,8 +19,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public List<String> Specialties { get;  set; } = null!;
         public string ExperienceLevel { get;  set; } = null!; // Shown as an enum in DTO and blazor
         public string? Gender { get;  set; } // Shown as an enum in DTO and blazor
-        public TimeOnly WorkStart { get;  set; }
-        public TimeOnly WorkEnd { get;  set; }
+        public TimeSpan WorkStart { get;  set; }
+        public TimeSpan WorkEnd { get;  set; }
 
 
 
@@ -32,7 +32,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
 
 
         public Employee() { }
-        public Employee(string firstname, string lastname, string type, List<string> specialties, string experience, string gender, TimeOnly workStart, TimeOnly workEnd)
+        public Employee(string firstname, string lastname, string type, List<string> specialties, string experience, string gender, TimeSpan workStart, TimeSpan workEnd)
         {
             WorkEnd = workEnd;
             WorkStart = workStart;
@@ -56,8 +56,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             string type,
             List<string> specialties,
             string gender,
-            TimeOnly workStart, 
-            TimeOnly workEnd
+            TimeSpan workStart,
+            TimeSpan workEnd
         ) : base(firstname, address, phoneNumber, email)
             {
                 TrySetLastName(firstname, lastname);
@@ -65,7 +65,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
                 Type = type;
                 Specialties = specialties;
                 Gender = gender;
-
+                WorkEnd = workEnd;
+                WorkStart = workStart;
                 TrySetBasePriceMultiplier(basePriceMultiplier);
             }
 

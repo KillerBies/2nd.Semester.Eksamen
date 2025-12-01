@@ -28,10 +28,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 
 
         public TreatmentBooking() { }
-        public TreatmentBooking(Treatment treatment, Person employee, DateTime start, DateTime end)
+        public TreatmentBooking(Treatment treatment, Employee employee, DateTime start, DateTime end)
         {
             TrySetTimeRange(start, end);
-            Employee = Employee;
+            Employee = employee;
             Treatment = treatment;
         }
 

@@ -18,14 +18,28 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         private string _errorMessage = string.Empty;
         [Parameter] public CustomerDTO Customer { get; set; }
         private BookingDTO Booking = new();
+        private int Interval { get; set; } = 60;
         private List<TreatmentDTO> AllTreatments = new();
         private List<EmployeeDTO> AllEmployees = new();
         private List<BookingDTO> AvailableBookingSpots = new();
         private string timeCardError = string.Empty;
+        private DateOnly startDate = new();
+        private int CurrentIndex = new();
+        private Dictionary<int, List<BookingDTO>> Pages = new();
+        private List<BookingDTO> CurrentPage = new();
+        private BookingDTO timeSelected = new();
         private EditContext EditContext;
-        private bool Open = false;
+
+
+        private string[] DaysOfWeek { get; set; }
+        private TimeOnly StartTime { get; set; } = new TimeOnly(9, 0);
+        private TimeOnly EndTime { get; set; } = new TimeOnly(18, 0);
+        private bool IsDropdownOpen = false;
+
+        //field for interval, arrow buttons to go back and forth between pages, generate 30 each time.
         protected override async Task OnInitializedAsync()
         {
+            DaysOfWeek = Enum.GetNames(typeof(DayOfWeek));
             _errorMessage = "";
             Booking.CustomerId = 1;
             EditContext = new EditContext(Booking);
@@ -47,7 +61,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
                 _errorMessage = "Unable to load data — the server or database is offline.";
             }
         }
-
         private async Task Arrange()
         {
             Booking.TreatmentBookingDTOs = await _bookingQueryService.ArangeTreatments(Booking);
@@ -71,12 +84,40 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         {
             Navi.NavigateTo("/");
         }
+        private async Task FowardPage()
+        {
+            if (Pages.TryGetValue(CurrentIndex+1, out _))
+            {
+                CurrentIndex += 1;
+            }
+            else
+            {
+                startDate = DateOnly.FromDateTime(AvailableBookingSpots.Last().Start);
+                await refreshAvailableSlots();
+            }
+        }
+        private void PageBackwards()
+        {
+            if(!(CurrentIndex<=0)) CurrentIndex -= 1;
+        }
 
-        private async void refreshAvailableSlots()
+        private async Task refreshAvailableSlots()
         {
             try
             {
-                AvailableBookingSpots = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, DateOnly.FromDateTime(DateTime.Now), 7, 30);
+                if (!AvailableBookingSpots.Any())
+                {
+                    startDate = DateOnly.FromDateTime(DateTime.Now);
+                    Pages[0] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval);
+                    AvailableBookingSpots = new List<BookingDTO>(Pages[0]);
+                }
+                else
+                {
+                    Pages[CurrentIndex + 1] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval);
+                    AvailableBookingSpots.AddRange(Pages[CurrentIndex + 1]);
+                    CurrentIndex += 1;
+                }
+                IsDropdownOpen = AvailableBookingSpots.Any();
             }
             catch (Exception)
             {
@@ -86,6 +127,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
         private void MoveUp(int index)
         {
+            AvailableBookingSpots.Clear();
+            IsDropdownOpen = false;
             if (index == 0) return;
 
             (Booking.TreatmentBookingDTOs[index - 1],
@@ -95,6 +138,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         }
         private void MoveDown(int index)
         {
+            AvailableBookingSpots.Clear();
+            IsDropdownOpen = false;
             if (index >= Booking.TreatmentBookingDTOs.Count - 1) return;
 
             (Booking.TreatmentBookingDTOs[index + 1],
@@ -114,27 +159,44 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
         private void RemoveTreatment(TreatmentBookingDTO treatment)
         {
+            AvailableBookingSpots.Clear();
+            IsDropdownOpen = false;
             Booking.TreatmentBookingDTOs.Remove(treatment);
         }
 
         private void AddTreatment()
         {
+            AvailableBookingSpots.Clear();
+            IsDropdownOpen = false;
             Booking.TreatmentBookingDTOs.Add(new TreatmentBookingDTO());
         }
-        private void ToggleDropdown()
+        private async Task ToggleDropdown()
         {
-            refreshAvailableSlots();
-            Open = !Open;
+            await refreshAvailableSlots();
         } 
         private void SelectTimeSlot(BookingDTO slot)
         {
+            timeSelected = slot;
             Booking.Start = slot.Start;
             Booking.End = slot.End;
         }
         private void UpdateTreatment(TreatmentBookingDTO updated)
         {
-            // Already updated because it's a reference
+            AvailableBookingSpots.Clear();
+            IsDropdownOpen = false;
             StateHasChanged();
         }
+
+        private bool checkfields()
+        {
+            return Booking.TreatmentBookingDTOs.Any(tb => (tb.Employee.EmployeeId == 0 || tb.Treatment == null || tb.Employee == null ||string.IsNullOrEmpty(tb.Treatment.Category) || tb.Treatment.TreatmentId == 0));
+        }
+
+
+
+        // Bound to dropdown
+        private string SelectedDay { get; set; } = "";
+
+        // Filtered dates based on selection
     }
 }

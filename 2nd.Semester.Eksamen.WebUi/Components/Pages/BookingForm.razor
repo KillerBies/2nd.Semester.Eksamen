@@ -4,6 +4,7 @@
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
+@using Microsoft.AspNetCore.Components.Web.Extensions;
 @inject NavigationManager Navi
 @inject ICustomerRepository customerRepository
 
@@ -38,21 +39,47 @@
     </div>
     <button class="add-treatment" type="button" title="Tilføj Behandling" @onclick="AddTreatment">+</button>
     <div class="possible-times-container">
-        <div class="possible-times-header" style="border-radius:@(Open ? "12px 12px 0 0":"12px 12px 12px 12px");">
+        <div class="possible-times-header" style="border-radius:@(IsDropdownOpen ? "12px 12px 0 0" : "12px 12px 12px 12px");">
             <div>
                 <span class="title">Start Tid</span>
                 <input type="datetime-local" @bind-value="Booking.Start" @onselect="Arrange" />
             </div>
             <div class="btn-group">
-                <button type="button" class="refesh" @onclick="ToggleDropdown" title="Opdater Mulige Tider">Generer Mulige Tider</button>
+                <div>
+                    <label>From:</label>
+                    <input type="time" @bind="StartTime" class="input-time" />
+                </div>
+                <div>
+                    <label>To:</label>
+                    <input type="time" @bind="EndTime" class="input-time" />
+                </div>
+@*                 <div class="day-dropdown mb-4">
+                    <label>Select a day: </label>
+                    <select @bind="SelectedDay">
+                        <option value="">All Days</option>
+                        @foreach (var day in DaysOfWeek)
+                        {
+                            <option value="@day">@day</option>
+                        }
+                    </select>
+                </div> *@
+                <div>
+                    <label>Interval:</label>
+                    <InputNumber @bind-Value="Interval" class="input-time"/>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button @onclick="PageBackwards" disabled="@(CurrentIndex == 0)"><span>&#9664;</span></button>
+                <button @onclick="FowardPage" disabled="@(checkfields())"><span>&#9654;</span></button>
+                <button type="button" class="refesh" @onclick="refreshAvailableSlots" disabled="@(checkfields())" title="Generer Mulige Tider">Generer Mulige Tider</button>
             </div>
         </div>
-        @if (Open)
+        @if (IsDropdownOpen)
         {
             <div class="time-grid">
-                    @foreach (var availableTime in AvailableBookingSpots)
+                @foreach (var spot in Pages[CurrentIndex].Where(t => TimeOnly.FromDateTime(t.End) <= EndTime && TimeOnly.FromDateTime(t.Start) >= StartTime))
                     {
-                        <TimeCard OnSelect="SelectTimeSlot" availableTime="availableTime"></TimeCard>
+                    <TimeCard OnSelect="SelectTimeSlot" availableTime="spot" IsSelected="@(timeSelected.Start == spot.Start && timeSelected.End == spot.End)"></TimeCard>
                     }
             </div>
         }
@@ -60,14 +87,19 @@
 
     <div class="btn-group">
         <button type="button" class="btn btn-primary mt-3" title="Anuller Booking" @onclick="OnCancel">Anuller</button>
-        <button type="submit" class="btn btn-primary mt-3" title="Lav Booking" @onclick="CreateBooking" disabled="@(!(EditContext.Validate() && AllEmployees.Any()&&AllTreatments.Any()))">Lav Booking</button>
+        <button type="submit" class="btn btn-primary mt-3" title="Lav Booking" @onclick="CreateBooking" disabled="@(checkfields())">Lav Booking</button>
     </div>
 </EditForm>
 <p>@Booking.Start</p>
 <p>@Booking.End</p>
+<p>@Booking.TreatmentBookingDTOs.Count()</p>
 @foreach(var treatment in Booking.TreatmentBookingDTOs)
 {
     <div>
     @treatment.Treatment.Name
     </div>
+    <p>@Booking.TreatmentBookingDTOs.Any(tb => tb.Treatment == null)</p>
+    <p>@Booking.TreatmentBookingDTOs.Any(tb => tb.Employee == null)</p>
+    <p>@Booking.TreatmentBookingDTOs.Any(tb => tb.End == null)</p>
+    <p>@Booking.TreatmentBookingDTOs.Any(tb => tb.Start == null)</p>
 }

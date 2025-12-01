@@ -24,7 +24,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
         {
             if (!_days.TryGetValue(date, out var day))
             {
-                day = new ScheduleDay(date.ToDateTime(new TimeOnly(0, 0)), workStart, workEnd);
+                day = new ScheduleDay(date, workStart, workEnd);
                 _days[date] = day;
             }
             return day;

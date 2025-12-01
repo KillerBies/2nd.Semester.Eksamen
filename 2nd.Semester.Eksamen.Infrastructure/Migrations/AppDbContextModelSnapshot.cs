@@ -139,10 +139,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeOnly>("WorkEnd")
+                    b.Property<TimeSpan>("WorkEnd")
                         .HasColumnType("time");
 
-                    b.Property<TimeOnly>("WorkStart")
+                    b.Property<TimeSpan>("WorkStart")
                         .HasColumnType("time");
 
                     b.HasKey("Id");
@@ -641,7 +641,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Treatment", "Treatment")
-                        .WithMany("treatmentBookings")
+                        .WithMany()
                         .HasForeignKey("TreatmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -809,11 +809,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.ScheduleDay", b =>
                 {
                     b.Navigation("TimeRanges");
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Treatment", b =>
-                {
-                    b.Navigation("treatmentBookings");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Campaign", b =>

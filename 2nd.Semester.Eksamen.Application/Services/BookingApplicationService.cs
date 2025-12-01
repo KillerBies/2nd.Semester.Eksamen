@@ -20,14 +20,17 @@ namespace _2nd.Semester.Eksamen.Application.Services
         private readonly IBookingDomainService _bookingDomainService;
         private readonly ScheduleService _scheduleService;
         private readonly IScheduleRepository _scheduleRepository;
-        private readonly DTO_to_Domain _toDomainAdapter = new DTO_to_Domain();
-        public BookingApplicationService(IScheduleRepository scheduleRepository,ScheduleService scheduleService, IBookingRepository bookingRepository, IBookingDomainService bookingDomainService, ITreatmentBookingRepository treatmentBookingRepository, ICompanyCustomerRepository companyCustomerRepo)
+        private readonly DTO_to_Domain _toDomainAdapter;
+        public BookingApplicationService(DTO_to_Domain toDomainAdapter, IScheduleRepository scheduleRepository,ScheduleService scheduleService, IBookingRepository bookingRepository, IBookingDomainService bookingDomainService, ITreatmentBookingRepository treatmentBookingRepository, ICompanyCustomerRepository companyCustomerRepo)
         {
             _bookingRepository = bookingRepository;
             _bookingDomainService = bookingDomainService;
             _scheduleService = scheduleService;
             _scheduleRepository = scheduleRepository;
+            _toDomainAdapter = toDomainAdapter;
         }
+
+        //use the same dbcontext for overlap checks
         public async Task CreateBookingAsync(BookingDTO booking)
         {
             if (booking.TreatmentBookingDTOs == null || !booking.TreatmentBookingDTOs.Any())
@@ -36,11 +39,11 @@ namespace _2nd.Semester.Eksamen.Application.Services
             try
             {
                 await _bookingRepository.CreateNewBookingAsync(Booking);
-                Booking.Treatments.ForEach(t => _scheduleRepository.BookScheduleAsync(t));
+                await Task.WhenAll(Booking.Treatments.Select(t => _scheduleRepository.BookScheduleAsync(t)));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new ArgumentException("Something went wrong");
+                throw new InvalidOperationException("Something went wrong while creating booking", ex);
             }
         }
         public async Task CancelBookingAsync()

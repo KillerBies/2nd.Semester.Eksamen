@@ -13,12 +13,18 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices
 {
     public class BookingSuggestionService : ISuggestionService
     {
-        public async Task<List<BookingSuggestion>> GetBookingSugestions(List<TreatmentBooking> treatments,
-                                                                        DateOnly startdate,
-                                                                        int numberOfDaysToCheck,
-                                                                        int neededSuggestions,
-                                                                        int interval)
+        public List<BookingSuggestion> GetBookingSugestions(List<TreatmentBooking> treatments,DateOnly startDate,int numberOfDaysToCheck,int neededSuggestions,int interval)
         {
+            var suggestions = new List<BookingSuggestion>();
+            System.Diagnostics.Debug.WriteLine($"input (inside) is null? {!treatments.Any()}");
+            if (!treatments.Any())
+            {
+                System.Diagnostics.Debug.WriteLine($"return empty list");
+                return suggestions;
+            }
+
+            // Build plan items (treatment + employee + duration + schedule)
+            System.Diagnostics.Debug.WriteLine($"suggest start");
             var plan = treatments.Select(t => new PlanItem
             {
                 Treatment = t.Treatment,
@@ -27,65 +33,97 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices
                 Schedule = t.Employee.Schedule
             }).ToList();
 
-            var suggestions = new List<BookingSuggestion>();
-            if (!plan.Any()) return suggestions;
-
-            var first = plan.First();
-            var firstDay = first.Schedule.GetOrCreateDay(startdate, first.Employee.WorkStart, first.Employee.WorkEnd);
-
-            // Get all possible start times for the first treatment
-            var potentialStarts = firstDay.GetAllAvailableSlots(first.Duration)
-                .SelectMany(slot =>
-                    Enumerable.Range(0, (int)((slot.End - slot.Start).TotalMinutes / interval))
-                        .Select(i => slot.Start.AddMinutes(i * interval))
-                        .Where(start => start + first.Duration <= slot.End)
-                ).ToList();
-
-            foreach (var start in potentialStarts)
+            for (int dayOffset = 0; dayOffset < numberOfDaysToCheck; dayOffset++)
             {
-                if (suggestions.Count >= neededSuggestions)
-                    break;
+                System.Diagnostics.Debug.WriteLine($"loop start {!treatments.Any()}");
+                var currentDate = startDate.AddDays(dayOffset);
 
-                var currentStart = start;
-                var valid = true;
-                var items = new List<BookingItem>();
+                // First treatment to generate potential start times
+                var first = plan.First();
+                var firstDay = first.Schedule.GetOrCreateDay(currentDate, TimeOnly.FromTimeSpan(first.Employee.WorkStart), TimeOnly.FromTimeSpan(first.Employee.WorkEnd));
 
-                // Schedule treatments in order
-                foreach (var planItem in plan)
+                var potentialStarts = new List<DateTime>();
+                System.Diagnostics.Debug.WriteLine($"foreach slot loop before start {firstDay == null}");
+                foreach(var range in firstDay.TimeRanges)
                 {
-                    var day = planItem.Schedule.GetOrCreateDay(startdate, planItem.Employee.WorkStart, planItem.Employee.WorkEnd);
-                    var currentEnd = currentStart + planItem.Duration;
+                    System.Diagnostics.Debug.WriteLine($"timerange in firstday: {range.Duration}");
+                }
+                foreach (var slot in firstDay.GetAllAvailableSlots(first.Duration))
+                {
+                    System.Diagnostics.Debug.WriteLine($"foreach slot loop start {firstDay==null}");
+                    var slotStart = slot.Start;
+                    var slotEnd = slot.End;
 
-                    // Check if the time range is free for this employee
-                    var slotAvailable = day.TimeRanges.Any(r =>
-                        r.Type == TimeRangeType.Freetime &&
-                        r.Start <= currentStart &&
-                        currentEnd <= r.End
-                    );
-
-                    if (!slotAvailable)
+                    while (slotStart + first.Duration <= slotEnd)
                     {
-                        valid = false;
-                        break;
+                        potentialStarts.Add(slotStart);
+                        slotStart = slotStart.AddMinutes(interval);
+                        System.Diagnostics.Debug.WriteLine($"potential start recorded");
                     }
-
-                    items.Add(new BookingItem
-                    {
-                        Treatment = planItem.Treatment,
-                        Employee = planItem.Employee,
-                        Start = currentStart,
-                        End = currentEnd
-                    });
-
-                    // Move start to end of this treatment for next treatment
-                    currentStart = currentEnd;
                 }
 
-                if (valid)
-                    suggestions.Add(new BookingSuggestion { Items = items });
-            }
+                foreach (var start in potentialStarts)
+                {
+                    System.Diagnostics.Debug.WriteLine($"starts loop start");
+                    if (suggestions.Count >= neededSuggestions)
+                        break;
 
+                    var currentStart = start;
+                    var valid = true;
+                    var items = new List<BookingItem>();
+
+                    foreach (var planItem in plan)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"plan item loop start");
+                        // Get schedule for current employee
+                        var day = planItem.Schedule.GetOrCreateDay(currentDate, TimeOnly.FromTimeSpan(planItem.Employee.WorkStart), TimeOnly.FromTimeSpan(planItem.Employee.WorkEnd));
+                        var currentEnd = currentStart.Add(planItem.Duration);
+
+                        // Check employee working hours
+                        if (currentEnd.TimeOfDay > planItem.Employee.WorkEnd)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"beyond employee workhours");
+                            valid = false;
+                            break;
+                        }
+
+                        // Check if the time slot is free
+                        var slotAvailable = day.TimeRanges.Any(r =>
+                            r.Type == TimeRangeType.Freetime && 
+                            r.Start <= currentStart && //the free timerange start must be before or at the treatments start
+                            currentEnd <= r.End //the free timerange must end after or at the end of the treatment
+                        );
+
+                        if (!slotAvailable)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"No slot available");
+                            valid = false;
+                            break;
+                        }
+
+                        System.Diagnostics.Debug.WriteLine($"suggest added");
+                        //if its availalbe then add it to the list (do this for each treatment, if any of the treatments arent available then valid becomes false)
+                        items.Add(new BookingItem
+                        {
+                            Treatment = planItem.Treatment,
+                            Employee = planItem.Employee,
+                            Start = currentStart,
+                            End = currentEnd
+                        });
+
+                        // Move start to the end of this treatment
+                        currentStart = currentEnd;
+                    }
+                    //if non of the treatments failed to find a free timespot, add it to the list of suggestions.
+                    if (valid)
+                    {
+                        suggestions.Add(new BookingSuggestion { Items = items });
+                    }
+                }
+            }
+            System.Diagnostics.Debug.WriteLine($"suggest end");
             return suggestions;
         }
+
     }
 }

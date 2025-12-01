@@ -1,13 +1,14 @@
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Application.Adapters;
 using _2nd.Semester.Eksamen.Application.Commands;
+using _2nd.Semester.Eksamen.Application.Services;
+using _2nd.Semester.Eksamen.Domain.DomainInterfaces;
+using _2nd.Semester.Eksamen.Domain.DomainServices;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories;
 using _2nd.Semester.Eksamen.WebUi.Components;
 using Microsoft.EntityFrameworkCore;
-using _2nd.Semester.Eksamen.Application.Services;
-using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
-using _2nd.Semester.Eksamen.Domain.DomainInterfaces;
-using _2nd.Semester.Eksamen.Domain.DomainServices;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -28,9 +29,11 @@ builder.Services.AddScoped<CreateEmployeeCommand>();
 builder.Services.AddScoped<ISuggestionService, BookingSuggestionService>();
 builder.Services.AddScoped<IBookingDomainService, BookingDomainService>();
 builder.Services.AddScoped<ICompanyCustomerRepository, CompanyCustomerRepository>();
+builder.Services.AddScoped<IPrivateCustomerRepository, PrivateCustomerRepository>();
 builder.Services.AddScoped<ScheduleService>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<DTO_to_Domain>();
 var app = builder.Build();
 
 

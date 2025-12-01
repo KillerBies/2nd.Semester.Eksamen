@@ -85,7 +85,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         public async Task<Employee?> GetByIDAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees.FindAsync(id);
+            var result = await _context.Employees.FindAsync(id);
+            return result;
         }
         public async Task<IEnumerable<Employee?>> GetByTreatmentSpecialtiesAsync(List<string> specialties)
         {

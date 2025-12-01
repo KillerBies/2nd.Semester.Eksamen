@@ -32,11 +32,14 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         }
         public async Task<Treatment> DTOTreatmentToDomain(TreatmentDTO treatmentDTO)
         {
-            return await _treatmentRepository.GetByIDAsync(treatmentDTO.TreatmentId);
+            var result = await _treatmentRepository.GetByIDAsync(treatmentDTO.TreatmentId);
+            return (Treatment)result;
         }
         public async Task<Employee> DTOEmployeeToDomain(EmployeeDTO employeeDTO)
         {
-            return await _employeeRepository.GetByIDAsync(employeeDTO.EmployeeId);
+            var result = await _employeeRepository.GetByIDAsync(employeeDTO.EmployeeId);
+            System.Diagnostics.Debug.WriteLine($"employee is null dtoemployee: {result == null}");
+            return result;
         }
         public async Task<Booking> DTOBookingToDomain(BookingDTO booking)
         {
@@ -52,12 +55,17 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         {
             var treatment = await DTOTreatmentToDomain(treatmentBookingDTO.Treatment);
             var employee = await DTOEmployeeToDomain(treatmentBookingDTO.Employee);
-            return new TreatmentBooking(treatment, employee, treatmentBookingDTO.Start, treatmentBookingDTO.End);
+            var result = new TreatmentBooking(treatment, employee, treatmentBookingDTO.Start, treatmentBookingDTO.End);
+            return result;
         }
         public async Task<Customer> DTOCustomerToDomain(int CustomerId)
         {
-            return await _customerRepository.GetByIDAsync(CustomerId);
+            var customer = await _customerRepository.GetByIDAsync(CustomerId);
+            if (customer is PrivateCustomer pc)
+                return pc;
+            if (customer is CompanyCustomer cc)
+                return cc;
+            throw new InvalidOperationException($"Customer with ID {CustomerId} is not a valid derived type.");
         }
-        public DTO_to_Domain() { }
     }
 }

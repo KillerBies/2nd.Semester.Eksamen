@@ -16,9 +16,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
         private List<TimeRange> _timeRanges = new List<TimeRange>();
         public IReadOnlyList<TimeRange> TimeRanges => _timeRanges.OrderBy(r => r.Start).ToList();
         public ScheduleDay() { }
-        public ScheduleDay(DateTime date, TimeOnly workStart, TimeOnly workEnd)
+        public ScheduleDay(DateOnly date, TimeOnly workStart, TimeOnly workEnd)
         {
-            Date = DateOnly.FromDateTime(date);
+            Date = date;
             var start = Date.ToDateTime(workStart);
             var end = Date.ToDateTime(workEnd);
             _timeRanges.Add(new TimeRange(start, end)
@@ -44,9 +44,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules
 
         public IEnumerable<TimeRange> GetAllAvailableSlots(TimeSpan duration)
         {
-            return _timeRanges
-                .Where(r => r.Type == TimeRangeType.Freetime && r.Duration >= duration)
-                .OrderBy(r => r.Start);
+            return _timeRanges.Where(r => r.Type == TimeRangeType.Freetime && r.Duration >= duration).ToList().OrderBy(r => r.Start);
         }
 
         public IEnumerable<TimeRange> GetOverlappingFreetime(TimeRange booking)
