@@ -14,6 +14,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public Address Address { get; private set; } = null!;
         public string PhoneNumber { get; private set; } = null!;
         public string Email { get; private set; } = null!;
+        public int AddressId { get; set; }
 
 
         public Person() { }

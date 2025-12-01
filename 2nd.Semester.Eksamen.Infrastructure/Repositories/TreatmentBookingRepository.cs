@@ -1,13 +1,14 @@
-﻿using System;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
-using _2nd.Semester.Eksamen.Infrastructure.Data;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
 {
@@ -18,21 +19,43 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         {
             _factory = factory;
         }   
-        public async Task CreateNewAsync(TreatmentBooking treatmentBooking)
+        public async Task BookTreatmentAsync(TreatmentBooking treatmentBooking)
         {
-            await using var _context = await _factory.CreateDbContextAsync();
-            await _context.BookedTreatments.AddAsync(treatmentBooking);
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                if (await TreatmentBookingOverlapsAsync(treatmentBooking)) throw new Exception();
+                await _context.BookedTreatments.AddAsync(treatmentBooking);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
-        public async Task DeleteAsync(TreatmentBooking treatmentBooking)
+        public async Task CancleBookedTreatmentAsync(TreatmentBooking treatmentBooking)
         {
-            
-            await using var _context = await _factory.CreateDbContextAsync();
-            _context.BookedTreatments.Remove(treatmentBooking);
-            await _context.SaveChangesAsync();
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                _context.BookedTreatments.Remove(treatmentBooking);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
         public async Task<TreatmentBooking> GetByIDAsync(int id)
         {
-            throw new NotImplementedException();
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.BookedTreatments.FindAsync(id);
         }
         public async Task<IEnumerable<TreatmentBooking>> GetAllAsync()
         {
@@ -41,15 +64,34 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         }
         public async Task<IEnumerable<TreatmentBooking>> GetByFilterAsync(Domain.Filter filter)
         {
+            var _context = await _factory.CreateDbContextAsync();
             throw new NotImplementedException();
         }
         public async Task UpdateAsync(TreatmentBooking treatmentBooking)
         {
-            throw new NotImplementedException();
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                _context.BookedTreatments.Update(treatmentBooking);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
         public async Task<IEnumerable<TreatmentBooking>> GetByEmployeeIDAsync(int id)
         {
-            throw new NotImplementedException();
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.BookedTreatments.Where(b => b.Employee.Id == id).ToListAsync();
+        }
+        public async Task<bool> TreatmentBookingOverlapsAsync(TreatmentBooking TreatmentBooking)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.BookedTreatments.AnyAsync(bt=>bt.Employee.Id == TreatmentBooking.Employee.Id && bt.Overlaps(TreatmentBooking.Start,TreatmentBooking.End));
         }
     }
 }

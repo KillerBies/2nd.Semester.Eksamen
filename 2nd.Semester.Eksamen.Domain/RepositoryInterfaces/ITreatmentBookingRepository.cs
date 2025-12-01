@@ -1,12 +1,11 @@
-﻿using _2nd.Semester.Eksamen.Domain;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
+namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces
 {
     public interface ITreatmentBookingRepository
     {
@@ -15,8 +14,10 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         public Task<IEnumerable<TreatmentBooking>> GetByEmployeeIDAsync(int id);
         public Task<IEnumerable<TreatmentBooking>> GetAllAsync();
         public Task<IEnumerable<TreatmentBooking>> GetByFilterAsync(Filter filter);
-        public Task CreateNewAsync(TreatmentBooking TreatmentBooking);
+        public Task BookTreatmentAsync(TreatmentBooking TreatmentBooking);
         public Task UpdateAsync(TreatmentBooking TreatmentBooking);
+        public Task CancleBookedTreatmentAsync(TreatmentBooking TreatmentBooking);
+        public Task<bool> TreatmentBookingOverlapsAsync(TreatmentBooking TreatmentBooking);
         public Task DeleteAsync(TreatmentBooking treatmentBooking);
     }
 }

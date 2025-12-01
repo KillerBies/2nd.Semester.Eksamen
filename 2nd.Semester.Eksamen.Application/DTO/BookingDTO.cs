@@ -11,19 +11,19 @@ namespace _2nd.Semester.Eksamen.Application.DTO
     public class BookingDTO
     {
         [Required]
-        public int CustomerId { get; set; } = new();
+        public int CustomerId { get; set; }
         [Required]
-        public DateTime Start { get; set; } = new();
+        public DateTime Start { get; set; } = DateTime.Now;
         [Required]
-        public DateTime End { get; set; } = new();
+        public DateTime End { get; set; } = DateTime.Now;
         [Required]
         public List<TreatmentBookingDTO> TreatmentBookingDTOs { get; set; } = new List<TreatmentBookingDTO>(){new()};
         [Required]
-        public bool UsePoints { get; set; } = false;
-        [Required]
         public bool CustomerNotification { get; set; } = false;
-
         [Required]
         public WaitListDTO WaitList { get; set; } = new();
+        [Required]
+        public TimeSpan Duration { get; set; } = new();
+        public decimal Price => TreatmentBookingDTOs.Select(tb => tb.Price).Sum();
     }
 }

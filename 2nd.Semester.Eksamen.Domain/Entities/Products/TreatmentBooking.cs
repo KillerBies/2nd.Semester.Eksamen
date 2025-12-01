@@ -19,7 +19,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
         
         //Treatment info
         public Treatment Treatment { get; private set; } = null!;
-        public List<Product> ProductsUsed { get; private set; } = new List<Product>();
+        public List<TreatmentBookingProduct> ProductsUsed { get; private set; } = new List<TreatmentBookingProduct>();
 
 
         //Treatment booking details
@@ -28,9 +28,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 
 
         public TreatmentBooking() { }
-        public TreatmentBooking(Treatment treatment, Person employee)
+        public TreatmentBooking(Treatment treatment, Employee employee, DateTime start, DateTime end)
         {
-            Employee = Employee;
+            TrySetTimeRange(start, end);
+            Employee = employee;
             Treatment = treatment;
         }
 

@@ -1,0 +1,85 @@
+﻿using _2nd.Semester.Eksamen.Domain;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
+{
+    public class ProductRepository : IProductRepository
+    {
+        private readonly IDbContextFactory<AppDbContext> _factory;
+        public ProductRepository(IDbContextFactory<AppDbContext> factory)
+        {
+            _factory = factory;
+        }
+        public async Task<Product?> GetByIDAsync(int id)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Products.FindAsync(id);
+        }
+        public async Task<IEnumerable<Product?>> GetAllAsync()
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Products.ToListAsync();
+        }
+        public async Task<IEnumerable<Product?>> GetByFilterAsync(Filter filter)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            throw new NotImplementedException();
+        }
+        public async Task CreateNewAsync(Product Product)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                await _context.Products.AddAsync(Product);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+        public async Task UpdateAsync(Product Product)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                _context.Products.Update(Product);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+        public async Task DeleteAsync(Product Product)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                _context.Products.Remove(Product);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+    }
+}

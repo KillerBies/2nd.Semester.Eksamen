@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Schedules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,33 +14,40 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public class Employee : Person
     {
         //Employee details
+        public List<String> Specialties { get;  set; } = null!;
+
+
+        public TimeSpan WorkStart { get;  set; }
+        public TimeSpan WorkEnd { get;  set; }
         [ForeignKey(nameof(Address))]
         public int AddressId { get; set; } // FK
         public Address Address { get; private set; } = null!;
         public string Type { get; private set; }  = null!; // Shown as an enum in DTO and blazor
         public string LastName { get; private set; } = null!;
-        public string Specialty { get; private set; } = null!;
+
         public string ExperienceLevel { get; private set; } = null!; // Shown as an enum in DTO and blazor
         public string Gender { get; private set; } // Shown as an enum in DTO and blazor
 
 
 
         //Treatment details
-        public List<TreatmentBooking> Appointments { get; private set; } = new List<TreatmentBooking>();
-        public List<Booking> TreatmentHistory { get; private set; } = new List<Booking>();
-        public decimal BasePriceMultiplier { get; private set; } = 0;
+        public EmployeeSchedule Schedule { get;  set; } = new();
+        public List<TreatmentBooking> Appointments { get;  set; } = new List<TreatmentBooking>();
+        public List<Booking> Bookings { get;  set; } = new List<Booking>();
+        public decimal BasePriceMultiplier { get;  set; } = 0;
 
 
         public Employee() { }
-        public Employee(string firstname, string lastname, string type, string specialty, string experience, string gender/*,Address address*/)
+        public Employee(string firstname, string lastname, string type, List<string> specialties, string experience, string gender, TimeSpan workStart, TimeSpan workEnd)
         {
-            //Address = address;
+            WorkEnd = workEnd;
+            WorkStart = workStart;
             TrySetLastName(firstname, lastname);
             Type = type;
-            Specialty = specialty;
+            Specialties = specialties;
             ExperienceLevel = experience;
             Gender = gender;
-            TreatmentHistory = new List<Booking>();
+            Bookings = new List<Booking>();
             Appointments = new List<TreatmentBooking>();
 
         }
@@ -53,16 +61,19 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
             decimal basePriceMultiplier,
             string experience,
             string type,
-            string specialty,
-            string gender
+            List<string> specialties,
+            string gender,
+            TimeSpan workStart,
+            TimeSpan workEnd
         ) : base(firstname, address, phoneNumber, email)
             {
                 TrySetLastName(firstname, lastname);
                 ExperienceLevel = experience;
                 Type = type;
-                Specialty = specialty;
+                Specialties = specialties;
                 Gender = gender;
-
+                WorkEnd = workEnd;
+                WorkStart = workStart;
                 TrySetBasePriceMultiplier(basePriceMultiplier);
             }
 
@@ -104,15 +115,17 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         //method to check if employee is available at given time range
         public bool IsAvailable(DateTime start, DateTime end)
         {
+            //issue: this only checks on the given time and date not if they have a spot available some day for them
             return !Appointments.Any(tr => tr.Overlaps(start, end)); //checks if the employee is available at the given time range
         }
+
 
         //method to add to treatment history
         public bool TryAddToTreatmentHistory(Booking booking)
         {
-            if (booking != null && booking.Status == BookingStatus.Completed)
+            if (booking != null || booking.Status == BookingStatus.Completed)
             {
-                TreatmentHistory.Add(booking);
+                Bookings.Add(booking);
                 return true;
             }
             return false;

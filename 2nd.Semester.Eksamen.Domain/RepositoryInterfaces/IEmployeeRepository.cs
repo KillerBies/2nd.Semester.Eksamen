@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
+namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces
 {
     public interface IEmployeeRepository
     {
@@ -19,6 +19,8 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         public Task<IEnumerable<Employee?>> GetByFilterAsync(Filter filter);
         public Task<IEnumerable<Employee?>> GetBySpecialtyAsync(string Category);
         public Task CreateNewAsync(Employee Employee, Address Address); // Create employee
+        public Task<IEnumerable<Employee?>> GetByTreatmentSpecialtiesAsync(List<string> specialties);
+        public Task CreateNewAsync(Employee Employee); // Create employee
         public Task UpdateAsync(Employee Employee);
         public Task DeleteAsync(Employee Employee);
         public Task SaveChangesAsync();

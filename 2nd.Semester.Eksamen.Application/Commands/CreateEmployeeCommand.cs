@@ -1,5 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO;
-using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Domain.Helpers;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using System;
@@ -34,6 +34,10 @@ namespace _2nd.Semester.Eksamen.Application.Commands
             );
 
             var employee = new Employee(
+            // Map DTO -> Domain Entity
+            var employee = new Domain.Entities.Persons.Employee(
+                workEnd: new(),
+                workStart: new(),
                 firstname: dto.FirstName,
                 lastname: dto.LastName,
                 type: dto.Type.GetDescription(),

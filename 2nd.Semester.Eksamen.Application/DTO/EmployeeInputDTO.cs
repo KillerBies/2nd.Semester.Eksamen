@@ -23,6 +23,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         public ExperienceLevels ExperienceLevel { get; set; }
         public EmployeeType Type { get; set; }
         public List<SpecialtyItemBase> Specialties { get; set; } = new();
+        public List<String> Specialties { get; set; }
         public List<Treatment> TreatmentHistory { get; set; } = new();
     }
 

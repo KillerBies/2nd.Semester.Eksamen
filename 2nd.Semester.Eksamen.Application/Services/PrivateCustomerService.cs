@@ -2,6 +2,7 @@
 using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 namespace _2nd.Semester.Eksamen.Application.Services
 {
     public class PrivateCustomerService : IPrivateCustomerService
@@ -27,6 +28,8 @@ namespace _2nd.Semester.Eksamen.Application.Services
             PrivateCustomer privateCustomer = new PrivateCustomer(DTO.LastName, DTO.Gender, DTO.Birthday, DTO.FirstName, address, DTO.PhoneNumber, DTO.Email, DTO.Notes, DTO.SaveAsCustomer);
             await _customerRepository.CreateNewAsync(privateCustomer);
             return (await _customerRepository.GetByPhoneAsync(DTO.PhoneNumber)).Id;
+             PrivateCustomer privateCustomer = new PrivateCustomer(DTO.LastName, DTO.Gender, DTO.Birthday, DTO.Name, address, DTO.PhoneNumber, DTO.Email);
+             await _customerRepository.CreateNewAsync(privateCustomer); 
         }
 
 

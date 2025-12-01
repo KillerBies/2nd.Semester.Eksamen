@@ -1,14 +1,16 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Schedules;
+using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using _2nd.Semester.Eksamen.Domain.Entities.History;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Data
 {
@@ -27,6 +29,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         //Treatment data
         public DbSet<Treatment> Treatments { get; set; }
         public DbSet<TreatmentBooking> BookedTreatments { get; set; }
+        public DbSet<TreatmentBookingProduct> TreatmentBookingProducts { get; set; }
 
         //Product data
         public DbSet<Product> Products { get; set; }
@@ -34,6 +37,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         //Person data
         public DbSet<PrivateCustomer> PrivateCustomers { get; set; }
         public DbSet<CompanyCustomer> CompanyCustomers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Address> Adresses { get; set; }
 
@@ -42,11 +46,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         public DbSet<LoyaltyDiscount> LoyaltyDiscounts { get; set; }
         public DbSet<Campaign> Campaigns { get; set; }
 
+        //Schedule data
+        public DbSet<EmployeeSchedule> EmployeeSchedules { get; set; }
+        public DbSet<ScheduleDay> ScheduleDays { get; set; }
+        public DbSet<TimeRange> TimeRanges { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>().UseTptMappingStrategy();
-            modelBuilder.Entity<Customer>().UseTptMappingStrategy();
 
+            modelBuilder.Entity<Product>().UseTptMappingStrategy();
+            modelBuilder.Entity<Treatment>().ToTable("Treatments");
+            modelBuilder.Entity<Product>().ToTable("Products");
             modelBuilder.Entity<PrivateCustomer>().ToTable("PrivateCustomers");
             modelBuilder.Entity<CompanyCustomer>().ToTable("CompanyCustomers");
             modelBuilder.Entity<Campaign>().ToTable("Campaigns");
@@ -57,6 +68,27 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany(b => b.Treatments)
                 .WithOne(tb => tb.Booking)
                 .OnDelete(DeleteBehavior.NoAction);
+
+
+            modelBuilder.Entity<Employee>()
+                .HasOne<EmployeeSchedule>(b => b.Schedule)
+                .WithOne(s => s.Employee)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<EmployeeSchedule>()
+                .HasMany(es => es.Days)
+                .WithOne(sd => sd.Schedule)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<ScheduleDay>()
+                .HasMany<TimeRange>(sd => sd.TimeRanges)
+                .WithOne(tr => tr.ScheduleDay)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
+
+
 
             modelBuilder.Entity<Booking>()
                 .HasOne<Customer>(b => b.Customer)
@@ -72,18 +104,21 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany(o => o.Products)
                 .WithOne(p => p.Order)
                 .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Booking);
 
             //Treatment booking
             modelBuilder.Entity<TreatmentBooking>()
-                .HasOne(tb => tb.Treatment);
-            modelBuilder.Entity<TreatmentBooking>()
-                .HasMany(tb => tb.ProductsUsed);
-            modelBuilder.Entity<TreatmentBooking>()
                 .HasOne(tb => tb.Employee)
                 .WithMany(e => e.Appointments)
                 .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TreatmentBooking>()
+                .HasMany(tb => tb.ProductsUsed)
+                .WithOne(up => up.TreatmentBooking)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.Type)

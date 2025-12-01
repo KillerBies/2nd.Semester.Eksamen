@@ -1,0 +1,28 @@
+﻿.available-time-header {
+    width: 100%;
+    height: auto;
+    border-radius: 12px 12px 0 0;
+    text-align: center;
+    color: white;
+    margin: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.available-time {
+    cursor: pointer;
+    width: auto;
+    height: auto;
+    box-shadow: 0 6px 6px rgba(0,0,0,0.1);
+    border-radius: 12px 12px 12px 12px;
+    padding: 1px 1px 1px 1px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    align-items: center;
+    text-align: center;
+}
+
+    .available-time:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+    }

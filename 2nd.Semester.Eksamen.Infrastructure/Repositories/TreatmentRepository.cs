@@ -1,5 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
-using _2nd.Semester.Eksamen.Domain;
+﻿using _2nd.Semester.Eksamen.Domain;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using System;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
 {
@@ -22,35 +22,71 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         }
         public async Task<Treatment> GetByIDAsync(int id)
         {
-            throw new NotImplementedException();
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Treatments.FindAsync(id);
         }
         public async Task<IEnumerable<Treatment>> GetAllAsync()
         {
-            await using var _context = await _factory.CreateDbContextAsync();
+            var _context = await _factory.CreateDbContextAsync();
             return await _context.Treatments.ToListAsync();
         }
         public async Task<IEnumerable<Treatment>> GetByFilterAsync(Filter filter)
         {
+            var _context = await _factory.CreateDbContextAsync();
             throw new NotImplementedException();
         }
         public async Task CreateNewAsync(Treatment treatment)
         {
-            throw new NotImplementedException();
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                await _context.Treatments.AddAsync(treatment);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
         public async Task UpdateAsync(Treatment treatment)
         {
-            throw new NotImplementedException();
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                _context.Treatments.Update(treatment);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
         public async Task DeleteAsync(Treatment treatment)
         {
-            throw new NotImplementedException();
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                _context.Treatments.Remove(treatment);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
-        public async Task<IEnumerable<Employee>> GetByCategory(string category)
+        public async Task<IEnumerable<Treatment>> GetByCategory(string category)
         {
             await using var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees
-                .Where(e => e.Specialty == category)
-                .ToListAsync();
+            return await _context.Treatments.Where(t => t.Category == category).ToListAsync();
         }
     }
 }

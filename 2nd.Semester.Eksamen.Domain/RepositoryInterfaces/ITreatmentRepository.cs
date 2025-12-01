@@ -1,14 +1,12 @@
-﻿using _2nd.Semester.Eksamen.Domain;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
+namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces
 {
     public interface ITreatmentRepository
     {
@@ -19,7 +17,7 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         public Task CreateNewAsync(Treatment treatment);
         public Task UpdateAsync(Treatment treatment);
         public Task DeleteAsync(Treatment treatment);
-        public Task<IEnumerable<Employee>> GetByCategory(string category);
+        public Task<IEnumerable<Treatment>> GetByCategory(string category);
 
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 
-namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
+namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces
 {
     public interface ICompanyCustomerRepository
     {

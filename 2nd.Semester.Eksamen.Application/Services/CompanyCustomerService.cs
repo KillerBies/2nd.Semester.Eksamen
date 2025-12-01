@@ -1,6 +1,6 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO;
-using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 
 namespace _2nd.Semester.Eksamen.Application.Services
