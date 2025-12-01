@@ -32,7 +32,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
 
         private string[] DaysOfWeek { get; set; }
-        private TimeOnly StartTime { get; set; } = new TimeOnly(9, 0);
+        private TimeOnly StartTime { get; set; } = new TimeOnly(8, 0);
         private TimeOnly EndTime { get; set; } = new TimeOnly(18, 0);
         private bool IsDropdownOpen = false;
 
