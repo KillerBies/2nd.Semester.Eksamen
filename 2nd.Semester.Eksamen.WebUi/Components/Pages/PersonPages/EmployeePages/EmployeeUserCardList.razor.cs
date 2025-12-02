@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
 using _2nd.Semester.Eksamen.Application.Commands.EmployeeCmd;
 
-namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
+namespace Components.Pages.PersonPages.EmployeePages
 {
     public partial class EmployeeUserCardList : ComponentBase
     {

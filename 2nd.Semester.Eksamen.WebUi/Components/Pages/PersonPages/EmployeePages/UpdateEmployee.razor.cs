@@ -12,11 +12,11 @@ using WebUIServices;
 using static _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO.EmployeeUpdateDTO;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
+namespace Components.Pages.PersonPages.EmployeePages
 {
 
 
-    public partial class EmployeeEdit
+    public partial class UpdateEmployee : ComponentBase
     {
         [Parameter] public int Id { get; set; }
         [Inject]

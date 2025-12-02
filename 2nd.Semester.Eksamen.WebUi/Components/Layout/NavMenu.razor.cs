@@ -1,4 +1,4 @@
-﻿using _2nd.Semester.Eksamen.WebUi.Components.Shared;
+﻿using Components.Shared;
 using Microsoft.AspNetCore.Components;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Layout
