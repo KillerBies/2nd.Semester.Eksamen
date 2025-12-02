@@ -1,8 +1,8 @@
-﻿using _2nd.Semester.Eksamen.Application.DTO;
-using _2nd.Semester.Eksamen.Application.Services;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using Moq;
-using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Application.Services.PersonService;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
 namespace _2nd.Semester.Eksamen.Domain.Test;
 
 

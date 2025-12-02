@@ -3,6 +3,18 @@
     height: auto;
     border-radius: 12px 12px 0 0;
     text-align: center;
+    background-color: #b55054;
+    margin: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.component-header {
+    width: 100%;
+    height: auto;
+    border-radius: 12px 12px 0 0;
+    text-align: center;
+    background-color: #b55054;
     color: white;
     margin: 0;
     box-sizing: border-box;
@@ -21,7 +33,6 @@
     align-items: center;
     text-align: center;
 }
-
     .available-time:hover {
         transform: translateY(-5px);
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);

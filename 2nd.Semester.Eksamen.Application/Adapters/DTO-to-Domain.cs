@@ -1,13 +1,19 @@
-﻿using _2nd.Semester.Eksamen.Application.DTO;
+﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
 using _2nd.Semester.Eksamen.Domain.DomainInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 
 namespace _2nd.Semester.Eksamen.Application.Adapters
 {
@@ -15,20 +21,14 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly ITreatmentRepository _treatmentRepository;
-        private readonly IProductRepository _productRepository;
         private readonly IBookingRepository _bookingRepository;
-        private readonly IPrivateCustomerRepository _privateCustomerRepository;
-        private readonly ICompanyCustomerRepository _companyCustomerRepository;
         private readonly ICustomerRepository _customerRepository;
-        public DTO_to_Domain(ICustomerRepository customerRepository,IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, IPrivateCustomerRepository privateCustomerRepository, ICompanyCustomerRepository companyCustomerRepository)
+        public DTO_to_Domain(ICustomerRepository customerRepository,IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository)
         {
             _bookingRepository = bookingRepository;
             _employeeRepository = employeeRepository;
             _treatmentRepository = treatmentRepository;
-            _companyCustomerRepository = companyCustomerRepository;
-            _privateCustomerRepository = privateCustomerRepository;
             _customerRepository = customerRepository;
-
         }
         public async Task<Treatment> DTOTreatmentToDomain(TreatmentDTO treatmentDTO)
         {
@@ -48,7 +48,7 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             {
                 treatments.Add(await DTOTreatmentBookingToDomain(treatment));
             }
-            var customer = await DTOCustomerToDomain(booking.CustomerId);
+            var customer = await DTOCustomerToDomain(booking.Customer.id);
             return new Booking(customer, booking.Start, booking.End, treatments);
         }
         public async Task<TreatmentBooking> DTOTreatmentBookingToDomain(TreatmentBookingDTO treatmentBookingDTO)
@@ -61,10 +61,8 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         public async Task<Customer> DTOCustomerToDomain(int CustomerId)
         {
             var customer = await _customerRepository.GetByIDAsync(CustomerId);
-            if (customer is PrivateCustomer pc)
-                return pc;
-            if (customer is CompanyCustomer cc)
-                return cc;
+            if (customer == null) throw new NullReferenceException("Customer is null");
+            return customer;
             throw new InvalidOperationException($"Customer with ID {CustomerId} is not a valid derived type.");
         }
     }

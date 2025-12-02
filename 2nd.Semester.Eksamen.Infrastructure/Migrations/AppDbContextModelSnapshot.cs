@@ -22,6 +22,67 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Discount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AppliesToProduct")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("AppliesToTreatment")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumberOfUses")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Discount");
+
+                    b.UseTptMappingStrategy();
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Discounts.PunchCard", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FreeTreatments")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PunchNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TreatmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("TreatmentId");
+
+                    b.ToTable("PunchCards");
+                });
+
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -51,7 +112,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.ToTable("Adresses");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,6 +123,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -71,7 +137,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NumberOfVisists")
@@ -84,16 +149,21 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<decimal>("PointBalance")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<bool>("SaveAsCustomer")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
 
                     b.ToTable("Customers");
 
-                    b.UseTptMappingStrategy();
+                    b.HasDiscriminator().HasValue("Customer");
+
+                    b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employee", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employees.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,6 +187,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
@@ -131,7 +202,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.PrimitiveCollection<string>("Specialties")
+                    b.Property<string>("Specialties")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -147,12 +218,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("AddressId")
+                        .IsUnique();
 
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Booking", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Booking", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,9 +237,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
-
-                    b.Property<int?>("EmployeeId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("End")
                         .HasColumnType("datetime2");
@@ -182,9 +251,67 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
+                    b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.TreatmentBooking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookingID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("End")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Start")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TreatmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingID");
+
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Bookings");
+                    b.HasIndex("TreatmentId");
+
+                    b.ToTable("BookedTreatments");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.TreatmentBookingProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("NumberOfProducts")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TreatmentBookingID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("TreatmentBookingID");
+
+                    b.ToTable("TreatmentBookingProducts");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Order", b =>
@@ -276,67 +403,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.TreatmentBooking", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookingID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("End")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TreatmentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingID");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("TreatmentId");
-
-                    b.ToTable("BookedTreatments");
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.TreatmentBookingProduct", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("NumberOfProducts")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TreatmentBookingID")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("TreatmentBookingID");
-
-                    b.ToTable("TreatmentBookingProducts");
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedule", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.EmployeeSchedule", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -355,7 +422,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.ToTable("EmployeeSchedules");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.ScheduleDay", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.ScheduleDay", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -376,7 +443,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.ToTable("ScheduleDays");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.TimeRange", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.TimeRange", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -407,81 +474,51 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.ToTable("TimeRanges");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Discount", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Campaign", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Discount");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("AppliesToProduct")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("AppliesToTreatment")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("DiscountAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NumberOfUses")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("End")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime>("Start")
+                        .HasColumnType("datetime2");
 
-                    b.ToTable("Discount");
-
-                    b.UseTptMappingStrategy();
+                    b.ToTable("Campaigns", (string)null);
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.PunchCard", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Discounts.LoyaltyDiscount", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Discount");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MinimumVisits")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FreeTreatments")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PunchNumber")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TreatmentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("TreatmentId");
-
-                    b.ToTable("PunchCards");
+                    b.ToTable("LoyaltyDiscounts", (string)null);
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.CompanyCustomer", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.CompanyCustomer", b =>
                 {
-                    b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer");
+                    b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer");
 
                     b.Property<string>("CVRNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("CompanyCustomers", (string)null);
+                    b.HasDiscriminator().HasValue("CompanyCustomer");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.PrivateCustomer", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.PrivateCustomer", b =>
                 {
-                    b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer");
+                    b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer");
 
                     b.Property<DateOnly>("BirthDate")
                         .HasColumnType("date");
@@ -493,10 +530,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("PrivateCustomers", (string)null);
+                    b.HasDiscriminator().HasValue("PrivateCustomer");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Treatment", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.Treatment", b =>
                 {
                     b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Products.Product");
 
@@ -513,38 +550,26 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.ToTable("Treatments", (string)null);
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Campaign", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Discounts.PunchCard", b =>
                 {
-                    b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Discount");
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer", "Customer")
+                        .WithMany("PunchCards")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.Treatment", "Treatment")
+                        .WithMany()
+                        .HasForeignKey("TreatmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<DateTime>("End")
-                        .HasColumnType("datetime2");
+                    b.Navigation("Customer");
 
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("datetime2");
-
-                    b.ToTable("Campaigns", (string)null);
+                    b.Navigation("Treatment");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.LoyaltyDiscount", b =>
-                {
-                    b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Discount");
-
-                    b.Property<string>("DiscountType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MinimumVisits")
-                        .HasColumnType("int");
-
-                    b.ToTable("LoyaltyDiscounts", (string)null);
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer", b =>
                 {
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Address", "Address")
                         .WithMany()
@@ -555,41 +580,83 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employee", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employees.Employee", b =>
                 {
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
+                        .WithOne()
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employees.Employee", "AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Booking", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Booking", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer", "Customer")
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer", "Customer")
                         .WithMany("BookingHistory")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employee", null)
-                        .WithMany("Bookings")
-                        .HasForeignKey("EmployeeId");
-
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.TreatmentBooking", b =>
+                {
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Booking", "Booking")
+                        .WithMany("Treatments")
+                        .HasForeignKey("BookingID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employees.Employee", "Employee")
+                        .WithMany("Appointments")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.Treatment", "Treatment")
+                        .WithMany()
+                        .HasForeignKey("TreatmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Treatment");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.TreatmentBookingProduct", b =>
+                {
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.TreatmentBooking", "TreatmentBooking")
+                        .WithMany("ProductsUsed")
+                        .HasForeignKey("TreatmentBookingID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("TreatmentBooking");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Order", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Discount", "AppliedDiscount")
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Discount", "AppliedDiscount")
                         .WithMany()
                         .HasForeignKey("AppliedDiscountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Booking", "Booking")
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Booking", "Booking")
                         .WithMany()
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -621,71 +688,25 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Product", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Campaign", null)
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Campaign", null)
                         .WithMany("ProductsInCampaign")
                         .HasForeignKey("CampaignId");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.TreatmentBooking", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.EmployeeSchedule", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Booking", "Booking")
-                        .WithMany("Treatments")
-                        .HasForeignKey("BookingID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employee", "Employee")
-                        .WithMany("Appointments")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Treatment", "Treatment")
-                        .WithMany()
-                        .HasForeignKey("TreatmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("Treatment");
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.TreatmentBookingProduct", b =>
-                {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.TreatmentBooking", "TreatmentBooking")
-                        .WithMany("ProductsUsed")
-                        .HasForeignKey("TreatmentBookingID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("TreatmentBooking");
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedule", b =>
-                {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employee", "Employee")
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employees.Employee", "Employee")
                         .WithOne("Schedule")
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedule", "EmployeeId")
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.EmployeeSchedule", "EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.ScheduleDay", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.ScheduleDay", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedule", "Schedule")
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.EmployeeSchedule", "Schedule")
                         .WithMany("Days")
                         .HasForeignKey("ScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -694,9 +715,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Navigation("Schedule");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.TimeRange", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.TimeRange", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Schedules.ScheduleDay", "ScheduleDay")
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.ScheduleDay", "ScheduleDay")
                         .WithMany("TimeRanges")
                         .HasForeignKey("ScheduleDayId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -705,90 +726,56 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Navigation("ScheduleDay");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.PunchCard", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Campaign", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer", "Customer")
-                        .WithMany("PunchCards")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Treatment", "Treatment")
-                        .WithMany()
-                        .HasForeignKey("TreatmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("Treatment");
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.CompanyCustomer", b =>
-                {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer", null)
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Discount", null)
                         .WithOne()
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Persons.CompanyCustomer", "Id")
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Campaign", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.PrivateCustomer", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Discounts.LoyaltyDiscount", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer", null)
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Discount", null)
                         .WithOne()
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Persons.PrivateCustomer", "Id")
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Discounts.LoyaltyDiscount", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Treatment", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.Treatment", b =>
                 {
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Product", null)
                         .WithOne()
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Products.Treatment", "Id")
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.Treatment", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Campaign", b =>
-                {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Discount", null)
-                        .WithOne()
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Campaign", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.LoyaltyDiscount", b =>
-                {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Discount", null)
-                        .WithOne()
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.LoyaltyDiscount", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer", b =>
                 {
                     b.Navigation("BookingHistory");
 
                     b.Navigation("PunchCards");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employee", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employees.Employee", b =>
                 {
                     b.Navigation("Appointments");
-
-                    b.Navigation("Bookings");
 
                     b.Navigation("Schedule")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Booking", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Booking", b =>
                 {
                     b.Navigation("Treatments");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.TreatmentBooking", b =>
+                {
+                    b.Navigation("ProductsUsed");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Order", b =>
@@ -796,22 +783,17 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.TreatmentBooking", b =>
-                {
-                    b.Navigation("ProductsUsed");
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedule", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.EmployeeSchedule", b =>
                 {
                     b.Navigation("Days");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.ScheduleDay", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.ScheduleDay", b =>
                 {
                     b.Navigation("TimeRanges");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Tilbud.Campaign", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Campaign", b =>
                 {
                     b.Navigation("ProductsInCampaign");
                 });

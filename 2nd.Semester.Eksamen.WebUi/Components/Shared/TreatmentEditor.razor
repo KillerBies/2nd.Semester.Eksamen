@@ -1,9 +1,10 @@
-﻿<div class="Treatment">
+﻿@namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
+<div class="Treatment">
     <div class="treatment-header">
-        <span class="title">Treatment - @(Index+1)</span>
+        <span>Treatment - @(Index+1)</span>
         <div class="btn-group">
-           <button class="btn btn-light" style="background-color:transparent; border: none;" @onclick="() => OnUp.InvokeAsync(Index)">▲</button>
-           <button class="btn btn-light" style="background-color:transparent; border: none;" @onclick="() => OnDown.InvokeAsync(Index)">▼</button>
+           <button type="button" class="updown-btn" style="background-color:transparent; border: none;" @onclick="() => OnUp.InvokeAsync(Index)">▲</button>
+           <button type="button" class="updown-btn" style="background-color:transparent; border: none;" @onclick="() => OnDown.InvokeAsync(Index)">▼</button>
            <button type="button" class="close-btn" @onclick="Remove">✖</button>
         </div>
     </div>

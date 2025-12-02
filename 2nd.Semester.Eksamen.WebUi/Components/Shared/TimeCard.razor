@@ -1,7 +1,7 @@
-﻿@using _2nd.Semester.Eksamen.Application.DTO;
+﻿@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 @using System.Globalization;
-<div class="available-time page-header" @onclick="() => Select()">
-    <div class="available-time-header" style="background-color: @(IsSelected ? "#034265" : "#b55054")">
+<div class="available-time" @onclick="() => Select()">
+    <div class="component-header" style="background-color: @(IsSelected ? "#034265" : "#b55054");">
         <span><b>@availableTime.Start.ToString("ddd, MMM dd", Culture)</b></span>
     </div>
     <div class="time-date">

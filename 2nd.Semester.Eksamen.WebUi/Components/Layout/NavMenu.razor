@@ -1,5 +1,6 @@
 ﻿@using _2nd.Semester.Eksamen.WebUi.Components.Shared;
 @rendermode InteractiveServer
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Layout
 <!--Navbar-->
 <nav class="topnav">
     <!---------------Navbar items contains--------------------------------------------------->
@@ -47,11 +48,6 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Lav Booking
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="BookingForm">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Lav Booking
-            </NavLink>
-        </div>
         <!--Dropdown for more options-->
         <div class="nav-item px-3 dropdown" style="position: relative" @onmouseleave="CloseDropdown">  <!--When mouse moves out of this container close the menu. Element is set as the relativ object (meaning other objects that are absolute do so relative to them)-->
             <!--Dropdown burger icon-->
@@ -75,13 +71,3 @@
         </div>
     </div>
 </nav>
-
-
-@code {
-    //a given list of dropdown items
-    [Parameter] public List<DropdownItem> items { get; set; } = new List<DropdownItem>();
-    //Controlls for the dropdown menu.
-    private bool Open = false;
-    private void ToggleDropdown() => Open = !Open;
-    private void CloseDropdown() => Open = false;
-}   

@@ -1,8 +1,12 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Domain.Entities.Schedules;
-using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
+using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -53,13 +57,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Customer>().UseTptMappingStrategy();
-
+            modelBuilder.Entity<Customer>().UseTphMappingStrategy();
             modelBuilder.Entity<Product>().UseTptMappingStrategy();
+
             modelBuilder.Entity<Treatment>().ToTable("Treatments");
             modelBuilder.Entity<Product>().ToTable("Products");
-            modelBuilder.Entity<PrivateCustomer>().ToTable("PrivateCustomers");
-            modelBuilder.Entity<CompanyCustomer>().ToTable("CompanyCustomers");
             modelBuilder.Entity<Campaign>().ToTable("Campaigns");
             modelBuilder.Entity<LoyaltyDiscount>().ToTable("LoyaltyDiscounts");
 
@@ -79,7 +81,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany(es => es.Days)
                 .WithOne(sd => sd.Schedule)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
             modelBuilder.Entity<ScheduleDay>()
                 .HasMany<TimeRange>(sd => sd.TimeRanges)
                 .WithOne(tr => tr.ScheduleDay)
@@ -139,12 +141,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-            modelBuilder.Entity<Employee>()
-                .HasMany(b => b.TreatmentHistory);
-
-            modelBuilder.Entity<PrivateCustomer>()
-                .HasMany(b => b.BookingHistory);
-            modelBuilder.Entity<CompanyCustomer>()
+            modelBuilder.Entity<Customer>()
                 .HasMany(b => b.BookingHistory);
 
             modelBuilder.Entity<Employee>()

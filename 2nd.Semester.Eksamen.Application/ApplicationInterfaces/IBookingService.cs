@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _2nd.Semester.Eksamen.Domain;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 
 namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {

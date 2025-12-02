@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +11,12 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
     public abstract class Person : BaseEntity
     {
         //Basic elements of a person
-        public string Name { get; private set; } = null!;
-        public Address Address { get; private set; } = null!;
-        public string PhoneNumber { get; private set; } = null!;
-        public string Email { get; private set; } = null!;
-        public int AddressId { get; set; }
+        public string Name { get; protected set; } = null!;
+        [ForeignKey(nameof(Address))] //FK
+        public int AddressId { get; protected set; }
+        public Address Address { get; protected set; }
+        public string PhoneNumber { get; protected set; } = null!;
+        public string Email { get; protected set; } = null!;
 
 
         public Person() { }

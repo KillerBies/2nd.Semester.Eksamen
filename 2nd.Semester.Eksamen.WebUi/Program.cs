@@ -1,21 +1,27 @@
 using _2nd.Semester.Eksamen.Application.Adapters;
-
-using _2nd.Semester.Eksamen.Application.Commands;
-using _2nd.Semester.Eksamen.Application.Services;
-using _2nd.Semester.Eksamen.Domain.DomainInterfaces;
-using _2nd.Semester.Eksamen.Domain.DomainServices;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces;
 
 
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
-using _2nd.Semester.Eksamen.Infrastructure.Repositories;
 using _2nd.Semester.Eksamen.WebUi.Components;
-using _2nd.Semester.Eksamen.WebUi.Services;
+using WebUIServices;
 using Microsoft.EntityFrameworkCore;
 
 using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.Commands.EmployeeCmd;
+using _2nd.Semester.Eksamen.Application.Services.BookingServices;
+using _2nd.Semester.Eksamen.Application.Services.PersonService;
+using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
+using _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
+using _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.BookingRepositories;
+using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories;
+using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.EmployeeRepositories;
+using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.CustomerRepositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,10 +40,7 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ITreatmentBookingRepository, TreatmentBookingRepository>();
 builder.Services.AddScoped<BookingFormService>();
 builder.Services.AddScoped<ICompanyCustomerService , CompanyCustomerService>();
-builder.Services.AddScoped<ICompanyCustomerRepository , CompanyCustomerRepository>();
 builder.Services.AddScoped<IPrivateCustomerService , PrivateCustomerService>();
-builder.Services.AddScoped<IPrivateCustomerRepository , PrivateCustomerRepository>();
-
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<EmployeeSpecialtyService>();
 builder.Services.AddScoped<BookingApplicationService>();
@@ -51,12 +54,11 @@ builder.Services.AddScoped<ScheduleService>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<DTO_to_Domain>();
-var app = builder.Build();
+builder.Services.AddScoped<Domain_to_DTO>();
 builder.Services.AddScoped<UpdateEmployeeCommand>();
 builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
 builder.Services.AddScoped<IBookingService, BookingService>();
-
-
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

@@ -1,6 +1,9 @@
-﻿using _2nd.Semester.Eksamen.Application.DTO;
+﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Mono.TextTemplating;

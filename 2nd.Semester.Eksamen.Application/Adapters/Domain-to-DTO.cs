@@ -1,11 +1,15 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Application.DTO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 
 namespace _2nd.Semester.Eksamen.Application.Adapters
 {
@@ -47,13 +51,11 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         {
             return new CustomerDTO
             {
+                id = customer.Id,
+                Type = customer.GetType().Name,
                 Name = customer.Name,
                 Email = customer.Email,
                 PhoneNumber = customer.PhoneNumber,
-                City = customer.Address.City,
-                PostalCode = customer.Address.PostalCode,
-                StreetName = customer.Address.StreetName,
-                HouseNumber = customer.Address.HouseNumber
             };
         }
         public PrivateCustomerDTO PrivateCustomerToDTO(PrivateCustomer PrivateCustomer)
@@ -93,7 +95,7 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             return new BookingDTO
             {
                 TreatmentBookingDTOs = booking.Treatments.Select(tb => TreatmentBookingToDTO(tb)).ToList(),
-                CustomerId = booking.CustomerId,
+                Customer = CustomerToDTO(booking.Customer),
                 Start = booking.Start,
                 End = booking.End,
                 Duration = booking.Duration
