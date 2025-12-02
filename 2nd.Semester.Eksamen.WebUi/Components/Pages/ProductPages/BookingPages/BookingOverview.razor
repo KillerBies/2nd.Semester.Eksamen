@@ -1,0 +1,98 @@
+﻿@page "/BookingOverview/"
+@rendermode InteractiveServer
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@using _2nd.Semester.Eksamen.Domain;
+@using _2nd.Semester.Eksamen.Domain.Entities.Products;
+@using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts
+@inject IBookingService bookingService;
+<h1>BookingOverview</h1>
+
+@foreach (Booking booking in bookingList)
+{
+    <p>Fra @booking.Start til @booking.End</p>
+    <p><button @onclick="() => ShowOverlay(booking)">Mere information</button></p>
+}
+
+
+
+
+@if (visibleOverlay == true)
+{
+    <div class="overlay" @onclick=HideOverlay>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger">@errorMessage</div>
+        }
+        <div class="overlay-content" @onclick:stopPropagation>
+            <h2>@selectedBooking.Start til @selectedBooking.End</h2>
+            <p>@selectedBooking.Treatments</p>
+            <button @onclick="HideOverlay">Luk</button>
+            <button @onclick="DeleteBookingWarning">Slet booking</button>
+    @if (toggleBookingWarning == true)
+    {
+        <p>Er du sikker på du vil slette bookingen?</p>
+        <button @onclick="() => toggleBookingWarning = false">Annuller</button>
+        <button  @onclick="ConfirmDeleteBooking">Slet booking</button>
+    
+    }
+        </div>
+    </div>
+}
+
+
+
+@code {
+
+
+    private Booking? selectedBooking;
+    List<Booking> bookingList = new List<Booking>();
+    Filter filter = new();
+    private string? errorMessage;
+
+    private bool toggleBookingWarning = false;
+    protected override async Task OnInitializedAsync()
+    {
+        filter.Status = BookingStatus.Pending;
+        bookingList = (await bookingService.GetBookingsByFilterAsync(filter)).ToList();
+    }
+    //Shows overlay with booking details
+    private bool visibleOverlay = false;
+    void ShowOverlay(Booking booking) 
+    { 
+        visibleOverlay = true;
+        selectedBooking = booking;
+    }
+    //Opens the 'Are you sure you want to delete booking'
+    void DeleteBookingWarning()
+    {
+        toggleBookingWarning = true;
+    }
+
+    void HideOverlay() 
+    {
+        visibleOverlay = false;
+        errorMessage = null;
+        toggleBookingWarning = false;
+    }
+    private async Task ConfirmDeleteBooking()
+    {
+        try
+        {
+            await bookingService.DeleteBookingAsync(selectedBooking);
+            bookingList.Remove(selectedBooking);
+            selectedBooking = null;
+            visibleOverlay = false;
+            toggleBookingWarning = false;
+
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+            errorMessage = "Noget gik galt i forbindelse med at slette bookingen!";
+        }
+
+    
+    }
+
+
+}
