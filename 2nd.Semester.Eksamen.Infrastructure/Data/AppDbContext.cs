@@ -77,6 +77,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .WithOne(s => s.Employee)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
             modelBuilder.Entity<EmployeeSchedule>()
                 .HasMany(es => es.Days)
                 .WithOne(sd => sd.Schedule)
