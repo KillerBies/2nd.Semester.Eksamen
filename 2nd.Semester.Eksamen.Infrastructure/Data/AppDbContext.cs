@@ -73,11 +73,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
 
             modelBuilder.Entity<Employee>()
-                .HasOne(e => e.Schedule)
+                .HasOne<EmployeeSchedule>(b => b.Schedule)
                 .WithOne(s => s.Employee)
-                .HasForeignKey<EmployeeSchedule>(s => s.EmployeeId)
-                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
+
 
             modelBuilder.Entity<EmployeeSchedule>()
                 .HasMany(es => es.Days)
