@@ -1,16 +1,32 @@
-﻿@page "/finalizepayment"
-@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
+﻿@page "/finalizepayment" 
+@namespace _2nd.Semester.Eksamen.Pages
 @rendermode InteractiveServer
 
-<h3>Finalize Payment (test)</h3>
+<p>Original Total: @originalTotal.ToString("0.00") kr.</p>
 
-<button class="btn btn-primary" @onclick="FinalizePaymentAsync">
-    Finalize Payment
-</button>
-
-@if (message is not null)
+@if (loyaltyDiscount != null)
 {
-    <p>@message</p>
+    <p>
+        Loyalty Discount: @loyaltyDiscount.Name
+        @((loyaltyDiscount.DiscountAmount * 100).ToString("0"))%
+        (-@((originalTotal * loyaltyDiscount.DiscountAmount).ToString("0.00")) kr)
+    </p>
 }
 
+@if (bestDiscount != null)
+{
+    <p>
+        Best Regular Discount: @bestDiscount.Name
+        @((bestDiscount.DiscountAmount * 100).ToString("0"))%
+        (-@((originalTotal * bestDiscount.DiscountAmount).ToString("0.00")) kr)
+    </p>
+}
+
+<p><strong>Final Total: @finalTotal.ToString("0.00") kr</strong></p>
+
+
+
+<div>
+    <button class="btn btn-primary" @onclick="FinalizePaymentAsync">Pay Now</button>
+</div>
 

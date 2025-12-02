@@ -17,5 +17,6 @@ namespace _2nd.Semester.Eksamen.Application.RepositoryInterfaces
         public Task CreateNewAsync(Product Product);
         public Task UpdateAsync(Product Product);
         public Task DeleteAsync(Product Product);
+        Task<List<Product>> GetByIdsAsync(List<int> ids);
     }
 }

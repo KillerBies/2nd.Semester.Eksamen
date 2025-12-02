@@ -42,6 +42,13 @@ namespace _2nd.Semester.Eksamen.Application.Services
             await _customerRepository.DeleteAsync(customer);
         }
 
+        public async Task<PrivateCustomer?> GetCustomerByIdAsync(int customerId)
+        {
+            var customer = await _customerRepository.GetByIDAsync(customerId);
+            return customer as PrivateCustomer;
+        }
+
+
     }
 
 

@@ -12,7 +12,7 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251127230223_InitialCreate")]
+    [Migration("20251128130946_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -351,6 +351,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<bool>("IsLoyalty")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -360,7 +363,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Discount");
+                    b.ToTable("Discount", (string)null);
 
                     b.UseTptMappingStrategy();
                 });
@@ -461,41 +464,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.ToTable("LoyaltyDiscounts", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppliesToProduct = false,
-                            AppliesToTreatment = false,
-                            DiscountAmount = 0m,
-                            Name = "Bronze",
-                            NumberOfUses = 0,
-                            DiscountType = "Bronze",
-                            MinimumVisits = 5
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AppliesToProduct = false,
-                            AppliesToTreatment = false,
-                            DiscountAmount = 0m,
-                            Name = "Silver",
-                            NumberOfUses = 0,
-                            DiscountType = "Silver",
-                            MinimumVisits = 10
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AppliesToProduct = false,
-                            AppliesToTreatment = false,
-                            DiscountAmount = 0m,
-                            Name = "Gold",
-                            NumberOfUses = 0,
-                            DiscountType = "Gold",
-                            MinimumVisits = 20
-                        });
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer", b =>

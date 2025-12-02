@@ -24,7 +24,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
         public bool AppliesToTreatment { get; set; }
         //Times the discount has been used
         public int NumberOfUses { get; set; }
-
+        public bool IsLoyalty { get; set; } = false;
         public Discount(string name, decimal discountAmount)
         {
             Name = name;
@@ -48,6 +48,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
         //public decimal GetDiscountedPrice(ProductSnapshot product)
         //{
         //    return DiscountAmount * product.Price;
-        //}
+        //}<<
     }
 }

@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,9 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {
     public interface IDiscountService
     {
-        Task<DiscountResult> GetBestDiscountAsync(Order order);
+        Task<List<Discount>> GetAllDiscountsAsync();
+        Task<List<LoyaltyDiscount>> GetAllLoyaltyDiscountsAsync();
+        Task<LoyaltyDiscount?> GetLoyaltyDiscountForVisitsAsync(int numberOfVisits);
+
     }
 }

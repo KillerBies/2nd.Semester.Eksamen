@@ -45,5 +45,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         {
             throw new NotImplementedException();
         }
+
     }
 }

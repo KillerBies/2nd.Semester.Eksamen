@@ -41,6 +41,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         public DbSet<PunchCard> PunchCards { get; set; }
         public DbSet<LoyaltyDiscount> LoyaltyDiscounts { get; set; }
         public DbSet<Campaign> Campaigns { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,6 +52,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<CompanyCustomer>().ToTable("CompanyCustomers");
             modelBuilder.Entity<Campaign>().ToTable("Campaigns");
             modelBuilder.Entity<LoyaltyDiscount>().ToTable("LoyaltyDiscounts");
+            modelBuilder.Entity<Discount>().ToTable("Discount");
 
             //Booking model
             modelBuilder.Entity<Booking>()
@@ -133,31 +135,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<Discount>()
                 .Property(d => d.DiscountAmount)
                 .HasPrecision(18, 2);
-
-            //TODO: Add way to add these via a page for more control maybe
-            modelBuilder.Entity<LoyaltyDiscount>().HasData(
-                new LoyaltyDiscount
-                {
-                    Id = 1,
-                    Name = "Bronze",
-                    MinimumVisits = 5,
-                    DiscountType = "Bronze"
-                },
-                new LoyaltyDiscount
-                {
-                    Id = 2,
-                    Name = "Silver",
-                    MinimumVisits = 10,
-                    DiscountType = "Silver"
-                },
-                new LoyaltyDiscount
-                {
-                    Id = 3,
-                    Name = "Gold",
-                    MinimumVisits = 20,
-                    DiscountType = "Gold"
-                }
-            );
 
             base.OnModelCreating(modelBuilder);
         }

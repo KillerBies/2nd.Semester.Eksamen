@@ -17,7 +17,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories
         public TreatmentBookingRepository(IDbContextFactory<AppDbContext> factory)
         {
             _factory = factory;
-        }   
+        }
         public async Task CreateNewAsync(TreatmentBooking treatmentBooking)
         {
             await using var _context = await _factory.CreateDbContextAsync();

@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -39,7 +37,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     DiscountAmount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     AppliesToProduct = table.Column<bool>(type: "bit", nullable: false),
                     AppliesToTreatment = table.Column<bool>(type: "bit", nullable: false),
-                    NumberOfUses = table.Column<int>(type: "int", nullable: false)
+                    NumberOfUses = table.Column<int>(type: "int", nullable: false),
+                    IsLoyalty = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -348,26 +347,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Discount",
-                columns: new[] { "Id", "AppliesToProduct", "AppliesToTreatment", "DiscountAmount", "Name", "NumberOfUses" },
-                values: new object[,]
-                {
-                    { 1, false, false, 0m, "Bronze", 0 },
-                    { 2, false, false, 0m, "Silver", 0 },
-                    { 3, false, false, 0m, "Gold", 0 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "LoyaltyDiscounts",
-                columns: new[] { "Id", "DiscountType", "MinimumVisits" },
-                values: new object[,]
-                {
-                    { 1, "Bronze", 5 },
-                    { 2, "Silver", 10 },
-                    { 3, "Gold", 20 }
                 });
 
             migrationBuilder.CreateIndex(
