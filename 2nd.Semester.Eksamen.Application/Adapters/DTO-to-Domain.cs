@@ -38,7 +38,6 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         public async Task<Employee> DTOEmployeeToDomain(EmployeeDTO employeeDTO)
         {
             var result = await _employeeRepository.GetByIDAsync(employeeDTO.EmployeeId);
-            System.Diagnostics.Debug.WriteLine($"employee is null dtoemployee: {result == null}");
             return result;
         }
         public async Task<Booking> DTOBookingToDomain(BookingDTO booking)

@@ -137,6 +137,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
             modelBuilder.Entity<Customer>()
                 .HasMany(b => b.BookingHistory);
+            modelBuilder.Entity<Customer>()
+                .Property(e => e.PointBalance)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.BasePriceMultiplier)

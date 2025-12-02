@@ -27,7 +27,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         public async Task<IEnumerable<ScheduleDay>> GetByEmployeeIDAsync(int employeeid)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.ScheduleDays.Where(sd => sd.EmployeeId == employeeid).ToListAsync();
+            return await _context.ScheduleDays.Include(sd => sd.TimeRanges).Where(sd => sd.EmployeeId == employeeid).ToListAsync();
         }
         public async Task<IEnumerable<ScheduleDay>> GetAllAsync()
         {

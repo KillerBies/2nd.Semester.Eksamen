@@ -147,6 +147,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PointBalance")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("SaveAsCustomer")
