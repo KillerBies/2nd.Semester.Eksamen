@@ -44,44 +44,45 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
             var employee = await _repo.GetByIDAsync(Id);
 
-            if (employee != null)
+            if (employee == null)
             {
-                Input.FirstName = employee.Name;
-                Input.LastName = employee.LastName;
-                Input.Email = employee.Email;
-                Input.PhoneNumber = employee.PhoneNumber;
-
-                Input.Specialties = employee.Specialties?
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(x => new SpecialtyItemBase
-                    {
-                        Id = Guid.NewGuid(),
-                        Value = x.Trim()
-                    })
-                    .ToList()
-                    ?? new List<SpecialtyItemBase>();
+                // Handle null employee, e.g., redirect or show message
+                Nav.NavigateTo("/employees");
+                return;
             }
+            Input.FirstName = employee.Name;
+            Input.LastName = employee.LastName;
+            Input.Email = employee.Email;
+            Input.PhoneNumber = employee.PhoneNumber;
 
-
-
-            Input.BasePriceMultiplier = employee.BasePriceMultiplier;
-                // Convert string -> enum
-                Input.Gender = Enum.GetValues<Gender>()
-                    .FirstOrDefault(g => g.GetDescription() == employee.Gender);
-
-                Input.Type = Enum.GetValues<EmployeeType>()
-                    .FirstOrDefault(t => t.GetDescription() == employee.Type);
-
-                Input.ExperienceLevel = Enum.GetValues<ExperienceLevels>()
-                    .FirstOrDefault(e => e.GetDescription() == employee.ExperienceLevel);
-
-                if (employee.Address != null)
+            Input.Specialties = employee.Specialties?
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => new SpecialtyItemBase
                 {
-                    Input.Address.StreetName = employee.Address.StreetName;
-                    Input.Address.HouseNumber = employee.Address.HouseNumber;
-                    Input.Address.City = employee.Address.City;
-                    Input.Address.PostalCode = employee.Address.PostalCode;
-                }
+                    Id = Guid.NewGuid(),
+                    Value = x.Trim()
+                })
+                .ToList()
+                ?? new List<SpecialtyItemBase>();
+            Input.BasePriceMultiplier = employee.BasePriceMultiplier;
+
+            // Convert string -> enum
+            Input.Gender = Enum.GetValues<Gender>()
+                .FirstOrDefault(g => g.GetDescription() == employee.Gender);
+
+            Input.Type = Enum.GetValues<EmployeeType>()
+                .FirstOrDefault(t => t.GetDescription() == employee.Type);
+
+            Input.ExperienceLevel = Enum.GetValues<ExperienceLevels>()
+                .FirstOrDefault(e => e.GetDescription() == employee.ExperienceLevel);
+
+            if (employee.Address != null)
+            {
+                Input.Address.StreetName = employee.Address.StreetName;
+                Input.Address.HouseNumber = employee.Address.HouseNumber;
+                Input.Address.City = employee.Address.City;
+                Input.Address.PostalCode = employee.Address.PostalCode;
+            }
             }
         
         protected async Task UpdateEmployeeAsync()

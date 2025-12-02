@@ -4,9 +4,10 @@
 @using _2nd.Semester.Eksamen.Domain.Helpers;
 @using WebUIServices;
 @namespace Components.Pages.PersonPages.EmployeePages
+@rendermode InteractiveServer
 <h3>Create Employee</h3>
 
-<EditForm Model="Input" OnValidSubmit="CreateEmployeeAsync">
+<EditForm Model="Input" OnValidSubmit="CreateEmployeeAsync" FormName="CreateEmployeeForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
