@@ -8,10 +8,10 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO
 {
     public class AddressInputDTO
     {
-        public string City { get; set; } = string.Empty;
-        public string PostalCode { get; set; } = string.Empty;
-        public string StreetName { get; set; } = string.Empty;
-        public string HouseNumber { get; set; } = string.Empty;
+        public string City { get; set; }
+        public string PostalCode { get; set; }
+        public string StreetName { get; set; }
+        public string HouseNumber { get; set; }
 
     }
 

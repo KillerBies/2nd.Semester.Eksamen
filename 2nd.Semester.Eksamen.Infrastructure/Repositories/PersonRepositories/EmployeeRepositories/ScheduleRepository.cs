@@ -46,21 +46,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                // check if schedule exists
-                var existing = await _context.EmployeeSchedules
-                    .FirstOrDefaultAsync(s => s.EmployeeId == EmployeeSchedule.EmployeeId);
-
-                if (existing != null)
-                {
-                    // update existing schedule
-                    _context.Entry(existing).CurrentValues.SetValues(EmployeeSchedule);
-                }
-                else
-                {
-                    await _context.EmployeeSchedules.AddAsync(EmployeeSchedule);
-                }
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
+                await _context.EmployeeSchedules.AddAsync(EmployeeSchedule);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
             }
             catch (Exception)
             {
