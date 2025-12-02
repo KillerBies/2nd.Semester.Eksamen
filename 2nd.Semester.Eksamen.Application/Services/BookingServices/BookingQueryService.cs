@@ -88,9 +88,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     }
                 }
             }
-            System.Diagnostics.Debug.WriteLine($"suggest request start: input is null? {!TreatmentBookings.Any()|| TreatmentBookings==null}");
-            List<BookingSuggestion> suggestions = _suggestionService.GetBookingSugestions(TreatmentBookings, startdate, numberOfDaysToCheck, numberOfSuggestions, interval);
-            System.Diagnostics.Debug.WriteLine($"suggest request ended: output is null? {!suggestions.Any() || suggestions == null}");
+            List<BookingSuggestion> suggestions = await _suggestionService.GetBookingSugestions(TreatmentBookings, startdate, numberOfDaysToCheck, numberOfSuggestions, interval);
             List<BookingDTO> bookingDTOs = suggestions.Select(s => new BookingDTO
             {
                 Start = s.Start,

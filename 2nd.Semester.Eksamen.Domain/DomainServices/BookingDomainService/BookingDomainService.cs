@@ -1,13 +1,16 @@
-﻿using System;
+﻿using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
-using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
 
 namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
 {
