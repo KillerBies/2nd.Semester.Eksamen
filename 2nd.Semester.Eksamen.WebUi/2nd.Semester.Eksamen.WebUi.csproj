@@ -23,6 +23,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+    <PackageReference Include="Quick.AspNetCore.Components.Web.Extensions" Version="6.0.2" />
   </ItemGroup>
 
   <PropertyGroup>

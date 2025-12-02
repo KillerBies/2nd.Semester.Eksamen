@@ -1,6 +1,6 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
+namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
 {
     public class Campaign : Discount
     {

@@ -1,7 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
+namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
 {
     public class LoyaltyDiscount : Discount
     {
