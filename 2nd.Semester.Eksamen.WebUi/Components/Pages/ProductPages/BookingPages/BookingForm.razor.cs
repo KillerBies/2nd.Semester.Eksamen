@@ -94,7 +94,7 @@ namespace Components.Pages.ProductPages.BookingPages
             if(EditContext.Validate())
             {
                 try
-                {
+                {   
                     await _bookingApplicationService.CreateBookingAsync(Booking);
                 }
                 catch (Exception ex)

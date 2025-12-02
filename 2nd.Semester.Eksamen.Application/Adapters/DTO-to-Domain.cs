@@ -46,10 +46,11 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             List<TreatmentBooking> treatments = new();
             foreach(var treatment in booking.TreatmentBookingDTOs)
             {
-                treatments.Add(await DTOTreatmentBookingToDomain(treatment));
+                treatments.Add(await DTOTreatmentBookingToDomainFix(treatment));
             }
             var customer = await DTOCustomerToDomain(booking.Customer.id);
-            return new Booking(customer, booking.Start, booking.End, treatments);
+            //BEFORE SENT FULL CUSTOMER IN
+            return new Booking(booking.Customer.id, booking.Start, booking.End, treatments);
         }
         public async Task<TreatmentBooking> DTOTreatmentBookingToDomain(TreatmentBookingDTO treatmentBookingDTO)
         {
@@ -58,6 +59,16 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             var result = new TreatmentBooking(treatment, employee, treatmentBookingDTO.Start, treatmentBookingDTO.End);
             return result;
         }
+        public async Task<TreatmentBooking> DTOTreatmentBookingToDomainFix(TreatmentBookingDTO treatmentBookingDTO)
+        {
+            var treatment = await DTOTreatmentToDomain(treatmentBookingDTO.Treatment);
+            var employee = await DTOEmployeeToDomain(treatmentBookingDTO.Employee);
+            var result = new TreatmentBooking(treatment.Id, employee.Id, treatmentBookingDTO.Start, treatmentBookingDTO.End);
+            return result;
+        }
+
+
+
         public async Task<Customer> DTOCustomerToDomain(int CustomerId)
         {
             var customer = await _customerRepository.GetByIDAsync(CustomerId);

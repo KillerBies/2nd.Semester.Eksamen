@@ -17,8 +17,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
         //Employee details
         public int EmployeeId { get; set; }
         public Employee Employee { get; private set; }
-        
+
         //Treatment info
+        public int TreatmentId { get; set; }
         public Treatment Treatment { get; private set; } = null!;
         public List<TreatmentBookingProduct> ProductsUsed { get; private set; } = new List<TreatmentBookingProduct>();
 
@@ -35,13 +36,18 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
             Employee = employee;
             Treatment = treatment;
         }
+        public TreatmentBooking(int treatmentId, int employeeId, DateTime start, DateTime end)
+        {
+            TrySetTimeRange(start, end);
+            EmployeeId = employeeId;
+            TreatmentId = treatmentId;
+        }
         public TreatmentBooking(Treatment treatment, int employeeId, DateTime start, DateTime end)
         {
             TrySetTimeRange(start, end);
             EmployeeId = employeeId;
             Treatment = treatment;
         }
-
 
 
         //method to set time range of treatment booking

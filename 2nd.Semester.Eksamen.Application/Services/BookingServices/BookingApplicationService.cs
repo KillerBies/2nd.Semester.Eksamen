@@ -39,7 +39,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 throw new ArgumentException("Booking must contain at least one treatment.");
             Booking Booking = await _toDomainAdapter.DTOBookingToDomain(booking);
             try
-            {
+            { 
                 await _bookingRepository.CreateNewBookingAsync(Booking);
                 await Task.WhenAll(Booking.Treatments.Select(t => _scheduleRepository.BookScheduleAsync(t)));
             }
