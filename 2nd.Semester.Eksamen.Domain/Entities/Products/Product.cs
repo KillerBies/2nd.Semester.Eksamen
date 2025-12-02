@@ -18,7 +18,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
             Name = name;
             Price = price;
             Description = description;
-            Category = category;
         }
         public Product() { }
 

@@ -1,6 +1,6 @@
-﻿using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Products; // <-- check if Discount class is here
-using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;     // <-- if Discount class is actually here
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,14 +1,9 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Application.Services
+namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 {
     public class OrderService : IOrderService
     {
@@ -82,12 +77,6 @@ namespace _2nd.Semester.Eksamen.Application.Services
         public Task<List<Discount>> GetAllDiscountsAsync()
         {
             return _discountService.GetAllDiscountsAsync();
-        }
-
-        public async Task<PrivateCustomer?> GetCustomerByIdAsync(int customerId)
-        {
-            PrivateCustomer? privateCustomer = await _privateCustomerService.GetByIDAsync(customerId);
-            return privateCustomer;
         }
 
     }

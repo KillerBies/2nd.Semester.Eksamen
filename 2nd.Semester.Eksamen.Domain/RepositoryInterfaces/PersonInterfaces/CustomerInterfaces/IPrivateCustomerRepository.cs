@@ -10,7 +10,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Cus
     public interface IPrivateCustomerRepository
     {
         //Repository for Customer. 
-        public Task<Customer?> GetByIDAsync(int id);
+        public Task<PrivateCustomer?> GetByIDAsync(int id);
         public Task <PrivateCustomer?> GetByPhoneAsync(string phoneNumber);
         //public Task<IEnumerable<Customer?>> GetAllAsync();
         //public Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter);

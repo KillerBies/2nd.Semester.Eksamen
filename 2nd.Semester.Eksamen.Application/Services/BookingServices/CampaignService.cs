@@ -1,6 +1,8 @@
-﻿using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
+﻿using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
 
-namespace _2nd.Semester.Eksamen.Application;
+namespace _2nd.Semester.Eksamen.Application.Services.BookingServices;
 
 public class CampaignService
 {

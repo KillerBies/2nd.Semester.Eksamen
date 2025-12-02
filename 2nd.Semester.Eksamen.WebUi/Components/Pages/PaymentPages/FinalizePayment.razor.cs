@@ -1,12 +1,10 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Pages
+namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 {
     public partial class FinalizePayment : ComponentBase
     {
@@ -41,7 +39,16 @@ namespace _2nd.Semester.Eksamen.Pages
                    : bestDiscount;
 
 
-            customer = await OrderService.GetCustomerByIdAsync(CustomerId);
+            if (customer is PrivateCustomer pc)
+            {
+                pc.AddVisit();
+                await CustomerService.UpdateAsync(pc);
+            }
+            //else if (customer is CompanyCustomer cc) // Implement Company Customer later
+            //{
+                
+            //}
+
 
             // Load products
             products = await OrderService.GetProductsByIdsAsync(productIds);

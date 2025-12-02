@@ -1,5 +1,7 @@
-﻿using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
-namespace _2nd.Semester.Eksamen.Application;
+﻿using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
+namespace _2nd.Semester.Eksamen.Application.Services.BookingServices;
 
 public class LoyaltyService
 {

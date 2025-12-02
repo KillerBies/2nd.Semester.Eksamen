@@ -1,14 +1,9 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
 
-namespace _2nd.Semester.Eksamen.Application.Services
+namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 {
     public class DiscountService : IDiscountService
     {

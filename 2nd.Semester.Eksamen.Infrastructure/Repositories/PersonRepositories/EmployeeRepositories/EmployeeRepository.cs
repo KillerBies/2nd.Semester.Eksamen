@@ -2,6 +2,7 @@ using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Domain;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         public async Task CreateNewAsync(Employee employee)
         {
             var _context = await _factory.CreateDbContextAsync();
+
+            if (employee.Schedule == null)
+                employee.Schedule = new EmployeeSchedule();
+
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
@@ -44,6 +49,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         public async Task UpdateAsync(Employee employee)
         {
             var _context = await _factory.CreateDbContextAsync();
+
+            if (employee.Schedule == null)
+                employee.Schedule = new EmployeeSchedule();
+
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {

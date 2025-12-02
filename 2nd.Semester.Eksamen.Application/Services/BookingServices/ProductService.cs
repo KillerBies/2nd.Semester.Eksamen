@@ -1,6 +1,6 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
 
 public class ProductService : IProductService
 {

@@ -22,7 +22,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
         }
 
 
-        public async Task<Customer?> GetByIDAsync(int id)
+        public async Task<PrivateCustomer?> GetByIDAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
             return await _context.PrivateCustomers.FindAsync(id);

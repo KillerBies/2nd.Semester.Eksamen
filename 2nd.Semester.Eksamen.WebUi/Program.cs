@@ -22,6 +22,9 @@ using _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.Book
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.EmployeeRepositories;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.CustomerRepositories;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
+using _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,8 +42,8 @@ builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ITreatmentBookingRepository, TreatmentBookingRepository>();
 builder.Services.AddScoped<BookingFormService>();
-builder.Services.AddScoped<ICompanyCustomerService , CompanyCustomerService>();
-builder.Services.AddScoped<IPrivateCustomerService , PrivateCustomerService>();
+builder.Services.AddScoped<ICompanyCustomerService, CompanyCustomerService>();
+builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<EmployeeSpecialtyService>();
 builder.Services.AddScoped<BookingApplicationService>();

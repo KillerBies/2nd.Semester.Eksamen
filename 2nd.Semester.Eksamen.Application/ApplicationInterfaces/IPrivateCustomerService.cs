@@ -5,18 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {
-    public interface IPrivateCustomerService
+    public interface IPrivateCustomerService : ICustomerService
     {
         public Task<int> CreatePrivateCustomerAsync(PrivateCustomerDTO privateCustomerDTO);
-        public Task<PrivateCustomer?> GetByIDAsync(int id);
-        public Task UpdateAsync(PrivateCustomer customer);
-        public Task DeleteAsync(PrivateCustomer customer);
-        public Task<PrivateCustomer?> GetCustomerByIdAsync(int customerId);
-
-
-
-
+        Task DeleteAsync(PrivateCustomer customer);
+        Task<PrivateCustomer?> GetByIDAsync(int customerId);
+        Task UpdateAsync(PrivateCustomer customer);
     }
 }

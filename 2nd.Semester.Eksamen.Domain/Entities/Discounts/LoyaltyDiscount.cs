@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts

@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
 {

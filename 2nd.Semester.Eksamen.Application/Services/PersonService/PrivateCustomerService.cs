@@ -7,25 +7,62 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
 {
     public class PrivateCustomerService : IPrivateCustomerService
     {
-
         private readonly IPrivateCustomerRepository _customerRepository;
+
         public PrivateCustomerService(IPrivateCustomerRepository customerRepository)
         {
             _customerRepository = customerRepository;
         }
 
-        public async Task<int> CreatePrivateCustomerAsync(PrivateCustomerDTO DTO)
+        public async Task<int> CreatePrivateCustomerAsync(PrivateCustomerDTO dto)
         {
-            //Creates Address for private customer
-            Address address = new Address(DTO.City, DTO.PostalCode, DTO.StreetName, DTO.HouseNumber);
-            //Creates Private Customer
-            PrivateCustomer privateCustomer = new PrivateCustomer(DTO.LastName, DTO.Gender, DTO.Birthday, DTO.Name, address, DTO.PhoneNumber, DTO.Email, DTO.Notes, DTO.SaveAsCustomer);
+            Address address = new Address(
+                dto.City,
+                dto.PostalCode,
+                dto.StreetName,
+                dto.HouseNumber
+            );
+
+            PrivateCustomer privateCustomer = new PrivateCustomer(
+                dto.LastName,
+                dto.Gender,
+                dto.Birthday,
+                dto.Name,
+                address,
+                dto.PhoneNumber,
+                dto.Email,
+                dto.Notes,
+                dto.SaveAsCustomer
+            );
+
             await _customerRepository.CreateNewAsync(privateCustomer);
-            return (await _customerRepository.GetByPhoneAsync(DTO.PhoneNumber)).Id;
+
+            var inserted = await _customerRepository.GetByPhoneAsync(dto.PhoneNumber);
+            return inserted.Id;
         }
 
+        public async Task<PrivateCustomer?> GetByIDAsync(int customerId)
+        {
+            return await _customerRepository.GetByIDAsync(customerId);
+        }
 
+        public async Task<Customer?> GetCustomerByIdAsync(int customerId)
+        {
+            // For now only private exists — later this will check both repos
+            return await _customerRepository.GetByIDAsync(customerId);
+        }
+
+        public async Task DeleteAsync(PrivateCustomer customer)
+        {
+            await _customerRepository.DeleteAsync(customer);
+        }
+
+        public async Task UpdateAsync(PrivateCustomer customer)
+        {
+            await _customerRepository.UpdateAsync(customer);
+        }
     }
+
 
 
 }

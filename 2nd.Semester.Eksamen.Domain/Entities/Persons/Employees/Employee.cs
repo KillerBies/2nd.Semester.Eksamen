@@ -30,7 +30,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
         public decimal BasePriceMultiplier { get; set; } = 1;
 
         //Schedule details
-        public EmployeeSchedule Schedule { get; set; }
+        public EmployeeSchedule? Schedule { get; set; }
         public List<TreatmentBooking> Appointments { get; set; } = new List<TreatmentBooking>();
         //public List<Treatment> TreatmentHistory { get; set; } = new List<TreatmentBooking>();
 
