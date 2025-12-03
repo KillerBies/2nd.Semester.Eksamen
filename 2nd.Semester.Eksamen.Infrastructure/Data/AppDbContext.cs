@@ -58,10 +58,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>().UseTphMappingStrategy();
-            modelBuilder.Entity<Product>().UseTptMappingStrategy();
+            modelBuilder.Entity<Product>().UseTphMappingStrategy();
+            //FORMER TPT
 
-            modelBuilder.Entity<Treatment>().ToTable("Treatments");
-            modelBuilder.Entity<Product>().ToTable("Products");
+            //modelBuilder.Entity<Treatment>().ToTable("Treatments");
+            //modelBuilder.Entity<Product>().ToTable("Products");
             modelBuilder.Entity<Campaign>().ToTable("Campaigns");
             modelBuilder.Entity<LoyaltyDiscount>().ToTable("LoyaltyDiscounts");
 

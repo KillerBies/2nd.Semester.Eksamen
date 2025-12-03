@@ -7,20 +7,23 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
-    public class ProductSnapshot : BaseEntity
+    public record ProductSnapshot : BaseSnapshot
     {
         //Products sold or used
-        public string Name { get; private set; } = string.Empty;
-        public decimal PricePerUnit { get; private set; }
-        public int? NumberSold { get; set; }
+        public string Name { get; init; } = string.Empty;
+        public decimal PricePerUnit { get; init; }
+        public decimal DiscountedPrice { get; init; }
+       
+
 
         public ProductSnapshot() { }
-        public ProductSnapshot(Product product, int numberSold)
+        public ProductSnapshot(Product product)
         {
             Name = product.Name;
             PricePerUnit = product.Price;
-            NumberSold = numberSold;
+            DiscountedPrice = product.DiscountedPrice;
         }
 
     }
+
 }

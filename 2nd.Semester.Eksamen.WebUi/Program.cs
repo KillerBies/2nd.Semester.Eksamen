@@ -58,6 +58,7 @@ builder.Services.AddScoped<Domain_to_DTO>();
 builder.Services.AddScoped<UpdateEmployeeCommand>();
 builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
