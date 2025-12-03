@@ -15,13 +15,15 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public decimal TotalAfterDiscount { get; init; }
         public int? PdfID { get; init; }
         public List<OrderLineSnapshot> OrderLinesSnapshot { get; init; }
+        public AppliedDiscountSnapshot AppliedDiscountSnapshot { get; init; }
         public OrderSnapshot() { }
         public OrderSnapshot(Order order, int customDiscount)
         {
             BookingSnapshot = new BookingSnapshot(order.Booking);
             CustomDiscount = customDiscount;
-            OrderLinesSnapshot = order.Products .Select(oL => new OrderLineSnapshot(oL)).ToList();
+            OrderLinesSnapshot = order.Products.Select(oL => new OrderLineSnapshot(oL)).ToList();
             DateOfPayment = DateOnly.FromDateTime(DateTime.Now);
+            AppliedDiscountSnapshot = new AppliedDiscountSnapshot(order.AppliedDiscount);
         }
     }
 

@@ -55,14 +55,30 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         public DbSet<ScheduleDay> ScheduleDays { get; set; }
         public DbSet<TimeRange> TimeRanges { get; set; }
 
+        //Snapshots
+        public DbSet<OrderSnapshot> OrderSnapshots { get; set; }
+        public DbSet<AddressSnapshot> AddressSnapshots { get; set; }
+        public DbSet<AppliedDiscountSnapshot> AppliedDiscountSnapshots { get; set; }
+        public DbSet<BookingSnapshot> BookingsSnapshots { get; set; }
+        public DbSet<CustomerSnapshot> CustomerSnapshots { get; set; }
+        public DbSet<OrderLineSnapshot> OrderLinesSnapshots { get; set; }
+        public DbSet<ProductSnapshot> ProductSnapshots { get; set; }
+        public DbSet<TreatmentSnapshot> TreatmentSnapshots { get; set; }
+
+
+
+
+
+
+
+
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>().UseTphMappingStrategy();
             modelBuilder.Entity<Product>().UseTphMappingStrategy();
-            //FORMER TPT
-
-            //modelBuilder.Entity<Treatment>().ToTable("Treatments");
-            //modelBuilder.Entity<Product>().ToTable("Products");
+            
             modelBuilder.Entity<Campaign>().ToTable("Campaigns");
             modelBuilder.Entity<LoyaltyDiscount>().ToTable("LoyaltyDiscounts");
 

@@ -21,7 +21,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             PhoneNumber = customer.PhoneNumber;
 
         }
-
+        
         public static CustomerSnapshot CreateCustomerSnapshot(Customer customer)
         {
             return customer switch
@@ -41,7 +41,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 
         public string? CVR { get; init; }
 
-
+        public CompanyCustomerSnapshot() { }
         public CompanyCustomerSnapshot(CompanyCustomer companyCustomer) : base(companyCustomer)
         {
             CVR = companyCustomer.CVRNumber;
@@ -50,7 +50,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 
     public record PrivateCustomerSnapshot : CustomerSnapshot
     {
-
+        public PrivateCustomerSnapshot() { }
         public string LastName { get; init; }
 
 

@@ -14,6 +14,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public string StreetName { get; init; } = null!;
         public string HouseNumber { get; init; } = null!;
 
+
+
+        public AddressSnapshot() { }
         public AddressSnapshot(Address address)
         {
             City = address.City;

@@ -15,7 +15,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public int NumberOfProducts { get; init; }
 
         
-        
+        public OrderLineSnapshot() { }
         public OrderLineSnapshot(OrderLine orderLine)
         {
 

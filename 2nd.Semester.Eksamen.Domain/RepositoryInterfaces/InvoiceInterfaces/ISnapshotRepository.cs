@@ -7,7 +7,7 @@ using _2nd.Semester.Eksamen.Domain.Entities.Products;
 
 namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces
 {
-    internal interface ISnapshotRepository
+    public interface ISnapshotRepository
     {
         public  Task CreateNewAsync(Order order);
 
