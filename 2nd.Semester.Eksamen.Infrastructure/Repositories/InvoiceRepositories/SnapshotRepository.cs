@@ -36,8 +36,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
                 await transaction.RollbackAsync();
                 throw;
             }
-
-
         }
+    
+        public async Task GetOrderSnapshotById    
+    
+    
     }
 }
