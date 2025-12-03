@@ -1,14 +1,17 @@
-﻿using System;
+﻿using _2nd.Semester.Eksamen.Domain;
+using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
+using _2nd.Semester.Eksamen.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Domain;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
-using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
-using _2nd.Semester.Eksamen.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.CustomerRepositories
 {
@@ -20,7 +23,47 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
         {
             _factory = factory;
         }
+        public async Task<PrivateCustomer?> GetCustomerByIdAsync(int id)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.PrivateCustomers
+            .Include(c => c.BookingHistory)
+            .FirstOrDefaultAsync(c => c.Id == id);
+        }
 
+
+        public async Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings
+            .Include(b => b.Customer)
+            .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.Treatment)
+            .FirstOrDefaultAsync(b => b.Id == bookingId);
+        }
+
+
+        public async Task<Order?> GetOrderByBookingIdAsync(int bookingId)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Orders.FirstOrDefaultAsync(o => o.BookingId == bookingId);
+        }
+
+
+        public async Task AddOrderAsync(Order order)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+        }
+
+
+        public async Task UpdateOrderAsync(Order order)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+        }
 
         public async Task<PrivateCustomer?> GetByIDAsync(int id)
         {
@@ -38,7 +81,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             throw new NotImplementedException();
         }
 
-        
+
         public async Task<PrivateCustomer?> GetByPhoneAsync(string phoneNumber)
         {
             await using var _context = await _factory.CreateDbContextAsync();
@@ -102,6 +145,90 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             }
         }
 
+        //public async Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId)
+        //{
+        //    await using var _context = await _factory.CreateDbContextAsync();
+
+        //    return await _context.Bookings
+        //        .Include(b => b.Customer)
+        //        .Include(b => b.Treatments)
+        //            .ThenInclude(bt => bt.ProductsUsed)
+        //                .ThenInclude(tbp => tbp.Product)
+        //        .FirstOrDefaultAsync(b => b.Id == bookingId);
+        //}
+
+        //public async Task<Order?> GetOrderByBookingIdAsync(int bookingId)
+        //{
+        //    var context = await _factory.CreateDbContextAsync();
+
+        //    return await context.Orders
+        //        .Include(o => o.Booking)
+        //        .ThenInclude(b => b.Customer)
+        //        .FirstOrDefaultAsync(o => o.BookingId == bookingId);
+        //}
+
+
+        //public async Task AddOrderAsync(Order order)
+        //{
+        //    await using var _context = await _factory.CreateDbContextAsync();
+
+        //    _context.Orders.Add(order);
+        //    await _context.SaveChangesAsync();
+        //}
+
+        //public async Task UpdateOrderAsync(Order order)
+        //{
+        //    await using var _context = await _factory.CreateDbContextAsync();
+
+        //    _context.Orders.Update(order);
+        //    await _context.SaveChangesAsync();
+        //}
+        public async Task<Booking?> GetBookingWithTreatmentsAndTreatmentAsync(int bookingId)
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings
+                .Include(b => b.Treatments)
+                    .ThenInclude(tb => tb.Treatment)
+                .Include(b => b.Customer)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+        }
+
+        public Task<IEnumerable<Booking?>> GetBookingsForCustomerAsync(int customerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<Booking>> GetBookingsByCustomerIdAsync(int customerId)
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings
+                .Where(b => b.CustomerId == customerId)
+                .ToListAsync();
+        }
+
+        public async Task UpdateBookingAsync(Booking booking)
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            _context.Bookings.Update(booking);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Booking?> GetNextPendingBookingAsync(int customerId)
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings
+                .Include(b => b.Treatments)
+                    .ThenInclude(tb => tb.Treatment) // ensures Treatment is loaded
+                .Where(b => b.CustomerId == customerId && b.Status == BookingStatus.Pending)
+                .OrderBy(b => b.Start) // earliest pending booking
+                .FirstOrDefaultAsync();
+        }
+        public async Task UpdateDiscountAsync(Discount discount)
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            _context.Discounts.Update(discount);
+            await _context.SaveChangesAsync();
+        }
 
     }
 }

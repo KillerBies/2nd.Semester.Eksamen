@@ -54,5 +54,6 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 //Deletes customer
                 await _bookingRepository.CancelBookingAsync(booking);
         }
+
     }
 }

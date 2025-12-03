@@ -1,32 +1,55 @@
-﻿@page "/finalizepayment" 
+﻿@page "/finalizepayment/{id:int}"
 @namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 @rendermode InteractiveServer
 
-<p>Original Total: @originalTotal.ToString("0.00") kr.</p>
-
-@if (loyaltyDiscount != null)
+@if (isLoading)
 {
-    <p>
-        Loyalty Discount: @loyaltyDiscount.Name
-        @((loyaltyDiscount.DiscountAmount * 100).ToString("0"))%
-        (-@((originalTotal * loyaltyDiscount.DiscountAmount).ToString("0.00")) kr)
-    </p>
+    <p>Loading…</p>
 }
-
-@if (bestDiscount != null)
+else if (!string.IsNullOrEmpty(errorMessage))
 {
-    <p>
-        Best Regular Discount: @bestDiscount.Name
-        @((bestDiscount.DiscountAmount * 100).ToString("0"))%
-        (-@((originalTotal * bestDiscount.DiscountAmount).ToString("0.00")) kr)
-    </p>
+    <p class="text-danger">@errorMessage</p>
 }
+else if (paymentSuccess)
+{
+    <p class="text-success">Payment completed! Order created/updated successfully.</p>
+}
+else
+{
+    <h4>Order Summary</h4>
 
-<p><strong>Final Total: @finalTotal.ToString("0.00") kr</strong></p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Treatment/Product</th>
+                <th>Price (kr)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Price.ToString("0.00")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
+    <p><strong>Subtotal: @originalTotal.ToString("0.00") kr</strong></p>
 
+    @if (appliedDiscount != null)
+    {
+        <p>
+            Discount Applied: @appliedDiscount.Name
+            @((appliedDiscount.DiscountAmount * 100).ToString("0"))%
+            (-@((originalTotal * appliedDiscount.DiscountAmount).ToString("0.00")) kr)
+        </p>
+    }
 
-<div>
-    <button class="btn btn-primary" @onclick="FinalizePaymentAsync">Pay Now</button>
-</div>
+    <p><strong>Final Total: @finalTotal.ToString("0.00") kr</strong></p>
 
+    <div>
+        <button class="btn btn-primary" @onclick="FinalizePaymentAsync">Pay Now</button>
+    </div>
+}

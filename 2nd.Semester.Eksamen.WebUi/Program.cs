@@ -42,8 +42,8 @@ builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ITreatmentBookingRepository, TreatmentBookingRepository>();
 builder.Services.AddScoped<BookingFormService>();
-builder.Services.AddScoped<ICompanyCustomerService, CompanyCustomerService>();
-builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
+builder.Services.AddScoped<PrivateCustomerService>();
+builder.Services.AddScoped<CompanyCustomerService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<EmployeeSpecialtyService>();
 builder.Services.AddScoped<BookingApplicationService>();
@@ -66,10 +66,16 @@ builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
 
 // Then register services
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IDiscountService, DiscountService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 
 

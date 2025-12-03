@@ -105,13 +105,25 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany(T => T.ProductsInCampaign);
 
             //Order
-            modelBuilder.Entity<Order>()
-                .HasMany(o => o.Products)
-                .WithOne(p => p.Order)
-                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Order>(entity =>
+            {
+                // An order has many products (OrderLines)
+                entity.HasMany(o => o.Products)
+                      .WithOne(p => p.Order)
+                      .HasForeignKey(p => p.OrderID)
+                      .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Booking);
+                // An order belongs to one booking
+                entity.HasOne(o => o.Booking)
+                      .WithOne()
+                      .HasForeignKey<Order>(o => o.BookingId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                // Configure precision for totals
+                entity.Property(o => o.Total).HasPrecision(18, 2);
+                entity.Property(o => o.DiscountedTotal).HasPrecision(18, 2);
+            });
+
 
             //Treatment booking
             modelBuilder.Entity<TreatmentBooking>()
