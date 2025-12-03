@@ -13,7 +13,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
     public class InvoiceService
     {
 
-        private readonly 
+        
 
 
 

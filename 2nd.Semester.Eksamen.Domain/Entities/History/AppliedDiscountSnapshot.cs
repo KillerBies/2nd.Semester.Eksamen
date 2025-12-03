@@ -9,11 +9,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record AppliedDiscountSnapshot : BaseSnapshot
     {
-        public string Name { get; init; }
-        public decimal DiscountAmount { get; init; }
-
-
-        public AppliedDiscountSnapshot() { }
+        public string Name { get; private set; }
+        public decimal DiscountAmount { get; private set; }
+        public int OrderSnapshotId { get; set; }
+        public OrderSnapshot OrderSnapshot { get; set; }
+        private AppliedDiscountSnapshot() { }
 
         public AppliedDiscountSnapshot(Discount discount)
         {

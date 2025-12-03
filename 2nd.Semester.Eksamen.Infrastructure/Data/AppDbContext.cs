@@ -184,6 +184,55 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .Property(d => d.DiscountAmount)
                 .HasPrecision(18, 2);
 
+            //SNAPSHOTS
+            modelBuilder.Entity<CustomerSnapshot>().UseTphMappingStrategy();
+            modelBuilder.Entity<ProductSnapshot>().UseTphMappingStrategy();
+            
+            modelBuilder.Entity<OrderSnapshot>()
+            .HasMany(o => o.OrderLinesSnapshot)
+            .WithOne(ol => ol.OrderSnapshot)
+            .HasForeignKey(ol => ol.OrderSnapshotId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<OrderSnapshot>()
+                .HasOne(o => o.BookingSnapshot)
+                .WithOne(b => b.OrderSnapshot)
+                .HasForeignKey<BookingSnapshot>(b => b.OrderSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<OrderSnapshot>()
+                .HasOne(o => o.AppliedDiscountSnapshot)
+                .WithOne(ad => ad.OrderSnapshot)
+                .HasForeignKey<AppliedDiscountSnapshot>(ad => ad.OrderSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BookingSnapshot>()
+                .HasMany(b => b.TreatmentSnapshot)
+                .WithOne(t => t.BookingSnapshot)
+                .HasForeignKey(t => t.BookingSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BookingSnapshot>()
+                .HasOne(b => b.CustomerSnapshot)
+                .WithOne(c => c.BookingSnapshot)
+                .HasForeignKey<CustomerSnapshot>(c => c.BookingSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<CustomerSnapshot>()
+                .HasOne(c => c.AddressSnapshot)
+                .WithOne(a => a.CustomerSnapshot)
+                .HasForeignKey<AddressSnapshot>(a => a.CustomerSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<OrderLineSnapshot>()
+                .HasOne(ol => ol.ProductSnapshot)
+                .WithOne(p => p.OrderLineSnapshot)
+                .HasForeignKey<ProductSnapshot>(p => p.OrderLineSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
+
+
             base.OnModelCreating(modelBuilder);
         }
     }

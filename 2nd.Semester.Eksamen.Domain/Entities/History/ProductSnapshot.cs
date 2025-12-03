@@ -10,13 +10,16 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
     public record ProductSnapshot : BaseSnapshot
     {
         //Products sold or used
-        public string Name { get; init; } = string.Empty;
-        public decimal PricePerUnit { get; init; }
-        public decimal DiscountedPrice { get; init; }
-       
+        public string Name { get;   set; } = string.Empty;
+        public decimal PricePerUnit { get;   set; }
+        public decimal DiscountedPrice { get;   set; }
+        public int? TreatmentSnapshotId { get; set; }
+        public TreatmentSnapshot? TreatmentSnapshot { get; set; }
+        public int? OrderLineSnapshotId { get; set; }
+        public OrderLineSnapshot? OrderLineSnapshot { get; set; }
 
 
-        public ProductSnapshot() { }
+        protected ProductSnapshot() { }
         public ProductSnapshot(Product product)
         {
             Name = product.Name;

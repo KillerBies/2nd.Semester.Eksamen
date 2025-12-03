@@ -8,15 +8,15 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record OrderSnapshot : BaseSnapshot
     {
-        public BookingSnapshot BookingSnapshot { get; init; }
+        public BookingSnapshot BookingSnapshot { get; private set; }
         
-        public decimal CustomDiscount { get; init; }
-        public DateOnly DateOfPayment { get; init; }
-        public decimal TotalAfterDiscount { get; init; }
-        public int? PdfID { get; init; }
-        public List<OrderLineSnapshot> OrderLinesSnapshot { get; init; }
-        public AppliedDiscountSnapshot AppliedDiscountSnapshot { get; init; }
-        public OrderSnapshot() { }
+        public decimal? CustomDiscount { get; private set; }
+        public DateOnly DateOfPayment { get; private set; }
+        public decimal? TotalAfterDiscount { get; private set; }
+        public int? PdfID { get; set; }
+        public List<OrderLineSnapshot>? OrderLinesSnapshot { get; private set; }
+        public AppliedDiscountSnapshot? AppliedDiscountSnapshot { get; private set; }
+        private OrderSnapshot() { }
         public OrderSnapshot(Order order, int customDiscount)
         {
             BookingSnapshot = new BookingSnapshot(order.Booking);

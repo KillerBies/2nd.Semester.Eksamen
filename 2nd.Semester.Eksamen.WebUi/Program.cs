@@ -2,7 +2,7 @@ using _2nd.Semester.Eksamen.Application.Adapters;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 
 
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using _2nd.Semester.Eksamen.WebUi.Components;
 using WebUIServices;

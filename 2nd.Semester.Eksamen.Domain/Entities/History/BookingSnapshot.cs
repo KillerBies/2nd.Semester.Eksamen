@@ -9,18 +9,21 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record BookingSnapshot : BaseSnapshot
     {
+        public List<TreatmentSnapshot> TreatmentSnapshot { get; private set; }
+        public int CustomerSnapshotId { get; set; }
+        public CustomerSnapshot CustomerSnapshot { get;  set; }
+        public int? OrderSnapshotId { get; set; }
+        public OrderSnapshot OrderSnapshot { get; set; }
         
-        public List<TreatmentSnapshot> TreatmentSnapshot { get; init; }
-        public CustomerSnapshot CustomerSnapshot { get; init; }
-
-        
 
 
-        public BookingSnapshot() { }
+        private BookingSnapshot() { }
 
         public BookingSnapshot(Booking booking)
         {
-            TreatmentSnapshot = booking.Treatments.Select(t => new TreatmentSnapshot(t.Treatment)).ToList();
+            TreatmentSnapshot = booking.Treatments
+        .Select(t => new TreatmentSnapshot(t.Treatment))
+        .ToList();
             CustomerSnapshot = CustomerSnapshot.CreateCustomerSnapshot(booking.Customer);
 
         }

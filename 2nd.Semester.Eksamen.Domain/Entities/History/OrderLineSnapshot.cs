@@ -9,19 +9,20 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record OrderLineSnapshot : BaseSnapshot
     {
-        public int OrderSnapshotID { get; init; }
-        public OrderSnapshot OrderSnapshot { get; init; } = null!;
-        public ProductSnapshot ProductSnapshot { get; init; }
-        public int NumberOfProducts { get; init; }
+        public int OrderSnapshotId { get;  set; }
+        public OrderSnapshot OrderSnapshot { get; private set; } = null!;
+        public ProductSnapshot? ProductSnapshot { get; private set; }
+        public int NumberOfProducts { get; private set; } = 0;
 
         
-        public OrderLineSnapshot() { }
+        private OrderLineSnapshot() { }
         public OrderLineSnapshot(OrderLine orderLine)
         {
-
+            if (orderLine.LineProduct != null)
+            {
             ProductSnapshot = new ProductSnapshot(orderLine.LineProduct);
-    
             NumberOfProducts = orderLine.NumberOfProducts;
+            }
         }
     }
 }

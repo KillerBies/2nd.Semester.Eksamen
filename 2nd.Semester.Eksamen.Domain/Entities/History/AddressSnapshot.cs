@@ -9,6 +9,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record AddressSnapshot : BaseSnapshot
     {
+       public int CustomerSnapshotId { get; set; }
+        public CustomerSnapshot CustomerSnapshot { get; set; }
         public string City { get; init; } = null!;
         public string PostalCode { get; init; } = null!;
         public string StreetName { get; init; } = null!;
@@ -16,7 +18,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 
 
 
-        public AddressSnapshot() { }
+        private AddressSnapshot() { }
         public AddressSnapshot(Address address)
         {
             City = address.City;

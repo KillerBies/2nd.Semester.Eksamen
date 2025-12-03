@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -21,13 +21,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
         }
 
 
-        public async Task CreateNewAsync(Order order)
+        public async Task CreateNewAsync(OrderSnapshot orderSnapshot)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                await _context.//.AddAsync(order);
+                await _context.OrderSnapshots.AddAsync(orderSnapshot);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
