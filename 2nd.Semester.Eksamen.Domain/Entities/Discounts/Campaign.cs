@@ -31,6 +31,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
             return false;
         }
 
-        public bool TryAddStartTime()
+
     }
 }
