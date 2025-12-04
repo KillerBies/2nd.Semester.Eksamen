@@ -12,7 +12,7 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251204154114_InitialCreate")]
+    [Migration("20251204164337_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
