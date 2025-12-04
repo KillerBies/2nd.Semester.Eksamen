@@ -181,6 +181,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
         }
+        public async Task SetBookingStatusAsync(int bookingId, BookingStatus status)
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            var booking = await _context.Bookings.FindAsync(bookingId);
+            if (booking == null) return;
+            booking.Status = status;
+            await _context.SaveChangesAsync();
+        }
 
     }
 }

@@ -30,6 +30,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Cus
         public Task<Booking?> GetNextPendingBookingAsync(int customerId);
         public Task UpdateBookingAsync(Booking booking);
         public Task UpdateDiscountAsync(Discount discount);
-        Task AddOrderAsync(Order order);
+        public Task AddOrderAsync(Order order);
+        public Task SetBookingStatusAsync(int bookingId, BookingStatus status);
     }
 }

@@ -98,5 +98,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             var _context = await _factory.CreateDbContextAsync();
             return await _context.Bookings.AnyAsync(b=>b.CustomerId == Booking.CustomerId && b.Overlaps(Booking.Start, Booking.End));
         }
+        public async Task<Booking> GetByIdAsync(int bookingId)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings
+                .Include(b => b.Customer)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+        }
     }
 }

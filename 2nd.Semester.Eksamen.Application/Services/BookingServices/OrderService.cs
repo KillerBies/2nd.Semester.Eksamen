@@ -12,15 +12,17 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         private readonly IProductService _productService;
         private readonly IDiscountService _discountService;
         private readonly ICustomerService _customerService;
-
+        private readonly IBookingService _bookingService;
         public OrderService(
             IProductService productService,
             IDiscountService discountService,
-            ICustomerService customerService)
+            ICustomerService customerService,
+            IBookingService bookingService)
         {
             _productService = productService;
             _discountService = discountService;
             _customerService = customerService;
+            _bookingService = bookingService;
         }
 
         public async Task<Order> CreateOrUpdateOrderForBookingAsync(int bookingId)
@@ -54,8 +56,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 order.UpdateTotals(originalTotal, finalTotal, appliedDiscount?.Id);
                 await _customerService.UpdateOrderAsync(order);
             }
-            booking.Status = BookingStatus.Completed;
-            await _customerService.UpdateBookingAsync(booking);
+            //await _bookingService.SetBookingStatusAsync(bookingId, BookingStatus.Completed);
 
             return order;
         }

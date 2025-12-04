@@ -12,8 +12,8 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251204095107_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251204131253_TestMigration2")]
+    partial class TestMigration2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
