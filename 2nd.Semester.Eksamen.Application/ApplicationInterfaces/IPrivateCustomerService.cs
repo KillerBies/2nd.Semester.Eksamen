@@ -20,7 +20,7 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         public Task AddOrderAsync(Order order);
         public Task UpdateOrderAsync(Order order);
         public Task<Booking?> GetNextPendingBookingAsync(int customerId);
-        public Task UpdateBookingAsync(Booking booking);
+        //public Task UpdateBookingAsync(Booking booking);
         public Task UpdateDiscountAsync(Discount discount);
         public Task<PrivateCustomer?> GetCustomerByIdAsync(int customerId);
 

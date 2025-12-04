@@ -101,8 +101,11 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                 var order = await OrderService.CreateOrUpdateOrderForBookingAsync(booking.Id);
 
                 // 3️⃣ Mark booking as completed
+                Console.WriteLine($"booking status 1:  {booking.Status}");
                 booking.Status = BookingStatus.Completed;
+                Console.WriteLine($"booking status 2:  {booking.Status}");
                 await CustomerService.UpdateBookingAsync(booking);
+
 
                 // 4️⃣ Update customer visits
                 customer.AddVisit();

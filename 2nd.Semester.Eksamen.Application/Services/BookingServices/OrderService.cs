@@ -50,13 +50,19 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             {
                 order = new Order(bookingId, originalTotal, finalTotal, appliedDiscount?.Id ?? 0);
                 await _customerService.AddOrderAsync(order);
+                Console.WriteLine($"Order created for booking {booking.Id}");
             }
             else
             {
                 order.UpdateTotals(originalTotal, finalTotal, appliedDiscount?.Id);
                 await _customerService.UpdateOrderAsync(order);
+                Console.WriteLine($"Order updated for booking {booking.Id}");
             }
-            //await _bookingService.SetBookingStatusAsync(bookingId, BookingStatus.Completed);
+
+            booking.Status = BookingStatus.Completed;
+            Console.WriteLine($"booking status:  {booking.Status}");
+            await _customerService.UpdateBookingAsync(booking);
+            await _bookingService.SetBookingStatusAsync(bookingId, BookingStatus.Completed);
 
             return order;
         }
