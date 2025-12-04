@@ -388,6 +388,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -400,9 +405,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasIndex("CampaignId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
 
-                    b.UseTptMappingStrategy();
+                    b.HasDiscriminator().HasValue("Product");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.EmployeeSchedule", b =>
@@ -549,7 +556,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.PrimitiveCollection<string>("RequiredSpecialties")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Treatments", (string)null);
+                    b.HasDiscriminator().HasValue("Treatment");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Discounts.PunchCard", b =>
@@ -734,15 +741,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Discounts.Discount", null)
                         .WithOne()
                         .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Discounts.LoyaltyDiscount", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.Treatment", b =>
-                {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Product", null)
-                        .WithOne()
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.Treatment", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
