@@ -8,6 +8,7 @@ using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
 {
     public class SnapshotRepository : ISnapshotRepository
@@ -38,7 +39,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
             }
         }
     
-        public async Task GetOrderSnapshotById    
+        public async Task <List<OrderSnapshot>> GetAllOrderSnapshotsAsync()
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.OrderSnapshots.ToListAsync();
+
+        }
     
     
     }

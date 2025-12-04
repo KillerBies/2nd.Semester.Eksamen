@@ -22,7 +22,10 @@ using _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.Book
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.EmployeeRepositories;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.CustomerRepositories;
-
+using _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces;
+using QuestPDF.Infrastructure;
+using _2nd.Semester.Eksamen.Infrastructure.PDFManagement;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -58,6 +61,9 @@ builder.Services.AddScoped<Domain_to_DTO>();
 builder.Services.AddScoped<UpdateEmployeeCommand>();
 builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<ISnapshotRepository, SnapshotRepository>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<IGenerateInvoice, GenerateInvoice>();
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 var app = builder.Build();
 // Configure the HTTP request pipeline.

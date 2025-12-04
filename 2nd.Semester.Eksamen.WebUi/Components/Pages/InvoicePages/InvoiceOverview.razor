@@ -1,0 +1,47 @@
+﻿@page "/invoiceOverview"
+@using _2nd.Semester.Eksamen.Application.DTO;
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@inject IInvoiceService invoiceService;
+<h3>InvoiceOverview</h3>
+
+@if (orderSnapshotDTOs == null)
+{
+	<p>Ingen ordrer fundet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ordre Id</th>
+                <th>Kundenavn</th>
+                <th>Total</th>
+                <th>Betalingsdato</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var orderSnapshotDTO in orderSnapshotDTOs)
+            {
+                <tr>
+                    <td>@orderSnapshotDTO.Id</td>
+                    <td>@orderSnapshotDTO.Name</td>
+                    <td>@orderSnapshotDTO.TotalPaid</td>
+                    <td>@orderSnapshotDTO.PaymentDate</td>
+                    <button @onclick="() => GetInvoiceAsync(orderSnapshotDTO.Id)"> Hent faktura </button>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<OrderSnapshotDTO> orderSnapshotDTOs;
+    protected override async Task OnInitializedAsync()
+    {
+        orderSnapshotDTOs = await invoiceService.GetAllSnapshotsAsync();
+    }
+    private async Task GetInvoiceAsync(int id)
+    {
+       
+    }
+}
