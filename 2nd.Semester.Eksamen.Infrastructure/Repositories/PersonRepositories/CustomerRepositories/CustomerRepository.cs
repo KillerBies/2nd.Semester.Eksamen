@@ -103,8 +103,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             await _context.SaveChangesAsync();
         }
 
-
-
         public async Task UpdateDiscountAsync(Discount discount)
         {
             var _context = await _factory.CreateDbContextAsync();

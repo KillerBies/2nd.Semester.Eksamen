@@ -100,14 +100,10 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                 // 2️⃣ Create or update the order for the booking
                 var order = await OrderService.CreateOrUpdateOrderForBookingAsync(booking.Id);
 
-                // 3️⃣ Mark booking as completed
-                Console.WriteLine($"booking status 1:  {booking.Status}");
-                booking.Status = BookingStatus.Completed;
-                Console.WriteLine($"booking status 2:  {booking.Status}");
-                await CustomerService.UpdateBookingAsync(booking);
 
 
-                // 4️⃣ Update customer visits
+
+                // 3 Update customer visits
                 customer.AddVisit();
                 if (appliedDiscount != null)
                 {
@@ -118,6 +114,10 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
                 paymentSuccess = true;
                 Console.WriteLine($"Order #{order.Id} created/updated with total {order.Total} kr. Booking marked as completed.");
+                
+                // 4 Mark booking as completed
+                booking.Status = BookingStatus.Completed;
+                await CustomerService.UpdateBookingAsync(booking);
             }
             catch (Exception ex)
             {

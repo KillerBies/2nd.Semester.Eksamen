@@ -62,7 +62,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             booking.Status = BookingStatus.Completed;
             Console.WriteLine($"booking status:  {booking.Status}");
             await _customerService.UpdateBookingAsync(booking);
-            await _bookingService.SetBookingStatusAsync(bookingId, BookingStatus.Completed);
+
 
             return order;
         }
