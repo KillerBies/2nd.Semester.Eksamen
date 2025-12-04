@@ -156,9 +156,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 .FirstOrDefaultAsync();
         }
 
-        public Task AddOrderAsync(Order order)
+        public async Task AddOrderAsync(Order order)
         {
-            throw new NotImplementedException();
+            var _context = await _factory.CreateDbContextAsync();
+            if (order == null)
+                throw new ArgumentNullException(nameof(order));
+
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
         }
     }
 }

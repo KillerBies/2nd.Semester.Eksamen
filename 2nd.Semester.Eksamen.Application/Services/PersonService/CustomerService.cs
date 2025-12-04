@@ -100,6 +100,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
         public Task UpdateDiscountAsync(Discount discount)
             => _customerRepository.UpdateDiscountAsync(discount);
     }
+
     //private readonly IPrivateCustomerRepository _privateRepo;
     //private readonly ICompanyCustomerRepository _companyRepo;
 

@@ -24,15 +24,15 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         //Task<Booking?> GetNextPendingBookingAsync(int id);
         //Task UpdateBookingAsync(Booking booking);
         //Task UpdateDiscountAsync(Discount appliedDiscount);
-        Task<PrivateCustomer?> GetByIDAsync(int id);
-        Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId);
-        Task<Order?> GetOrderByBookingIdAsync(int bookingId);
-        Task AddOrderAsync(Order order);
-        Task UpdateOrderAsync(Order order);
-        Task<Booking?> GetNextPendingBookingAsync(int customerId);
-        Task UpdateBookingAsync(Booking booking);
-        Task UpdateDiscountAsync(Discount discount);
-        Task<PrivateCustomer?> GetCustomerByIdAsync(int customerId);
+        public Task<PrivateCustomer?> GetByIDAsync(int id);
+        public Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId);
+        public Task<Order?> GetOrderByBookingIdAsync(int bookingId);
+        public Task AddOrderAsync(Order order);
+        public Task UpdateOrderAsync(Order order);
+        public Task<Booking?> GetNextPendingBookingAsync(int customerId);
+        public Task UpdateBookingAsync(Booking booking);
+        public Task UpdateDiscountAsync(Discount discount);
+        public Task<PrivateCustomer?> GetCustomerByIdAsync(int customerId);
 
     }
 }

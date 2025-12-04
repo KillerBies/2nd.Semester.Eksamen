@@ -8,16 +8,16 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {
     public interface ICustomerService
     {
-        Task<Customer?> GetCustomerByIdAsync(int customerId);
-        Task<Customer?> GetByIDAsync(int id);
-        Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId);
-        Task<Order?> GetOrderByBookingIdAsync(int bookingId);
-        Task AddOrderAsync(Order order);
-        Task UpdateOrderAsync(Order order);
-        Task UpdateAsync(Customer customer);
-        Task DeleteAsync(Customer customer);
-        Task<Booking?> GetNextPendingBookingAsync(int customerId);
-        Task UpdateBookingAsync(Booking booking);
-        Task UpdateDiscountAsync(Discount discount);
+        public Task<Customer?> GetCustomerByIdAsync(int customerId);
+        public Task<Customer?> GetByIDAsync(int id);
+        public Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId);
+        public Task<Order?> GetOrderByBookingIdAsync(int bookingId);
+        public Task AddOrderAsync(Order order);
+        public Task UpdateOrderAsync(Order order);
+        public Task UpdateAsync(Customer customer);
+        public Task DeleteAsync(Customer customer);
+        public Task<Booking?> GetNextPendingBookingAsync(int customerId);
+        public Task UpdateBookingAsync(Booking booking);
+        public Task UpdateDiscountAsync(Discount discount);
     }
 }

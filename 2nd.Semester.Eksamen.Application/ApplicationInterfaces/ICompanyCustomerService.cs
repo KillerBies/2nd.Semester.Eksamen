@@ -11,16 +11,16 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {
     public interface ICompanyCustomerService : ICustomerService
     {
-        Task<int> CreateCompanyCustomerAsync(CompanyCustomerDTO dto);
-        Task<CompanyCustomer?> GetByIDAsync(int id);
-        Task<CompanyCustomer?> GetCustomerByIdAsync(int id);
+        public Task<int> CreateCompanyCustomerAsync(CompanyCustomerDTO dto);
+        public Task<CompanyCustomer?> GetByIDAsync(int id);
+        public Task<CompanyCustomer?> GetCustomerByIdAsync(int id);
 
-        Task UpdateAsync(CompanyCustomer customer);
-        Task DeleteAsync(CompanyCustomer customer);
+        public Task UpdateAsync(CompanyCustomer customer);
+        public Task DeleteAsync(CompanyCustomer customer);
 
-        Task<Order?> GetOrderByBookingIdAsync(int bookingId);
-        Task AddOrderAsync(Order order);
-        Task UpdateOrderAsync(Order order);
+        public Task<Order?> GetOrderByBookingIdAsync(int bookingId);
+        public Task AddOrderAsync(Order order);
+        public Task UpdateOrderAsync(Order order);
     }
 
 }
