@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
@@ -17,9 +18,10 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
         private PrivateCustomer? customer;
         private List<Product> products = new();
+        private List<ProductDiscountInfo> itemDiscounts = new();
+
         private decimal originalTotal;
         private Discount? appliedDiscount;
-        private Discount? bestDiscount;
         private Discount? loyaltyDiscount;
         private decimal finalTotal;
 
@@ -34,11 +36,10 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
             try
             {
-                // 1️⃣ Get customer
                 customer = await CustomerService.GetByIDAsync(id) as PrivateCustomer;
-                if (customer == null) throw new Exception("Customer not found");
+                if (customer == null)
+                    throw new Exception("Customer not found");
 
-                // 2️⃣ Get next pending booking
                 var booking = await CustomerService.GetNextPendingBookingAsync(customer.Id);
                 if (booking == null)
                 {
@@ -46,27 +47,22 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                     return;
                 }
 
-                // 3️⃣ Convert booked treatments into products
+                // Extract treatment products from the booking
                 products = booking.Treatments
                     .Where(tb => tb.Treatment != null)
-                    .Select(tb => new Product
-                    {
-                        Id = tb.Treatment.Id,
-                        Name = tb.Treatment.Name,
-                        Price = tb.Treatment.Price
-                    })
+                    .Select(tb => tb.Treatment)
+                    .Cast<Product>()
                     .ToList();
 
+                // 💥 USE THE NEW ENGINE!
+                var result = await OrderService
+                    .CalculateBestDiscountsPerItemAsync(customer.Id, products);
 
-                // 4️⃣ Calculate discounts
-                (originalTotal, bestDiscount, loyaltyDiscount, finalTotal) =
-                    await OrderService.CalculateBestDiscountsAsync(customer.Id, products);
-
-                appliedDiscount = (loyaltyDiscount != null &&
-                                   loyaltyDiscount.DiscountAmount > (bestDiscount?.DiscountAmount ?? 0))
-                                   ? loyaltyDiscount
-                                   : bestDiscount;
-
+                originalTotal = result.originalTotal;
+                loyaltyDiscount = result.loyaltyDiscount;
+                appliedDiscount = result.appliedDiscount;
+                finalTotal = result.finalTotal;
+                itemDiscounts = result.itemDiscounts;
             }
             catch (Exception ex)
             {
@@ -89,7 +85,6 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
             try
             {
-                // 1️⃣ Get the next pending booking for this customer
                 var booking = await CustomerService.GetNextPendingBookingAsync(customer.Id);
                 if (booking == null)
                 {
@@ -97,39 +92,26 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                     return;
                 }
 
-                // 2️⃣ Create or update the order for the booking
+                // Create or update order
                 var order = await OrderService.CreateOrUpdateOrderForBookingAsync(booking.Id);
 
-
-
-
-                // 3 Update customer visits
+                // Update customer visit count
                 customer.AddVisit();
-                if (appliedDiscount != null)
-                {
-                    appliedDiscount.NumberOfUses++;
-                    await CustomerService.UpdateDiscountAsync(appliedDiscount);
-                }
                 await CustomerService.UpdateAsync(customer);
 
                 paymentSuccess = true;
-                Console.WriteLine($"Order #{order.Id} created/updated with total {order.Total} kr. Booking marked as completed.");
-                
-                // 4 Mark booking as completed
+
                 booking.Status = BookingStatus.Completed;
                 await CustomerService.UpdateBookingAsync(booking);
             }
             catch (Exception ex)
             {
                 errorMessage = $"Error creating order: {ex.Message}";
-                Console.WriteLine(errorMessage);
             }
             finally
             {
                 isLoading = false;
             }
         }
-
-
     }
 }

@@ -16,21 +16,34 @@ else if (paymentSuccess)
 }
 else
 {
-    <h4>Order Summary</h4>
+    <h3>Order Summary</h3>
 
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
-                <th>Treatment/Product</th>
-                <th>Price (kr)</th>
+                <th>Item</th>
+                <th>Original (kr)</th>
+                <th>Discount</th>
+                <th>Final (kr)</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var product in products)
+            @foreach (var item in itemDiscounts)
             {
                 <tr>
-                    <td>@product.Name</td>
-                    <td>@product.Price.ToString("0.00")</td>
+                    <td>@item.ProductName</td>
+                    <td>@item.OriginalPrice.ToString("0.00")</td>
+                    <td>
+                        @if (item.DiscountAmount > 0)
+                        {
+                            <span>@item.DiscountName (@(item.DiscountAmount * 100)%)</span>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
+                    <td>@item.FinalPrice.ToString("0.00")</td>
                 </tr>
             }
         </tbody>
@@ -41,15 +54,21 @@ else
     @if (appliedDiscount != null)
     {
         <p>
-            Discount Applied: @appliedDiscount.Name
+            Overall Best Discount: <strong>@appliedDiscount.Name</strong>
             @((appliedDiscount.DiscountAmount * 100).ToString("0"))%
-            (-@((originalTotal * appliedDiscount.DiscountAmount).ToString("0.00")) kr)
         </p>
     }
 
-    <p><strong>Final Total: @finalTotal.ToString("0.00") kr</strong></p>
+    @if (loyaltyDiscount != null)
+    {
+        <p>
+            Loyalty Discount Check:
+            <strong>@loyaltyDiscount.Name</strong>
+            @((loyaltyDiscount.DiscountAmount * 100).ToString("0"))%
+        </p>
+    }
 
-    <div>
-        <button class="btn btn-primary" @onclick="FinalizePaymentAsync">Pay Now</button>
-    </div>
+    <h4>Total: @finalTotal.ToString("0.00") kr</h4>
+
+    <button class="btn btn-primary" @onclick="FinalizePaymentAsync">Pay Now</button>
 }
