@@ -2,10 +2,6 @@
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
@@ -16,7 +12,7 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         Task<Customer?> GetByIDAsync(int id);
         Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId);
         Task<Order?> GetOrderByBookingIdAsync(int bookingId);
-        //Task AddOrderAsync(Order order);
+        Task AddOrderAsync(Order order);
         Task UpdateOrderAsync(Order order);
         Task UpdateAsync(Customer customer);
         Task DeleteAsync(Customer customer);
@@ -24,5 +20,4 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         Task UpdateBookingAsync(Booking booking);
         Task UpdateDiscountAsync(Discount discount);
     }
-
 }

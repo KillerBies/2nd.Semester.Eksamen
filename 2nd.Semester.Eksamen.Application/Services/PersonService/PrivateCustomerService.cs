@@ -7,7 +7,7 @@ using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
 
-public class PrivateCustomerService : IPrivateCustomerService
+public class PrivateCustomerService : IPrivateCustomerService, ICustomerService
 {
     private readonly IPrivateCustomerRepository _customerRepository;
 

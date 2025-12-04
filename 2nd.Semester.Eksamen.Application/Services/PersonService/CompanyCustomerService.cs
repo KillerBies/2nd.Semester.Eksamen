@@ -22,10 +22,10 @@ public class CompanyCustomerService : ICustomerService
     public async Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId)
         => await _customerRepository.GetBookingWithTreatmentsAndTreatmentAsync(bookingId);
 
-    //public async Task<Order?> GetOrderByBookingIdAsync(int bookingId)
-    //    => await _customerRepository.GetOrderByBookingIdAsync(bookingId);
+    public async Task<Order?> GetOrderByBookingIdAsync(int bookingId)
+        => await _customerRepository.GetOrderByBookingIdAsync(bookingId);
 
-    //public async Task AddOrderAsync(Order order) => await _customerRepository.AddOrderAsync(order);
+    public async Task AddOrderAsync(Order order) => await _customerRepository.AddOrderAsync(order);
     public async Task UpdateOrderAsync(Order order) => await _customerRepository.UpdateOrderAsync(order);
 
     public async Task UpdateAsync(Customer customer) => await _customerRepository.UpdateAsync((CompanyCustomer)customer);

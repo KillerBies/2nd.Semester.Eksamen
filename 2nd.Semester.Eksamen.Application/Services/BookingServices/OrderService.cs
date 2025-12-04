@@ -1,7 +1,8 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.Services.BookingServices;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 
 namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
@@ -10,56 +11,49 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
     {
         private readonly IProductService _productService;
         private readonly IDiscountService _discountService;
-        private readonly IPrivateCustomerService _privateCustomerService;
-
+        private readonly ICustomerService _customerService;
 
         public OrderService(
-        IProductService productService,
-        IDiscountService discountService,
-        IPrivateCustomerService customerService)
+            IProductService productService,
+            IDiscountService discountService,
+            ICustomerService customerService)
         {
             _productService = productService;
             _discountService = discountService;
-            _privateCustomerService = customerService;
+            _customerService = customerService;
         }
-
 
         public async Task<Order> CreateOrUpdateOrderForBookingAsync(int bookingId)
         {
-            var booking = await _privateCustomerService.GetBookingWithTreatmentsAsync(bookingId);
+            var booking = await _customerService.GetBookingWithTreatmentsAsync(bookingId);
             if (booking == null)
                 throw new System.Exception("Booking not found");
 
-
             var productsList = booking.Treatments
-            .Where(tb => tb.Treatment != null)
-            .Select(tb => new Product
-            {
-                Id = tb.Treatment.Id,
-                Name = tb.Treatment.Name,
-                Price = tb.Treatment.Price
-            })
-            .ToList();
-
+                .Where(tb => tb.Treatment != null)
+                .Select(tb => new Product
+                {
+                    Id = tb.Treatment.Id,
+                    Name = tb.Treatment.Name,
+                    Price = tb.Treatment.Price
+                })
+                .ToList();
 
             var (originalTotal, appliedDiscount, loyaltyDiscount, finalTotal) =
-            await CalculateBestDiscountsAsync(booking.CustomerId, productsList);
+                await CalculateBestDiscountsAsync(booking.CustomerId, productsList);
 
-
-            var order = await _privateCustomerService.GetOrderByBookingIdAsync(bookingId);
-
+            var order = await _customerService.GetOrderByBookingIdAsync(bookingId);
 
             if (order == null)
             {
                 order = new Order(bookingId, originalTotal, finalTotal, appliedDiscount?.Id ?? 0);
-                await _privateCustomerService.AddOrderAsync(order);
+                await _customerService.AddOrderAsync(order);
             }
             else
             {
                 order.UpdateTotals(originalTotal, finalTotal, appliedDiscount?.Id);
-                await _privateCustomerService.UpdateOrderAsync(order);
+                await _customerService.UpdateOrderAsync(order);
             }
-
 
             return order;
         }
@@ -117,6 +111,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         public Task<List<Product>> GetProductsByIdsAsync(List<int> productIds) => _productService.GetProductsByIdsAsync(productIds);
         public Task<List<Discount>> GetAllDiscountsAsync() => _discountService.GetAllDiscountsAsync();
     }
+}
 
     //private readonly IProductService _productService;
     //private readonly IDiscountService _discountService;
@@ -241,4 +236,3 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
     //    return _discountService.GetAllDiscountsAsync();
     //}
 
-}

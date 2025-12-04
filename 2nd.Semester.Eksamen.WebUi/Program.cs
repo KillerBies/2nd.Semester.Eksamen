@@ -70,6 +70,12 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+// if your repositories and services are separate:
+builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
+builder.Services.AddScoped<ICompanyCustomerService, CompanyCustomerService>();
+
+// and register a default ICustomerService (pick one or create a composite)
+builder.Services.AddScoped<ICustomerService>(sp => sp.GetRequiredService<PrivateCustomerService>()); // or CustomerService
 
 
 // Then register services
