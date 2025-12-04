@@ -11,7 +11,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 {
     public class Order : BaseEntity
     {
-        public int id { get; private set; }
         public int BookingId { get; set; }
         public Booking Booking { get; private set; } = null!;
         public decimal Total { get; private set; }
@@ -42,6 +41,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
             if (!Products.Contains(line))
                 Products.Add(line);
         }
+    }
+
+}
+
         //public int BookingId { get; set; }
         //public Booking Booking { get; set; } = null!;
 
@@ -70,6 +73,3 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
         //    if (!Products.Contains(line))
         //        Products.Add(line);
         //}
-    }
-
-}

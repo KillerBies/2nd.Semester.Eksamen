@@ -17,7 +17,11 @@ public class PrivateCustomerService : IPrivateCustomerService, ICustomerService
     }
     public Task<PrivateCustomer?> GetByIDAsync(int customerId)
     => _customerRepository.GetByIDAsync(customerId);
+    async Task<Customer?> ICustomerService.GetByIDAsync(int id)
+    => await _customerRepository.GetByIDAsync(id);
 
+    async Task<Customer?> ICustomerService.GetCustomerByIdAsync(int id)
+        => await _customerRepository.GetByIDAsync(id);
 
     public Task<PrivateCustomer?> GetCustomerByIdAsync(int customerId)
     => _customerRepository.GetByIDAsync(customerId);

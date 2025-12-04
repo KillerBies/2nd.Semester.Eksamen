@@ -74,7 +74,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             var bestRegular = regularDiscounts.OrderByDescending(d => d.DiscountAmount).FirstOrDefault();
 
 
-            var customer = await _privateCustomerService.GetCustomerByIdAsync(customerId)
+            var customer = await _customerService.GetCustomerByIdAsync(customerId)
             ?? throw new System.Exception("Customer not found");
 
 

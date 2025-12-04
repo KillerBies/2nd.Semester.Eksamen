@@ -7,7 +7,7 @@ using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
 
-public class CompanyCustomerService : ICustomerService
+public class CompanyCustomerService : ICustomerService, ICompanyCustomerService
 {
     private readonly ICompanyCustomerRepository _customerRepository;
 
@@ -16,20 +16,53 @@ public class CompanyCustomerService : ICustomerService
         _customerRepository = customerRepository;
     }
 
-    public async Task<Customer?> GetByIDAsync(int id) => await _customerRepository.GetByIDAsync(id);
-    public async Task<Customer?> GetCustomerByIdAsync(int customerId) => await _customerRepository.GetByIDAsync(customerId);
 
-    public async Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId)
-        => await _customerRepository.GetBookingWithTreatmentsAndTreatmentAsync(bookingId);
+    // ---- ICUSTOMERSERVICE IMPLEMENTATION ----
 
+    async Task<Customer?> ICustomerService.GetByIDAsync(int id)
+        => await _customerRepository.GetByIDAsync(id);
+
+    async Task<Customer?> ICustomerService.GetCustomerByIdAsync(int id)
+        => await _customerRepository.GetCustomerByIdAsync(id);
+
+    async Task ICustomerService.UpdateAsync(Customer customer)
+    {
+        if (customer is not CompanyCustomer companyCustomer)
+            throw new InvalidOperationException("Customer must be a CompanyCustomer");
+
+        await _customerRepository.UpdateAsync(companyCustomer);
+    }
+
+    async Task ICustomerService.DeleteAsync(Customer customer)
+    {
+        if (customer is not CompanyCustomer companyCustomer)
+            throw new InvalidOperationException("Customer must be a CompanyCustomer");
+
+        await _customerRepository.DeleteAsync(companyCustomer);
+    }
+
+    // ---- COMPANY-SPECIFIC METHODS ----
+    public Task<CompanyCustomer?> GetByIDAsync(int id)
+        => _customerRepository.GetByIDAsync(id);
+
+    public Task<CompanyCustomer?> GetCustomerByIdAsync(int id)
+        => _customerRepository.GetCustomerByIdAsync(id);
+
+    public Task UpdateAsync(CompanyCustomer customer)
+        => _customerRepository.UpdateAsync(customer);
+
+    public Task DeleteAsync(CompanyCustomer customer)
+        => _customerRepository.DeleteAsync(customer);
+
+    // ---- ORDER METHODS ----
     public async Task<Order?> GetOrderByBookingIdAsync(int bookingId)
         => await _customerRepository.GetOrderByBookingIdAsync(bookingId);
+    public Task AddOrderAsync(Order order)
+        => _customerRepository.AddOrderAsync(order);
 
-    public async Task AddOrderAsync(Order order) => await _customerRepository.AddOrderAsync(order);
-    public async Task UpdateOrderAsync(Order order) => await _customerRepository.UpdateOrderAsync(order);
+    public Task UpdateOrderAsync(Order order)
+        => _customerRepository.UpdateOrderAsync(order);
 
-    public async Task UpdateAsync(Customer customer) => await _customerRepository.UpdateAsync((CompanyCustomer)customer);
-    public async Task DeleteAsync(Customer customer) => await _customerRepository.DeleteAsync((CompanyCustomer)customer);
 
     // Additional company-specific method
     public async Task<int> CreateCompanyCustomerAsync(CompanyCustomerDTO dto)
@@ -56,9 +89,7 @@ public class CompanyCustomerService : ICustomerService
     {
         await _customerRepository.UpdateDiscountAsync(discount);
     }
+    public async Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId)
+        => await _customerRepository.GetBookingWithTreatmentsAndTreatmentAsync(bookingId);
 
-    public Task<Order?> GetOrderByBookingIdAsync(int bookingId)
-    {
-        throw new NotImplementedException();
-    }
 }
