@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Application.RepositoryInterfaces;
 using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 
@@ -18,24 +19,58 @@ public class DiscountService : IDiscountService
         _privatePrivateCustomerRepository = privatePrivateCustomerRepository;
     }
 
-    public async Task<IEnumerable<Campaign?>> GetCampaignAsync()
+    //public async Task<IEnumerable<Campaign?>> GetCampaignAsync()
+    //{
+    //    return await _campaignRepository.GetAllAsync();
+    //}
+    public async Task<CampaignDTO> GetCampaignAsync(int id)
     {
-        return await _campaignRepository.GetAllAsync();
+        var cmp = await _campaignRepository.GetByIDAsync(id);
+
+        if (cmp == null) return null;
+
+        return new CampaignDTO
+        {
+            AppliesToProduct = cmp.AppliesToProduct,
+            AppliesToTreatment = cmp.AppliesToTreatment,
+            Description = cmp.Description,
+            DiscountAmount = cmp.DiscountAmount,
+            End = cmp.End,
+            Id = cmp.Id,
+            Name = cmp.Name,
+            NumberOfUses = cmp.NumberOfUses,
+            ProductsInCampaign = cmp.ProductsInCampaign,
+            Start = cmp.Start
+        };
     }
 
-    public async Task CreateNewCampaignAsync(Campaign Campaign)
+    public async Task CreateNewCampaignAsync(Campaign campaign)
     {
         throw new NotImplementedException();
     }
 
-    public async Task UpdateCampaignAsync(Campaign campaign)
+    public async Task UpdateCampaignAsync(CampaignDTO dto)
     {
-        throw new NotImplementedException();
+        var cmp = await _campaignRepository.GetByIDAsync(dto.Id);
+        if (cmp == null) return;
+
+
     }
 
-    public async Task DeleteCampaignAsync(Campaign campaign)
+    public async Task DeleteCampaignAsync(int id)
     {
-        throw new NotImplementedException();
+        var cmp = await _campaignRepository.GetByIDAsync(id);
+        if (cmp == null)
+            return;
+
+        var name = cmp.Name;
+
+        await _campaignRepository.DeleteAsync(cmp);
+
+        if (cmp.Name != null)
+        {
+            await _campaignRepository.DeleteAsync(name);
+        }
     }
 
     public async Task<IEnumerable<LoyaltyDiscount?>> GetLoyaltyDiscountAsync()

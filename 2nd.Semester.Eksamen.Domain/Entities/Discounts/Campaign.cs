@@ -1,21 +1,16 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
-    public class Campaign: Discount
+    public class Campaign : Discount
     {
         // Elements of a campaign
         //Start and end date of the campaign
         public DateTime Start { get; set; }
-        public DateTime End { get;  set; }
+        public DateTime End { get; set; }
         public string Description { get; set; } = string.Empty;
         //Lists of product categories and treatments that the campaign applies to
-        public List<Product> ProductsInCampaign{ get; set; } = new List<Product>();
+        public List<Product> ProductsInCampaign { get; set; } = new List<Product>();
 
         public Campaign() { }
 
@@ -36,5 +31,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
             return false;
         }
 
+        public bool TryAddStartTime()
     }
 }

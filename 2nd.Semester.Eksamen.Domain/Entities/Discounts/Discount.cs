@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
 {
@@ -35,5 +28,31 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
             NumberOfUses++;
         }
 
+        public bool TrySetName(string name)
+        {
+            if (NameCheck(name))
+            {
+                Name = name.Trim();
+                return true;
+            }
+            return false;
+        }
+
+        public bool NameCheck(string name)
+        {
+            string nameTest = name.Trim(new char[] { ' ', '-', '.', '\'' });
+            if (nameTest.All(char.IsLetter) && nameTest != "")
+                return true;
+            return false;
+        }
+
+        public bool TrySetDiscountAmount(string discountAmount)
+        {
+            return decimal.TryParse(
+                discountAmount,
+                NumberStyles.Number,
+                CultureInfo.InvariantCulture,       //avoids surprises with ',' vs '.' depending on the machines locale
+                out _);
+        }
     }
 }

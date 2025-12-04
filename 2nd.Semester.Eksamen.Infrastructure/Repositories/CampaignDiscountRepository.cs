@@ -15,7 +15,10 @@ public class CampaignRepository : ICampaignRepository
     }
     public async Task<Campaign?> GetByIDAsync(int id)
     {
-        throw new NotImplementedException();
+        await using var _context = await _factory.CreateDbContextAsync();
+
+        return await _context.Campaigns
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task<IEnumerable<Campaign?>> GetAllAsync()
