@@ -66,7 +66,22 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
         }
 
         // ================= UPDATE =================
-        public async Task UpdateCustomerAsync(Customer customer) => await UpdateAsync(customer);
+        public async Task UpdateCustomerAsync(Customer Customer)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                _context.Customers.Update(Customer);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
 
         public async Task UpdateAsync(Customer customer)
         {
@@ -77,10 +92,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
 
         public async Task UpdateBookingAsync(Booking booking)
         {
+            if (booking == null) throw new ArgumentNullException(nameof(booking));
+
             var _context = await _factory.CreateDbContextAsync();
-            _context.Bookings.Update(booking);
+
+            // Attach the entity to the new context and mark Status as modified
+            _context.Bookings.Attach(booking);
+            _context.Entry(booking).Property(b => b.Status).IsModified = true;
+
             await _context.SaveChangesAsync();
         }
+
+
 
         public async Task UpdateDiscountAsync(Discount discount)
         {
@@ -97,7 +120,22 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
         }
 
         // ================= DELETE =================
-        public async Task DeleteCustomerAsync(Customer customer) => await DeleteAsync(customer);
+        public async Task DeleteCustomerAsync(Customer Customer)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                _context.Customers.Remove(Customer);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
 
         public async Task DeleteAsync(Customer customer)
         {
@@ -105,28 +143,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             _context.Customers.Remove(customer);
             await _context.SaveChangesAsync();
         }
-
-        // ================= ORDERS =================
-        // In PrivateCustomerRepository
-        //public async Task AddOrderAsync(Order order, int bookingId)
-        //{
-        //    // Load the booking (with customer and treatments) from the DB
-        //    var _context = await _factory.CreateDbContextAsync();
-        //    var booking = await _context.Bookings
-        //        .Include(b => b.Customer)
-        //        .Include(b => b.Treatments)
-        //        .ThenInclude(bt => bt.Treatment)
-        //        .FirstOrDefaultAsync(b => b.Id == bookingId)
-        //        ?? throw new Exception("Booking not found");
-
-        //    order.Booking = booking;
-
-        //    _context.Orders.Add(order);
-        //    await _context.SaveChangesAsync();
-        //}
-
-
-
         public async Task<Order?> GetOrderByBookingIdAsync(int bookingId)
         {
             var _context = await _factory.CreateDbContextAsync();
@@ -165,5 +181,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
         }
+
     }
 }

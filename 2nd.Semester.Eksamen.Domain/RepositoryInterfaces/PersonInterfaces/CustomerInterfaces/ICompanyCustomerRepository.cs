@@ -21,9 +21,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Cus
         public Task<bool> PhoneAlreadyExistsAsync(string PhoneNumber);
         public Task UpdateAsync(CompanyCustomer Customer);
         public Task DeleteAsync(CompanyCustomer Customer);
-        //public Task AddOrderAsync(Order order);
         public Task<Booking?> GetBookingWithTreatmentsAndTreatmentAsync(int bookingId);
-        //public Task<Order?> GetOrderByBookingIdAsync(int bookingId);
         public Task UpdateOrderAsync(Order order);
         public Task<Booking?> GetNextPendingBookingAsync(int customerId);
         public Task UpdateBookingAsync(Booking booking);

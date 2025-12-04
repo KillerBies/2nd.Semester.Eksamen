@@ -14,16 +14,6 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
     public interface IPrivateCustomerService
     {
         public Task<int> CreatePrivateCustomerAsync(PrivateCustomerDTO privateCustomerDTO);
-        //Task DeleteAsync(PrivateCustomer customer);
-        //Task<PrivateCustomer?> GetByIDAsync(int customerId);
-        //Task UpdateAsync(PrivateCustomer customer);
-        //Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId);
-        //Task<Order?> GetOrderByBookingIdAsync(int bookingId);
-        //Task AddOrderAsync(Order order);
-        //Task UpdateOrderAsync(Order order);
-        //Task<Booking?> GetNextPendingBookingAsync(int id);
-        //Task UpdateBookingAsync(Booking booking);
-        //Task UpdateDiscountAsync(Discount appliedDiscount);
         public Task<PrivateCustomer?> GetByIDAsync(int id);
         public Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId);
         public Task<Order?> GetOrderByBookingIdAsync(int bookingId);

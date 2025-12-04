@@ -155,31 +155,3 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
 
     }
 }
-
-        // ORDERS
-        //public async Task AddOrderAsync(Order order, int bookingId)
-        //{
-        //    // Load the booking (with customer and treatments) from the DB
-        //    var _context = await _factory.CreateDbContextAsync();
-        //    var booking = await _context.Bookings
-        //        .Include(b => b.Customer)
-        //        .Include(b => b.Treatments)
-        //        .ThenInclude(bt => bt.Treatment)
-        //        .FirstOrDefaultAsync(b => b.Id == bookingId)
-        //        ?? throw new Exception("Booking not found");
-
-        //    order.Booking = booking;
-
-        //    _context.Orders.Add(order);
-        //    await _context.SaveChangesAsync();
-        //}
-
-        //public async Task<Order?> GetOrderByBookingIdAsync(int bookingId)
-        //{
-        //    var context = await _factory.CreateDbContextAsync();
-
-        //    return await context.Orders
-        //        .Include(o => o.Booking)
-        //        .ThenInclude(b => b.Customer)
-        //        .FirstOrDefaultAsync(o => o.BookingId == bookingId);
-        //}

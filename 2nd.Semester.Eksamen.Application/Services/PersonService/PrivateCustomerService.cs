@@ -54,8 +54,6 @@ public class PrivateCustomerService : IPrivateCustomerService, ICustomerService
     public Task UpdateDiscountAsync(Discount discount)
     => _customerRepository.UpdateDiscountAsync(discount);
 
-    //public async Task AddOrderAsync(Order order, Booking booking) => await _customerRepository.AddOrderAsync(order);
-
     public async Task UpdateAsync(Customer customer) => await _customerRepository.UpdateAsync((PrivateCustomer)customer);
     public async Task DeleteAsync(Customer customer) => await _customerRepository.DeleteAsync((PrivateCustomer)customer);
 
