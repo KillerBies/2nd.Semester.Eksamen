@@ -1,4 +1,6 @@
 ﻿@page "/invoiceOverview"
+@using System.IO;
+@inject IJSRuntime JS;
 @using _2nd.Semester.Eksamen.Application.DTO;
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 @inject IInvoiceService invoiceService;
@@ -17,6 +19,7 @@ else
                 <th>Kundenavn</th>
                 <th>Total</th>
                 <th>Betalingsdato</th>
+                <th>Download</th>
             </tr>
         </thead>
         <tbody>
@@ -27,7 +30,7 @@ else
                     <td>@orderSnapshotDTO.Name</td>
                     <td>@orderSnapshotDTO.TotalPaid</td>
                     <td>@orderSnapshotDTO.PaymentDate</td>
-                    <button @onclick="() => GetInvoiceAsync(orderSnapshotDTO.Id)"> Hent faktura </button>
+                    <td>  <button @onclick="() => DownloadInvoiceAsync(orderSnapshotDTO.PdfFile)"> download faktura </button> </td>
                 </tr>
             }
         </tbody>
@@ -40,8 +43,13 @@ else
     {
         orderSnapshotDTOs = await invoiceService.GetAllSnapshotsAsync();
     }
-    private async Task GetInvoiceAsync(int id)
+    private async Task DownloadInvoiceAsync(Byte[] Pdfbytes)
     {
-       
+        var fileStream = new MemoryStream(Pdfbytes);
+        var fileName = "Faktura.pdf";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 }
