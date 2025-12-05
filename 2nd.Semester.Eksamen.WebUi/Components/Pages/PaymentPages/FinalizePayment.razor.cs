@@ -166,16 +166,6 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                 }
             }
 
-            // Optional: direct booking products
-            if (booking.TreatmentBookingProducts != null)
-            {
-                foreach (var bp in booking.TreatmentBookingProducts)
-                {
-                    if (bp.Product != null)
-                        allItems.Add((bp.Product, bp.NumberOfProducts));
-                }
-            }
-
             return allItems;
         }
 
