@@ -128,6 +128,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             var customer = await _customerService.GetCustomerByIdAsync(customerId)
                            ?? throw new Exception("Customer not found");
 
+            // 1️ Determine loyalty discount
             var loyaltyEntity = await _discountService.GetLoyaltyDiscountForVisitsAsync(customer.NumberOfVisists);
             Discount? loyaltyDiscount = null;
 
@@ -144,6 +145,32 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 };
             }
 
+            // 2️ Build VALID discount list (Loyalty OR Active Campaigns)
+            var validDiscounts = new List<Discount>();
+            var today = DateTime.Today;
+
+            foreach (var discount in allDiscounts)
+            {
+                if (discount.IsLoyalty)
+                {
+                    // Loyalty handled separately above, ignore here
+                    continue;
+                }
+
+                // Lookup campaign tied to this discount ID
+                var campaign = await _discountService.GetCampaignByDiscountIdAsync(discount.Id);
+
+                if (campaign != null && campaign.CheckTime())
+                {
+                    // Campaign is currently active → discount valid
+                    validDiscounts.Add(discount);
+                }
+            }
+
+            // Note: loyalty discount is not added here so we can compare per-item later
+
+            // 3️ Apply best discount per item
+
             Discount? bestProductDiscount = null;
             Discount? bestTreatmentDiscount = null;
 
@@ -153,10 +180,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             {
                 bool isTreatment = product is Treatment;
 
-                var applicableDiscounts = allDiscounts
-                    .Where(d => !d.IsLoyalty &&
-                                ((isTreatment && d.AppliesToTreatment) ||
-                                 (!isTreatment && d.AppliesToProduct)))
+                // Only active (validCampaign) non-loyalty discounts
+                var applicableDiscounts = validDiscounts
+                    .Where(d =>
+                        (isTreatment && d.AppliesToTreatment) ||
+                        (!isTreatment && d.AppliesToProduct))
                     .OrderByDescending(d => d.DiscountAmount)
                     .ToList();
 
@@ -167,6 +195,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 else
                     bestTreatmentDiscount ??= bestRegular;
 
+                // Loyalty per-item applicability
                 Discount? loyaltyForItem = null;
                 if (loyaltyDiscount != null)
                 {
@@ -178,10 +207,10 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                         loyaltyForItem = loyaltyDiscount;
                 }
 
-                // Choose the stronger discount
+                // Pick strongest
                 Discount? finalItemDiscount = null;
                 if (bestRegular != null && loyaltyForItem != null)
-                    finalItemDiscount = (bestRegular.DiscountAmount >= loyaltyForItem.DiscountAmount)
+                    finalItemDiscount = bestRegular.DiscountAmount >= loyaltyForItem.DiscountAmount
                         ? bestRegular
                         : loyaltyForItem;
                 else
@@ -205,14 +234,16 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 });
             }
 
+            // This is only for the order header (same behavior as before)
             Discount? appliedDiscount = bestProductDiscount ?? bestTreatmentDiscount;
 
             return (originalTotal, appliedDiscount, loyaltyDiscount, finalTotal, itemDiscounts);
         }
-        public async Task AddOrderLineAsync(OrderLine orderLine)
-        {
-            await _orderLineService.AddOrderLineAsync(orderLine);
-        }
+
+        //public async Task AddOrderLineAsync(OrderLine orderLine)
+        //{
+        //    await _orderLineService.AddOrderLineAsync(orderLine);
+        //}
 
 
     }

@@ -35,9 +35,6 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
         }
 
-
-
-
         public async Task<List<LoyaltyDiscount>> GetAllLoyaltyDiscountsAsync()
         {
             return (await _repo.GetLoyaltyDiscountsAsync()).ToList();
@@ -49,6 +46,12 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         {
             return await _repo.GetByIdsAsync(ids);
         }
+
+        public async Task<Campaign?> GetCampaignByDiscountIdAsync(int discountId)
+        {
+            return await _repo.GetCampaignByDiscountIdAsync(discountId);
+        }
+
 
     }
 

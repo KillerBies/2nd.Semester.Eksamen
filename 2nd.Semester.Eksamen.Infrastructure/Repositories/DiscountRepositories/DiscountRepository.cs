@@ -27,8 +27,6 @@ public class DiscountRepository : IDiscountRepository
             .ToListAsync();
     }
 
-
-
     public async Task<List<Product>> GetByIdsAsync(List<int> ids)
     {
         await using var context = await _factory.CreateDbContextAsync();
@@ -36,4 +34,12 @@ public class DiscountRepository : IDiscountRepository
                             .Where(p => ids.Contains(p.Id))
                             .ToListAsync();
     }
+
+    public async Task<Campaign?> GetCampaignByDiscountIdAsync(int discountId)
+    {
+        await using var context = await _factory.CreateDbContextAsync();
+        return await context.Campaigns
+                             .FirstOrDefaultAsync(c => c.Id == discountId);
+    }
+
 }
