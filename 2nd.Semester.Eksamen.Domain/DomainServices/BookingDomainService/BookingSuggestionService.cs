@@ -35,20 +35,8 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
             }
             foreach (var treatment in treatments)
             {
-                System.Diagnostics.Debug.WriteLine($"Employeeid: {treatment.Treatment.Name}");
                 var scheduledDays = await _dayRepository.GetByEmployeeIDAsync(treatment.EmployeeId);
                 var scheduleDaysByDate = scheduledDays.ToDictionary(d => d.Date);
-                System.Diagnostics.Debug.WriteLine($"Scheduleddays is has content? {scheduledDays.Any()}");
-                foreach (var day in scheduledDays)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Scheduled day is null? {day == null}");
-                    foreach (var item in day.TimeRanges)
-                    {
-                        System.Diagnostics.Debug.WriteLine(item.Name);
-                        System.Diagnostics.Debug.WriteLine(item.Start);
-                        System.Diagnostics.Debug.WriteLine(item.End);
-                    }
-                }
                 _days[treatment.EmployeeId] = scheduleDaysByDate;
             }
 

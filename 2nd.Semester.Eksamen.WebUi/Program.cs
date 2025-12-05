@@ -22,12 +22,14 @@ using _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.Book
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.EmployeeRepositories;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.CustomerRepositories;
+using Syncfusion.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddSyncfusionBlazor();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 builder.Services.AddDbContextFactory<AppDbContext>(options =>
@@ -35,6 +37,7 @@ builder.Services.AddDbContextFactory<AppDbContext>(options =>
     b => b.MigrationsAssembly("2nd.Semester.Eksamen.Infrastructure")));
 builder.Services.AddScoped<ITreatmentRepository,TreatmentRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ITreatmentBookingRepository, TreatmentBookingRepository>();

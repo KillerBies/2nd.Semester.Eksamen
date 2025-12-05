@@ -1,0 +1,24 @@
+﻿@page "/EmployeeSchedule"
+@using _2nd.Semester.Eksamen.Application.Services.PersonService
+@using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
+@using Radzen
+@using Radzen.Blazor
+@namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
+@rendermode InteractiveServer
+<div style="margin-bottom:10px; display:flex; gap:10px;">
+    <RadzenDropDown TValue="string"
+                    Data="@Employees"
+                    Placeholder="Select action"
+                    Change="@GetEmployeeSchedule(SelectedEmployeeId)" />
+</div>
+<RadzenScheduler Data="@ScheduleItems"
+                 StartProperty="Start"
+                 EndProperty="End"
+                 TextProperty="Name"
+                 Style="height: 750px">
+
+    <RadzenWeekView />
+    <RadzenDayView />
+    <RadzenMonthView />
+
+</RadzenScheduler>

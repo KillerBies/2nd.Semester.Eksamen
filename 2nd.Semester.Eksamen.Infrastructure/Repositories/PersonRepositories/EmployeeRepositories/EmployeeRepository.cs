@@ -36,7 +36,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
                 throw;
             }
         }
-        public async Task<IEnumerable<Employee?>> GetAllAsync()
+        public async Task<IEnumerable<Employee>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
             return await _context.Employees.ToListAsync();

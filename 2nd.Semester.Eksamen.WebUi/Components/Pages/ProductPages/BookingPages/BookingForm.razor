@@ -58,9 +58,9 @@
                 </div>
             </div>
             <div class="btn-group">
-                <button type="button" class="time-button" @onclick="PageBackwards" disabled="@(CurrentIndex == 0)" title="Gå Tilbage I Tid">&#9664;</button>
-                <button type="button" class="time-button" @onclick="FowardPage" disabled="@(checkfields())" title="Gå Frem I Tid">&#9654;</button>
-                <button type="button" class="time-button" @onclick="refreshAvailableSlots" disabled="@(checkfields())" title="Generer Mulige Tider"><span>Find Tider </span><i class="bi bi-search"></i></button>
+                    <button type="button" class="btn btn-primary time-button" @onclick="PageBackwards" disabled="@(CurrentIndex == 0)" title="Gå Tilbage I Tid">&#9664;</button>
+                    <button type="button" class="btn btn-primary time-button" @onclick="FowardPage" disabled="@(checkfields())" title="Gå Frem I Tid">&#9654;</button>
+                <button type="button" class="btn btn-primary time-button" @onclick="refreshAvailableSlots" disabled="@(checkfields())" title="Generer Mulige Tider"><i class="bi bi-search"></i></button>
             </div>
         </div>
         @if (IsDropdownOpen)

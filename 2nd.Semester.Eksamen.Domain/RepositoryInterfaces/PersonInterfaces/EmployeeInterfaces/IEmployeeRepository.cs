@@ -13,7 +13,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Emp
     {
         //Read
         public Task<Employee?> GetByIDAsync(int id);
-        public Task<IEnumerable<Employee?>> GetAllAsync();
+        public Task<IEnumerable<Employee>> GetAllAsync();
         public Task<IEnumerable<Employee?>> GetByFilterAsync(Filter filter);
         public Task<IEnumerable<Employee?>> GetByTreatmentSpecialtiesAsync(List<string> specialties);
 
