@@ -104,7 +104,14 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
                 foreach (var (product, quantity) in allItems)
                 {
-                    var orderLine = new OrderLine(order, product, quantity);
+                    // Use IDs only to avoid EF trying to insert Order or Product again
+                    var orderLine = new OrderLine
+                    {
+                        OrderID = order.Id,
+                        ProductId = product.Id,
+                        NumberOfProducts = quantity
+                    };
+
                     await OrderLineService.AddOrderLineAsync(orderLine);
                 }
 
@@ -146,7 +153,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                 foreach (var tb in booking.Treatments)
                 {
                     if (tb.Treatment != null)
-                        allItems.Add((tb.Treatment, 1));
+                        allItems.Add((tb.Treatment, 1)); // currently sets all items to be 1 in quantity
 
                     if (tb.TreatmentBookingProducts != null)
                     {

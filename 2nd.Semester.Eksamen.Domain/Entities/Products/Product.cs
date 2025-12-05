@@ -13,13 +13,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
         public string Name { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public string Description { get; set; } = string.Empty;
-        public int? CampaignId { get; set; }
-        public Product(string name, decimal price, string description, int? campaignId)
+        public Product(string name, decimal price, string description)
         {
             Name = name;
             Price = price;
             Description = description;
-            CampaignId = campaignId;
         }
         public Product() { }
 
