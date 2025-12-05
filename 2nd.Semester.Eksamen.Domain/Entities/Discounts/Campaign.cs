@@ -72,7 +72,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
                 }
 
                 // Optional: if you want to include ProductsUsed in treatments
-                foreach (var tbp in treatmentBooking.ProductsUsed)
+                foreach (var tbp in treatmentBooking.TreatmentBookingProducts)
                 {
                     if (CheckProduct(tbp.Product))
                         discountedPrice += tbp.Product.Price * DiscountAmount;

@@ -24,7 +24,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Cus
         public Task UpdateAsync(Customer customer);
         public Task DeleteAsync(Customer customer);
 
-        public Task<Booking?> GetBookingWithTreatmentsAndTreatmentAsync(int bookingId);
+        public Task<Booking?> GetBookingWithTreatmentsAndProductsAsync(int bookingId);
         public Task<Order?> GetOrderByBookingIdAsync(int bookingId);
         public Task UpdateOrderAsync(Order order);
         public Task<Booking?> GetNextPendingBookingAsync(int customerId);

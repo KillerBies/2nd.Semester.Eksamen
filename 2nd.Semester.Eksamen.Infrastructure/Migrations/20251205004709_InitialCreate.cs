@@ -314,7 +314,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderLine",
+                name: "OrderLines",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -325,15 +325,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderLine", x => x.Id);
+                    table.PrimaryKey("PK_OrderLines", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderLine_Orders_OrderID",
+                        name: "FK_OrderLines_Orders_OrderID",
                         column: x => x.OrderID,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderLine_Products_ProductId",
+                        name: "FK_OrderLines_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -371,7 +371,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TreatmentBookingID = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    NumberOfProducts = table.Column<int>(type: "int", nullable: false)
+                    NumberOfProducts = table.Column<int>(type: "int", nullable: false),
+                    BookingId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -382,11 +383,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         principalTable: "BookedTreatments",
                         principalColumn: "Id");
                     table.ForeignKey(
+                        name: "FK_TreatmentBookingProducts_Bookings_BookingId",
+                        column: x => x.BookingId,
+                        principalTable: "Bookings",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_TreatmentBookingProducts_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -427,13 +432,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderLine_OrderID",
-                table: "OrderLine",
+                name: "IX_OrderLines_OrderID",
+                table: "OrderLines",
                 column: "OrderID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderLine_ProductId",
-                table: "OrderLine",
+                name: "IX_OrderLines_ProductId",
+                table: "OrderLines",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -468,6 +473,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 column: "ScheduleDayId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TreatmentBookingProducts_BookingId",
+                table: "TreatmentBookingProducts",
+                column: "BookingId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TreatmentBookingProducts_ProductId",
                 table: "TreatmentBookingProducts",
                 column: "ProductId");
@@ -485,7 +495,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 name: "LoyaltyDiscounts");
 
             migrationBuilder.DropTable(
-                name: "OrderLine");
+                name: "OrderLines");
 
             migrationBuilder.DropTable(
                 name: "PunchCards");

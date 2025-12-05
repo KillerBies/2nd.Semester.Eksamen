@@ -26,6 +26,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
         //Order data
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderLine> OrderLines { get; set; }
+
 
         //Booking Data
         public DbSet<Booking> Bookings { get; set; }
@@ -128,10 +130,20 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasOne(tb => tb.Employee)
                 .WithMany(e => e.Appointments)
                 .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<TreatmentBooking>()
-                .HasMany(tb => tb.ProductsUsed)
-                .WithOne(up => up.TreatmentBooking)
+            // TreatmentBooking → TreatmentBookingProducts
+            modelBuilder.Entity<TreatmentBookingProduct>()
+                .HasOne(tbp => tbp.TreatmentBooking)
+                .WithMany(tb => tb.TreatmentBookingProducts)
+                .HasForeignKey(tbp => tbp.TreatmentBookingID)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // TreatmentBookingProduct → Product
+            modelBuilder.Entity<TreatmentBookingProduct>()
+                .HasOne(tbp => tbp.Product)
+                .WithMany() // optionally: .WithMany(p => p.TreatmentBookingProducts)
+                .HasForeignKey(tbp => tbp.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
 
 

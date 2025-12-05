@@ -148,15 +148,22 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
         }
 
         // ================= BOOKINGS =================
-        public async Task<Booking?> GetBookingWithTreatmentsAndTreatmentAsync(int bookingId)
+        public async Task<Booking?> GetBookingWithTreatmentsAndProductsAsync(int bookingId)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Bookings
+
+            var booking = await _context.Bookings
                 .Include(b => b.Treatments)
                     .ThenInclude(tb => tb.Treatment)
-                .Include(b => b.Customer)
+                .Include(b => b.Treatments)
+                    .ThenInclude(tb => tb.TreatmentBookingProducts)
+                        .ThenInclude(tbp => tbp.Product)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
+
+            return booking;
         }
+
+
 
         public async Task<Booking?> GetNextPendingBookingAsync(int customerId)
         {
@@ -164,11 +171,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             return await _context.Bookings
                 .Include(b => b.Treatments)
                     .ThenInclude(tb => tb.Treatment)
+                .Include(b => b.Treatments)
+                    .ThenInclude(tb => tb.TreatmentBookingProducts)
+                        .ThenInclude(tbp => tbp.Product)
                 .Include(b => b.Customer)
                 .Where(b => b.Customer.Id == customerId && b.Status == BookingStatus.Pending)
                 .OrderBy(b => b.Start)
                 .FirstOrDefaultAsync();
         }
+
 
         public async Task AddOrderAsync(Order order)
         {

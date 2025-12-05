@@ -1,9 +1,11 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
+using _2nd.Semester.Eksamen.Application.Services.BookingServices;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using Microsoft.AspNetCore.Components;
 
 namespace _2nd.Semester.Eksamen.Pages.PaymentPages
@@ -18,16 +20,18 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
         private PrivateCustomer? customer;
         private List<Product> products = new();
-        private List<ProductDiscountInfo> itemDiscounts = new();
-
         private decimal originalTotal;
         private Discount? appliedDiscount;
+        private Discount? bestDiscount;
         private Discount? loyaltyDiscount;
         private decimal finalTotal;
 
-        [Inject] private IOrderService OrderService { get; set; } = default!;
-        [Inject] public ICustomerService CustomerService { get; set; } = default!;
+        // For Razor table
+        private List<ProductDiscountInfo> itemDiscounts = new();
 
+        [Inject] private IOrderService OrderService { get; set; } = default!;
+        [Inject] public IOrderLineService OrderLineService { get; set; } = default!;
+        [Inject] public ICustomerService CustomerService { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
@@ -37,32 +41,32 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
             try
             {
                 customer = await CustomerService.GetByIDAsync(id) as PrivateCustomer;
-                if (customer == null)
-                    throw new Exception("Customer not found");
+                if (customer == null) throw new Exception("Customer not found");
 
                 var booking = await CustomerService.GetNextPendingBookingAsync(customer.Id);
                 if (booking == null)
                 {
-                    errorMessage = "No pending bookings found for this customer.";
+                    errorMessage = "No pending booking found for this customer.";
                     return;
                 }
 
-                // Extract treatment products from the booking
-                products = booking.Treatments
-                    .Where(tb => tb.Treatment != null)
-                    .Select(tb => tb.Treatment)
-                    .Cast<Product>()
-                    .ToList();
+                // Use helper to get all products/treatments
+                var allItems = FlattenBookingItems(booking);
+                products = allItems.Select(x => x.product).Distinct().ToList();
 
-                // 💥 USE THE NEW ENGINE!
-                var result = await OrderService
-                    .CalculateBestDiscountsPerItemAsync(customer.Id, products);
+                if (!products.Any())
+                {
+                    errorMessage = "No treatments or products found for this booking.";
+                    return;
+                }
 
-                originalTotal = result.originalTotal;
-                loyaltyDiscount = result.loyaltyDiscount;
-                appliedDiscount = result.appliedDiscount;
-                finalTotal = result.finalTotal;
-                itemDiscounts = result.itemDiscounts;
+                (originalTotal, bestDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
+                    await OrderService.CalculateBestDiscountsPerItemAsync(customer.Id, products);
+
+                appliedDiscount = (loyaltyDiscount != null &&
+                                   loyaltyDiscount.DiscountAmount > (bestDiscount?.DiscountAmount ?? 0))
+                                   ? loyaltyDiscount
+                                   : bestDiscount;
             }
             catch (Exception ex)
             {
@@ -73,6 +77,8 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                 isLoading = false;
             }
         }
+
+
 
 
         private async Task FinalizePaymentAsync()
@@ -92,26 +98,81 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                     return;
                 }
 
-                // Create or update order
                 var order = await OrderService.CreateOrUpdateOrderForBookingAsync(booking.Id);
 
-                // Update customer visit count
-                customer.AddVisit();
-                await CustomerService.UpdateAsync(customer);
+                var allItems = FlattenBookingItems(booking);
 
-                paymentSuccess = true;
+                foreach (var (product, quantity) in allItems)
+                {
+                    var orderLine = new OrderLine(order, product, quantity);
+                    await OrderLineService.AddOrderLineAsync(orderLine);
+                }
+
+                customer.AddVisit();
+
+                if (loyaltyDiscount != null)
+                {
+                    loyaltyDiscount.NumberOfUses++;
+                    await CustomerService.UpdateDiscountAsync(loyaltyDiscount);
+                }
+
+                await CustomerService.UpdateAsync(customer);
 
                 booking.Status = BookingStatus.Completed;
                 await CustomerService.UpdateBookingAsync(booking);
+
+                paymentSuccess = true;
+                Console.WriteLine($"Order #{order.Id} created with {allItems.Count} order lines.");
             }
             catch (Exception ex)
             {
-                errorMessage = $"Error creating order: {ex.Message}";
+                errorMessage = $"Error during payment: {ex.Message}";
+                Console.WriteLine(errorMessage);
             }
             finally
             {
                 isLoading = false;
             }
         }
+
+
+        private List<(Product product, int quantity)> FlattenBookingItems(Booking booking)
+        {
+            var allItems = new List<(Product product, int quantity)>();
+
+            // Treatments + their attached products
+            if (booking.Treatments != null)
+            {
+                foreach (var tb in booking.Treatments)
+                {
+                    if (tb.Treatment != null)
+                        allItems.Add((tb.Treatment, 1));
+
+                    if (tb.TreatmentBookingProducts != null)
+                    {
+                        foreach (var tbp in tb.TreatmentBookingProducts)
+                        {
+                            if (tbp.Product != null)
+                                allItems.Add((tbp.Product, tbp.NumberOfProducts));
+                        }
+                    }
+                }
+            }
+
+            // Optional: direct booking products
+            if (booking.TreatmentBookingProducts != null)
+            {
+                foreach (var bp in booking.TreatmentBookingProducts)
+                {
+                    if (bp.Product != null)
+                        allItems.Add((bp.Product, bp.NumberOfProducts));
+                }
+            }
+
+            return allItems;
+        }
+
+
+
     }
 }

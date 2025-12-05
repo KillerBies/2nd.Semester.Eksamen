@@ -73,6 +73,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 // if your repositories and services are separate:
 builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
 builder.Services.AddScoped<ICompanyCustomerService, CompanyCustomerService>();
+builder.Services.AddScoped<IOrderLineRepository, OrderLineRepository>();
 
 // and register a default ICustomerService (pick one or create a composite)
 builder.Services.AddScoped<ICustomerService>(sp => sp.GetRequiredService<PrivateCustomerService>()); // or CustomerService
@@ -82,6 +83,7 @@ builder.Services.AddScoped<ICustomerService>(sp => sp.GetRequiredService<Private
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IOrderLineService, OrderLineService>();
 
 
 

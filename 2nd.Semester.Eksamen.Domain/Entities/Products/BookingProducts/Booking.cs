@@ -27,6 +27,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts
         //Treatment details
         public List<TreatmentBooking> Treatments { get; set; } = new List<TreatmentBooking>();
 
+        // Product details
+        public List<TreatmentBookingProduct>? TreatmentBookingProducts { get; set; } = new List<TreatmentBookingProduct>();
+
 
 
 

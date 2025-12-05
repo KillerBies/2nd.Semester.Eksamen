@@ -5,6 +5,7 @@ using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using System.Linq;
 
 namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 {
@@ -13,15 +14,18 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         private readonly IProductService _productService;
         private readonly IDiscountService _discountService;
         private readonly ICustomerService _customerService;
+        private readonly IOrderLineService _orderLineService;
 
         public OrderService(
             IProductService productService,
             IDiscountService discountService,
-            ICustomerService customerService)
+            ICustomerService customerService,
+            IOrderLineService orderLineService)
         {
             _productService = productService;
             _discountService = discountService;
             _customerService = customerService;
+            _orderLineService = orderLineService;
         }
 
         public Task<List<Product>> GetProductsByIdsAsync(List<int> productIds)
@@ -29,46 +33,69 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
         public async Task<Order> CreateOrUpdateOrderForBookingAsync(int bookingId)
         {
+            // Load booking with all necessary related data
             var booking = await _customerService.GetBookingWithTreatmentsAsync(bookingId);
             if (booking == null)
                 throw new Exception("Booking not found");
 
             var productsList = new List<Product>();
 
-            // Add treatment products (TPH)
+            // 1️⃣ Add booked treatments
             if (booking.Treatments != null)
             {
                 productsList.AddRange(
                     booking.Treatments
                            .Where(tb => tb.Treatment != null)
-                           .Select(tb => tb.Treatment)
+                           .Select(tb => tb.Treatment)!
                 );
+            }
+
+            // 2️⃣ Add products from TreatmentBookingProducts
+            if (booking.Treatments != null)
+            {
+                foreach (var tb in booking.Treatments)
+                {
+                    if (tb.TreatmentBookingProducts != null)
+                    {
+                        foreach (var tbp in tb.TreatmentBookingProducts)
+                        {
+                            for (int i = 0; i < tbp.NumberOfProducts; i++)
+                                productsList.Add(tbp.Product);
+                        }
+                    }
+                }
             }
 
             if (!productsList.Any())
                 throw new Exception("No products or treatments found for this booking");
 
+            // Calculate totals & best discounts
             var (originalTotal, appliedDiscount, loyaltyDiscount, finalTotal) =
                 await CalculateBestDiscountsAsync(booking.CustomerId, productsList);
 
+            // Get existing order (if any)
             var order = await _customerService.GetOrderByBookingIdAsync(bookingId);
 
             if (order == null)
             {
+                // Create new order
                 order = new Order(bookingId, originalTotal, finalTotal, appliedDiscount?.Id ?? 0);
                 await _customerService.AddOrderAsync(order);
             }
             else
             {
+                // Update existing order
                 order.UpdateTotals(originalTotal, finalTotal, appliedDiscount?.Id);
                 await _customerService.UpdateOrderAsync(order);
             }
 
+            // Mark booking as completed
             booking.Status = BookingStatus.Completed;
             await _customerService.UpdateBookingAsync(booking);
 
             return order;
         }
+
 
         public async Task<(decimal originalTotal,
                            Discount? appliedDiscount,
@@ -95,18 +122,13 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 throw new Exception("No products provided for discount calculation");
 
             var itemDiscounts = new List<ProductDiscountInfo>();
-
-            var productItems = products.Where(p => !(p is Treatment)).ToList();
-            var treatmentItems = products.OfType<Treatment>().ToList();
-
-            decimal originalTotal = products.Sum(p => p.Price);
+            var originalTotal = products.Sum(p => p.Price);
 
             var allDiscounts = await _discountService.GetAllDiscountsAsync();
             var customer = await _customerService.GetCustomerByIdAsync(customerId)
                            ?? throw new Exception("Customer not found");
 
             var loyaltyEntity = await _discountService.GetLoyaltyDiscountForVisitsAsync(customer.NumberOfVisists);
-
             Discount? loyaltyDiscount = null;
 
             if (loyaltyEntity != null)
@@ -131,14 +153,14 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             {
                 bool isTreatment = product is Treatment;
 
-                var regularApplicable = allDiscounts
+                var applicableDiscounts = allDiscounts
                     .Where(d => !d.IsLoyalty &&
                                 ((isTreatment && d.AppliesToTreatment) ||
                                  (!isTreatment && d.AppliesToProduct)))
                     .OrderByDescending(d => d.DiscountAmount)
                     .ToList();
 
-                var bestRegular = regularApplicable.FirstOrDefault();
+                var bestRegular = applicableDiscounts.FirstOrDefault();
 
                 if (!isTreatment)
                     bestProductDiscount ??= bestRegular;
@@ -146,7 +168,6 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     bestTreatmentDiscount ??= bestRegular;
 
                 Discount? loyaltyForItem = null;
-
                 if (loyaltyDiscount != null)
                 {
                     bool applies =
@@ -157,8 +178,8 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                         loyaltyForItem = loyaltyDiscount;
                 }
 
-                Discount? finalItemDiscount;
-
+                // Choose the stronger discount
+                Discount? finalItemDiscount = null;
                 if (bestRegular != null && loyaltyForItem != null)
                     finalItemDiscount = (bestRegular.DiscountAmount >= loyaltyForItem.DiscountAmount)
                         ? bestRegular
@@ -167,7 +188,6 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     finalItemDiscount = bestRegular ?? loyaltyForItem;
 
                 decimal finalPrice = product.Price;
-
                 if (finalItemDiscount != null)
                     finalPrice = finalPrice * (1 - finalItemDiscount.DiscountAmount);
 
@@ -189,5 +209,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
             return (originalTotal, appliedDiscount, loyaltyDiscount, finalTotal, itemDiscounts);
         }
+        public async Task AddOrderLineAsync(OrderLine orderLine)
+        {
+            await _orderLineService.AddOrderLineAsync(orderLine);
+        }
+
+
     }
 }

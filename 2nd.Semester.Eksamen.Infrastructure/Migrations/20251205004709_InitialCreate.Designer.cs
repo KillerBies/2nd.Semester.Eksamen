@@ -12,7 +12,7 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251204164337_InitialCreate")]
+    [Migration("20251205004709_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -302,6 +302,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("BookingId")
+                        .HasColumnType("int");
+
                     b.Property<int>("NumberOfProducts")
                         .HasColumnType("int");
 
@@ -312,6 +315,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
 
                     b.HasIndex("ProductId");
 
@@ -373,7 +378,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderLine");
+                    b.ToTable("OrderLines");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Product", b =>
@@ -643,14 +648,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.TreatmentBookingProduct", b =>
                 {
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Booking", null)
+                        .WithMany("TreatmentBookingProducts")
+                        .HasForeignKey("BookingId");
+
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.TreatmentBooking", "TreatmentBooking")
-                        .WithMany("ProductsUsed")
+                        .WithMany("TreatmentBookingProducts")
                         .HasForeignKey("TreatmentBookingID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -764,12 +773,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Booking", b =>
                 {
+                    b.Navigation("TreatmentBookingProducts");
+
                     b.Navigation("Treatments");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.TreatmentBooking", b =>
                 {
-                    b.Navigation("ProductsUsed");
+                    b.Navigation("TreatmentBookingProducts");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Order", b =>

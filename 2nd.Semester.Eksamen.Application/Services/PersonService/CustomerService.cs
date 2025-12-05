@@ -80,7 +80,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
 
         // --- BOOKINGS / ORDERS ---
         public Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId)
-            => _customerRepository.GetBookingWithTreatmentsAndTreatmentAsync(bookingId);
+            => _customerRepository.GetBookingWithTreatmentsAndProductsAsync(bookingId);
 
         public Task<Order?> GetOrderByBookingIdAsync(int bookingId)
             => _customerRepository.GetOrderByBookingIdAsync(bookingId);
