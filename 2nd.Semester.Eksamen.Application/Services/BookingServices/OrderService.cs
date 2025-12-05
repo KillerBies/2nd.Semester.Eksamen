@@ -33,34 +33,30 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
         public async Task<Order> CreateOrUpdateOrderForBookingAsync(int bookingId)
         {
-            // Load booking with all necessary related data
+            // Load booking with treatments & attached products
             var booking = await _customerService.GetBookingWithTreatmentsAsync(bookingId);
             if (booking == null)
                 throw new Exception("Booking not found");
 
+            // Flatten all products/treatments for this booking
             var productsList = new List<Product>();
 
-            // 1️⃣ Add booked treatments
-            if (booking.Treatments != null)
-            {
-                productsList.AddRange(
-                    booking.Treatments
-                           .Where(tb => tb.Treatment != null)
-                           .Select(tb => tb.Treatment)!
-                );
-            }
-
-            // 2️⃣ Add products from TreatmentBookingProducts
             if (booking.Treatments != null)
             {
                 foreach (var tb in booking.Treatments)
                 {
+                    if (tb.Treatment != null)
+                        productsList.Add(tb.Treatment); // treatment itself counts as a product
+
                     if (tb.TreatmentBookingProducts != null)
                     {
                         foreach (var tbp in tb.TreatmentBookingProducts)
                         {
-                            for (int i = 0; i < tbp.NumberOfProducts; i++)
-                                productsList.Add(tbp.Product);
+                            if (tbp.Product != null)
+                            {
+                                for (int i = 0; i < tbp.NumberOfProducts; i++)
+                                    productsList.Add(tbp.Product);
+                            }
                         }
                     }
                 }
@@ -69,49 +65,49 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             if (!productsList.Any())
                 throw new Exception("No products or treatments found for this booking");
 
-            // 3️⃣ Calculate totals & best discounts
+            // Calculate totals & best discounts
             var (originalTotal, appliedDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
                 await CalculateBestDiscountsPerItemAsync(booking.CustomerId, productsList);
 
-            // 4️⃣ Get existing order (if any)
+            // Get existing order (if any)
             var order = await _customerService.GetOrderByBookingIdAsync(bookingId);
 
             if (order == null)
             {
                 // Create new order
                 order = new Order(bookingId, originalTotal, finalTotal, appliedDiscount?.Id ?? 0);
-
-                // Add order lines
-                foreach (var product in productsList)
-                {
-                    var quantity = productsList.Count(p => p.Id == product.Id);
-                    order.AddOrderLine(new OrderLine(order, product, quantity));
-                }
-
                 await _customerService.AddOrderAsync(order);
             }
             else
             {
                 // Update existing order totals
                 order.UpdateTotals(originalTotal, finalTotal, appliedDiscount?.Id);
-
-                // Clear old order lines & add new ones
-                order.Products.Clear();
-                foreach (var product in productsList)
-                {
-                    var quantity = productsList.Count(p => p.Id == product.Id);
-                    order.AddOrderLine(new OrderLine(order, product, quantity));
-                }
-
                 await _customerService.UpdateOrderAsync(order);
             }
 
-            // 5️⃣ Mark booking as completed
+            // Add order lines grouped by product
+            foreach (var productGroup in productsList.GroupBy(p => p.Id))
+            {
+                var productId = productGroup.Key;
+                var quantity = productGroup.Count();
+
+                var orderLine = new OrderLine
+                {
+                    OrderID = order.Id,
+                    ProductId = productId,
+                    NumberOfProducts = quantity
+                };
+
+                await _orderLineService.AddOrderLineAsync(orderLine);
+            }
+
+            // Mark booking as completed
             booking.Status = BookingStatus.Completed;
             await _customerService.UpdateBookingAsync(booking);
 
             return order;
         }
+
 
 
 
@@ -248,10 +244,10 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
 
 
-        //public async Task AddOrderLineAsync(OrderLine orderLine)
-        //{
-        //    await _orderLineService.AddOrderLineAsync(orderLine);
-        //}
+        public async Task AddOrderLineAsync(OrderLine orderLine)
+        {
+            await _orderLineService.AddOrderLineAsync(orderLine);
+        }
 
 
     }

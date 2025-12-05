@@ -1,5 +1,6 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
+using _2nd.Semester.Eksamen.Application.Services.BookingServices;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
@@ -29,7 +30,6 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
         private List<ProductDiscountInfo> itemDiscounts = new();
 
         [Inject] private IOrderService OrderService { get; set; } = default!;
-        [Inject] public IOrderLineService OrderLineService { get; set; } = default!;
         [Inject] public ICustomerService CustomerService { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
@@ -49,8 +49,9 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                     return;
                 }
 
-                // Fetch all products from the booking (treatments + attached products)
-                products = GetProductsFromBooking(booking);
+                // Flatten booking items
+                var allItems = FlattenBookingItems(booking);
+                products = allItems.Select(x => x.product).Distinct().ToList();
 
                 if (!products.Any())
                 {
@@ -58,19 +59,22 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                     return;
                 }
 
-                // Get discounts per item
+                // Get totals & discounts
                 (originalTotal, bestDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
                     await OrderService.CalculateBestDiscountsPerItemAsync(customer.Id, products);
 
-                // SLAY: Compare max of treatment/product discount instead of DiscountAmount
-                decimal loyaltyValue = loyaltyDiscount != null
-                    ? Math.Max(loyaltyDiscount.TreatmentDiscount, loyaltyDiscount.ProductDiscount)
-                    : 0;
-                decimal bestValue = bestDiscount != null
-                    ? Math.Max(bestDiscount.TreatmentDiscount, bestDiscount.ProductDiscount)
+                // Fix: compare best discount using actual discount amounts
+                decimal bestDiscountAmount = bestDiscount != null
+                    ? itemDiscounts.Where(i => i.DiscountName == bestDiscount.Name).Sum(i => i.DiscountAmount)
                     : 0;
 
-                appliedDiscount = (loyaltyValue > bestValue) ? loyaltyDiscount : bestDiscount;
+                decimal loyaltyDiscountAmount = loyaltyDiscount != null
+                    ? itemDiscounts.Where(i => i.IsLoyalty).Sum(i => i.DiscountAmount)
+                    : 0;
+
+                appliedDiscount = (loyaltyDiscountAmount > bestDiscountAmount)
+                    ? loyaltyDiscount
+                    : bestDiscount;
             }
             catch (Exception ex)
             {
@@ -99,24 +103,9 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                     return;
                 }
 
+                // ✅ Let OrderService handle creating/updating order & order lines
                 var order = await OrderService.CreateOrUpdateOrderForBookingAsync(booking.Id);
 
-                // Use flattened product IDs for order lines
-                var allItems = FlattenBookingItems(booking);
-
-                foreach (var (productId, quantity) in allItems)
-                {
-                    var orderLine = new OrderLine
-                    {
-                        OrderID = order.Id,
-                        ProductId = productId, // ONLY use the ID
-                        NumberOfProducts = quantity
-                    };
-
-                    await OrderLineService.AddOrderLineAsync(orderLine);
-                }
-
-                // Add visit and update loyalty discount
                 customer.AddVisit();
 
                 if (loyaltyDiscount != null)
@@ -127,12 +116,11 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
                 await CustomerService.UpdateAsync(customer);
 
-                // Mark booking as completed
                 booking.Status = BookingStatus.Completed;
                 await CustomerService.UpdateBookingAsync(booking);
 
                 paymentSuccess = true;
-                Console.WriteLine($"Order #{order.Id} created with {allItems.Count} order lines.");
+                Console.WriteLine($"Order #{order.Id} created with {products.Count} unique products.");
             }
             catch (Exception ex)
             {
@@ -145,54 +133,29 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
             }
         }
 
-        private List<(int productId, int quantity)> FlattenBookingItems(Booking booking)
+        private List<(Product product, int quantity)> FlattenBookingItems(Booking booking)
         {
-            var allItems = new List<(int productId, int quantity)>();
+            var allItems = new List<(Product product, int quantity)>();
 
             if (booking.Treatments != null)
             {
                 foreach (var tb in booking.Treatments)
                 {
                     if (tb.Treatment != null)
-                        allItems.Add((tb.Treatment.Id, 1));
+                        allItems.Add((tb.Treatment, 1));
 
                     if (tb.TreatmentBookingProducts != null)
                     {
                         foreach (var tbp in tb.TreatmentBookingProducts)
                         {
                             if (tbp.Product != null)
-                                allItems.Add((tbp.Product.Id, tbp.NumberOfProducts));
+                                allItems.Add((tbp.Product, tbp.NumberOfProducts));
                         }
                     }
                 }
             }
 
             return allItems;
-        }
-
-        private List<Product> GetProductsFromBooking(Booking booking)
-        {
-            var products = new List<Product>();
-
-            if (booking.Treatments != null)
-            {
-                foreach (var tb in booking.Treatments)
-                {
-                    if (tb.Treatment != null)
-                        products.Add(tb.Treatment);
-
-                    if (tb.TreatmentBookingProducts != null)
-                    {
-                        foreach (var tbp in tb.TreatmentBookingProducts)
-                        {
-                            if (tbp.Product != null)
-                                products.Add(tbp.Product);
-                        }
-                    }
-                }
-            }
-
-            return products.Distinct().ToList();
         }
     }
 }
