@@ -87,7 +87,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         public async Task<Employee?> GetByIDAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
-            var result = await _context.Employees.FirstOrDefaultAsync(e => e.Id ==id);
+            var result = await _context.Employees
+                                       .Include(e => e.Address)
+                                       .FirstOrDefaultAsync(e => e.Id == id);
             return result;
         }
         public async Task<IEnumerable<Employee?>> GetByTreatmentSpecialtiesAsync(List<string> specialties)
