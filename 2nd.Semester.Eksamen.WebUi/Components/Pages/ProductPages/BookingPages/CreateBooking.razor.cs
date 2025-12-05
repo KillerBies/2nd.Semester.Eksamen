@@ -24,7 +24,7 @@ namespace Components.Pages.ProductPages.BookingPages
 
         private void GoToCreateCustomer()
         {
-            Navi.NavigateTo($"/create-customer/{phoneNumber}");
+            Navi.NavigateTo($"/create-customer");
         }
         private async Task SearchForPhoneNumber()
         {
