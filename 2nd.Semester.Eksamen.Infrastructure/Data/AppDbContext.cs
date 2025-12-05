@@ -44,7 +44,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Address> Adresses { get; set; }
-
+        
         //Discount data
         public DbSet<PunchCard> PunchCards { get; set; }
         public DbSet<LoyaltyDiscount> LoyaltyDiscounts { get; set; }
