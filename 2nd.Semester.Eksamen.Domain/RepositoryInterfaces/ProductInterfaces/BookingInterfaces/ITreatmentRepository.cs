@@ -19,5 +19,6 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.Bo
         public Task DeleteAsync(Treatment treatment);
         public Task<IEnumerable<Treatment>> GetByCategory(string category);
 
+        
     }
 }
