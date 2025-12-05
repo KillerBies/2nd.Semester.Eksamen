@@ -34,11 +34,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DiscountAmount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    AppliesToProduct = table.Column<bool>(type: "bit", nullable: false),
+                    TreatmentDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    ProductDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    IsLoyalty = table.Column<bool>(type: "bit", nullable: false),
                     AppliesToTreatment = table.Column<bool>(type: "bit", nullable: false),
-                    NumberOfUses = table.Column<int>(type: "int", nullable: false),
-                    IsLoyalty = table.Column<bool>(type: "bit", nullable: false)
+                    AppliesToProduct = table.Column<bool>(type: "bit", nullable: false),
+                    NumberOfUses = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -371,8 +372,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TreatmentBookingID = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    NumberOfProducts = table.Column<int>(type: "int", nullable: false),
-                    BookingId = table.Column<int>(type: "int", nullable: true)
+                    NumberOfProducts = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -381,11 +381,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         name: "FK_TreatmentBookingProducts_BookedTreatments_TreatmentBookingID",
                         column: x => x.TreatmentBookingID,
                         principalTable: "BookedTreatments",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_TreatmentBookingProducts_Bookings_BookingId",
-                        column: x => x.BookingId,
-                        principalTable: "Bookings",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TreatmentBookingProducts_Products_ProductId",
@@ -471,11 +466,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 name: "IX_TimeRanges_ScheduleDayId",
                 table: "TimeRanges",
                 column: "ScheduleDayId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TreatmentBookingProducts_BookingId",
-                table: "TreatmentBookingProducts",
-                column: "BookingId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TreatmentBookingProducts_ProductId",

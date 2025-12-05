@@ -189,7 +189,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
 
             modelBuilder.Entity<Discount>()
-                .Property(d => d.DiscountAmount)
+                .Property(d => d.ProductDiscount)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<Discount>()
+                .Property(d => d.TreatmentDiscount)
                 .HasPrecision(18, 2);
 
             base.OnModelCreating(modelBuilder);

@@ -69,32 +69,50 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             if (!productsList.Any())
                 throw new Exception("No products or treatments found for this booking");
 
-            // Calculate totals & best discounts
-            var (originalTotal, appliedDiscount, loyaltyDiscount, finalTotal) =
-                await CalculateBestDiscountsAsync(booking.CustomerId, productsList);
+            // 3️⃣ Calculate totals & best discounts
+            var (originalTotal, appliedDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
+                await CalculateBestDiscountsPerItemAsync(booking.CustomerId, productsList);
 
-            // Get existing order (if any)
+            // 4️⃣ Get existing order (if any)
             var order = await _customerService.GetOrderByBookingIdAsync(bookingId);
 
             if (order == null)
             {
                 // Create new order
                 order = new Order(bookingId, originalTotal, finalTotal, appliedDiscount?.Id ?? 0);
+
+                // Add order lines
+                foreach (var product in productsList)
+                {
+                    var quantity = productsList.Count(p => p.Id == product.Id);
+                    order.AddOrderLine(new OrderLine(order, product, quantity));
+                }
+
                 await _customerService.AddOrderAsync(order);
             }
             else
             {
-                // Update existing order
+                // Update existing order totals
                 order.UpdateTotals(originalTotal, finalTotal, appliedDiscount?.Id);
+
+                // Clear old order lines & add new ones
+                order.Products.Clear();
+                foreach (var product in productsList)
+                {
+                    var quantity = productsList.Count(p => p.Id == product.Id);
+                    order.AddOrderLine(new OrderLine(order, product, quantity));
+                }
+
                 await _customerService.UpdateOrderAsync(order);
             }
 
-            // Mark booking as completed
+            // 5️⃣ Mark booking as completed
             booking.Status = BookingStatus.Completed;
             await _customerService.UpdateBookingAsync(booking);
 
             return order;
         }
+
 
 
         public async Task<(decimal originalTotal,
@@ -128,7 +146,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             var customer = await _customerService.GetCustomerByIdAsync(customerId)
                            ?? throw new Exception("Customer not found");
 
-            // 1️ Determine loyalty discount
+            // 1️⃣ Determine loyalty discount
             var loyaltyEntity = await _discountService.GetLoyaltyDiscountForVisitsAsync(customer.NumberOfVisists);
             Discount? loyaltyDiscount = null;
 
@@ -138,87 +156,76 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 {
                     Id = loyaltyEntity.Id,
                     Name = loyaltyEntity.Name,
-                    DiscountAmount = loyaltyEntity.DiscountAmount,
+                    TreatmentDiscount = loyaltyEntity.TreatmentDiscount,
+                    ProductDiscount = loyaltyEntity.ProductDiscount,
                     IsLoyalty = true,
                     AppliesToProduct = loyaltyEntity.AppliesToProduct,
                     AppliesToTreatment = loyaltyEntity.AppliesToTreatment
                 };
             }
 
-            // 2️ Build VALID discount list (Loyalty OR Active Campaigns)
-            var validDiscounts = new List<Discount>();
-            var today = DateTime.Today;
-
-            foreach (var discount in allDiscounts)
+            // 2️⃣ Build list of valid campaign discounts
+            var validCampaignDiscounts = new List<Discount>();
+            foreach (var discount in allDiscounts.Where(d => !d.IsLoyalty))
             {
-                if (discount.IsLoyalty)
-                {
-                    // Loyalty handled separately above, ignore here
-                    continue;
-                }
-
-                // Lookup campaign tied to this discount ID
                 var campaign = await _discountService.GetCampaignByDiscountIdAsync(discount.Id);
-
                 if (campaign != null && campaign.CheckTime())
                 {
-                    // Campaign is currently active → discount valid
-                    validDiscounts.Add(discount);
+                    validCampaignDiscounts.Add(discount);
                 }
             }
 
-            // Note: loyalty discount is not added here so we can compare per-item later
-
-            // 3️ Apply best discount per item
-
-            Discount? bestProductDiscount = null;
-            Discount? bestTreatmentDiscount = null;
-
             decimal finalTotal = 0;
+            Discount? appliedDiscountForHeader = null;
 
+            // 3️⃣ Calculate potential savings per discount
+            var discountSavingsMap = new Dictionary<Discount, decimal>();
+
+            foreach (var discount in validCampaignDiscounts.Concat(loyaltyDiscount != null ? new[] { loyaltyDiscount } : Array.Empty<Discount>()))
+            {
+                decimal totalSavings = 0;
+
+                foreach (var product in products)
+                {
+                    bool isTreatment = product is Treatment;
+
+                    // Skip if discount doesn’t apply
+                    bool applies = (isTreatment && discount.AppliesToTreatment) || (!isTreatment && discount.AppliesToProduct);
+                    if (!applies) continue;
+
+                    totalSavings += product.Price * discount.GetDiscountAmountFor(product);
+                }
+
+                discountSavingsMap[discount] = totalSavings;
+            }
+
+            // 4️⃣ Pick discount with max flat money saved
+            Discount? bestDiscount = discountSavingsMap
+                .OrderByDescending(kvp => kvp.Value)
+                .Select(kvp => kvp.Key)
+                .FirstOrDefault();
+
+            // 5️⃣ Apply this single best discount per item
             foreach (var product in products)
             {
                 bool isTreatment = product is Treatment;
 
-                // Only active (validCampaign) non-loyalty discounts
-                var applicableDiscounts = validDiscounts
-                    .Where(d =>
-                        (isTreatment && d.AppliesToTreatment) ||
-                        (!isTreatment && d.AppliesToProduct))
-                    .OrderByDescending(d => d.DiscountAmount)
-                    .ToList();
-
-                var bestRegular = applicableDiscounts.FirstOrDefault();
-
-                if (!isTreatment)
-                    bestProductDiscount ??= bestRegular;
-                else
-                    bestTreatmentDiscount ??= bestRegular;
-
-                // Loyalty per-item applicability
-                Discount? loyaltyForItem = null;
-                if (loyaltyDiscount != null)
-                {
-                    bool applies =
-                        (isTreatment && loyaltyDiscount.AppliesToTreatment) ||
-                        (!isTreatment && loyaltyDiscount.AppliesToProduct);
-
-                    if (applies)
-                        loyaltyForItem = loyaltyDiscount;
-                }
-
-                // Pick strongest
-                Discount? finalItemDiscount = null;
-                if (bestRegular != null && loyaltyForItem != null)
-                    finalItemDiscount = bestRegular.DiscountAmount >= loyaltyForItem.DiscountAmount
-                        ? bestRegular
-                        : loyaltyForItem;
-                else
-                    finalItemDiscount = bestRegular ?? loyaltyForItem;
-
                 decimal finalPrice = product.Price;
-                if (finalItemDiscount != null)
-                    finalPrice = finalPrice * (1 - finalItemDiscount.DiscountAmount);
+                decimal discountAmount = 0;
+                string discountName = string.Empty;
+                bool isLoyaltyApplied = false;
+
+                if (bestDiscount != null)
+                {
+                    bool applies = (isTreatment && bestDiscount.AppliesToTreatment) || (!isTreatment && bestDiscount.AppliesToProduct);
+                    if (applies)
+                    {
+                        discountAmount = bestDiscount.GetDiscountAmountFor(product);
+                        finalPrice = product.Price * (1 - discountAmount);
+                        discountName = bestDiscount.Name ?? "";
+                        isLoyaltyApplied = bestDiscount.IsLoyalty;
+                    }
+                }
 
                 finalTotal += finalPrice;
 
@@ -228,17 +235,18 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     ProductName = product.Name ?? "",
                     OriginalPrice = product.Price,
                     FinalPrice = finalPrice,
-                    DiscountAmount = finalItemDiscount?.DiscountAmount ?? 0,
-                    DiscountName = finalItemDiscount?.Name,
-                    IsLoyalty = finalItemDiscount?.IsLoyalty ?? false
+                    DiscountAmount = discountAmount,
+                    DiscountName = discountName,
+                    IsLoyalty = isLoyaltyApplied
                 });
             }
 
-            // This is only for the order header (same behavior as before)
-            Discount? appliedDiscount = bestProductDiscount ?? bestTreatmentDiscount;
+            appliedDiscountForHeader = bestDiscount;
 
-            return (originalTotal, appliedDiscount, loyaltyDiscount, finalTotal, itemDiscounts);
+            return (originalTotal, appliedDiscountForHeader, loyaltyDiscount, finalTotal, itemDiscounts);
         }
+
+
 
         //public async Task AddOrderLineAsync(OrderLine orderLine)
         //{

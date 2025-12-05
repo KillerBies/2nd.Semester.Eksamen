@@ -1,6 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
-using _2nd.Semester.Eksamen.Application.Services.BookingServices;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
@@ -50,9 +49,8 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                     return;
                 }
 
-                // Use helper to get all products/treatments
-                var allItems = FlattenBookingItems(booking);
-                products = allItems.Select(x => x.product).Distinct().ToList();
+                // Fetch all products from the booking (treatments + attached products)
+                products = GetProductsFromBooking(booking);
 
                 if (!products.Any())
                 {
@@ -60,13 +58,19 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                     return;
                 }
 
+                // Get discounts per item
                 (originalTotal, bestDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
                     await OrderService.CalculateBestDiscountsPerItemAsync(customer.Id, products);
 
-                appliedDiscount = (loyaltyDiscount != null &&
-                                   loyaltyDiscount.DiscountAmount > (bestDiscount?.DiscountAmount ?? 0))
-                                   ? loyaltyDiscount
-                                   : bestDiscount;
+                // SLAY: Compare max of treatment/product discount instead of DiscountAmount
+                decimal loyaltyValue = loyaltyDiscount != null
+                    ? Math.Max(loyaltyDiscount.TreatmentDiscount, loyaltyDiscount.ProductDiscount)
+                    : 0;
+                decimal bestValue = bestDiscount != null
+                    ? Math.Max(bestDiscount.TreatmentDiscount, bestDiscount.ProductDiscount)
+                    : 0;
+
+                appliedDiscount = (loyaltyValue > bestValue) ? loyaltyDiscount : bestDiscount;
             }
             catch (Exception ex)
             {
@@ -77,9 +81,6 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                 isLoading = false;
             }
         }
-
-
-
 
         private async Task FinalizePaymentAsync()
         {
@@ -100,21 +101,22 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
                 var order = await OrderService.CreateOrUpdateOrderForBookingAsync(booking.Id);
 
+                // Use flattened product IDs for order lines
                 var allItems = FlattenBookingItems(booking);
 
-                foreach (var (product, quantity) in allItems)
+                foreach (var (productId, quantity) in allItems)
                 {
-                    // Use IDs only to avoid EF trying to insert Order or Product again
                     var orderLine = new OrderLine
                     {
                         OrderID = order.Id,
-                        ProductId = product.Id,
+                        ProductId = productId, // ONLY use the ID
                         NumberOfProducts = quantity
                     };
 
                     await OrderLineService.AddOrderLineAsync(orderLine);
                 }
 
+                // Add visit and update loyalty discount
                 customer.AddVisit();
 
                 if (loyaltyDiscount != null)
@@ -125,6 +127,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
                 await CustomerService.UpdateAsync(customer);
 
+                // Mark booking as completed
                 booking.Status = BookingStatus.Completed;
                 await CustomerService.UpdateBookingAsync(booking);
 
@@ -142,25 +145,23 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
             }
         }
 
-
-        private List<(Product product, int quantity)> FlattenBookingItems(Booking booking)
+        private List<(int productId, int quantity)> FlattenBookingItems(Booking booking)
         {
-            var allItems = new List<(Product product, int quantity)>();
+            var allItems = new List<(int productId, int quantity)>();
 
-            // Treatments + their attached products
             if (booking.Treatments != null)
             {
                 foreach (var tb in booking.Treatments)
                 {
                     if (tb.Treatment != null)
-                        allItems.Add((tb.Treatment, 1)); // currently sets all items to be 1 in quantity
+                        allItems.Add((tb.Treatment.Id, 1));
 
                     if (tb.TreatmentBookingProducts != null)
                     {
                         foreach (var tbp in tb.TreatmentBookingProducts)
                         {
                             if (tbp.Product != null)
-                                allItems.Add((tbp.Product, tbp.NumberOfProducts));
+                                allItems.Add((tbp.Product.Id, tbp.NumberOfProducts));
                         }
                     }
                 }
@@ -169,7 +170,29 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
             return allItems;
         }
 
+        private List<Product> GetProductsFromBooking(Booking booking)
+        {
+            var products = new List<Product>();
 
+            if (booking.Treatments != null)
+            {
+                foreach (var tb in booking.Treatments)
+                {
+                    if (tb.Treatment != null)
+                        products.Add(tb.Treatment);
 
+                    if (tb.TreatmentBookingProducts != null)
+                    {
+                        foreach (var tbp in tb.TreatmentBookingProducts)
+                        {
+                            if (tbp.Product != null)
+                                products.Add(tbp.Product);
+                        }
+                    }
+                }
+            }
+
+            return products.Distinct().ToList();
+        }
     }
 }

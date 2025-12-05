@@ -10,17 +10,17 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
         public DateTime End { get; set; }
         public string Description { get; set; } = string.Empty;
 
-        // Which products/treatments this campaign affects
         public List<Product> ProductsInCampaign { get; set; } = new List<Product>();
 
         public Campaign() { }
 
-        public Campaign(string name, decimal discountAmount, DateTime start, DateTime end)
-            : base(name, discountAmount)
+        public Campaign(string name, decimal treatmentDiscount, decimal productDiscount, DateTime start, DateTime end)
+            : base(name, treatmentDiscount, productDiscount)
         {
             Start = start;
             End = end;
         }
+
 
         public bool TryAddProductToCampaign(Product product)
         {
@@ -37,50 +37,44 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
             return DateTime.Now >= Start && DateTime.Now <= End;
         }
 
-        public bool CheckProduct(int productId)
+        public bool CheckProduct(Product product)
         {
-            return ProductsInCampaign.Any(p => p.Id == productId);
-        }
-
-        public bool CheckTreatment(int treatmentId)
-        {
-            return ProductsInCampaign.Any(p => p.Id == treatmentId);
+            return ProductsInCampaign.Any(p => p.Id == product.Id);
         }
 
         public DiscountResult GetOrderDiscount(Order order, Booking booking)
         {
-            if (!CheckTime()) // Only active campaigns
+            if (!CheckTime())
                 return new DiscountResult(false, 0, this);
 
-            decimal discountedPrice = 0;
+            decimal totalDiscount = 0;
 
-            // 1️⃣ Normal products in the order
+            // 1️ Normal order products
             foreach (var line in order.Products)
             {
-                if (CheckProduct(line.LineProduct))
+                var product = line.LineProduct;
+
+                if (CheckProduct(product))
                 {
-                    discountedPrice += (line.LineProduct.Price * line.NumberOfProducts) * DiscountAmount;
+                    decimal discountAmount = GetDiscountForProduct(product);
+                    totalDiscount += discountAmount * line.NumberOfProducts;
                 }
             }
 
-            // 2️⃣ Treatments in the booking
+            // 2️ Treatments in the booking
             foreach (var treatmentBooking in booking.Treatments)
             {
-                if (CheckProduct(treatmentBooking.Treatment))
+                var treatment = treatmentBooking.Treatment;
+
+                if (CheckProduct(treatment))
                 {
-                    discountedPrice += treatmentBooking.Treatment.Price * DiscountAmount;
+                    decimal discountAmount = GetDiscountForProduct(treatment);
+                    totalDiscount += discountAmount;
                 }
 
-                // Optional: if you want to include ProductsUsed in treatments
-                foreach (var tbp in treatmentBooking.TreatmentBookingProducts)
-                {
-                    if (CheckProduct(tbp.Product))
-                        discountedPrice += tbp.Product.Price * DiscountAmount;
-                }
             }
 
-            return new DiscountResult(true, discountedPrice, this);
+            return new DiscountResult(true, totalDiscount, this);
         }
-
     }
 }

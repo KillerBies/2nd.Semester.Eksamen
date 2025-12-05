@@ -9,18 +9,19 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
         public string DiscountType { get; set; } = string.Empty;
         public int MinimumVisits { get; set; }
 
-        public LoyaltyDiscount(int minimumVisits, string discountType, string name, decimal discountamount) : base(name, discountamount)
+        public LoyaltyDiscount(
+            int minimumVisits, string discountType, string name, decimal treatmentDiscount, decimal productDiscount)
+            : base(name, treatmentDiscount, productDiscount)
         {
             MinimumVisits = minimumVisits;
             DiscountType = discountType;
+            IsLoyalty = true;
         }
         public LoyaltyDiscount() { }
 
         public bool CheckCustomer(Customer customer)
         {
-            if (customer.BookingHistory.Count() >= MinimumVisits)
-                return true;
-            return false;
+            return customer.BookingHistory.Count() >= MinimumVisits;
         }
     }
 }
