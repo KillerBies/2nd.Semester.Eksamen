@@ -22,11 +22,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         public async Task CreateNewBookingAsync(Booking booking)
         {
             var _context = await _factory.CreateDbContextAsync();
-            //DEBUG
-            var tracked = _context.ChangeTracker.Entries()
-    .Select(e => new { Entity = e.Entity.GetType().Name, e.State })
-    .ToList();
-            //DEBUG END
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {

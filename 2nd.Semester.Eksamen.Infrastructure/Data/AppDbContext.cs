@@ -46,7 +46,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Address> Adresses { get; set; }
-
+        
         //Discount data
         public DbSet<PunchCard> PunchCards { get; set; }
         public DbSet<LoyaltyDiscount> LoyaltyDiscounts { get; set; }
@@ -57,6 +57,25 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         public DbSet<EmployeeSchedule> EmployeeSchedules { get; set; }
         public DbSet<ScheduleDay> ScheduleDays { get; set; }
         public DbSet<TimeRange> TimeRanges { get; set; }
+
+        //Snapshots
+        public DbSet<OrderSnapshot> OrderSnapshots { get; set; }
+        public DbSet<AddressSnapshot> AddressSnapshots { get; set; }
+        public DbSet<AppliedDiscountSnapshot> AppliedDiscountSnapshots { get; set; }
+        public DbSet<BookingSnapshot> BookingsSnapshots { get; set; }
+        public DbSet<CustomerSnapshot> CustomerSnapshots { get; set; }
+        public DbSet<OrderLineSnapshot> OrderLinesSnapshots { get; set; }
+        public DbSet<ProductSnapshot> ProductSnapshots { get; set; }
+        public DbSet<TreatmentSnapshot> TreatmentSnapshots { get; set; }
+
+
+
+
+
+
+
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -194,6 +213,55 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<Discount>()
                 .Property(d => d.TreatmentDiscount)
                 .HasPrecision(18, 2);
+
+            //SNAPSHOTS
+            modelBuilder.Entity<CustomerSnapshot>().UseTphMappingStrategy();
+            modelBuilder.Entity<ProductSnapshot>().UseTphMappingStrategy();
+            
+            modelBuilder.Entity<OrderSnapshot>()
+            .HasMany(o => o.OrderLinesSnapshot)
+            .WithOne(ol => ol.OrderSnapshot)
+            .HasForeignKey(ol => ol.OrderSnapshotId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<OrderSnapshot>()
+                .HasOne(o => o.BookingSnapshot)
+                .WithOne(b => b.OrderSnapshot)
+                .HasForeignKey<BookingSnapshot>(b => b.OrderSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<OrderSnapshot>()
+                .HasOne(o => o.AppliedDiscountSnapshot)
+                .WithOne(ad => ad.OrderSnapshot)
+                .HasForeignKey<AppliedDiscountSnapshot>(ad => ad.OrderSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BookingSnapshot>()
+                .HasMany(b => b.TreatmentSnapshot)
+                .WithOne(t => t.BookingSnapshot)
+                .HasForeignKey(t => t.BookingSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BookingSnapshot>()
+                .HasOne(b => b.CustomerSnapshot)
+                .WithOne(c => c.BookingSnapshot)
+                .HasForeignKey<CustomerSnapshot>(c => c.BookingSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<CustomerSnapshot>()
+                .HasOne(c => c.AddressSnapshot)
+                .WithOne(a => a.CustomerSnapshot)
+                .HasForeignKey<AddressSnapshot>(a => a.CustomerSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<OrderLineSnapshot>()
+                .HasOne(ol => ol.ProductSnapshot)
+                .WithOne(p => p.OrderLineSnapshot)
+                .HasForeignKey<ProductSnapshot>(p => p.OrderLineSnapshotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
+
 
             base.OnModelCreating(modelBuilder);
         }

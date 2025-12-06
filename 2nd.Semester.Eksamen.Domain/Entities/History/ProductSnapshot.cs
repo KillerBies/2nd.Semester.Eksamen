@@ -7,20 +7,26 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
-    public class ProductSnapshot : BaseEntity
+    public record ProductSnapshot : BaseSnapshot
     {
         //Products sold or used
-        public string Name { get; private set; } = string.Empty;
-        public decimal PricePerUnit { get; private set; }
-        public int? NumberSold { get; set; }
+        public string Name { get;   set; } = string.Empty;
+        public decimal PricePerUnit { get;   set; }
+        public decimal DiscountedPrice { get;   set; }
+        public int? TreatmentSnapshotId { get; set; }
+        public TreatmentSnapshot? TreatmentSnapshot { get; set; }
+        public int? OrderLineSnapshotId { get; set; }
+        public OrderLineSnapshot? OrderLineSnapshot { get; set; }
 
-        public ProductSnapshot() { }
-        public ProductSnapshot(Product product, int numberSold)
+
+        protected ProductSnapshot() { }
+        public ProductSnapshot(Product product)
         {
             Name = product.Name;
             PricePerUnit = product.Price;
-            NumberSold = numberSold;
+            DiscountedPrice = product.DiscountedPrice;
         }
 
     }
+
 }
