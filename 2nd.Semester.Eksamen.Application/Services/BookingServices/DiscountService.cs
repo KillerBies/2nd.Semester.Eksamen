@@ -35,12 +35,6 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
         }
 
-        public async Task<List<LoyaltyDiscount>> GetAllLoyaltyDiscountsAsync()
-        {
-            return (await _repo.GetLoyaltyDiscountsAsync()).ToList();
-        }
-
-
         // Get the products by ID from the DB
         public async Task<List<Product>> GetProductsByIdsAsync(List<int> ids)
         {

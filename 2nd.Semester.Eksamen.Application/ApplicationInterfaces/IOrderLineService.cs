@@ -10,8 +10,8 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
     public interface IOrderLineService
     {
         Task AddOrderLineAsync(OrderLine orderLine);
-        Task<List<OrderLine>> GetOrderLinesByOrderIdAsync(int orderId);
-        Task UpdateOrderLineAsync(OrderLine orderLine);
-        Task DeleteOrderLineAsync(OrderLine orderLine);
+        Task<List<OrderLine>> GetOrderLinesByOrderIdAsync(int orderId); // Not Implemented (very much a placeholder)
+        Task UpdateOrderLineAsync(OrderLine orderLine); // Not Implemented (very much a placeholder)
+        Task DeleteOrderLineAsync(OrderLine orderLine); // Not Implemented (very much a placeholder)
     }
 }

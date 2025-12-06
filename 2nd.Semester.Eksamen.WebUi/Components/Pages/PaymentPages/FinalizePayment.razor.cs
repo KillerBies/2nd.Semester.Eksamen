@@ -49,7 +49,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                     return;
                 }
 
-                // Flatten booking items
+                // Flatten booking items, formatting it so it gives a list of product and quantity
                 var allItems = FlattenBookingItems(booking);
                 products = allItems.Select(x => x.product).Distinct().ToList();
 
@@ -63,7 +63,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                 (originalTotal, bestDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
                     await OrderService.CalculateBestDiscountsPerItemAsync(customer.Id, products);
 
-                // Fix: compare best discount using actual discount amounts
+                // compare best discount using actual discount amounts
                 decimal bestDiscountAmount = bestDiscount != null
                     ? itemDiscounts.Where(i => i.DiscountName == bestDiscount.Name).Sum(i => i.DiscountAmount)
                     : 0;
@@ -103,7 +103,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                     return;
                 }
 
-                // ✅ Let OrderService handle creating/updating order & order lines
+                // Let OrderService handle creating/updating order & order lines
                 var order = await OrderService.CreateOrUpdateOrderForBookingAsync(booking.Id);
 
                 customer.AddVisit();

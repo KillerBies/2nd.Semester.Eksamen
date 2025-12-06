@@ -12,7 +12,6 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
     public interface IDiscountService
     {
         Task<List<Discount>> GetAllDiscountsAsync();
-        Task<List<LoyaltyDiscount>> GetAllLoyaltyDiscountsAsync();
         Task<Campaign?> GetCampaignByDiscountIdAsync(int discountId);
         Task<LoyaltyDiscount?> GetLoyaltyDiscountForVisitsAsync(int numberOfVisits);
 

@@ -123,7 +123,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             var customer = await _customerService.GetCustomerByIdAsync(customerId)
                            ?? throw new Exception("Customer not found");
 
-            // 1️⃣ Determine loyalty discount
+            // 1️ Determine loyalty discount
             var loyaltyEntity = await _discountService.GetLoyaltyDiscountForVisitsAsync(customer.NumberOfVisists);
             Discount? loyaltyDiscount = null;
 
@@ -141,7 +141,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 };
             }
 
-            // 2️⃣ Build list of valid campaign discounts
+            // 2️ Build list of valid campaign discounts
             var validCampaignDiscounts = new List<Discount>();
             foreach (var discount in allDiscounts.Where(d => !d.IsLoyalty))
             {
@@ -152,7 +152,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 }
             }
 
-            // 3️⃣ Parallel calculation
+            // 3️ Parallel calculation
             var discountsToCheck = validCampaignDiscounts.Concat(loyaltyDiscount != null ? new[] { loyaltyDiscount } : Array.Empty<Discount>()).ToList();
             var discountResult = new DiscountResult();
 
@@ -176,7 +176,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             var bestDiscount = discountResult.Discount;
             decimal finalTotal = 0;
 
-            // 4️⃣ Apply the best discount to each product
+            // 4️ Apply the best discount to each product
             foreach (var product in products)
             {
                 bool isTreatment = product is Treatment;
