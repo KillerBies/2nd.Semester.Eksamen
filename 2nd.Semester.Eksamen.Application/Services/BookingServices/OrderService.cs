@@ -6,30 +6,28 @@ using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using System.Linq;
+using _2nd.Semester.Eksamen.Application.Helpers;
+using System.Collections.Concurrent;
+using DiscountResult = _2nd.Semester.Eksamen.Application.Helpers.DiscountResult; // Fixes problem with it trying to take Domain.Helpers instead
+
 
 namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 {
     public class OrderService : IOrderService
     {
-        private readonly IProductService _productService;
         private readonly IDiscountService _discountService;
         private readonly ICustomerService _customerService;
         private readonly IOrderLineService _orderLineService;
 
         public OrderService(
-            IProductService productService,
             IDiscountService discountService,
             ICustomerService customerService,
             IOrderLineService orderLineService)
         {
-            _productService = productService;
             _discountService = discountService;
             _customerService = customerService;
             _orderLineService = orderLineService;
         }
-
-        public Task<List<Product>> GetProductsByIdsAsync(List<int> productIds)
-            => _productService.GetProductsByIdsAsync(productIds);
 
         public async Task<Order> CreateOrUpdateOrderForBookingAsync(int bookingId)
         {
@@ -108,34 +106,17 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             return order;
         }
 
-
-
-
-        public async Task<(decimal originalTotal,
-                           Discount? appliedDiscount,
-                           Discount? loyaltyDiscount,
-                           decimal finalTotal)>
-            CalculateBestDiscountsAsync(int customerId, List<Product> products)
-        {
-            var result = await CalculateBestDiscountsPerItemAsync(customerId, products);
-
-            return (result.originalTotal,
-                    result.appliedDiscount,
-                    result.loyaltyDiscount,
-                    result.finalTotal);
-        }
-
         public async Task<(decimal originalTotal,
                            Discount? appliedDiscount,
                            Discount? loyaltyDiscount,
                            decimal finalTotal,
-                           List<ProductDiscountInfo> itemDiscounts)>
+                           List<ProductDiscountInfoDTO> itemDiscounts)>
             CalculateBestDiscountsPerItemAsync(int customerId, List<Product> products)
         {
             if (products == null || !products.Any())
                 throw new Exception("No products provided for discount calculation");
 
-            var itemDiscounts = new List<ProductDiscountInfo>();
+            var itemDiscounts = new List<ProductDiscountInfoDTO>();
             var originalTotal = products.Sum(p => p.Price);
 
             var allDiscounts = await _discountService.GetAllDiscountsAsync();
@@ -171,13 +152,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 }
             }
 
-            decimal finalTotal = 0;
-            Discount? appliedDiscountForHeader = null;
+            // 3️⃣ Parallel calculation
+            var discountsToCheck = validCampaignDiscounts.Concat(loyaltyDiscount != null ? new[] { loyaltyDiscount } : Array.Empty<Discount>()).ToList();
+            var discountResult = new DiscountResult();
 
-            // 3️⃣ Calculate potential savings per discount
-            var discountSavingsMap = new Dictionary<Discount, decimal>();
-
-            foreach (var discount in validCampaignDiscounts.Concat(loyaltyDiscount != null ? new[] { loyaltyDiscount } : Array.Empty<Discount>()))
+            await Parallel.ForEachAsync(discountsToCheck, async (discount, ct) =>
             {
                 decimal totalSavings = 0;
 
@@ -185,27 +164,22 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 {
                     bool isTreatment = product is Treatment;
 
-                    // Skip if discount doesn’t apply
                     bool applies = (isTreatment && discount.AppliesToTreatment) || (!isTreatment && discount.AppliesToProduct);
                     if (!applies) continue;
 
                     totalSavings += product.Price * discount.GetDiscountAmountFor(product);
                 }
 
-                discountSavingsMap[discount] = totalSavings;
-            }
+                discountResult.TryUpdate(totalSavings, discount);
+            });
 
-            // 4️⃣ Pick discount with max flat money saved
-            Discount? bestDiscount = discountSavingsMap
-                .OrderByDescending(kvp => kvp.Value)
-                .Select(kvp => kvp.Key)
-                .FirstOrDefault();
+            var bestDiscount = discountResult.Discount;
+            decimal finalTotal = 0;
 
-            // 5️⃣ Apply this single best discount per item
+            // 4️⃣ Apply the best discount to each product
             foreach (var product in products)
             {
                 bool isTreatment = product is Treatment;
-
                 decimal finalPrice = product.Price;
                 decimal discountAmount = 0;
                 string discountName = string.Empty;
@@ -225,7 +199,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
                 finalTotal += finalPrice;
 
-                itemDiscounts.Add(new ProductDiscountInfo
+                itemDiscounts.Add(new ProductDiscountInfoDTO
                 {
                     ProductId = product.Id,
                     ProductName = product.Name ?? "",
@@ -237,16 +211,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 });
             }
 
-            appliedDiscountForHeader = bestDiscount;
-
-            return (originalTotal, appliedDiscountForHeader, loyaltyDiscount, finalTotal, itemDiscounts);
-        }
-
-
-
-        public async Task AddOrderLineAsync(OrderLine orderLine)
-        {
-            await _orderLineService.AddOrderLineAsync(orderLine);
+            return (originalTotal, bestDiscount, loyaltyDiscount, finalTotal, itemDiscounts);
         }
 
 

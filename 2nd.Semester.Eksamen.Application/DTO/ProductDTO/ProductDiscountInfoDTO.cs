@@ -8,14 +8,7 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
 {
-    public class ProductDiscountResult
-    {
-        public Product Product { get; set; }
-        public decimal OriginalPrice { get; set; }
-        public Discount? AppliedDiscount { get; set; }
-        public decimal PriceAfterDiscount { get; set; }
-    }
-    public class ProductDiscountInfo
+    public class ProductDiscountInfoDTO
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;

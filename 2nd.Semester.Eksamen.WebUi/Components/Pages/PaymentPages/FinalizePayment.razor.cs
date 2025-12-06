@@ -27,7 +27,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
         private decimal finalTotal;
 
         // For Razor table
-        private List<ProductDiscountInfo> itemDiscounts = new();
+        private List<ProductDiscountInfoDTO> itemDiscounts = new();
 
         [Inject] private IOrderService OrderService { get; set; } = default!;
         [Inject] public ICustomerService CustomerService { get; set; } = default!;
@@ -108,11 +108,12 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
                 customer.AddVisit();
 
-                if (loyaltyDiscount != null)
+                if (appliedDiscount != null)
                 {
-                    loyaltyDiscount.NumberOfUses++;
-                    await CustomerService.UpdateDiscountAsync(loyaltyDiscount);
+                    appliedDiscount.NumberOfUses++;
+                    await CustomerService.UpdateDiscountAsync(appliedDiscount);
                 }
+
 
                 await CustomerService.UpdateAsync(customer);
 
