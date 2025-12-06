@@ -74,6 +74,7 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+
 // if your repositories and services are separate:
 builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
 builder.Services.AddScoped<ICompanyCustomerService, CompanyCustomerService>();
