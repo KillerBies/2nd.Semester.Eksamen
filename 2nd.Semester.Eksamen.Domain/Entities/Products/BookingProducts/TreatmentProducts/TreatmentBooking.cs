@@ -21,7 +21,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
         //Treatment info
         public int TreatmentId { get; set; }
         public Treatment Treatment { get; private set; } = null!;
-        public List<TreatmentBookingProduct> ProductsUsed { get; private set; } = new List<TreatmentBookingProduct>();
+        public List<TreatmentBookingProduct> TreatmentBookingProducts { get; private set; } = new List<TreatmentBookingProduct>();
 
 
         //Treatment booking details

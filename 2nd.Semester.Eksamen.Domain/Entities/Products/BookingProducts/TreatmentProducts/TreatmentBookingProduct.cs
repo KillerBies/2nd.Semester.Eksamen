@@ -10,6 +10,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
     {
         public int TreatmentBookingID { get; set; }
         public TreatmentBooking TreatmentBooking { get; set; } = null!;
+        public int ProductId { get; set; }
         public Product Product { get; set; } = null!;
         public int NumberOfProducts { get; set; }
         public TreatmentBookingProduct() { }

@@ -10,8 +10,19 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
     {
         public int OrderID { get; set; }
         public Order Order { get; set; } = null!;
+        public int ProductId { get; set; }
         public Product LineProduct { get; set; } = null!;
-        public int NumberOfProducts { get; set; }
+        public int NumberOfProducts { get; set; } = 1;
+
         public OrderLine() { }
+
+        public OrderLine(Order order, Product product, int quantity = 1)
+        {
+            Order = order;
+            OrderID = order.Id;
+            LineProduct = product;
+            ProductId = product.Id;
+            NumberOfProducts = quantity;
+        }
     }
 }

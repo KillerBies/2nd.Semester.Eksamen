@@ -54,5 +54,27 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 //Deletes customer
                 await _bookingRepository.CancelBookingAsync(booking);
         }
+
+        public async Task<Booking> GetByIdAsync(int id)
+        {
+            return await _bookingRepository.GetByIDAsync(id);
+        }
+
+        public async Task UpdateAsync(Booking booking)
+        {
+            await _bookingRepository.UpdateAsync(booking);
+        }
+
+        public async Task SetBookingStatusAsync(int bookingId, BookingStatus newStatus)
+        {
+            var booking = await _bookingRepository.GetByIDAsync(bookingId);
+
+            if (booking == null)
+                throw new KeyNotFoundException($"Booking with id {bookingId} not found");
+
+            booking.Status = newStatus;
+            await _bookingRepository.UpdateAsync(booking);
+        }
+
     }
 }

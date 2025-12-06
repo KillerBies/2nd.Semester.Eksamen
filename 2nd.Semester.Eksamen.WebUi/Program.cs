@@ -22,6 +22,10 @@ using _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.Book
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.EmployeeRepositories;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.CustomerRepositories;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
+using _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
+
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces;
 using QuestPDF.Infrastructure;
@@ -42,8 +46,8 @@ builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ITreatmentBookingRepository, TreatmentBookingRepository>();
 builder.Services.AddScoped<BookingFormService>();
-builder.Services.AddScoped<ICompanyCustomerService , CompanyCustomerService>();
-builder.Services.AddScoped<IPrivateCustomerService , PrivateCustomerService>();
+builder.Services.AddScoped<PrivateCustomerService>();
+builder.Services.AddScoped<CompanyCustomerService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<EmployeeSpecialtyService>();
 builder.Services.AddScoped<BookingApplicationService>();
@@ -61,6 +65,33 @@ builder.Services.AddScoped<Domain_to_DTO>();
 builder.Services.AddScoped<UpdateEmployeeCommand>();
 builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IDiscountService, DiscountService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
+// if your repositories and services are separate:
+builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
+builder.Services.AddScoped<ICompanyCustomerService, CompanyCustomerService>();
+builder.Services.AddScoped<IOrderLineRepository, OrderLineRepository>();
+
+// and register a default ICustomerService (pick one or create a composite)
+builder.Services.AddScoped<ICustomerService>(sp => sp.GetRequiredService<PrivateCustomerService>()); // or CustomerService
+
+
+// Then register services
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IDiscountService, DiscountService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IOrderLineService, OrderLineService>();
+
+
+
 builder.Services.AddScoped<ISnapshotRepository, SnapshotRepository>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IGenerateInvoice, GenerateInvoice>();

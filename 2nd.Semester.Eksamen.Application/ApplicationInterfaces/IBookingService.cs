@@ -12,5 +12,8 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
     {
         public Task<IEnumerable<Booking>> GetBookingsByFilterAsync(Filter filter);
         public Task DeleteBookingAsync(Booking booking);
+        public Task SetBookingStatusAsync(int bookingId, BookingStatus status);
+        public Task<Booking> GetByIdAsync(int bookingId);
+        public Task UpdateAsync(Booking booking);
     }
 }

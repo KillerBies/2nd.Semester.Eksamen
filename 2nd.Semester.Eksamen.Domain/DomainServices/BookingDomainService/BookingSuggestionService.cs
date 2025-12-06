@@ -41,7 +41,12 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
 
                 // First treatment to generate potential start times
                 var first = plan.First();
-                var firstDay = first.Schedule.GetOrCreateDay(currentDate, TimeOnly.FromTimeSpan(first.Employee.WorkStart), TimeOnly.FromTimeSpan(first.Employee.WorkEnd));
+                var schedule = first.Schedule ??= new EmployeeSchedule();
+                var firstDay = schedule.GetOrCreateDay(
+                    currentDate,
+                    TimeOnly.FromTimeSpan(first.Employee.WorkStart),
+                    TimeOnly.FromTimeSpan(first.Employee.WorkEnd)
+                );
 
                 var potentialStarts = new List<DateTime>();
                 System.Diagnostics.Debug.WriteLine($"foreach slot loop before start {firstDay == null}");

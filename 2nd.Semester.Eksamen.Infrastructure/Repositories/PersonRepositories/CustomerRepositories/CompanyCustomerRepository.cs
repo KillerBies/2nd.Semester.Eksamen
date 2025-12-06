@@ -1,5 +1,8 @@
 ﻿using _2nd.Semester.Eksamen.Domain;
+using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +24,35 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
         {
             _factory = factory;
         }
-        public async Task<Customer?> GetByIDAsync(int id)
+
+        public async Task<CompanyCustomer?> GetByIDAsync(int id)
         {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.CompanyCustomers.FindAsync(id);
+            using var context = _factory.CreateDbContext();
+            return await context.CompanyCustomers
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
+
+
+        public async Task<CompanyCustomer?> GetCustomerByIdAsync(int id)
+        {
+            using var context = _factory.CreateDbContext();
+            return await context.CompanyCustomers
+                .FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task AddOrderAsync(Order order)
+        {
+            using var context = _factory.CreateDbContext();
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+        }
+        public async Task<Order?> GetOrderByBookingIdAsync(int bookingId)
+        {
+            using var context = _factory.CreateDbContext();
+            return await context.Orders
+                .FirstOrDefaultAsync(o => o.BookingId == bookingId);
+        }
+
         public async Task<IEnumerable<Customer?>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
@@ -66,39 +93,65 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             var _context = await _factory.CreateDbContextAsync();
             return await _context.CompanyCustomers.AnyAsync(c => c.PhoneNumber == phone);
         }
-        public async Task UpdateAsync(CompanyCustomer Customer)
+        public async Task UpdateAsync(CompanyCustomer customer)
         {
-            var _context = await _factory.CreateDbContextAsync();
-            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
-            try
-            {
-                _context.CompanyCustomers.Update(Customer);
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-            }
-            catch (Exception)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
-        public async Task DeleteAsync(CompanyCustomer Customer)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
-            try
-            {
-                _context.CompanyCustomers.Remove(Customer);
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-            }
-            catch (Exception)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            using var context = _factory.CreateDbContext();
+            context.CompanyCustomers.Update(customer);
+            await context.SaveChangesAsync();
         }
 
+        public async Task DeleteAsync(CompanyCustomer customer)
+        {
+            using var context = _factory.CreateDbContext();
+            context.CompanyCustomers.Remove(customer);
+            await context.SaveChangesAsync();
+        }
+
+
+
+        // BOOKINGS
+        public async Task<Booking?> GetBookingWithTreatmentsAndTreatmentAsync(int bookingId)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings
+                .Include(b => b.Treatments)
+                    .ThenInclude(tb => tb.Treatment)
+                .Include(b => b.Customer)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+        }
+
+        // UPDATE ORDERS
+        public async Task UpdateOrderAsync(Order order)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Booking?> GetNextPendingBookingAsync(int customerId)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings
+                .Include(b => b.Treatments)
+                    .ThenInclude(tb => tb.Treatment)
+                .Where(b => b.Customer.Id == customerId && b.Status == BookingStatus.Pending)
+                .OrderBy(b => b.Start)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateBookingAsync(Booking booking)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            _context.Bookings.Update(booking);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateDiscountAsync(Discount discount)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            _context.Discounts.Update(discount);
+            await _context.SaveChangesAsync();
+        }
 
     }
 }
