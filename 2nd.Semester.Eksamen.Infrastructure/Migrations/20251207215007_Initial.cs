@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,6 +44,22 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Discount", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderSnapshots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    DateOfPayment = table.Column<DateOnly>(type: "date", nullable: false),
+                    TotalAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    PdfInvoice = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderSnapshots", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -147,6 +163,65 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppliedDiscountSnapshots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    TreatmentDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    OrderSnapshotId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppliedDiscountSnapshots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppliedDiscountSnapshots_OrderSnapshots_OrderSnapshotId",
+                        column: x => x.OrderSnapshotId,
+                        principalTable: "OrderSnapshots",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookingsSnapshots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerSnapshotId = table.Column<int>(type: "int", nullable: false),
+                    OrderSnapshotId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingsSnapshots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BookingsSnapshots_OrderSnapshots_OrderSnapshotId",
+                        column: x => x.OrderSnapshotId,
+                        principalTable: "OrderSnapshots",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderLinesSnapshots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderSnapshotId = table.Column<int>(type: "int", nullable: false),
+                    NumberOfProducts = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderLinesSnapshots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderLinesSnapshots_OrderSnapshots_OrderSnapshotId",
+                        column: x => x.OrderSnapshotId,
+                        principalTable: "OrderSnapshots",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Bookings",
                 columns: table => new
                 {
@@ -196,6 +271,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DiscountedPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CampaignId = table.Column<int>(type: "int", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     RequiredSpecialties = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -209,6 +285,61 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         name: "FK_Products_Campaigns_CampaignId",
                         column: x => x.CampaignId,
                         principalTable: "Campaigns",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerSnapshots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BookingSnapshotId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerSnapshots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerSnapshots_BookingsSnapshots_BookingSnapshotId",
+                        column: x => x.BookingSnapshotId,
+                        principalTable: "BookingsSnapshots",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductSnapshots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PricePerUnit = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DiscountedPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TreatmentSnapshotId = table.Column<int>(type: "int", nullable: true),
+                    OrderLineSnapshotId = table.Column<int>(type: "int", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BookingSnapshotId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductSnapshots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductSnapshots_BookingsSnapshots_BookingSnapshotId",
+                        column: x => x.BookingSnapshotId,
+                        principalTable: "BookingsSnapshots",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductSnapshots_OrderLinesSnapshots_OrderLineSnapshotId",
+                        column: x => x.OrderLineSnapshotId,
+                        principalTable: "OrderLinesSnapshots",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductSnapshots_ProductSnapshots_TreatmentSnapshotId",
+                        column: x => x.TreatmentSnapshotId,
+                        principalTable: "ProductSnapshots",
                         principalColumn: "Id");
                 });
 
@@ -315,6 +446,28 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AddressSnapshots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerSnapshotId = table.Column<int>(type: "int", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StreetName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HouseNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AddressSnapshots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AddressSnapshots_CustomerSnapshots_CustomerSnapshotId",
+                        column: x => x.CustomerSnapshotId,
+                        principalTable: "CustomerSnapshots",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderLines",
                 columns: table => new
                 {
@@ -390,6 +543,19 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AddressSnapshots_CustomerSnapshotId",
+                table: "AddressSnapshots",
+                column: "CustomerSnapshotId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppliedDiscountSnapshots_OrderSnapshotId",
+                table: "AppliedDiscountSnapshots",
+                column: "OrderSnapshotId",
+                unique: true,
+                filter: "[OrderSnapshotId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BookedTreatments_BookingID",
                 table: "BookedTreatments",
                 column: "BookingID");
@@ -410,9 +576,22 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookingsSnapshots_OrderSnapshotId",
+                table: "BookingsSnapshots",
+                column: "OrderSnapshotId",
+                unique: true,
+                filter: "[OrderSnapshotId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Customers_AddressId",
                 table: "Customers",
                 column: "AddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerSnapshots_BookingSnapshotId",
+                table: "CustomerSnapshots",
+                column: "BookingSnapshotId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_AddressId",
@@ -437,6 +616,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderLinesSnapshots_OrderSnapshotId",
+                table: "OrderLinesSnapshots",
+                column: "OrderSnapshotId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_BookingId",
                 table: "Orders",
                 column: "BookingId",
@@ -446,6 +630,23 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 name: "IX_Products_CampaignId",
                 table: "Products",
                 column: "CampaignId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductSnapshots_BookingSnapshotId",
+                table: "ProductSnapshots",
+                column: "BookingSnapshotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductSnapshots_OrderLineSnapshotId",
+                table: "ProductSnapshots",
+                column: "OrderLineSnapshotId",
+                unique: true,
+                filter: "[OrderLineSnapshotId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductSnapshots_TreatmentSnapshotId",
+                table: "ProductSnapshots",
+                column: "TreatmentSnapshotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PunchCards_CustomerId",
@@ -482,10 +683,19 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AddressSnapshots");
+
+            migrationBuilder.DropTable(
+                name: "AppliedDiscountSnapshots");
+
+            migrationBuilder.DropTable(
                 name: "LoyaltyDiscounts");
 
             migrationBuilder.DropTable(
                 name: "OrderLines");
+
+            migrationBuilder.DropTable(
+                name: "ProductSnapshots");
 
             migrationBuilder.DropTable(
                 name: "PunchCards");
@@ -497,13 +707,22 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 name: "TreatmentBookingProducts");
 
             migrationBuilder.DropTable(
+                name: "CustomerSnapshots");
+
+            migrationBuilder.DropTable(
                 name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "OrderLinesSnapshots");
 
             migrationBuilder.DropTable(
                 name: "ScheduleDays");
 
             migrationBuilder.DropTable(
                 name: "BookedTreatments");
+
+            migrationBuilder.DropTable(
+                name: "BookingsSnapshots");
 
             migrationBuilder.DropTable(
                 name: "EmployeeSchedules");
@@ -513,6 +732,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "OrderSnapshots");
 
             migrationBuilder.DropTable(
                 name: "Employees");

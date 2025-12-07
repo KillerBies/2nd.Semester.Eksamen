@@ -134,7 +134,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
                 // An order belongs to one booking
                 entity.HasOne(o => o.Booking)
-                      .WithOne()
+                      .WithOne(b => b.Order)
                       .HasForeignKey<Order>(o => o.BookingId)
                       .OnDelete(DeleteBehavior.NoAction);
 

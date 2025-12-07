@@ -5,6 +5,8 @@ using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
+
 using System.Linq;
 using _2nd.Semester.Eksamen.Application.Helpers;
 using System.Collections.Concurrent;
@@ -18,15 +20,21 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         private readonly IDiscountService _discountService;
         private readonly ICustomerService _customerService;
         private readonly IOrderLineService _orderLineService;
-
+        private readonly IInvoiceService _invoiceService;
+        private readonly IBookingRepository _bookingRepository;
         public OrderService(
             IDiscountService discountService,
             ICustomerService customerService,
-            IOrderLineService orderLineService)
+            IOrderLineService orderLineService,
+            IInvoiceService invoiceService,
+            IBookingRepository bookingRepository)
         {
             _discountService = discountService;
             _customerService = customerService;
             _orderLineService = orderLineService;
+            _invoiceService = invoiceService;
+            _bookingRepository = bookingRepository;
+            
         }
 
         public async Task<Order> CreateOrUpdateOrderForBookingAsync(int bookingId)
@@ -75,7 +83,12 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 // Create new order
                 order = new Order(bookingId, originalTotal, finalTotal, appliedDiscount?.Id ?? 0);
                 await _customerService.AddOrderAsync(order);
-            }
+                
+                //ONLY A TEST TO SEE IF CREATING SNAPSHOT WORKS!!!!!!!!
+                await _invoiceService.CreateSnapshotInDBAsync(order);
+
+
+            }       
             else
             {
                 // Update existing order totals

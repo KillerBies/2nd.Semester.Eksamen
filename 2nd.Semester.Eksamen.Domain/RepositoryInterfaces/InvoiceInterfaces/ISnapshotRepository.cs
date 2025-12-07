@@ -13,7 +13,9 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces
         public  Task CreateNewAsync(OrderSnapshot orderSnapshot);
 
         public Task<List<OrderSnapshot>>? GetAllOrderSnapshotsAsync();
-
+        public Task<OrderSnapshot?> GetByIdAsync(int id);
+        
+      
 
 
 

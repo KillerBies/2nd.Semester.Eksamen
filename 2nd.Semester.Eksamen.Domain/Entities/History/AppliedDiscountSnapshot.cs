@@ -9,16 +9,19 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record AppliedDiscountSnapshot : BaseSnapshot
     {
-        public string Name { get; private set; }
-        public decimal DiscountAmount { get; private set; }
-        public int OrderSnapshotId { get; set; }
+        public string? Name { get; private set; }
+        public decimal? ProductDiscount { get; private set; }
+        public decimal? TreatmentDiscount { get; private set; }
+        public int? OrderSnapshotId { get; set; }
         public OrderSnapshot OrderSnapshot { get; set; }
         private AppliedDiscountSnapshot() { }
 
         public AppliedDiscountSnapshot(Discount discount)
         {
+            if (discount == null) return;
             Name = discount.Name;
-            DiscountAmount = discount.DiscountAmount; // make it take discount.ProductDiscount and discount.TreatmentDiscount as discount now has field for both product and treatment now
+            ProductDiscount = discount.ProductDiscount; 
+            TreatmentDiscount = discount.TreatmentDiscount;
         }
 
 
