@@ -29,6 +29,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 if (await _context.Bookings.AnyAsync(b => b.CustomerId == booking.CustomerId && b.Start < booking.End && b.End > booking.Start)) throw new Exception("The booking Overlaps");
                 await _context.Bookings.AddAsync(booking);
                 await _context.SaveChangesAsync();
+                Guid ActivityId = Guid.NewGuid();
                 foreach (var treatment in booking.Treatments)
                 {
                     string treatmentName = (await _context.Treatments.FindAsync(treatment.TreatmentId)).Name;
@@ -40,7 +41,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                     }
                     Console.WriteLine(treatment.EmployeeId);
                     day.EmployeeId = treatment.EmployeeId;
-                    day.AddBooking(treatment);
+                    day.AddBooking(treatment, ActivityId);
                     _context.ScheduleDays.Update(day);
                     await _context.SaveChangesAsync();
                 }
@@ -61,6 +62,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             {
                 _context.Bookings.Remove(booking);
                 await _context.SaveChangesAsync();
+                Guid ActivityId = Guid.NewGuid();
                 foreach (var treatment in booking.Treatments)
                 {
                     string treatmentName = (await _context.Treatments.FindAsync(treatment.TreatmentId)).Name;
@@ -70,7 +72,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                     {
                         break;
                     }
-                    day.CancelBooking(treatment, booking.Id);
+                    day.CancelBooking(treatment, ActivityId);
                     _context.ScheduleDays.Update(day);
                     await _context.SaveChangesAsync();
                 }
@@ -95,8 +97,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         }
         public async Task<IEnumerable<Booking?>> GetByFilterAsync(Domain.Filter filter)
         {
-            await using var _context = await _factory.CreateDbContextAsync();
-           return await _context.Bookings.Where(c => c.Status == filter.Status).OrderBy(c => c.Start).Include(c => c.Customer).ToListAsync();
+           var _context = await _factory.CreateDbContextAsync();
+           return await _context.Bookings.Where(c => c.Status == filter.Status).OrderBy(c => c.Start).Include(c => c.Customer).Include(c => c.Treatments).ThenInclude(t => t.Treatment).Include(c=>c.Treatments).ThenInclude(t=>t.Employee).ToListAsync();
         }
         public async Task UpdateAsync(Booking booking)
         {
@@ -106,6 +108,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             {
                 _context.Bookings.Update(booking);
                 await _context.SaveChangesAsync();
+                Guid ActivityId = Guid.NewGuid();
                 foreach (var treatment in booking.Treatments)
                 {
                     string treatmentName = (await _context.Treatments.FindAsync(treatment.TreatmentId)).Name;
@@ -115,7 +118,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                     {
                         break;
                     }
-                    day.UpdateDaySchedule(treatment, booking.Id);
+                    day.UpdateDaySchedule(treatment, ActivityId);
                     _context.ScheduleDays.Update(day);
                     await _context.SaveChangesAsync();
                 }

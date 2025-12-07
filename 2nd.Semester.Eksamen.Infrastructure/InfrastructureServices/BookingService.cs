@@ -79,9 +79,10 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 await _context.SaveChangesAsync();
 
                 // Add treatments & update schedules
+                Guid ActivityId = Guid.NewGuid();
                 foreach (var treatment in booking.Treatments)
                 {
-                    await AddTreatmentToEmployeeSchedule(treatment, booking.Id);
+                    await AddTreatmentToEmployeeSchedule(treatment, ActivityId);
                 }
 
                 await transaction.CommitAsync();
@@ -94,7 +95,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             }
         }
 
-        private async Task AddTreatmentToEmployeeSchedule(TreatmentBooking treatment, int bookingId)
+        private async Task AddTreatmentToEmployeeSchedule(TreatmentBooking treatment, Guid bookingId)
         {
             var scheduleDay = await _context.ScheduleDays
                 .Include(d => d.TimeRanges)
@@ -116,8 +117,8 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             {
                 Start = TimeOnly.FromDateTime(treatment.Start),
                 End = TimeOnly.FromDateTime(treatment.End),
-                Type = TimeRangeType.Booked,
-                BookingID = bookingId
+                Type = "Booked",
+                ActivityId = bookingId
             };
 
             scheduleDay.TimeRanges.Add(timerange);

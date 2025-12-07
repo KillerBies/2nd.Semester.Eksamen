@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Domain;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
@@ -87,24 +88,35 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
                 throw;
             }
         }
-        public async Task BookScheduleAsync(TreatmentBooking TreatmentBooking)
+        public async Task BookVacation(DateOnly start, DateOnly end, int employeeId)
         {
-            //var _context = await _factory.CreateDbContextAsync();
-            //using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
-            //try
-            //{
-            //    var employee = await _context.ScheduleDays.FindAsync(ScheduleDay.EmployeeId);
-            //    var schedule = await _context.ScheduleDays.FirstAsync(t => t.EmployeeId == TreatmentBooking.Employee.Id);
-            //    if (!schedule.BookTreatmentOnDate(TreatmentBooking.Start, TreatmentBooking.End, TreatmentBooking.Treatment.Name, employee.WorkStart, employee.WorkEnd, TreatmentBooking.BookingID)) throw new Exception();
-            //    _context.EmployeeSchedules.Update(schedule);
-            //    await _context.SaveChangesAsync();
-            //    await transaction.CommitAsync();
-            //}
-            //catch (Exception)
-            //{
-            //    await transaction.RollbackAsync(); throw;
-            //}
-            throw new NotImplementedException();
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                if (await _context.ScheduleDays.AnyAsync(sd => sd.EmployeeId == employeeId && sd.Date > start && sd.Date < end && sd.TimeRanges.Any(tr=>tr.Type != "Freetime" || tr.Type != "Unavailable"))) throw new Exception("The Vacation Overlaps with pre-existing Plans");
+                var days = new List<ScheduleDay>();
+                Guid activityId = Guid.NewGuid();
+                var employee = await _context.Employees.FindAsync(employeeId);
+                for (var date = start; date <= end; date = date.AddDays(1))
+                {
+                    var day = await _context.ScheduleDays.Include(sd => sd.TimeRanges).FirstOrDefaultAsync(es => es.EmployeeId == employeeId && es.Date == date);
+                    if (day == null)
+                    {
+                        day = new ScheduleDay(date, employee.WorkStart, employee.WorkEnd) { EmployeeId=employee.Id};
+                    }
+                    if(!day.BookDayForVacation(activityId,employee.WorkStart,employee.WorkEnd)) throw new Exception("The Vacation Overlaps with pre-existing Plans");
+                    _context.ScheduleDays.Update(day);
+                    await _context.SaveChangesAsync();
+                }
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }

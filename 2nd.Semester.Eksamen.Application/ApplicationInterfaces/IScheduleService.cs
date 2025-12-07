@@ -14,5 +14,6 @@ namespace _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces
     {
         public Task<List<ScheduleDay>> GetEmployeeSchedule(int employeeId);
         public Task<IEnumerable<EmployeeDTO>> GetEmployees();
+        public Task CreateEmployeeVication(EmployeeVicationDTO vicationDTO);
     }
 }

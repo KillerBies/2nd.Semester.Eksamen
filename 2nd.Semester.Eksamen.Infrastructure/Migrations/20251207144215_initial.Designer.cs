@@ -12,8 +12,8 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251202214720_inital")]
-    partial class inital
+    [Migration("20251207144215_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -436,7 +436,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BookingID")
+                    b.Property<Guid?>("ActivityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("BookingId")
                         .HasColumnType("int");
 
                     b.Property<TimeOnly>("End")
@@ -452,12 +455,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<TimeOnly>("Start")
                         .HasColumnType("time");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookingID");
+                    b.HasIndex("BookingId");
 
                     b.HasIndex("ScheduleDayId");
 
@@ -698,7 +702,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 {
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Booking", "Booking")
                         .WithMany()
-                        .HasForeignKey("BookingID");
+                        .HasForeignKey("BookingId");
 
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.ScheduleDay", "ScheduleDay")
                         .WithMany("TimeRanges")

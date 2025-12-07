@@ -1,8 +1,18 @@
 ﻿@page "/employees"
 @namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @rendermode InteractiveServer
 
-<div class="employee-nav">
+@if(ShowEmployeeDetails)
+{
+    <SidePage IsVisible="ShowEmployeeDetails">
+        <EmployeeDetails Id="SelectedEmployeeId">
+        </EmployeeDetails>
+    </SidePage>
+}
+<div style="height:100vh;">
+<FloatingPage>
+<div class="employee-nav" style="border-radius: 12px 12px 0 0;">
     <!-- Header with search and add button -->
     <div class="employee-nav-header">
         <h3 class="title">Medarbejdere</h3>
@@ -17,6 +27,7 @@
         </button>
     </div>
 </div>
+<div style="margin:30px;">
 
 @if (LoadFailed)
 {
@@ -34,7 +45,7 @@ else
         @foreach (var emp in Employees)
         {
             <div class="grid">
-                <div class="card employee-card-clickable" @onclick="() => GoToEmployee(emp.Id)">
+                <div class="card employee-card-clickable" style="cursor:pointer;" @onclick="() => GoToEmployee(emp.Id)">
                     <div class="color-box" style="background:@emp.Color"></div>
 
                     <div class="info">
@@ -49,4 +60,6 @@ else
         }
     </div>
 }
-
+</div>
+</FloatingPage>
+</div>

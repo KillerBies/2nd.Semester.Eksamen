@@ -1,5 +1,6 @@
 ﻿.floating-page {
     width: 100%;
+    max-height: 100vh;
     height: 100%;
     display: flex;
 }
@@ -20,7 +21,7 @@
     background-color: #F3F2F2;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    max-height: 80vh;
+    max-height: 100vh;
     overflow-y: auto;
     transform: scale(0.8);
     animation: popIn 0.3s forwards;

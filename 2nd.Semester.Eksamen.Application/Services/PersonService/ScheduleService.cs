@@ -32,6 +32,15 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
             var employees = (await _employeeRepository.GetAllAsync());
             return employees.Select(e => domain_To_DTO.EmployeeToDTO(e)).ToList();
         }
-
+        public async Task CreateEmployeeVication (EmployeeVicationDTO vicationDTO)
+        {
+            try
+            {
+                await _dayRepository.BookVacation(vicationDTO.Start, vicationDTO.End, vicationDTO.EmployeeId);
+            }catch
+            {
+                throw new Exception("Vacation could not be made");
+            }
+        }
     }
 }

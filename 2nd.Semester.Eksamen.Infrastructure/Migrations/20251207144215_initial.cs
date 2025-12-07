@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class inital : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -243,8 +243,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ScheduleDayId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BookingID = table.Column<int>(type: "int", nullable: true),
-                    Type = table.Column<int>(type: "int", nullable: false),
+                    ActivityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    BookingId = table.Column<int>(type: "int", nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Start = table.Column<TimeOnly>(type: "time", nullable: false),
                     End = table.Column<TimeOnly>(type: "time", nullable: false)
                 },
@@ -252,8 +253,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_TimeRanges", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TimeRanges_Bookings_BookingID",
-                        column: x => x.BookingID,
+                        name: "FK_TimeRanges_Bookings_BookingId",
+                        column: x => x.BookingId,
                         principalTable: "Bookings",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -469,9 +470,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TimeRanges_BookingID",
+                name: "IX_TimeRanges_BookingId",
                 table: "TimeRanges",
-                column: "BookingID");
+                column: "BookingId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TimeRanges_ScheduleDayId",

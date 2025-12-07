@@ -98,7 +98,7 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
 
                         // Check if the time slot is free
                         var slotAvailable = day.TimeRanges.Any(r =>
-                            r.Type == TimeRangeType.Freetime && 
+                            r.Type == "Freetime" && 
                             r.Start <= currentStart && //the free timerange start must be before or at the treatments start
                             currentEnd <= r.End //the free timerange must end after or at the end of the treatment
                         );

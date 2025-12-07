@@ -52,15 +52,15 @@
             <div class="btn-group">
                 <div>
                     <label>Tidsrum:</label>
-                    <input type="time" @bind="StartTime" class="input-time" title="Sæt start tid for genereret tiders tidsrum"/>
+                    <input type="time" @bind="StartTime" class="input-time" title="Sæt start tid for genereret tiders tidsrum" />
                     <b>-</b>
                     <input type="time" @bind="EndTime" class="input-time" title="Sæt slut tid for genereret tiders tidsrum" />
                 </div>
             </div>
             <div class="btn-group">
-                    <button type="button" class="btn btn-primary time-button" @onclick="PageBackwards" disabled="@(CurrentIndex == 0)" title="Gå Tilbage I Tid">&#9664;</button>
-                    <button type="button" class="btn btn-primary time-button" @onclick="FowardPage" disabled="@(checkfields())" title="Gå Frem I Tid">&#9654;</button>
-                <button type="button" class="btn btn-primary time-button" @onclick="refreshAvailableSlots" disabled="@(checkfields())" title="Generer Mulige Tider"><i class="bi bi-search"></i></button>
+                <button type="button" class="btn btn-primary time-button" @onclick="PageBackwards" disabled="@(CurrentIndex == 0)" title="Gå Tilbage I Tid">&#9664;</button>
+                <button type="button" class="btn btn-primary time-button" @onclick="FowardPage" disabled="@(checkfields())" title="Gå Frem I Tid">&#9654;</button>
+                <button type="button" class="btn btn-success time-button" @onclick="refreshAvailableSlots" disabled="@(checkfields())" title="Generer Mulige Tider"><i class="bi bi-search"></i></button>
             </div>
         </div>
         @if (IsDropdownOpen)
@@ -76,7 +76,7 @@
 
     <div class="btn-group">
         <button type="button" class="btn btn-primary mt-3" title="Anuller Booking" @onclick="OnCancel">Anuller</button>
-        <button type="submit" class="btn btn-primary mt-3" title="Lav Booking" @onclick="()=> showPopup=true" disabled="@(checkfieldsAndTime())">Lav Booking</button>
+        <button type="submit" class="btn btn-primary mt-3" title="Lav Booking" @onclick="() => showPopup = true" disabled="@(checkfieldsAndTime())">Lav Booking</button>
     </div>
 
 

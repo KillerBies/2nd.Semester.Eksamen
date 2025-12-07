@@ -17,6 +17,6 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Emp
         public Task CreateNewAsync(ScheduleDay ScheduleDay);
         public Task UpdateAsync(ScheduleDay ScheduleDay);
         public Task DeleteAsync(ScheduleDay ScheduleDay);
-        public Task BookScheduleAsync(TreatmentBooking TreatmentBooking);
+        public Task BookVacation(DateOnly start, DateOnly end, int employeeId);
     }
 }

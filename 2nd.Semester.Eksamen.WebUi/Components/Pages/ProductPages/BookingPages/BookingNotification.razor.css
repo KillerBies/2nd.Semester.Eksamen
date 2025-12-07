@@ -1,4 +1,4 @@
-﻿.modal-overlay {
+﻿.notification-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -13,8 +13,9 @@
     border-radius: 12px 12px 12px 12px;
 }
 
-/* Modal content */
-.modal-content {
+
+.notification-content {
+    margin-top: 30px;
     background-color: white;
     padding: 20px;
     border-radius: 12px 12px 12px 12px;

@@ -3,22 +3,87 @@
 @using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
 @using Radzen
 @using Radzen.Blazor
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
 @rendermode InteractiveServer
-<div style="margin-bottom:10px; display:flex; gap:10px;">
-    <RadzenDropDown TValue="string"
-                    Data="@Employees"
-                    Placeholder="Select action"
-                    Change="@GetEmployeeSchedule(SelectedEmployeeId)" />
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger">
+        @_errorMessage
+    </div>
+}
+
+@if (ShowDetailsWindow)
+{
+    <SidePage>
+        @SelectedScheduleItems.Max().Start - @SelectedScheduleItems.Min().End
+    </SidePage>
+}
+
+
+@if (ShowAddWindow)
+{
+    <BookingNotification IsVisible="ShowAddWindow">
+        <h3>Tilføj Til Skema</h3>
+        <select @bind="SelectedType" style="margin-bottom:5px;">
+            <option value="" disabled selected>-- Vælg En Type --</option>
+            @foreach (var item in Types)
+            {
+                <option value="@item">@item</option>
+            }
+        </select>
+        @if (SelectedType == "Ferie")
+        {
+            <div class="btn-group" style="justify-content:space-between;">
+                <div>
+                    <label>Fra</label>
+                    <input type="date" @bind="VicationDTO.Start" />
+                </div>
+                <div>
+                    <label>Til</label>
+                    <input type="date" @bind="VicationDTO.End" />
+                </div>
+            </div>
+            <button class="btn btn-primary m-3" @onclick="OnConfirmAddVication">Bekræft</button>
+        }
+        else if (SelectedType == "Pause")
+        {
+            <p>Ikke lavt</p>
+        }
+        else if (SelectedType == "Booking")
+        {
+            <p>Ikke lavt</p>
+        }
+    </BookingNotification>
+}
+<div style="height: 100vh;">
+    <div class="page-header btn-group" style="padding: 0; align-content:center;">
+        <div class="btn-group">
+        <RadzenDropDown Data="@Employees"
+                        TextProperty="Name"
+                        ValueProperty="EmployeeId"
+                        @bind-Value="SelectedEmployeeId"
+                        Change="@OnEmployeeChanged"
+                        Style="width:200px; border-radius: 12px 0 0 0; margin-left: 2px;" />
+            <button class="btn" style="background-color: #F3F2F2; padding-bottom:1px;" @onclick="@OnAddToSchedule">+</button>
+        </div>                  
+    </div>
+    <RadzenScheduler Data="@ScheduleItems"
+                     TItem="ScheduleItem"
+                     StartProperty="Start"
+                     EndProperty="End"
+                     TextProperty="Title"
+                     Style="height:860px; width:100%;"
+                     AppointmentRender="@OnAppintmentRender">
+
+        <Template Context="scheduleItem">
+            <strong>@scheduleItem.Title</strong>
+            <div>@TimeOnly.FromDateTime((DateTime)scheduleItem.Start) - @TimeOnly.FromDateTime((DateTime)scheduleItem.End)</div>
+        </Template>
+        <ChildContent>
+            <RadzenWeekView />
+            <RadzenDayView />
+        </ChildContent>
+    </RadzenScheduler>
 </div>
-<RadzenScheduler Data="@ScheduleItems"
-                 StartProperty="Start"
-                 EndProperty="End"
-                 TextProperty="Name"
-                 Style="height: 750px">
-
-    <RadzenWeekView />
-    <RadzenDayView />
-    <RadzenMonthView />
-
-</RadzenScheduler>

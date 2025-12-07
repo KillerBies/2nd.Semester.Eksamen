@@ -20,7 +20,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         [Inject] private IEmployeeRepository _repo { get; set; }
         [Inject]
         public IEmployeeService EmployeeService { get; set; }
-
+        private bool ShowConfirmDelete { get; set; } = false;
         [Inject] IJSRuntime JS { get; set; }
         protected override async Task OnInitializedAsync()
         {
@@ -28,16 +28,17 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         } 
         private void StartEdit()
         {
-            Nav.NavigateTo($"/employees/edit/{Employee.Id}");
+            Nav.NavigateTo($"/edit-employee/{Employee.Id}");
         }
 
+        private void TryDelete()
+        {
+            ShowConfirmDelete = true;
+        }
         private async Task ConfirmDelete()
         {
-            bool confirmed = await JS.InvokeAsync<bool>("confirm", "Er du sikker på at du vil slette denne medarbejder?");
-            if (confirmed)
-            {
-                await DeleteEmployee();
-            }
+            await DeleteEmployee();
+            ShowConfirmDelete = false;
         }
         private async Task DeleteEmployee()
         {

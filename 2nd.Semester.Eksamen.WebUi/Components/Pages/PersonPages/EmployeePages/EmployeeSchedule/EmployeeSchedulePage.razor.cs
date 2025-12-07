@@ -3,6 +3,7 @@ using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
 using Microsoft.AspNetCore.Components;
+using Radzen;
 using Syncfusion.Blazor.Schedule.Internal;
 
 namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
@@ -15,6 +16,25 @@ namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
         private List<ScheduleItem> ScheduleItems { get; set; }
         private int SelectedEmployeeId { get; set; }
         private string _errorMessage { get; set; } = string.Empty;
+        private bool ShowAddWindow { get; set; } = false;
+        private List<ScheduleDay> schedule { get; set; } = new();
+
+        private List<TimeRange> SelectedScheduleItems { get; set; } = new();
+        private string SelectedType { get; set; } = "";
+        private bool ShowDetailsWindow { get; set; } = false;
+        private EmployeeVicationDTO VicationDTO { get; set; } = new();
+        private List<string> Types { get; set; } = new()
+        {
+            "Pause",
+            "Booking",
+            "Ferie",
+        };
+        private Dictionary<string, string> ColorIndex { get;} = new Dictionary<string, string>()
+        {
+            { "Freetime", "#42d7f5" },
+            { "Booked", "#b55054" },
+            { "Unavailable", "#42d7f5" },
+        };
         protected override async Task OnInitializedAsync()
         {
             await GetData();
@@ -22,14 +42,15 @@ namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
         private async Task GetEmployeeSchedule(int EmployeeId)
         {
             int i = 0;
-            var Schedule = await _scheduleService.GetEmployeeSchedule(EmployeeId);
-            ScheduleItems = Schedule.SelectMany(s => s.TimeRanges.Select(tr => new ScheduleItem
+            schedule = await _scheduleService.GetEmployeeSchedule(EmployeeId);
+            ScheduleItems = schedule.SelectMany(s => s.TimeRanges.Select(tr => new ScheduleItem
             {
                 Start = s.Date.ToDateTime(tr.Start),
                 End = s.Date.ToDateTime(tr.End),
                 Id = i++,
-                Name = tr.Name,
-            })).ToList();
+                Title = tr.Name,
+                Type = tr.Type,
+            })).Where(tr => tr.Type != "Freetime").ToList();
         }
         private async Task GetEmployees()
         {
@@ -43,26 +64,87 @@ namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
             else
             {
                 SelectedEmployeeId = Employees.First().EmployeeId;
+                VicationDTO.EmployeeId = SelectedEmployeeId;
                 await GetEmployeeSchedule(SelectedEmployeeId);
             }
         }
         public class ScheduleItem
         {
             public int Id { get; set; }
-            public string? Name { get; set; }
+            public string? Title { get; set; }
             public DateTime? Start { get; set; }
             public DateTime? End {  get; set; }
+            public string Type { get; set; }
         }
 
+        private async Task OnEmployeeChanged(object value)
+        {
+            SelectedEmployeeId = (int)value;
+            await GetEmployeeSchedule(SelectedEmployeeId);
+        }
 
+        void OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<ScheduleItem> args)
+        {
+            ShowDetailsWindow = true;
+            var selectedItem = schedule
+                .SelectMany(s => s.TimeRanges)
+                .FirstOrDefault(tr =>
+                    tr.Start == TimeOnly.FromDateTime((DateTime)args.Data.Start) &&
+                    tr.End == TimeOnly.FromDateTime((DateTime)args.Data.End)
+                );
 
+            if (selectedItem == null)
+                return;
 
+            var matchingItems = schedule
+                .SelectMany(s => s.TimeRanges)
+                .Where(tr => tr.ActivityId == selectedItem.ActivityId)
+                .ToList();
 
+            SelectedScheduleItems.AddRange(matchingItems);
+            SelectedScheduleItems.OrderBy(si => si.Start);
+        }
+        void OnAppintmentRender(SchedulerAppointmentRenderEventArgs<ScheduleItem> args)
+        {
+            args.Attributes["style"] = GetColor(args.Data.Type);
+        }
 
+        private string GetColor(string type)
+        {
+            return type switch
+            {
+                "Booked" => "background-color: #034265;",
+                "Unavailable" => "background-color: #034265;",
+                _=> "background-color: #b55054;"
+            };
+        }
 
+        private void OnAddToSchedule()
+        {
+            ShowAddWindow = true;
+            System.Diagnostics.Debug.WriteLine(ShowAddWindow);
+        }
 
-
-
+        private async Task OnConfirmAddVication()
+        {
+            VicationDTO.EmployeeId = SelectedEmployeeId;
+            if(VicationDTO.Start < DateOnly.FromDateTime(DateTime.Now) || VicationDTO.End < DateOnly.FromDateTime(DateTime.Now) || VicationDTO.Start > VicationDTO.End)
+            {
+                _errorMessage = "Datoer ikke gyldige";
+                return;
+            }
+            try
+            {
+                _errorMessage = "";
+                await _scheduleService.CreateEmployeeVication(VicationDTO);
+                ShowAddWindow = false;
+            }
+            catch
+            {
+                _errorMessage = "Ferien er lagt på en dag med eksisterende planer og blev derfor ikke lavt";
+                ShowAddWindow = false;
+            }
+        }
 
     }
 }

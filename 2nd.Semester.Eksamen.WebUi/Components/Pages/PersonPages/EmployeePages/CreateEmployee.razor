@@ -1,64 +1,111 @@
-﻿@page "/employees/create"
+﻿@page "/createemployee"
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
 @using _2nd.Semester.Eksamen.Domain.Helpers;
 @using WebUIServices;
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @namespace Components.Pages.PersonPages.EmployeePages
-<h3>Create Employee</h3>
+<div style="width:100%; height:96vh; align-content:center; align-items:center; display:flex; justify-content:center;">
+	<FloatingPage>
+		<div style="margin: 30px;">
+			<h2>Lav Ny Medarbejder</h2>
+			<EditForm Model="Input" OnValidSubmit="CreateEmployeeAsync" class="row p-3">
+				<DataAnnotationsValidator />
+				<ValidationSummary />
+				<div class="form-inputs">
+					<!-- Basic Info -->
+					<div class="row">
+						<div class="col-md-6">
+							<InputText @bind-Value="Input.FirstName" placeholder="Fornavn" class="form-control m-1" />
+						</div>
+						<div class="col-md-6">
+							<InputText @bind-Value="Input.LastName" placeholder="Efternavn" class="form-control m-1" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<InputText @bind-Value="Input.Email" placeholder="Email" class="form-control m-1" />
+						</div>
+						<div class="col-md-6">
+							<InputText @bind-Value="Input.PhoneNumber" placeholder="TelefonNummer" class="form-control m-1" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<select @bind="Input.Gender" class="form-select m-1">
+								@foreach (var gender in Enum.GetValues(typeof(Gender)).Cast<Gender>())
+								{
+									<option value="@gender">@gender.GetDescription()</option>
+								}
+							</select>
+						</div>
+						<div class="col-md-6">
+							<select @bind="Input.ExperienceLevel" class="form-select m-1">
+								@foreach (var level in Enum.GetValues(typeof(ExperienceLevels)).Cast<ExperienceLevels>())
+								{
+									<option value="@level">@level.GetDescription()</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<select @bind="Input.Type" class="form-select m-1">
+								@foreach (var type in Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>())
+								{
+									<option value="@type">@type.GetDescription()</option>
+								}
+							</select>
+						</div>
+						<div class="col-md-6">
+							<InputNumber @bind-Value="Input.BasePriceMultiplier"
+										 placeholder="Omregningsfaktor"
+										 title="Prisen på en behandling udregnes som 'behandlingens pris' * 'medarbejderens omregningsfaktor' (1 vil være behandlingens normal pris) "
+										 class="form-control m-1" />
+						</div>
+					</div>
 
-<EditForm Model="Input" OnValidSubmit="CreateEmployeeAsync">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+					<!-- Address -->
+					<div class="row">
+						<div class="col-md-6">
+							<InputText @bind-Value="Input.Address.City" placeholder="By" class="form-control m-1" />
+						</div>
+						<div class="col-md-6">
+							<InputText @bind-Value="Input.Address.PostalCode" placeholder="Postkode" class="form-control m-1" />
+						</div>
+					</div>
 
-    <!-- Basic Info -->
-    <InputText @bind-Value="Input.FirstName" placeholder="First Name" class="form-control" />
-    <InputText @bind-Value="Input.LastName" placeholder="Last Name" class="form-control mt-2" />
-    <InputText @bind-Value="Input.Email" placeholder="Email" class="form-control mt-2" />
-    <InputText @bind-Value="Input.PhoneNumber" placeholder="Phone Number" class="form-control mt-2" />
+					<div class="row">
+						<div class="col-md-6">
+							<InputText @bind-Value="Input.Address.StreetName" placeholder="Gade" class="form-control m-1" />
+						</div>
+						<div class="col-md-6">
+							<InputText @bind-Value="Input.Address.HouseNumber" placeholder="Hus Nummer" class="form-control m-1" />
+						</div>
+					</div>
 
-    <InputNumber @bind-Value="Input.BasePriceMultiplier"
-                 placeholder="Base Price Multiplier"
-                 class="form-control mt-2" />
 
-    <!-- Dropdowns -->
-    <select @bind="Input.Gender" class="form-select mb-2">
-        @foreach (var gender in Enum.GetValues(typeof(Gender)).Cast<Gender>())
-        {
-            <option value="@gender">@gender.GetDescription()</option>
-        }
-    </select>
 
-    <select @bind="Input.ExperienceLevel" class="form-select mb-2">
-        @foreach (var level in Enum.GetValues(typeof(ExperienceLevels)).Cast<ExperienceLevels>())
-        {
-            <option value="@level">@level.GetDescription()</option>
-        }
-    </select>
 
-    <select @bind="Input.Type" class="form-select mb-3">
-        @foreach (var type in Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>())
-        {
-            <option value="@type">@type.GetDescription()</option>
-        }
-    </select>
 
-    <!-- Address -->
-    <InputText @bind-Value="Input.Address.StreetName" placeholder="Street" class="form-control mt-2" />
-    <InputText @bind-Value="Input.Address.HouseNumber" placeholder="House #" class="form-control mt-2" />
-    <InputText @bind-Value="Input.Address.City" placeholder="City" class="form-control mt-2" />
-    <InputText @bind-Value="Input.Address.PostalCode" placeholder="Postal Code" class="form-control mt-2" />
+					<div class="row">
+						<div class="col-md-12">
+							<!-- Specialties -->
+							@for (int i = 0; i < Input.Specialties.Count; i++)
+							{
+								var specialty = Input.Specialties[i];
+								<div class="mb-2 d-flex align-items-center" @key="specialty.Id">
+									<InputText @bind-Value="specialty.Value" placeholder="Specialty" class="form-control me-2" />
+									<button type="button" class="btn btn-danger" @onclick="() => RemoveSpecialty(specialty.Id)">X</button>
+								</div>
+							}
+							<button type="button" class="btn btn-success mb-2" @onclick="AddSpecialty">+ Add Specialty</button>
+						</div>
+					</div>
 
-    <!-- Specialties -->
-    @for (int i = 0; i < Input.Specialties.Count; i++)
-    {
-        var specialty = Input.Specialties[i];
-        <div class="mb-2 d-flex align-items-center" @key="specialty.Id">
-            <InputText @bind-Value="specialty.Value" placeholder="Specialty" class="form-control me-2" />
-            <button type="button" class="btn btn-danger" @onclick="() => RemoveSpecialty(specialty.Id)">X</button>
-        </div>
-    }
-
-    <button type="button" class="btn btn-primary mb-3" @onclick="AddSpecialty">+ Add Specialty</button>
-
-    <button class="btn btn-success mt-3" type="submit">Create</button>
-</EditForm>
+					<button class="btn btn-primary" Style="width:100%;" type="submit">Create</button>
+				</div>
+			</EditForm>
+		</div>
+	</FloatingPage>
+</div>
