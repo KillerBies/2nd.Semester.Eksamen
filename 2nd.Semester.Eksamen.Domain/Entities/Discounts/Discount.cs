@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace _2nd.Semester.Eksamen.Domain.Entities.Tilbud
+namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
 {
     [NotMapped]
     public class Discount : BaseEntity

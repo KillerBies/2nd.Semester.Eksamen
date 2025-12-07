@@ -1,4 +1,4 @@
-﻿using _2nd.Semester.Eksamen.Application.DTO;
+﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,11 +1,11 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
-using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 {

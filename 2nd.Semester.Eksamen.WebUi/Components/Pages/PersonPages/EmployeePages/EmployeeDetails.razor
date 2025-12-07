@@ -1,0 +1,30 @@
+﻿@page "/employees/{id:int}"
+@rendermode InteractiveServer
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+@using _2nd.Semester.Eksamen.Domain.Helpers;
+@using _2nd.Semester.Eksamen.Domain.Entities;
+@using WebUIServices;
+@namespace Components.Pages.PersonPages.EmployeePages
+<h3>Employee Details</h3>
+
+
+@if (Employee == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="employee-card">
+        <p><strong>Name:</strong> @Employee.Name @Employee.LastName</p>
+        <p><strong>Email:</strong> @Employee.Email</p>
+        <p><strong>Phone:</strong> @Employee.PhoneNumber</p>
+        <p><strong>Type:</strong> @Employee.Type</p>
+        <p><strong>Specialty:</strong> @Employee.Specialties</p>
+        <p><strong>Experience Level:</strong> @Employee.ExperienceLevel</p>
+        <p><strong>Gender:</strong> @Employee.Gender</p>
+        <p><strong>Address:</strong> @Employee.Address.StreetName @Employee.Address.HouseNumber, @Employee.Address.City, @Employee.Address.PostalCode</p>
+
+        <button class="btn btn-primary" @onclick="StartEdit">Edit</button>
+        <button class="btn btn-primary"  @onclick="ConfirmDelete">Delete</button>
+    </div>
+}

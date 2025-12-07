@@ -3,10 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
-    internal class BookingSnapshot
+    public record BookingSnapshot : BaseSnapshot
     {
+        public List<TreatmentSnapshot> TreatmentSnapshot { get; private set; }
+        public int CustomerSnapshotId { get; set; }
+        public CustomerSnapshot CustomerSnapshot { get;  set; }
+        public int? OrderSnapshotId { get; set; }
+        public OrderSnapshot OrderSnapshot { get; set; }
+        
+
+
+        private BookingSnapshot() { }
+
+        public BookingSnapshot(Booking booking)
+        {
+            TreatmentSnapshot = booking.Treatments
+        .Select(t => new TreatmentSnapshot(t.Treatment))
+        .ToList();
+            CustomerSnapshot = CustomerSnapshot.CreateCustomerSnapshot(booking.Customer);
+
+        }
+
     }
+
 }

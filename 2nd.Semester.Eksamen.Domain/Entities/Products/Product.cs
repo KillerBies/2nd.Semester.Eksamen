@@ -1,5 +1,4 @@
 ﻿
-using _2nd.Semester.Eksamen.Domain.Entities.Tilbud;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +13,13 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
         public string Name { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public string Description { get; set; } = string.Empty;
-
+        public decimal DiscountedPrice { get; set; }
         public Product(string name, decimal price, string description)
         {
             Name = name;
             Price = price;
             Description = description;
+            
         }
         public Product() { }
 
