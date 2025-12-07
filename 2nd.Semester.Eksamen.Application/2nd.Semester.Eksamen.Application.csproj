@@ -10,6 +10,10 @@
     <PackageReference Include="QuestPDF" Version="2025.7.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTO\DiscountDTO\LoyaltyDTO\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>_2nd.Semester.Eksamen.Application</RootNamespace>
