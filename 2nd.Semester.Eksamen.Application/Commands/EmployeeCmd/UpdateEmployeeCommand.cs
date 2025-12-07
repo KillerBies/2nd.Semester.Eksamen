@@ -1,38 +1,31 @@
-﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
-using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
-using _2nd.Semester.Eksamen.Domain.Helpers;
-using System.Threading.Tasks;
+﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+using _2nd.Semester.Eksamen.Application.Adapters;
 
 namespace _2nd.Semester.Eksamen.Application.Commands.EmployeeCmd
 {
     public class UpdateEmployeeCommand
     {
-        private readonly IEmployeeRepository _repo;
+        private readonly IEmployeeService _service;
+        private readonly DTO_to_Domain _adapter;
 
-        public UpdateEmployeeCommand(IEmployeeRepository repo)
+        public UpdateEmployeeCommand(IEmployeeService service, DTO_to_Domain adapter)
         {
-            _repo = repo;
+            _service = service;
+            _adapter = adapter;
         }
 
         public async Task ExecuteAsync(int employeeId, EmployeeUpdateDTO dto)
         {
-            var employee = await _repo.GetByIDAsync(employeeId);
+            // optional: validation
+            if (string.IsNullOrWhiteSpace(dto.FirstName))
+                throw new ArgumentException("First name is required.");
 
-            if (employee == null) return;
+            // Map DTO → Domain Employee entity
+            var employee = await _adapter.DTOEmployeeUpdateToDomain(employeeId, dto);
 
-            employee.TrySetName(dto.FirstName);
-            employee.TrySetLastName(dto.FirstName, dto.LastName);
-            employee.TrySetEmail(dto.Email);
-            employee.TrySetPhoneNumber(dto.PhoneNumber);
-            employee.TrySetSpecialties(string.Join(", ", dto.Specialties.Select(s => s.Value)));
-            employee.TrySetGender(dto.Gender.GetDescription()); // Enum to string
-            employee.TrySetBasePriceMultiplier(dto.BasePriceMultiplier);
-            employee.TrySetExperience(dto.ExperienceLevel.GetDescription());
-            employee.TrySetType(dto.Type.GetDescription());
-            employee.TrySetAddress(dto.Address.City, dto.Address.PostalCode, dto.Address.StreetName, dto.Address.HouseNumber);
-
-            await _repo.UpdateAsync(employee);
+            // Delegate persistence to the service
+            await _service.UpdateEmployeeAsync(employee);
         }
     }
 }
-

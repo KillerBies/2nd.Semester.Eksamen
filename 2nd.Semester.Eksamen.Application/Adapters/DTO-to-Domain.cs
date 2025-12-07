@@ -1,19 +1,21 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using _2nd.Semester.Eksamen.Domain.DomainInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using _2nd.Semester.Eksamen.Domain.Helpers;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
-using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 
 namespace _2nd.Semester.Eksamen.Application.Adapters
 {
@@ -76,5 +78,49 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             return customer;
             throw new InvalidOperationException($"Customer with ID {CustomerId} is not a valid derived type.");
         }
+
+        public async Task<Employee> DTOEmployeeInputToDomain(EmployeeInputDTO dto)
+        {
+            var specialtyString = string.Join(", ", dto.Specialties.Select(s => s.Value));
+            var address = new Address(dto.Address.City, dto.Address.PostalCode, dto.Address.StreetName, dto.Address.HouseNumber);
+
+            var employee = new Employee(
+                firstname: dto.FirstName,
+                lastname: dto.LastName,
+                type: dto.Type.GetDescription(),
+                specialties: specialtyString,
+                address: address,
+                experience: dto.ExperienceLevel.GetDescription(),
+                gender: dto.Gender.GetDescription(),
+                email: dto.Email,
+                phoneNumber: dto.PhoneNumber,
+                basePriceMultiplier: dto.BasePriceMultiplier,
+                workEnd: new(08, 0, 0),
+                workStart: new(18, 0, 0)
+            );
+
+            return employee;
+        }
+        public async Task<Employee> DTOEmployeeUpdateToDomain(int employeeId, EmployeeUpdateDTO dto)
+        {
+            // Fetch existing employee from repo
+            var employee = await _employeeRepository.GetByIDAsync(employeeId);
+            if (employee == null) throw new NullReferenceException($"Employee {employeeId} not found");
+
+            // Map the updated values from DTO
+            employee.TrySetName(dto.FirstName);
+            employee.TrySetLastName(dto.FirstName, dto.LastName);
+            employee.TrySetEmail(dto.Email);
+            employee.TrySetPhoneNumber(dto.PhoneNumber);
+            employee.TrySetSpecialties(string.Join(", ", dto.Specialties.Select(s => s.Value)));
+            employee.TrySetGender(dto.Gender.GetDescription());
+            employee.TrySetBasePriceMultiplier(dto.BasePriceMultiplier);
+            employee.TrySetExperience(dto.ExperienceLevel.GetDescription());
+            employee.TrySetType(dto.Type.GetDescription());
+            employee.TrySetAddress(dto.Address.City, dto.Address.PostalCode, dto.Address.StreetName, dto.Address.HouseNumber);
+
+            return employee;
+        }
+
     }
 }
