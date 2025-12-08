@@ -162,7 +162,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CustomerSnapshotId")
+                    b.Property<int?>("CustomerSnapshotId")
                         .HasColumnType("int");
 
                     b.Property<int?>("OrderSnapshotId")
@@ -220,6 +220,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<int>("OrderSnapshotId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductSnapshotId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderSnapshotId");
@@ -234,6 +237,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AppliedSnapshotId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BookingSnapshotId")
+                        .HasColumnType("int");
 
                     b.Property<decimal?>("CustomDiscount")
                         .HasColumnType("decimal(18,2)");
@@ -263,11 +272,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<decimal>("DiscountedPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -291,9 +295,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.ToTable("ProductSnapshots");
 
-                    b.HasDiscriminator().HasValue("ProductSnapshot");
-
-                    b.UseTphMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Address", b =>
@@ -739,7 +741,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasIndex("BookingSnapshotId");
 
-                    b.HasDiscriminator().HasValue("TreatmentSnapshot");
+                    b.ToTable("TreatmentSnapshots");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.CompanyCustomer", b =>
@@ -1048,6 +1050,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .WithMany("TreatmentSnapshot")
                         .HasForeignKey("BookingSnapshotId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot", null)
+                        .WithOne()
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.History.TreatmentSnapshot", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BookingSnapshot");
                 });

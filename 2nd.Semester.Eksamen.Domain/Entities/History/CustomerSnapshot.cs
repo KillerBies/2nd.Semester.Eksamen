@@ -14,8 +14,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public AddressSnapshot AddressSnapshot { get; private set; }
         public string PhoneNumber { get; private set; }
         public int BookingSnapshotId { get; set; }
-        public BookingSnapshot BookingSnapshot { get;  set; }
-        
+        public BookingSnapshot BookingSnapshot { get; set; }
+
         protected CustomerSnapshot() { }
         public CustomerSnapshot(Customer customer)
         {

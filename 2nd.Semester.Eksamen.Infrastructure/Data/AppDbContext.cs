@@ -216,7 +216,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
             //SNAPSHOTS
             modelBuilder.Entity<CustomerSnapshot>().UseTphMappingStrategy();
-            modelBuilder.Entity<ProductSnapshot>().UseTphMappingStrategy();
+            modelBuilder.Entity<ProductSnapshot>().UseTptMappingStrategy();
             
             modelBuilder.Entity<OrderSnapshot>()
             .HasMany(o => o.OrderLinesSnapshot)
@@ -255,13 +255,26 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<OrderLineSnapshot>()
-                .HasOne(ol => ol.ProductSnapshot)
-                .WithOne(p => p.OrderLineSnapshot)
-                .HasForeignKey<ProductSnapshot>(p => p.OrderLineSnapshotId)
-                .OnDelete(DeleteBehavior.NoAction);
+    .HasOne(ol => ol.ProductSnapshot)
+    .WithOne(p => p.OrderLineSnapshot)
+    .HasForeignKey<ProductSnapshot>(p => p.OrderLineSnapshotId) 
+    .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<BookingSnapshot>()
+            .HasIndex(b => b.OrderSnapshotId)
+            .IsUnique();
 
+            modelBuilder.Entity<AppliedDiscountSnapshot>()
+             .HasIndex(ad => ad.OrderSnapshotId)
+             .IsUnique();
+            
+            modelBuilder.Entity<CustomerSnapshot>()
+             .HasIndex(c => c.BookingSnapshotId)
+             .IsUnique();
 
+            modelBuilder.Entity<AddressSnapshot>()
+              .HasIndex(a => a.CustomerSnapshotId)
+              .IsUnique();
 
             base.OnModelCreating(modelBuilder);
         }
