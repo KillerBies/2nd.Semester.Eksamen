@@ -24,10 +24,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         public async Task CreateNewAsync(Employee employee)
         {
             var _context = await _factory.CreateDbContextAsync();
-
-            if (employee.Schedule == null)
-                employee.Schedule = new EmployeeSchedule();
-
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
@@ -49,9 +45,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         public async Task UpdateAsync(Employee employee)
         {
             var _context = await _factory.CreateDbContextAsync();
-
-            if (employee.Schedule == null)
-                employee.Schedule = new EmployeeSchedule();
 
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
