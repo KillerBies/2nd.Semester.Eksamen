@@ -88,9 +88,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     }
                 }
             }
-            System.Diagnostics.Debug.WriteLine($"suggest request start: input is null? {!TreatmentBookings.Any()|| TreatmentBookings==null}");
-            List<BookingSuggestion> suggestions = _suggestionService.GetBookingSugestions(TreatmentBookings, startdate, numberOfDaysToCheck, numberOfSuggestions, interval);
-            System.Diagnostics.Debug.WriteLine($"suggest request ended: output is null? {!suggestions.Any() || suggestions == null}");
+            List<BookingSuggestion> suggestions = await _suggestionService.GetBookingSugestions(TreatmentBookings, startdate, numberOfDaysToCheck, numberOfSuggestions, interval);
             List<BookingDTO> bookingDTOs = suggestions.Select(s => new BookingDTO
             {
                 Start = s.Start,
@@ -150,20 +148,12 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             }
             return arranged;
         }
-        public async Task<CustomerDTO?> GetCustomerByPhoneNumberAsync(string phoneNumber)
+        public async Task<CustomerDTO?> SearchPhoneNumber(string phoneNumber)
         {
-            return ToDTOAdapter.CustomerToDTO(await _customerRepository.GetByPhoneNumberAsync(phoneNumber));
-            //var privateCustomer = await _customerRepository.GetByPhoneAsync(phoneNumber);
-            //if (privateCustomer != null)
-            //{
-            //    return privateCustomer;
-            //}
-            //var companyCustomer = await _comCustomerRepository.GetByPhoneAsync(phoneNumber);
-            //if (companyCustomer != null)
-            //{
-            //    return companyCustomer;
-            //}
+            var customer = await _customerRepository.GetByPhoneNumberAsync(phoneNumber);
+            if (customer != null) return ToDTOAdapter.CustomerToDTO(customer);
             return null;
+
         }
         public async Task<CustomerDTO?> GetCustomerByIDAsync(int id)
         {

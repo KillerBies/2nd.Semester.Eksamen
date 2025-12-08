@@ -20,14 +20,16 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IBookingDomainService _bookingDomainService;
-        private readonly ScheduleService _scheduleService;
-        private readonly IScheduleRepository _scheduleRepository;
+        private readonly IScheduleDayRepository _scheduleRepository;
         private readonly DTO_to_Domain _toDomainAdapter;
-        public BookingApplicationService(DTO_to_Domain toDomainAdapter, IScheduleRepository scheduleRepository,ScheduleService scheduleService, IBookingRepository bookingRepository, IBookingDomainService bookingDomainService, ITreatmentBookingRepository treatmentBookingRepository, ICompanyCustomerRepository companyCustomerRepo)
+        public BookingApplicationService(
+            DTO_to_Domain toDomainAdapter, 
+            IScheduleDayRepository scheduleRepository, 
+            IBookingRepository bookingRepository, 
+            IBookingDomainService bookingDomainService)
         {
             _bookingRepository = bookingRepository;
             _bookingDomainService = bookingDomainService;
-            _scheduleService = scheduleService;
             _scheduleRepository = scheduleRepository;
             _toDomainAdapter = toDomainAdapter;
         }
@@ -39,9 +41,8 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 throw new ArgumentException("Booking must contain at least one treatment.");
             Booking Booking = await _toDomainAdapter.DTOBookingToDomain(booking);
             try
-            { 
+            {
                 await _bookingRepository.CreateNewBookingAsync(Booking);
-                await Task.WhenAll(Booking.Treatments.Select(t => _scheduleRepository.BookScheduleAsync(t)));
             }
             catch (Exception ex)
             {

@@ -24,10 +24,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         public async Task CreateNewAsync(Employee employee)
         {
             var _context = await _factory.CreateDbContextAsync();
-
-            if (employee.Schedule == null)
-                employee.Schedule = new EmployeeSchedule();
-
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
@@ -41,7 +37,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
                 throw;
             }
         }
-        public async Task<IEnumerable<Employee?>> GetAllAsync()
+        public async Task<IEnumerable<Employee>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
             return await _context.Employees.Include(c => c.Address).ToListAsync();
@@ -49,9 +45,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         public async Task UpdateAsync(Employee employee)
         {
             var _context = await _factory.CreateDbContextAsync();
-
-            if (employee.Schedule == null)
-                employee.Schedule = new EmployeeSchedule();
 
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
@@ -96,9 +89,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         public async Task<Employee?> GetByIDAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
-            var result = await _context.Employees
-                                       .Include(e => e.Address)
-                                       .FirstOrDefaultAsync(e => e.Id == id);
+            var result = await _context.Employees.Include(e=>e.Address).FirstOrDefaultAsync(e => e.Id ==id);
             return result;
         }
         public async Task<IEnumerable<Employee?>> GetByTreatmentSpecialtiesAsync(List<string> specialties)

@@ -24,13 +24,13 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
 
         //Employee Work details
         public string Specialties { get; set; }
-        public TimeSpan WorkStart { get; set; }
-        public TimeSpan WorkEnd { get; set; }
+        public TimeOnly WorkStart { get; set; }
+        public TimeOnly WorkEnd { get; set; }
         public string ExperienceLevel { get; private set; } = null!; // Shown as an enum in DTO and blazor
         public decimal BasePriceMultiplier { get; set; } = 1;
 
         //Schedule details
-        public EmployeeSchedule? Schedule { get; set; }
+        public IEnumerable<ScheduleDay> Schedule { get; set; }
         public List<TreatmentBooking> Appointments { get; set; } = new List<TreatmentBooking>();
         //public List<Treatment> TreatmentHistory { get; set; } = new List<TreatmentBooking>();
 
@@ -48,8 +48,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
             string type,
             string specialties,
             string gender,
-            TimeSpan workStart,
-            TimeSpan workEnd
+            TimeOnly workStart,
+            TimeOnly workEnd
         ) : base(firstname, address, phoneNumber, email)
         {
             TrySetLastName(firstname, lastname);

@@ -26,7 +26,8 @@ namespace Components.Pages.ProductPages.BookingPages
         [Inject] private BookingApplicationService _bookingApplicationService { get; set; }
         private string _errorMessage = string.Empty;
         [Parameter] public CustomerDTO Customer { get; set; }
-        [Inject] private Domain_to_DTO ToDTOAdapter {  get; set; }
+        private string CustomerName { get; set; } = "";
+        [Inject] private Domain_to_DTO ToDTOAdapter { get; set; }
         private BookingDTO Booking = new();
         // Filtered dates based on selection
         //Gets the CustomerID passed from url.
@@ -38,13 +39,14 @@ namespace Components.Pages.ProductPages.BookingPages
         private List<EmployeeDTO> AllEmployees = new();
         private List<BookingDTO> AvailableBookingSpots = new();
         private string timeCardError = string.Empty;
-        private DateOnly startDate = new();
+        private DateOnly startDate = DateOnly.FromDateTime(DateTime.Now);
         private int CurrentIndex = new();
         private Dictionary<int, List<BookingDTO>> Pages = new();
         private List<BookingDTO> CurrentPage = new();
         private BookingDTO timeSelected = new();
         private EditContext EditContext;
-        private CustomerDTO selectedCustomer {  get; set; }
+        private CustomerDTO selectedCustomer { get; set; }
+        public bool showPopup = false;
 
 
         private string[] DaysOfWeek { get; set; }
@@ -74,6 +76,7 @@ namespace Components.Pages.ProductPages.BookingPages
                 else
                 {
                     Booking.Customer = selectedCustomer;
+                    CustomerName = Booking.Customer.Name;
                 }
             }
             catch (Exception ex)
@@ -85,17 +88,18 @@ namespace Components.Pages.ProductPages.BookingPages
                 _errorMessage = "Unable to load data — the server or database is offline.";
             }
         }
-        private async Task Arrange()
+        private async Task StartTimeSelected(ChangeEventArgs e)
         {
-            Booking.TreatmentBookingDTOs = await _bookingQueryService.ArangeTreatments(Booking);
+            await refreshAvailableSlots();
         }
         private async Task CreateBooking()
         {
-            if(EditContext.Validate())
+            if (EditContext.Validate())
             {
                 try
-                {   
+                {
                     await _bookingApplicationService.CreateBookingAsync(Booking);
+                    Navi.NavigateTo("/");
                 }
                 catch (Exception ex)
                 {
@@ -109,7 +113,7 @@ namespace Components.Pages.ProductPages.BookingPages
         }
         private async Task FowardPage()
         {
-            if (Pages.TryGetValue(CurrentIndex+1, out _))
+            if (Pages.TryGetValue(CurrentIndex + 1, out _))
             {
                 CurrentIndex += 1;
             }
@@ -121,7 +125,7 @@ namespace Components.Pages.ProductPages.BookingPages
         }
         private void PageBackwards()
         {
-            if(!(CurrentIndex<=0)) CurrentIndex -= 1;
+            if (!(CurrentIndex <= 0)) CurrentIndex -= 1;
         }
 
         private async Task refreshAvailableSlots()
@@ -199,13 +203,13 @@ namespace Components.Pages.ProductPages.BookingPages
         private async Task ToggleDropdown()
         {
             await refreshAvailableSlots();
-        } 
+        }
         private void SelectTimeSlot(BookingDTO slot)
         {
             timeSelected = slot;
             Booking.Start = slot.Start;
             Booking.End = slot.End;
-            for(int i = 0; i<slot.TreatmentBookingDTOs.Count();i++)
+            for (int i = 0; i < slot.TreatmentBookingDTOs.Count(); i++)
             {
                 Booking.TreatmentBookingDTOs[i].Start = slot.TreatmentBookingDTOs[i].Start;
                 Booking.TreatmentBookingDTOs[i].End = slot.TreatmentBookingDTOs[i].End;
@@ -219,9 +223,12 @@ namespace Components.Pages.ProductPages.BookingPages
 
         private bool checkfields()
         {
-            return Booking.TreatmentBookingDTOs.Any(tb => tb.Employee.EmployeeId == 0 || tb.Treatment == null || tb.Employee == null ||string.IsNullOrEmpty(tb.Treatment.Category) || tb.Treatment.TreatmentId == 0);
+            return Booking.TreatmentBookingDTOs.Any(tb => tb.Employee.EmployeeId == 0 || tb.Treatment == null || tb.Employee == null || string.IsNullOrEmpty(tb.Treatment.Category) || tb.Treatment.TreatmentId == 0);
         }
-
+        private bool checkfieldsAndTime()
+        {
+            return Booking.TreatmentBookingDTOs.Any(tb => tb.Employee.EmployeeId == 0 || tb.Treatment == null || tb.Employee == null || string.IsNullOrEmpty(tb.Treatment.Category) || tb.Treatment.TreatmentId == 0 || tb.Start > tb.End || tb.Start == tb.End);
+        }
 
 
         // Bound to dropdown
