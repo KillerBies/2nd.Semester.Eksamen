@@ -1,0 +1,93 @@
+﻿@page "/Create-Treatment"
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@inject ITreatmentService treatmentService;
+@using _2nd.Semester.Eksamen.Application.Adapters;
+@inject DTO_to_Domain dtoDomain;
+@rendermode InteractiveServer
+
+<EditForm Model="@treatment" OnValidSubmit="@HandleValidSubmit" class="col-10 p-0" FormName="CreateTreatment">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="whole-form">
+
+		<div class="form-group">
+			<label for="Name" class="form-labels">Navn:</label>
+			<InputText id="Name" @bind-Value="treatment.Name" class="form-control" placeholder="Navn..." />
+		</div>
+
+		<div class="form-group">
+			<label for="Category" class="form-labels">Kategori:</label>
+			<InputText id="Category" @bind-Value="treatment.Category" class="form-control" placeholder="Kategori..." />
+		</div>
+
+		<div class="form-group">
+			<label for="Price" class="form-labels">Pris:</label>
+			<InputNumber id="Price" @bind-Value="treatment.BasePrice" class="form-control" placeholder="Pris..." />
+		</div>
+		
+		<div class="form-group">
+			<label for="Hour" class="form-labels">Timer:</label>
+			<InputNumber id="Hour" @bind-Value="hour" class="form-control" placeholder="Timer..." />
+			<label for="Min" class="form-labels">Minutter:</label>
+			<InputNumber id="Min" @bind-Value="min" class="form-control" placeholder="Minutter..." />
+		</div>
+
+		<div class="form-group">
+			<label for="ExistingSpecialty" class="form-labels">Vælg eksisterende specialitet:</label>
+			<select multiple class="form-control" @onchange="OnSpecialtiesChanged">
+				@foreach (var specialty in specialties)
+				{
+					<option value="@specialty">@specialty</option>
+				}
+			</select>
+		</div>
+
+		<div class="form-group">
+			<label for="Description" class="form-labels"> Beskrivelse</label>
+			<InputTextArea id="Notes" @bind-Value="@treatment.Description" maxlength="200" class="form-control" placeholder="Beskrivelse..." />
+
+		</div>
+
+		<div class="form-btn">
+			<button type="submit" class="btn btn-primary">Opret behandlingstype</button>
+		</div>
+
+	</div>
+</EditForm>
+
+
+
+
+
+
+
+
+
+@code {
+	TreatmentDTO treatment = new TreatmentDTO();
+	public int hour;
+	public int min;
+	List<string> specialties = new();
+	List<string> selectedSpecialties = new();
+	private void OnSpecialtiesChanged(ChangeEventArgs e)
+	{
+		var selectedOptions = e.Value as IEnumerable<string>;
+
+		selectedSpecialties = selectedOptions?.Select(s => s + ", ").ToList()?? new List<string>();
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		specialties = await treatmentService.GetAllUniqueSpecialtiesAsync();
+	}
+
+	public async Task HandleValidSubmit()
+	{
+		treatment.Duration = new TimeSpan(hour, min, 0);
+		treatment.RequiredSpecialties = selectedSpecialties;
+		await treatmentService.CreateNewTreatmentAsync(treatment);
+	}
+
+
+}

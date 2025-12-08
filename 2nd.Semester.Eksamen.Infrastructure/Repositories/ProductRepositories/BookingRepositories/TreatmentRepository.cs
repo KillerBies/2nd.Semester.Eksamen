@@ -88,5 +88,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             await using var _context = await _factory.CreateDbContextAsync();
             return await _context.Treatments.Where(t => t.Category == category).ToListAsync();
         }
+
+        
+
     }
 }

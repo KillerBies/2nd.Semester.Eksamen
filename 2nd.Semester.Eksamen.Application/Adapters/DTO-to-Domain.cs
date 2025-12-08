@@ -23,6 +23,7 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         private readonly ITreatmentRepository _treatmentRepository;
         private readonly IBookingRepository _bookingRepository;
         private readonly ICustomerRepository _customerRepository;
+        
         public DTO_to_Domain(ICustomerRepository customerRepository,IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository)
         {
             _bookingRepository = bookingRepository;
