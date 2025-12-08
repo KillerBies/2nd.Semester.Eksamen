@@ -17,7 +17,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
         }
         public int EmployeeId { get; set; }
         public Employee Employee { get; }
-        public List<ScheduleDay> Days { get; set; }
+        public List<ScheduleDay> Days { get; set; } = new();
 
         private Dictionary<DateOnly, ScheduleDay> _days = new();
         public ScheduleDay GetOrCreateDay(DateOnly date, TimeOnly workStart, TimeOnly workEnd)

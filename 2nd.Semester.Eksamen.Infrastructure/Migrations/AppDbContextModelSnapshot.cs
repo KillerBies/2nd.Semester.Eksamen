@@ -39,6 +39,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<decimal>("DiscountAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+                    b.Property<bool>("IsLoyalty")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -47,9 +49,16 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<int>("NumberOfUses")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("ProductDiscount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TreatmentDiscount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Discount");
 
                     b.UseTptMappingStrategy();
                 });
@@ -133,13 +142,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderSnapshotId")
-                        .HasColumnType("int");
 
-                    b.HasKey("Id");
 
-                    b.HasIndex("OrderSnapshotId")
-                        .IsUnique();
 
                     b.ToTable("AppliedDiscountSnapshots");
                 });
@@ -152,17 +156,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CustomerSnapshotId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OrderSnapshotId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderSnapshotId")
                         .IsUnique()
-                        .HasFilter("[OrderSnapshotId] IS NOT NULL");
 
                     b.ToTable("BookingsSnapshots");
                 });
@@ -175,7 +173,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BookingSnapshotId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -188,8 +185,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookingSnapshotId")
-                        .IsUnique();
 
                     b.ToTable("CustomerSnapshots");
 
@@ -207,12 +202,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<int>("NumberOfProducts")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderSnapshotId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderSnapshotId");
+
+                    b.HasIndex("ProductSnapshotId");
 
                     b.ToTable("OrderLinesSnapshots");
                 });
@@ -224,6 +220,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AppliedSnapshotId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BookingSnapshotId")
+                        .HasColumnType("int");
 
                     b.Property<decimal?>("CustomDiscount")
                         .HasColumnType("decimal(18,2)");
@@ -239,6 +241,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AppliedSnapshotId")
+                        .IsUnique()
+                        .HasFilter("[AppliedSnapshotId] IS NOT NULL");
+
+                    b.HasIndex("BookingSnapshotId")
+                        .IsUnique()
+                        .HasFilter("[BookingSnapshotId] IS NOT NULL");
+
                     b.ToTable("OrderSnapshots");
                 });
 
@@ -250,7 +260,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("DiscountedPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Discriminator")
@@ -281,9 +290,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.ToTable("ProductSnapshots");
 
-                    b.HasDiscriminator().HasValue("ProductSnapshot");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Address", b =>
@@ -541,9 +547,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppliedDiscountId");
-
-                    b.HasIndex("BookingId");
 
                     b.ToTable("Orders");
                 });
@@ -565,13 +568,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<int>("OrderID")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LineProductId");
 
                     b.HasIndex("OrderID");
 
-                    b.ToTable("OrderLine");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Product", b =>
@@ -589,7 +594,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("DiscountedPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Discriminator")
@@ -722,7 +726,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 {
                     b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot");
 
-                    b.Property<int>("BookingSnapshotId")
                         .HasColumnType("int");
 
                     b.Property<string>("Category")
@@ -730,7 +733,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasIndex("BookingSnapshotId");
 
-                    b.HasDiscriminator().HasValue("TreatmentSnapshot");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.CompanyCustomer", b =>
@@ -821,23 +823,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.OrderSnapshot", "OrderSnapshot")
                         .WithOne("BookingSnapshot")
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", "OrderSnapshotId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("OrderSnapshot");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.CustomerSnapshot", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", "BookingSnapshot")
                         .WithOne("CustomerSnapshot")
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.History.CustomerSnapshot", "BookingSnapshotId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
 
-                    b.Navigation("BookingSnapshot");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.OrderLineSnapshot", b =>
@@ -845,26 +839,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.OrderSnapshot", "OrderSnapshot")
                         .WithMany("OrderLinesSnapshot")
                         .HasForeignKey("OrderSnapshotId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("OrderSnapshot");
+
+                    b.Navigation("ProductSnapshot");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.OrderLineSnapshot", "OrderLineSnapshot")
-                        .WithOne("ProductSnapshot")
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot", "OrderLineSnapshotId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.TreatmentSnapshot", "TreatmentSnapshot")
-                        .WithMany()
-                        .HasForeignKey("TreatmentSnapshotId");
 
-                    b.Navigation("OrderLineSnapshot");
 
-                    b.Navigation("TreatmentSnapshot");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer", b =>
@@ -932,11 +918,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.TreatmentBooking", "TreatmentBooking")
-                        .WithMany("ProductsUsed")
                         .HasForeignKey("TreatmentBookingID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -955,9 +939,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Booking", "Booking")
-                        .WithMany()
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AppliedDiscount");
@@ -976,7 +957,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Order", "Order")
                         .WithMany("Products")
                         .HasForeignKey("OrderID")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("LineProduct");
@@ -1047,13 +1027,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", "BookingSnapshot")
                         .WithMany("TreatmentSnapshot")
                         .HasForeignKey("BookingSnapshotId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("BookingSnapshot");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", b =>
                 {
                     b.Navigation("CustomerSnapshot")
                         .IsRequired();
@@ -1061,25 +1039,28 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Navigation("TreatmentSnapshot");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.CustomerSnapshot", b =>
                 {
-                    b.Navigation("AddressSnapshot")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.OrderLineSnapshot", b =>
                 {
-                    b.Navigation("ProductSnapshot");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.OrderSnapshot", b =>
                 {
                     b.Navigation("AppliedDiscountSnapshot");
 
                     b.Navigation("BookingSnapshot")
                         .IsRequired();
+                });
 
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.OrderSnapshot", b =>
+                {
                     b.Navigation("OrderLinesSnapshot");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot", b =>
+                {
+                    b.Navigation("OrderLines");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer", b =>
@@ -1093,18 +1074,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 {
                     b.Navigation("Appointments");
 
-                    b.Navigation("Schedule")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Booking", b =>
                 {
+                    b.Navigation("Order")
+                        .IsRequired();
+
                     b.Navigation("Treatments");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.TreatmentBooking", b =>
                 {
-                    b.Navigation("ProductsUsed");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Order", b =>

@@ -9,14 +9,38 @@ using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 {
-    public class Order: BaseEntity
+    public class Order : BaseEntity
     {
-        public Booking Booking { get; private set; } = null!;
-        public List<OrderLine> Products { get; private set; } = null!;
-        public decimal Total { get; private set; } = 0;
-        public decimal DiscountedTotal { get; private set; } = 0;
-        public Discount AppliedDiscount { get; private set; } = null!;
+        public int BookingId { get; set; }
+        public Booking Booking { get;  set; } = null!;
+        public decimal Total { get; private set; }
+        public decimal DiscountedTotal { get; private set; }
+        public int AppliedDiscountId { get; private set; }
+        public List<OrderLine> Products { get; set; } = new List<OrderLine>();
 
-        public Order() { }
+
+        public Order(int bookingId, decimal total, decimal discountedTotal, int appliedDiscountId)
+        {
+            BookingId = bookingId;
+            Total = total;
+            DiscountedTotal = discountedTotal;
+            AppliedDiscountId = appliedDiscountId;
+        }
+
+
+        public void UpdateTotals(decimal total, decimal discountedTotal, int? appliedDiscountId)
+        {
+            Total = total;
+            DiscountedTotal = discountedTotal;
+            AppliedDiscountId = appliedDiscountId ?? 0;
+        }
+
+
+        public void AddOrderLine(OrderLine line)
+        {
+            if (!Products.Contains(line))
+                Products.Add(line);
+        }
     }
+
 }

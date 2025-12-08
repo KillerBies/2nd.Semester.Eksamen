@@ -16,9 +16,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts
 
         //Customer details
         public int CustomerId { get; set; }
-        public Customer Customer { get; set; } 
+        public Customer Customer { get; set; }
 
         //Booking details
+        public Order Order { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public TimeSpan Duration {  get; set; }

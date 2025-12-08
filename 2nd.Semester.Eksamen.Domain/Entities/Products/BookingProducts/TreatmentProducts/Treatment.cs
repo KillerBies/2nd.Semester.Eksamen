@@ -21,6 +21,13 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
         {
             Category = category;
             Duration = duration;
+           
+        }
+        public Treatment(string name, decimal price, string discription, string category, TimeSpan duration, List<string> requiredSpecialties) : base(name, price, discription)
+        {
+            Category = category;
+            Duration = duration;
+            RequiredSpecialties = requiredSpecialties;
         }
         public Treatment() { }
 

@@ -8,7 +8,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts
 {
     public enum BookingStatus
     {
-        Pending,
-        Completed
+        Pending = 0,
+        Completed = 1
     }
 }

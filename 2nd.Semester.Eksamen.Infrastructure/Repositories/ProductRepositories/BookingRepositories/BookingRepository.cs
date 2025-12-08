@@ -55,7 +55,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         public async Task<Booking?> GetByIDAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Bookings.FindAsync(id);
+            return await _context.Bookings
+        .Include(b => b.Customer)
+            .ThenInclude(c => c.Address)
+
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.Treatment)
+
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.TreatmentBookingProducts)
+                .ThenInclude(tbp => tbp.Product)
+
+        .FirstOrDefaultAsync(b => b.Id == id);
         }
         public async Task<IEnumerable<Booking?>> GetAllAsync()
         {
@@ -92,6 +103,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         {
             var _context = await _factory.CreateDbContextAsync();
             return await _context.Bookings.AnyAsync(b=>b.CustomerId == Booking.CustomerId && b.Overlaps(Booking.Start, Booking.End));
+        }
+        public async Task<Booking> GetByIdAsync(int bookingId)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings
+                .Include(b => b.Customer)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
         }
     }
 }
