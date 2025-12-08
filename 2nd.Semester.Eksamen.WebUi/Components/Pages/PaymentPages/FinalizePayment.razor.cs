@@ -29,8 +29,12 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
         // For Razor table
         private List<ProductDiscountInfoDTO> itemDiscounts = new();
 
-        [Inject] private IOrderService OrderService { get; set; } = default!;
-        [Inject] public ICustomerService CustomerService { get; set; } = default!;
+        [Inject] private IOrderService _orderService { get; set; } = default!;
+        [Inject] private ICustomerService _customerService { get; set; } = default!;
+        [Inject] private IDiscountCalculator _discountCalculator { get; set; } = default!;
+
+        [Inject] private IInvoiceService _invoiceService { get; set; }
+
 
         protected override async Task OnInitializedAsync()
         {
@@ -39,10 +43,10 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
             try
             {
-                customer = await CustomerService.GetByIDAsync(id) as PrivateCustomer;
+                customer = await _customerService.GetByIDAsync(id) as PrivateCustomer;
                 if (customer == null) throw new Exception("Customer not found");
 
-                var booking = await CustomerService.GetNextPendingBookingAsync(customer.Id);
+                var booking = await _customerService.GetNextPendingBookingAsync(customer.Id);
                 if (booking == null)
                 {
                     errorMessage = "No pending booking found for this customer.";
@@ -61,7 +65,8 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
                 // Get totals & discounts
                 (originalTotal, bestDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
-                    await OrderService.CalculateBestDiscountsPerItemAsync(customer.Id, products);
+                    await _discountCalculator.CalculateAsync(customer.Id, products);
+
 
                 // compare best discount using actual discount amounts
                 decimal bestDiscountAmount = bestDiscount != null
@@ -96,7 +101,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
             try
             {
-                var booking = await CustomerService.GetNextPendingBookingAsync(customer.Id);
+                var booking = await _customerService.GetNextPendingBookingAsync(customer.Id);
                 if (booking == null)
                 {
                     errorMessage = "No pending booking found.";
@@ -104,24 +109,33 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                 }
 
                 // Let OrderService handle creating/updating order & order lines
-                var order = await OrderService.CreateOrUpdateOrderForBookingAsync(booking.Id);
+                var order = await _orderService.CreateOrUpdateOrderForBookingAsync(booking.Id);
 
                 customer.AddVisit();
 
                 if (appliedDiscount != null)
                 {
                     appliedDiscount.NumberOfUses++;
-                    await CustomerService.UpdateDiscountAsync(appliedDiscount);
+                    await _customerService.UpdateDiscountAsync(appliedDiscount);
                 }
 
 
-                await CustomerService.UpdateAsync(customer);
+                await _customerService.UpdateAsync(customer);
 
                 booking.Status = BookingStatus.Completed;
-                await CustomerService.UpdateBookingAsync(booking);
+                await _customerService.UpdateBookingAsync(booking);
 
                 paymentSuccess = true;
                 Console.WriteLine($"Order #{order.Id} created with {products.Count} unique products.");
+
+                //ONLY A TEST TO SEE IF CREATING SNAPSHOT WORKS!!!!!!!!
+                await _invoiceService.CreateSnapshotInDBAsync(order);
+
+                if (!customer.SaveAsCustomer)
+                { //TODO: Fix error around cascading delete of customer + booking
+                    //await CustomerService.DeleteAsync(customer);
+                }
+
             }
             catch (Exception ex)
             {
@@ -131,6 +145,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
             finally
             {
                 isLoading = false;
+
             }
         }
 

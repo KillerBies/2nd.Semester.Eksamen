@@ -15,7 +15,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         
         public OrderSnapshot OrderSnapshot { get; set; }
         private AppliedDiscountSnapshot() { }
-
         public AppliedDiscountSnapshot(Discount discount)
         {
             if (discount == null) return;
@@ -23,8 +22,5 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             ProductDiscount = discount.ProductDiscount; 
             TreatmentDiscount = discount.TreatmentDiscount;
         }
-
-
     }
-
 }

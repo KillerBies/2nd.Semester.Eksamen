@@ -14,7 +14,6 @@ using System.Xml.Linq;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
 {
-    [NotMapped]
     public class Discount : BaseEntity
     {
         public string Name { get; set; } = string.Empty;
