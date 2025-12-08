@@ -25,7 +25,7 @@ namespace Components.Pages.PersonPages.EmployeePages
         protected override async Task OnInitializedAsync()
         {
             Employee = await _repo.GetByIDAsync(Id);
-        } 
+        }
         private void StartEdit()
         {
             Nav.NavigateTo($"/edit-employee/{Employee.Id}");

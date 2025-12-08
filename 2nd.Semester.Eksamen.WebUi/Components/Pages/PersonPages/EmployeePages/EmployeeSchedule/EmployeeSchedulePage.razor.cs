@@ -4,7 +4,6 @@ using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
 using Microsoft.AspNetCore.Components;
 using Radzen;
-using Syncfusion.Blazor.Schedule.Internal;
 
 namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
 {
