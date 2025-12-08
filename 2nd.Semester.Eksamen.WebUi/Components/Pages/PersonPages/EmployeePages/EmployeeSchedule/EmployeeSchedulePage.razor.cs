@@ -122,7 +122,6 @@ namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
         private void OnAddToSchedule()
         {
             ShowAddWindow = true;
-            System.Diagnostics.Debug.WriteLine(ShowAddWindow);
         }
 
         private async Task OnConfirmAddVication()

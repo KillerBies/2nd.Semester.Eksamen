@@ -39,7 +39,7 @@ namespace Components.Pages.ProductPages.BookingPages
         private List<EmployeeDTO> AllEmployees = new();
         private List<BookingDTO> AvailableBookingSpots = new();
         private string timeCardError = string.Empty;
-        private DateOnly startDate = new();
+        private DateOnly startDate = DateOnly.FromDateTime(DateTime.Now);
         private int CurrentIndex = new();
         private Dictionary<int, List<BookingDTO>> Pages = new();
         private List<BookingDTO> CurrentPage = new();
@@ -88,7 +88,7 @@ namespace Components.Pages.ProductPages.BookingPages
                 _errorMessage = "Unable to load data — the server or database is offline.";
             }
         }
-        private async Task StartTimeSelected()
+        private async Task StartTimeSelected(ChangeEventArgs e)
         {
             await refreshAvailableSlots();
         }
