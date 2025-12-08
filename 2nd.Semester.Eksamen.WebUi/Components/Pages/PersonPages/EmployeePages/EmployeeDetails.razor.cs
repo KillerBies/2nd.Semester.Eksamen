@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace Components.Pages.PersonPages.EmployeePages
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 {
     public partial class EmployeeDetails
-{
+    {
         [Parameter] public int Id { get; set; }
         [Inject] NavigationManager Nav { get; set; }
         private Employee Employee { get; set; }
