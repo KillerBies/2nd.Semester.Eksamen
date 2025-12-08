@@ -15,17 +15,15 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
     {
         private readonly ICustomerService _customerService;
         private readonly IOrderLineService _orderLineService;
-        private readonly IInvoiceService _invoiceService;
         private readonly IDiscountCalculator _discountCalculator;
 
         public OrderService(ICustomerService customerService,
                             IOrderLineService orderLineService,
-                            IInvoiceService invoiceService,
                             IDiscountCalculator discountCalculator)
         {
             _customerService = customerService;
             _orderLineService = orderLineService;
-            _invoiceService = invoiceService;
+            _discountCalculator = discountCalculator;
         }
 
         public async Task<Order> CreateOrUpdateOrderForBookingAsync(int bookingId)
@@ -80,10 +78,6 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 order = new Order(bookingId, originalTotal, finalTotal, appliedDiscount?.Id ?? 0);
 
                 await _customerService.AddOrderAsync(order);
-                
-                //ONLY A TEST TO SEE IF CREATING SNAPSHOT WORKS!!!!!!!!
-                await _invoiceService.CreateSnapshotInDBAsync(order);
-
 
             }       
             else
@@ -105,6 +99,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     NumberOfProducts = group.Count()
                 });
             }
+
         }
 
         private async Task MarkBookingCompletedAsync(Booking booking)
