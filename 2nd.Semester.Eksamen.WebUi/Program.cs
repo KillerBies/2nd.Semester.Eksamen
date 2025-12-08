@@ -30,6 +30,7 @@ using _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces;
 using QuestPDF.Infrastructure;
 using _2nd.Semester.Eksamen.Infrastructure.PDFManagement;
+using _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -42,6 +43,7 @@ builder.Services.AddDbContextFactory<AppDbContext>(options =>
     b => b.MigrationsAssembly("2nd.Semester.Eksamen.Infrastructure")));
 builder.Services.AddScoped<ITreatmentRepository,TreatmentRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ITreatmentBookingRepository, TreatmentBookingRepository>();
@@ -50,18 +52,17 @@ builder.Services.AddScoped<PrivateCustomerService>();
 builder.Services.AddScoped<CompanyCustomerService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<EmployeeSpecialtyService>();
-builder.Services.AddScoped<BookingApplicationService>();
+builder.Services.AddScoped<IScheduleDayRepository,ScheduleDayRepository>();
 builder.Services.AddScoped<BookingQueryService>();
 builder.Services.AddScoped<CreateEmployeeCommand>();
 builder.Services.AddScoped<ISuggestionService, BookingSuggestionService>();
 builder.Services.AddScoped<IBookingDomainService, BookingDomainService>();
 builder.Services.AddScoped<ICompanyCustomerRepository, CompanyCustomerRepository>();
 builder.Services.AddScoped<IPrivateCustomerRepository, PrivateCustomerRepository>();
-builder.Services.AddScoped<ScheduleService>();
-builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<DTO_to_Domain>();
 builder.Services.AddScoped<Domain_to_DTO>();
+builder.Services.AddScoped<BookingApplicationService>();
 builder.Services.AddScoped<UpdateEmployeeCommand>();
 builder.Services.AddScoped<ReadEmployeeUserCardsCommand>();
 builder.Services.AddScoped<IBookingService, BookingService>();

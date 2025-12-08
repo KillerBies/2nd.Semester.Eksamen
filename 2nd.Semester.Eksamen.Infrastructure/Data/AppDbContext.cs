@@ -54,7 +54,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         public DbSet<Discount> Discounts { get; set; }
 
         //Schedule data
-        public DbSet<EmployeeSchedule> EmployeeSchedules { get; set; }
         public DbSet<ScheduleDay> ScheduleDays { get; set; }
         public DbSet<TimeRange> TimeRanges { get; set; }
 
@@ -94,20 +93,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
 
             modelBuilder.Entity<Employee>()
-                .HasOne<EmployeeSchedule>(b => b.Schedule)
+                .HasMany<ScheduleDay>(b => b.Schedule)
                 .WithOne(s => s.Employee)
                 .OnDelete(DeleteBehavior.Cascade);
-
-
-            modelBuilder.Entity<EmployeeSchedule>()
-                .HasMany(es => es.Days)
-                .WithOne(sd => sd.Schedule)
-                .OnDelete(DeleteBehavior.Cascade);
-
             modelBuilder.Entity<ScheduleDay>()
-                .HasMany<TimeRange>(sd => sd.TimeRanges)
-                .WithOne(tr => tr.ScheduleDay)
+                .HasMany<TimeRange>(b => b.TimeRanges)
+                .WithOne(s => s.ScheduleDay)
                 .OnDelete(DeleteBehavior.Cascade);
+
 
 
 
@@ -187,6 +180,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
             modelBuilder.Entity<Customer>()
                 .HasMany(b => b.BookingHistory);
+            modelBuilder.Entity<Customer>()
+                .Property(e => e.PointBalance)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.BasePriceMultiplier)
