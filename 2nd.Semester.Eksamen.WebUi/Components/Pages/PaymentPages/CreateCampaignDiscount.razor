@@ -1,105 +1,124 @@
 ﻿@page "/create-campaign"
-@using YourProject.Application.DTO
-@using YourProject.Application.Interfaces
-@inject ICampaignService campaignService
+@using _2nd.Semester.Eksamen.Domain.Entities.Discounts
+@using _2nd.Semester.Eksamen.Application.Services
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@inject IDiscountApplicationService campaignService
 @inject NavigationManager Navi
 @rendermode InteractiveServer
+<div style="width:30%; height:96vh; align-content:center; align-items:center; display:flex; justify-content:center; margin:0 auto;">
+    <FloatingPage PageContentScrollable="false">
+        <EditForm Model="@campaignDTO" class="row p-3" @onclick:stopPropagation="true">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-<EditForm Model="@campaignDTO" OnValidSubmit="@HandleValidSubmit" class="row p-3" FormName="CreateCampaignForm">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+            <div style="text-align:center;">
+                <h1>Opret Kampagne</h1>
+            </div>
 
-    <div style="text-align:center;">
-        <h1>Opret Kampagne</h1>
-    </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="Name" class="form-labels">Navn:</label>
+                    <InputText id="Name" @bind-Value="campaignDTO.Name" class="form-control" placeholder="Kampagnenavn..." />
+                </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <label for="Name" class="form-labels">Navn:</label>
-            <InputText id="Name" @bind-Value="campaignDTO.Name" class="form-control" placeholder="Kampagnenavn..." />
+                <div class="col-md-6">
+                    <label for="Description" class="form-labels">Beskrivelse:</label>
+                    <InputTextArea id="Description" @bind-Value="campaignDTO.Description" class="form-control" placeholder="Beskrivelse..." maxlength="500" />
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <label for="TreatmentDiscount" class="form-labels">Rabat på behandling (%):</label>
+                    <InputNumber id="TreatmentDiscount" @bind-Value="campaignDTO.TreatmentDiscount" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="ProductDiscount" class="form-labels">Rabat på produkter (%):</label>
+                    <InputNumber id="ProductDiscount" @bind-Value="campaignDTO.ProductDiscount" class="form-control" />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <label for="Start" class="form-labels">Startdato:</label>
+                    <InputDate id="Start" @bind-Value="campaignDTO.Start" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="End" class="form-labels">Slutdato:</label>
+                    <InputDate id="End" @bind-Value="campaignDTO.End" class="form-control" />
+                </div>
+            </div>
+            <div @onclick:stopPropagation="true">
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <label class="form-labels">Gælder for behandlinger:</label>
+                        <InputCheckbox @bind-Value="campaignDTO.AppliesToTreatment" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-labels">Gælder for produkter:</label>
+                        <InputCheckbox @bind-Value="campaignDTO.AppliesToProduct" />
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-12 text-center">
+                    <button class="btn btn-outline-secondary w-75 " type="button" @onclick="popUp" @onclick:stopPropagation="true">
+                        Vælg produkter...
+                    </button>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-primary col-md-12" @onclick="HandleValidSubmit" @onclick:stopPropagation="true">Opret Kampagne</button>
+                </div>
+            </div>
+        </EditForm>
+    </FloatingPage>
+</div>
+@if(OpenPopUp)
+{
+    <BookingNotification IsVisible="OpenPopUp">
+        <div style="overflow-y: auto;" @onclick:stopPropagation="true">
+            @foreach (var product in allProducts)
+            {
+                <div class="card shadow-sm">
+                        <label class="form-check-label">@product.Name</label>
+                        <InputCheckbox @bind-Value="product.Selected" class="form-check-input" />
+                </div>
+            }
         </div>
-
-        <div class="col-md-6">
-            <label for="Description" class="form-labels">Beskrivelse:</label>
-            <InputTextArea id="Description" @bind-Value="campaignDTO.Description" class="form-control" placeholder="Beskrivelse..." maxlength="500" />
-        </div>
-    </div>
-
-    <div class="row mt-3">
-        <div class="col-md-6">
-            <label for="TreatmentDiscount" class="form-labels">Rabat på behandling (%):</label>
-            <InputNumber id="TreatmentDiscount" @bind-Value="campaignDTO.TreatmentDiscount" class="form-control" />
-        </div>
-
-        <div class="col-md-6">
-            <label for="ProductDiscount" class="form-labels">Rabat på produkter (%):</label>
-            <InputNumber id="ProductDiscount" @bind-Value="campaignDTO.ProductDiscount" class="form-control" />
-        </div>
-    </div>
-
-    <div class="row mt-3">
-        <div class="col-md-6">
-            <label class="form-labels">Gælder for behandlinger:</label>
-            <InputCheckbox @bind-Value="campaignDTO.AppliesToTreatment" class="form-check-input" />
-        </div>
-
-        <div class="col-md-6">
-            <label class="form-labels">Gælder for produkter:</label>
-            <InputCheckbox @bind-Value="campaignDTO.AppliesToProduct" class="form-check-input" />
-        </div>
-    </div>
-
-    <div class="row mt-3">
-        <div class="col-md-6">
-            <label for="Start" class="form-labels">Startdato:</label>
-            <InputDate id="Start" @bind-Value="campaignDTO.Start" class="form-control" />
-        </div>
-
-        <div class="col-md-6">
-            <label for="End" class="form-labels">Slutdato:</label>
-            <InputDate id="End" @bind-Value="campaignDTO.End" class="form-control" />
-        </div>
-    </div>
-
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <label class="form-labels">Vælg produkter:</label>
-            <select multiple class="form-select" @bind="campaignDTO.ProductIds">
-                @foreach (var product in allProducts)
-                {
-                    <option value="@product.Id">@product.Name</option>
-                }
-            </select>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-primary col-md-12">Opret Kampagne</button>
-        </div>
-    </div>
-</EditForm>
+    </BookingNotification>
+}
 
 @code {
-    private C campaignDTO = new();
-    private List<ProductDTO> allProducts = new();
-
+    private CampaignDiscountDTO campaignDTO = new();
+    private List<ProductItem> allProducts = new();
+    private bool OpenPopUp = false;
     protected override async Task OnInitializedAsync()
     {
-        // Load all products for selection
-        allProducts = await campaignService.GetAllProductsAsync();
-    }
+        allProducts = (await campaignService.GetAllProductsAsync()).Select(p => new ProductItem() { Id = p.ProductId, Name = p.Name, Selected = false }).ToList();
 
+    }
+    private void popUp()
+    {
+        OpenPopUp = !OpenPopUp;
+    }
     private async Task HandleValidSubmit()
     {
-        int id = await campaignService.CreateCampaignAsync(campaignDTO);
-        Navi.NavigateTo($"/campaigns/{id}");
+        campaignDTO.ProductIds.AddRange(allProducts.Where(p => p.Selected == true).Select(p => p.Id).ToList());
+        await campaignService.CreateNewCampaignDiscountAsync(campaignDTO);
+        Navi.NavigateTo("/");
     }
 
-    // ProductDTO for listing in the select
-    public class ProductDTO
+    public class ProductItem
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public bool Selected { get; set; }
     }
 }

@@ -1,0 +1,61 @@
+﻿@page "/create-product"
+@using _2nd.Semester.Eksamen.Domain.Entities.Products
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@inject IProductService productService
+@inject NavigationManager Navi
+@rendermode InteractiveServer
+
+<div class="d-flex justify-content-center align-items-start" style="height:95vh; padding-top:30px;">
+    <div style="width:400px;">
+        <EditForm Model="@productDTO" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <h2 class="text-center mb-4">Opret Produkt</h2>
+
+            <div class="mb-3">
+                <label class="form-label">Navn:</label>
+                <InputText @bind-Value="productDTO.Name" class="form-control" placeholder="Produktnavn..." />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Pris:</label>
+                <InputNumber @bind-Value="productDTO.Price" class="form-control" placeholder="Pris..." />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Beskrivelse:</label>
+                <InputTextArea @bind-Value="productDTO.Description" class="form-control" placeholder="Beskrivelse..." maxlength="500" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Rabatteret pris (valgfrit):</label>
+                <InputNumber @bind-Value="productDTO.DiscountedPrice" class="form-control" placeholder="Rabatteret pris..." />
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary w-75">Opret Produkt</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private ProductDTO productDTO = new();
+
+    private async Task HandleValidSubmit()
+    {
+        await productService.CreateProductAsync(productDTO);
+        Navi.NavigateTo("/products"); // Navigate back to product list after creation
+    }
+
+    // DTO for binding
+    public class ProductDTO
+    {
+        public string Name { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public decimal? DiscountedPrice { get; set; }
+    }
+}

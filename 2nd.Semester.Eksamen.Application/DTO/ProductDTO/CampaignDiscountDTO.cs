@@ -26,10 +26,10 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
         public bool AppliesToProduct { get; set; }
 
         [Required(ErrorMessage = "Startdato er påkrævet.")]
-        public DateTime Start { get; set; }
+        public DateTime Start { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "Slutdato er påkrævet.")]
-        public DateTime End { get; set; }
+        public DateTime End { get; set; } = DateTime.Now;
 
         [StringLength(500, ErrorMessage = "Beskrivelse må maks være 500 tegn.")]
         public string Description { get; set; } = string.Empty;
