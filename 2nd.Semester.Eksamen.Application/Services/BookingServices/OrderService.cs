@@ -104,7 +104,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
                 var orderLine = new OrderLine
                 {
-                    
+                    OrderID = order.Id,
                     ProductId = productId,
                     NumberOfProducts = quantity
                 };
