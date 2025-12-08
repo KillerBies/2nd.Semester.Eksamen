@@ -24,7 +24,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
         {
             if (Treatment.TreatmentId != 0 && Employee.EmployeeId != 0)
             {
-                Price = Employee.BasePriceMultiplier * Treatment.BasePrice;
+                Price = Math.Round(Employee.BasePriceMultiplier * Treatment.BasePrice);
             }
         }
 

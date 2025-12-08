@@ -7,7 +7,7 @@ body {
 
 
 .form-labels {
-    color: white;
+    color: black;
 }
 .form-group {
     background-color: #034265;
@@ -27,8 +27,6 @@ body {
 .btn {
     color: white;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    display: block;
-    margin: 0 auto;
 }
 .form-group {
     margin-bottom: 15px;

@@ -8,27 +8,29 @@ namespace Components.Pages.ProductPages.BookingPages
     public partial class CreateBooking
 {
         private CustomerDTO? searchedCustomer;
-        public string phoneNumber = "";
+        public string phoneNumber;
+        private bool customerNotFound;
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            phoneNumber = "";
+            customerNotFound = false;
+        }
 
-       
         private void GoToExistingCustomer()
         {
             Navi.NavigateTo($"/BookingForm/{searchedCustomer.id}");
         }
 
-        private void GoToCreatePrivateCustomer()
+        private void GoToCreateCustomer()
         {
-            Navi.NavigateTo("/create-private-customer");
+            Navi.NavigateTo($"/create-customer");
         }
-
-        private void GoToCreateCompanyCustomer()
-        {
-            Navi.NavigateTo("/create-company-customer");
-        }
-
         private async Task SearchForPhoneNumber()
         {
-            searchedCustomer = await bookingQueryService.GetCustomerByPhoneNumberAsync(phoneNumber);
+            searchedCustomer = await bookingQueryService.SearchPhoneNumber(phoneNumber);
+            if (searchedCustomer == null) customerNotFound = true;
+            else customerNotFound = false;
         }
     }
 }

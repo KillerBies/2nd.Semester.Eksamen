@@ -4,7 +4,7 @@
     width: 100%;
     height: 40px;
     background-color: #034265;
-    border-radius: 12px 12px 12px 12px;
+    border-radius: 12px 12px 0 0;
     box-shadow: 0 6px 6px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
@@ -15,6 +15,16 @@
     margin: 0;
     box-sizing: border-box;
 }
+
+.time-button {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: white;
+}
+    .time-button:hover {
+        color: #333;
+    }
 
 .add-treatment {
     background: transparent;

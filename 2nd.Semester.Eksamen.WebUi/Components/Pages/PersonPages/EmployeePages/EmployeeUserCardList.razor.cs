@@ -27,6 +27,9 @@ namespace Components.Pages.PersonPages.EmployeePages
 
         public bool LoadFailed { get; set; }
 
+        public bool ShowEmployeeDetails { get; set; } = false;
+        public int SelectedEmployeeId { get; set; } = 0;
+
         // Filtered list based on search term
 
         public IEnumerable<EmployeeUserCardDTO> FilterEmployees(Func<EmployeeUserCardDTO, string> selector, string searchTerm)
@@ -81,7 +84,8 @@ namespace Components.Pages.PersonPages.EmployeePages
 
         private void GoToEmployee(int id)
         {
-            Nav.NavigateTo($"/employees/{id}");
+            SelectedEmployeeId = id;
+            ShowEmployeeDetails = true;
         }
 
 
@@ -91,7 +95,7 @@ namespace Components.Pages.PersonPages.EmployeePages
         }
         private void GoToAddEmployee()
         {
-            Nav.NavigateTo("/employees/create");
+            Nav.NavigateTo("/createemployee");
         }
 
 

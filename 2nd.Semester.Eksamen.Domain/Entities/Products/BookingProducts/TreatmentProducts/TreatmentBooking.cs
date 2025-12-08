@@ -34,6 +34,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
         {
             TrySetTimeRange(start, end);
             Employee = employee;
+            EmployeeId = employee.Id;
             Treatment = treatment;
         }
         public TreatmentBooking(int treatmentId, int employeeId, DateTime start, DateTime end)

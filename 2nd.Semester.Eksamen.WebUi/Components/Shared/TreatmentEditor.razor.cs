@@ -1,9 +1,12 @@
-﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
+﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
-using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Mono.TextTemplating;
@@ -13,6 +16,9 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
 {
     public partial class TreatmentEditor
     {
+
+
+        //Make page on submit that gives a summary with an ok button
         [Parameter] public EventCallback<TreatmentBookingDTO> OnRemove { get; set; }
         [Parameter] public EventCallback<TreatmentBookingDTO> OnSelectedParameterChange { get; set; }
         [Parameter] public EventCallback<TreatmentBookingDTO> OnChange { get; set; }
@@ -25,76 +31,93 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
         [CascadingParameter] EditContext EditContext { get; set; }
 
 
-        private async Task UpPress() => await OnUp.InvokeAsync(Index);
-        private async Task DownPress() => await OnDown.InvokeAsync(Index);
+        private TreatmentDTO selectedTreatment => PossibleTreatments.FirstOrDefault(pt => pt.TreatmentId == TreatmentId);
+        private EmployeeDTO selectedEmployee => PossibleEmployees.FirstOrDefault(pe => pe.EmployeeId == EmployeeId);
 
-        private async Task Remove() => await OnRemove.InvokeAsync(TreatmentBooking);
-
-        private string SelectedTreatmentCategory
+        private int? employeeId { get; set; } = null;
+        private int? EmployeeId
         {
-            get => TreatmentBooking.Treatment.Category;
+            get => employeeId;
             set
             {
-                if (TreatmentBooking.Treatment.Category != value)
+                employeeId = value;
+
+                if (employeeId.HasValue)
                 {
-                    TreatmentBooking.Treatment.Category = value;
-                    SelectedTreatmentId = 0;
-                    SelectedEmployeeId = 0;
-                    TreatmentBooking.Price = 0;
+                    TreatmentBooking.Employee = selectedEmployee;
                 }
+                else
+                {
+                    TreatmentBooking.Employee = new EmployeeDTO();
+                }
+                TreatmentBooking.UpdatePrice();
+
+                Change();
+            }
+        }
+        private int? treatmentId { get; set; } = null;
+        private int? TreatmentId
+        {
+            get => treatmentId;
+            set
+            {
+                treatmentId = value;
+
+                if (treatmentId.HasValue)
+                {
+                    TreatmentBooking.Treatment = selectedTreatment;
+                }
+                else
+                {
+                    TreatmentBooking.Treatment = new TreatmentDTO();
+                }
+
+                // Always reset employee when treatment changes
+                EmployeeId = null;
+                TreatmentBooking.Employee = new EmployeeDTO();
+                TreatmentBooking.Price = 0;
+
+                Change();
+            }
+        }
+        private string? category { get; set; } = null;
+        private string? Category
+        {
+            get => category;
+            set
+            {
+                category = value;
+                TreatmentId = null;
+                TreatmentBooking.Treatment = new TreatmentDTO();
+                EmployeeId = null;
+                TreatmentBooking.Employee = new EmployeeDTO();
+                TreatmentBooking.Price = 0;
+
                 Change();
             }
         }
 
-        private int SelectedTreatmentId
+        private void OnCategoryChanged(ChangeEventArgs e)
         {
-            get => TreatmentBooking.Treatment.TreatmentId;
-            set
-            {
-                if (TreatmentBooking.Treatment.TreatmentId != value)
-                {
-                    TreatmentBooking.Treatment.TreatmentId = value;
-                    var selectedTreatment = PossibleTreatments.FirstOrDefault(pt => pt.TreatmentId == value);
-                    if (selectedTreatment != null)
-                    {
-                        TreatmentBooking.Treatment.BasePrice = selectedTreatment.BasePrice;
-                        TreatmentBooking.Treatment.Name = selectedTreatment.Name;
-                        TreatmentBooking.Treatment.Duration = selectedTreatment.Duration;
-                    }
-                    SelectedEmployeeId = 0;
-                    TreatmentBooking.Price = 0;
-                    Change();
-                }
-            }
+            // Reset everything first
+            EmployeeId = null;
+            TreatmentBooking.Employee = new EmployeeDTO();
+
+            TreatmentId = null;
+            TreatmentBooking.Treatment = new TreatmentDTO();
+            TreatmentBooking.Price = 0;
+
+            Change();
         }
 
-        private int SelectedEmployeeId
-        {
-            get => TreatmentBooking.Employee.EmployeeId;
-            set
-            {
-                if (TreatmentBooking.Employee.EmployeeId != value)
-                {
-                    TreatmentBooking.Employee.EmployeeId = value;
-                    var selectedEmployee = PossibleEmployees.FirstOrDefault(pt => pt.EmployeeId == value);
-                    if (selectedEmployee != null)
-                    {
-                        TreatmentBooking.Employee.BasePriceMultiplier = selectedEmployee.BasePriceMultiplier;
-                        TreatmentBooking.Employee.Name = selectedEmployee.Name;
-                        TreatmentBooking.Employee.ExperienceLevel = selectedEmployee.ExperienceLevel;
-                    }
-                    TreatmentBooking.UpdatePrice();
-                    Change();
-                }
-            }
-        }
+
+        private async Task UpPress() => await OnUp.InvokeAsync(Index);
+        private async Task DownPress() => await OnDown.InvokeAsync(Index);
+
+        private async Task Remove() => await OnRemove.InvokeAsync(TreatmentBooking);
         private async Task NotifyChange()
         {
             await OnSelectedParameterChange.InvokeAsync(TreatmentBooking);
-        }
-        private bool AnyTreatments()
-        {
-            return PossibleTreatments.Count() != 0;
         }
         protected override void OnAfterRender(bool firstRender)
         {
@@ -104,10 +127,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
         {
             OnChange.InvokeAsync(TreatmentBooking);
         }
-
-
-
-
 
     }
 }
