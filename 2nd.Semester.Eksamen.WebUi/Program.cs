@@ -74,6 +74,8 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IDiscountCalculator, DiscountCalculator>();
+
 
 // if your repositories and services are separate:
 builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
@@ -96,6 +98,8 @@ builder.Services.AddScoped<ISnapshotRepository, SnapshotRepository>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IGenerateInvoice, GenerateInvoice>();
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
+
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

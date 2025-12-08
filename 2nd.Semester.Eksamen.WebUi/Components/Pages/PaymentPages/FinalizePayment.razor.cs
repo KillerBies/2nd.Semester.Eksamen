@@ -31,6 +31,8 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
         [Inject] private IOrderService OrderService { get; set; } = default!;
         [Inject] public ICustomerService CustomerService { get; set; } = default!;
+        [Inject] private IDiscountCalculator DiscountCalculator { get; set; } = default!;
+
 
         protected override async Task OnInitializedAsync()
         {
@@ -61,7 +63,8 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
                 // Get totals & discounts
                 (originalTotal, bestDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
-                    await OrderService.CalculateBestDiscountsPerItemAsync(customer.Id, products);
+                    await DiscountCalculator.CalculateAsync(customer.Id, products);
+
 
                 // compare best discount using actual discount amounts
                 decimal bestDiscountAmount = bestDiscount != null
@@ -124,8 +127,8 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                 Console.WriteLine($"Order #{order.Id} created with {products.Count} unique products.");
 
                 if (!customer.SaveAsCustomer)
-                {
-                    await CustomerService.DeleteAsync(customer);
+                { //TODO: Fix error around cascading delete of customer + booking
+                    //await CustomerService.DeleteAsync(customer);
                 }
             }
             catch (Exception ex)
