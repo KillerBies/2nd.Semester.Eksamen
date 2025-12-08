@@ -8,14 +8,6 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {
     public interface IOrderService
     {
-
-        Task<(decimal originalTotal,
-              Discount? appliedDiscount,
-              Discount? loyaltyDiscount,
-              decimal finalTotal,
-              List<ProductDiscountInfoDTO> itemDiscounts)>
-            CalculateBestDiscountsPerItemAsync(int customerId, List<Product> products);
-
         Task<Order> CreateOrUpdateOrderForBookingAsync(int bookingId);
 
     }

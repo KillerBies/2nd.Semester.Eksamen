@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,14 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {
     public interface IEmployeeService
     {
+        Task CreateEmployeeAsync(Employee employee);
         Task DeleteEmployeeAsync(int id);
         Task<EmployeeDetailsDTO> GetByIdAsync(int id);
-        Task UpdateEmployeeAsync(EmployeeDetailsDTO dto);
+        Task UpdateEmployeeAsync(Employee employee);
+        Task<EmployeeDetailsDTO?> GetEmployeeDetailsAsync(int employeeId);
+        Task<IEnumerable<EmployeeUserCardDTO>> GetAllEmployeeUserCardsAsync();
+
+
 
     }
 }

@@ -1,9 +1,12 @@
-﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+﻿using _2nd.Semester.Eksamen.Application.Adapters;
+using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+using _2nd.Semester.Eksamen.Domain.Helpers;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
-using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +19,13 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
     {
         private readonly IEmployeeRepository _employeeRepo;
         private readonly IAddressRepository _addressRepo;
+        private readonly Domain_to_DTO _domainToDTO;
 
         public EmployeeService(IEmployeeRepository employeeRepo, IAddressRepository addressRepo)
         {
             _employeeRepo = employeeRepo;
             _addressRepo = addressRepo;
+            _domainToDTO = new Domain_to_DTO();
         }
 
         public async Task<EmployeeDetailsDTO> GetByIdAsync(int id)
@@ -49,38 +54,20 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
             };
         }
 
-        public async Task UpdateEmployeeAsync(EmployeeDetailsDTO dto)
+        public async Task UpdateEmployeeAsync(Employee employee)
         {
-            var emp = await _employeeRepo.GetByIDAsync(dto.Id);
-            if (emp == null) return;
-
-            // Update basic properties
-            emp.TrySetName(dto.FirstName);
-            emp.TrySetLastName(dto.FirstName, dto.LastName);
-            emp.TrySetType(dto.Type);
-            emp.TrySetSpecialties(dto.Specialty);
-            emp.TrySetExperience(dto.Experience);
-            emp.TrySetGender(dto.Gender);
-            emp.TrySetBasePriceMultiplier(dto.BasePriceMultiplier);
-
-            emp.TrySetEmail(dto.Email);
-            emp.TrySetPhoneNumber(dto.PhoneNumber);
-
-            // Update address
-            if (emp.Address == null)
-            {
-                emp.TrySetAddress(dto.City, dto.PostalCode, dto.StreetName, dto.HouseNumber);
-            }
-            else
-            {
-                emp.Address.UpdateCity(dto.City);
-                emp.Address.UpdatePostalCode(dto.PostalCode);
-                emp.Address.UpdateStreetName(dto.StreetName);
-                emp.Address.UpdateHouseNumber(dto.HouseNumber);
-            }
-
-            await _employeeRepo.UpdateAsync(emp);
+            await _employeeRepo.UpdateAsync(employee);
         }
+        public async Task<EmployeeDetailsDTO?> GetEmployeeDetailsAsync(int employeeId)
+        {
+            var employee = await _employeeRepo.GetByIDAsync(employeeId);
+            if (employee == null) return null;
+
+            // USE the new helper here
+            return _domainToDTO.EmployeeToDetailsDTO(employee);
+        }
+
+
         public async Task DeleteEmployeeAsync(int id)
         {
             var emp = await _employeeRepo.GetByIDAsync(id);
@@ -95,6 +82,24 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
             {
                 await _addressRepo.DeleteAsync(address);
             }
+        }
+        public async Task CreateEmployeeAsync(Employee employee)
+        {
+            await _employeeRepo.CreateNewAsync(employee);
+        }
+
+        public async Task<IEnumerable<EmployeeUserCardDTO>> GetAllEmployeeUserCardsAsync()
+        {
+            var employees = await _employeeRepo.GetAllAsync();
+
+            return employees.Select(e => new EmployeeUserCardDTO
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Type = e.Type,
+                PhoneNumber = e.PhoneNumber
+                // Color can stay default
+            }).ToList();
         }
 
 

@@ -101,5 +101,28 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 Duration = booking.Duration
             };
         }
+        public EmployeeDetailsDTO EmployeeToDetailsDTO(Employee employee)
+        {
+            if (employee == null) return null;
+
+            return new EmployeeDetailsDTO
+            {
+                Id = employee.Id,
+                FirstName = employee.Name,
+                LastName = employee.LastName,
+                Type = employee.Type,
+                Specialty = employee.Specialties,
+                Experience = employee.ExperienceLevel,
+                Gender = employee.Gender,
+                Email = employee.Email,
+                PhoneNumber = employee.PhoneNumber,
+                BasePriceMultiplier = employee.BasePriceMultiplier,
+
+                City = employee.Address?.City,
+                PostalCode = employee.Address?.PostalCode,
+                StreetName = employee.Address?.StreetName,
+                HouseNumber = employee.Address?.HouseNumber
+            };
+        }
     }
 }
