@@ -1,5 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
-using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
+﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
 using Microsoft.AspNetCore.Components;

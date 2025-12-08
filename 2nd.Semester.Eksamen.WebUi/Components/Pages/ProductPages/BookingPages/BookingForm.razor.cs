@@ -88,9 +88,9 @@ namespace Components.Pages.ProductPages.BookingPages
                 _errorMessage = "Unable to load data — the server or database is offline.";
             }
         }
-        private async Task Arrange()
+        private async Task StartTimeSelected()
         {
-            Booking.TreatmentBookingDTOs = await _bookingQueryService.ArangeTreatments(Booking);
+            await refreshAvailableSlots();
         }
         private async Task CreateBooking()
         {

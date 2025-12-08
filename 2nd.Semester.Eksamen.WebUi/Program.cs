@@ -26,12 +26,12 @@ using _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces;
 using QuestPDF.Infrastructure;
 using _2nd.Semester.Eksamen.Infrastructure.PDFManagement;
+using _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddSyncfusionBlazor();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 builder.Services.AddDbContextFactory<AppDbContext>(options =>

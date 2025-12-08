@@ -16,7 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
+namespace _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices
 {
     public class BookingService : IBookingService
     {

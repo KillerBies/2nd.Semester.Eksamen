@@ -8,7 +8,7 @@ using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
 
-namespace _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces
+namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {
     public interface IScheduleService
     {

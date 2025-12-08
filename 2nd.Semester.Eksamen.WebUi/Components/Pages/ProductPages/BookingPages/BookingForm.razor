@@ -47,7 +47,8 @@
         <div class="possible-times-header" style="border-radius:@(IsDropdownOpen ? "12px 12px 0 0" : "12px 12px 12px 12px");">
             <div>
                 <span>Start Dato</span>
-                <input type="date" @bind-value="startDate" @onselect="Arrange" title="Sæt start dato på genereret tider" />
+                <InputDate id="BirthDayWrapper" @bind-Value="@privateCustomerDTO.BirthdayWrapper" class="form-control" min="1920-01-01"
+                <input type="date" disabled="@(checkfields())" @bind-value="startDate" @onselect="StartTimeSelected" title="Sæt start dato på genereret tider" />
             </div>
             <div class="btn-group">
                 <div>

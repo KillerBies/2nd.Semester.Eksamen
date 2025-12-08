@@ -37,7 +37,7 @@
             else
             {
                 <div class="grid">
-                    @foreach (var booking in bookingList)
+                    @foreach (var booking in FilteredBookings)
                     {
                         <div class="grid-item">
                             <div class="card booking-card-clickable" style="cursor:pointer;" @onclick="() => ShowOverlay(booking)">
@@ -55,48 +55,77 @@
     </FloatingPage>
 </div>
 
-@if (visibleOverlay)
-{
-        <FloatingPage PageContentScrollable="false" IsVisible=visibleOverlay>
-            <div>
-                @if (!string.IsNullOrEmpty(errorMessage))
-                {
-                    <div class="alert alert-danger">@errorMessage</div>
-                }
-                <div class="card-header" style="background-color:#034265; border-radius: 12px 12px 0 0; padding-left: 10px;">
-                    <h2 class="mb-0" style="color:white;">@SelectedBooking.Customer.Name</h2>
-                </div>
-                <div style="margin: 30px; display:flex;">
-                    <div>
-                        <div style="border:dashed 1px;">
-                            <h3>@DateOnly.FromDateTime(SelectedBooking.Start)</h3>
-                            @TimeOnly.FromDateTime(SelectedBooking.Start) - @TimeOnly.FromDateTime(SelectedBooking.End)
-                        </div>
-                        @if (SelectedBooking.Treatments.Any())
-                        {
-                            @foreach (var treatment in SelectedBooking.Treatments)
-                            {
-                                <p><b>@treatment.Treatment.Name</b></p>
-                                <p>@TimeOnly.FromDateTime(treatment.Start) - @TimeOnly.FromDateTime(treatment.End)</p>
-                                <p>@treatment.Treatment.Price</p>
-                                <p><b>@treatment.Employee.Name @treatment.Employee.LastName</b></p>
-                                <p>@treatment.Employee.ExperienceLevel</p>
-                            }
-                        }
-                        <button class="btn btn-outline-primary me-2" @onclick="HideOverlay">Luk</button>
-                        <button class="btn btn-outline-danger" @onclick="DeleteBookingWarning">Slet booking</button>
 
-                        @if (toggleBookingWarning)
-                        {
-                            <p class="mt-2">Er du sikker på du vil slette bookingen?</p>
-                            <button class="btn btn-secondary me-2" @onclick="() => toggleBookingWarning = false">Annuller</button>
-                            <button class="btn btn-danger" @onclick="ConfirmDeleteBooking">Slet booking</button>
-                        }
-                    </div>
-                </div>
+<SidePage IsVisible="visibleOverlay">
+    <div class="d-flex flex-column h-100">
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger m-3">@errorMessage</div>
+        }
+
+
+        <div class="card-header text-white rounded-top gap-5 px-3 py-2" style="background-color:#034265; display:flex; flex-direction:row;">
+            <h2 class="mb-0 text-white">@SelectedBooking.Customer.Name</h2>
+            <div class="d-flex gap-2 btn-group" style="margin-left:20px;">
+                <button class="btn btn-outline-primary flex-grow-1" @onclick="HideOverlay">Luk</button>
+                <button class="btn btn-outline-danger flex-grow-1" @onclick="DeleteBookingWarning">Slet booking</button>
             </div>
-        </FloatingPage>
-}
+        </div>
+
+
+        <div class="p-4 flex-grow-1 overflow-auto">
+
+            <div class="text-center mb-4 border-bottom border-dashed pb-3" >
+                <h3 class="mb-1">@SelectedBooking.Start.ToString("dd/MM/yyyy")</h3>
+                <h5 class="mb-0">@SelectedBooking.Start.ToString("HH:mm") - @SelectedBooking.End.ToString("HH:mm")</h5>
+            </div>
+
+
+            @if (SelectedBooking.Treatments.Any())
+            {
+                <div class="mb-4">
+                    @foreach (var treatment in SelectedBooking.Treatments)
+                    {
+                        <div class="mb-3 p-3 border rounded shadow-sm">
+                            <h5 class="fw-bold mb-1">@treatment.Treatment.Name</h5>
+                            <p class="mb-1"><strong>Tid:</strong> @treatment.Start.ToString("HH:mm") - @treatment.End.ToString("HH:mm")</p>
+                            <p class="mb-1"><strong>Pris:</strong> @treatment.Treatment.Price.ToString("C")</p>
+                            <p class="mb-1"><strong>Ansat:</strong> @treatment.Employee.Name @treatment.Employee.LastName</p>
+                            <p class="mb-0"><strong>Erfaring:</strong> @treatment.Employee.ExperienceLevel</p>
+                        </div>
+                    }
+                </div>
+            }
+
+
+            <div class="d-flex flex-column gap-2">
+
+                @if (toggleBookingWarning)
+                {
+                    <div class="mt-2">
+                        <p>Er du sikker på du vil slette bookingen?</p>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-secondary" @onclick="() => toggleBookingWarning = false">Annuller</button>
+                            <button class="btn btn-danger" @onclick="ConfirmDeleteBooking">Slet booking</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</SidePage>
+
+
+
+
+
+
+
+
+
+
+
 
 @code {
     private Booking SelectedBooking { get; set; } = new Booking
@@ -108,7 +137,7 @@
     private bool visibleOverlay = false;
     private bool toggleBookingWarning = false;
     private bool LoadFailed = false;
-
+    private IEnumerable<Booking> FilteredBookings => bookingList.Where(b => string.IsNullOrWhiteSpace(SearchTermCustomer) || b.Customer.Name.Contains(SearchTermCustomer, StringComparison.OrdinalIgnoreCase)).Where(b => !SearchTermDate.HasValue || b.Start.Date == SearchTermDate.Value.Date);
     private bool ShowBookingDetails = false;
 
     private string SearchTermCustomer = "";
@@ -119,14 +148,12 @@
         try
         {
             bookingList = (await bookingService.GetBookingsByFilterAsync(new Filter { Status = BookingStatus.Pending })).ToList();
-            if (bookingList.Any())
-            {
-                SelectedBooking = bookingList.First();
-            };
+            if (bookingList.Any()) SelectedBooking = bookingList.First();
         }
-        catch
+        catch (Exception ex)
         {
             LoadFailed = true;
+            errorMessage = ex.Message;
         }
     }
 
