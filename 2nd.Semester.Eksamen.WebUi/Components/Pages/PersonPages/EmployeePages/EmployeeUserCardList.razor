@@ -5,7 +5,8 @@
 
 @if (ShowEmployeeDetails)
 {
-    <SidePage IsVisible="ShowEmployeeDetails">
+    <SidePage IsVisible="ShowEmployeeDetails"
+              IsVisibleChanged="@(v => ShowEmployeeDetails = v)">   
         <EmployeeDetails Id="SelectedEmployeeId"></EmployeeDetails>
     </SidePage>
 }
