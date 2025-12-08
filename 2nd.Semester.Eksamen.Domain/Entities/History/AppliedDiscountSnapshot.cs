@@ -12,7 +12,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public string? Name { get; private set; }
         public decimal? ProductDiscount { get; private set; }
         public decimal? TreatmentDiscount { get; private set; }
-        public int? OrderSnapshotId { get; set; }
+        
         public OrderSnapshot OrderSnapshot { get; set; }
         private AppliedDiscountSnapshot() { }
 

@@ -13,10 +13,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public string Name { get;   set; } = string.Empty;
         public decimal PricePerUnit { get;   set; }
         public decimal DiscountedPrice { get;   set; }
-        public int? TreatmentSnapshotId { get; set; }
-        public TreatmentSnapshot? TreatmentSnapshot { get; set; }
-        public int? OrderLineSnapshotId { get; set; }
-        public OrderLineSnapshot? OrderLineSnapshot { get; set; }
+        public List<OrderLineSnapshot> OrderLines { get; set; } = new();
+        
+        
+        
 
 
         protected ProductSnapshot() { }

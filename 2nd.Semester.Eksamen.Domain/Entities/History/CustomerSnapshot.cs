@@ -11,9 +11,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
     public record CustomerSnapshot : BaseSnapshot
     {
         public string Name { get; private set; }
+        public int? AddressSnapshotId { get; private set; }
         public AddressSnapshot AddressSnapshot { get; private set; }
         public string PhoneNumber { get; private set; }
-        public int BookingSnapshotId { get; set; }
+        
         public BookingSnapshot BookingSnapshot { get; set; }
 
         protected CustomerSnapshot() { }

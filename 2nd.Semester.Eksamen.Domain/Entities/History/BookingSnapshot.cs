@@ -11,8 +11,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
     {
         public List<TreatmentSnapshot> TreatmentSnapshot { get;  set; }
         public int? CustomerSnapshotId { get; set; }
+        
         public CustomerSnapshot CustomerSnapshot { get;  set; }
-        public int? OrderSnapshotId { get; set; }
+       
         public OrderSnapshot OrderSnapshot { get; set; }
         
 

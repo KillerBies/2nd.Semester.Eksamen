@@ -17,6 +17,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public DateOnly DateOfPayment { get; private set; }
         public decimal? TotalAfterDiscount { get; private set; }
         public byte[]? PdfInvoice { get; set; }
+       
         public List<OrderLineSnapshot>? OrderLinesSnapshot { get; private set; } = new();
         public int? AppliedSnapshotId { get; set; }
         public AppliedDiscountSnapshot? AppliedDiscountSnapshot { get; private set; }
