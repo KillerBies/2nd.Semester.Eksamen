@@ -56,3 +56,14 @@ body {
     .Treatment-form label {
         text-align: left;
     }
+
+.treatment-summary {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20%;
+    border-top: solid 1px;
+    margin-right: 18%;
+    margin-left: 18%;
+    margin-top: 6px;
+    flex: auto;
+}

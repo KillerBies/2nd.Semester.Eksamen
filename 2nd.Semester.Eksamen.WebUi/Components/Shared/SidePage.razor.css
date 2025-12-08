@@ -1,0 +1,56 @@
+﻿
+.sidepage-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: flex-end;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 9999;
+    display: flex;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.sidepage-content {
+    background-color: white;
+    display: inline-block;
+    padding: 20px;
+    border-radius: 12px 0 0 12px;
+    max-width: 90vw;
+    width: max-content;
+    height: 100%;
+    transform: translateX(100%);
+    animation: slideIn 0.4s forwards ease-out;
+    overflow-y: auto;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+}
+
+
+.close-btn {
+    margin-top: 10px;
+}
+
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

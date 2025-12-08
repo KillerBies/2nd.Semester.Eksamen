@@ -3,29 +3,46 @@
 @using _2nd.Semester.Eksamen.Application.Services
 @using _2nd.Semester.Eksamen.Application.Services.BookingServices
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons
-@inject BookingQueryService bookingQueryService;
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@inject BookingQueryService bookingQueryService
 @rendermode InteractiveServer
 @namespace Components.Pages.ProductPages.BookingPages
 
-<input @bind="phoneNumber" placeholder="Søg efter telefonnummer..." />
-<button type= "button" @onclick="SearchForPhoneNumber">Søg</button>
-
-@if (searchedCustomer != null)
-{
-	<p>Navn: @searchedCustomer.Name</p>
-	<p>Telefon: @searchedCustomer.PhoneNumber</p>
-	<p>Email: @searchedCustomer.Email</p>
-	<button type="button" @onclick="GoToExistingCustomer">Tilknyt booking</button>
-
-}
-else
-{
-	<p>Kunde ikke fundet</p>
-	<button type="button" @onclick="GoToCreatePrivateCustomer">Opret privatkunde</button>
-	<button type="button" @onclick="GoToCreateCompanyCustomer">Opret firmakunde</button>
-}
-
-
-
-
-@code {}
+<div style="width:100%; display:flex;flex-direction:column; align-items:center; margin-top: 17%;">
+	<FloatingPage>
+		<div style="padding: 30px;">
+			<div style="text-align:center; border-bottom: dashed 1px;">
+				<h4>Find Kunde</h4>
+			</div>
+			<div style="justify-content:center; display: flex; flex-flow:row; align-items: center;">
+				<div>
+					<input type="text" @bind="phoneNumber" placeholder="Søg efter telefonnummer..." />
+				</div>
+				<div>
+					<button type="button " class="btn btn-secondary m-3" @onclick="SearchForPhoneNumber">Søg</button>
+				</div>
+			</div>
+			<div style="padding-bottom: 10px;">
+				@if (searchedCustomer != null && !customerNotFound)
+				{
+					<div style="text-align:center; border-top: dashed 1px; padding-top:10px;">
+						<p>Navn: @searchedCustomer.Name</p>
+						<p>Telefon: @searchedCustomer.PhoneNumber</p>
+						<p>Email: @searchedCustomer.Email</p>
+						<button type="button" class="btn btn-primary" @onclick="GoToExistingCustomer">Tilknyt booking</button>
+					</div>
+				}
+			</div>
+			<div style="align-content:center; align-items:center;">
+				@if (customerNotFound)
+				{
+					<div class="alert alert-info">
+						Kunde ikke fundet vil du lave en ny?
+					</div>
+					<button type="button" class="btn btn-primary ms-lg-3" @onclick="GoToCreateCustomer" style="width:90%; text-align:center;"><b>Opret Kunde</b></button>
+				}
+			</div>
+		</div>
+	</FloatingPage>
+	<div style="margin-top: 24%;"></div>
+</div>

@@ -54,7 +54,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         public DbSet<Discount> Discounts { get; set; }
 
         //Schedule data
-        public DbSet<EmployeeSchedule> EmployeeSchedules { get; set; }
         public DbSet<ScheduleDay> ScheduleDays { get; set; }
         public DbSet<TimeRange> TimeRanges { get; set; }
 
@@ -92,33 +91,35 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany(b => b.Treatments)
                 .WithOne(tb => tb.Booking)
                 .OnDelete(DeleteBehavior.NoAction);
-
-
-            modelBuilder.Entity<Employee>()
-                .HasOne<EmployeeSchedule>(b => b.Schedule)
-                .WithOne(s => s.Employee)
-                .OnDelete(DeleteBehavior.Cascade);
-
-
-            modelBuilder.Entity<EmployeeSchedule>()
-                .HasMany(es => es.Days)
-                .WithOne(sd => sd.Schedule)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<ScheduleDay>()
-                .HasMany<TimeRange>(sd => sd.TimeRanges)
-                .WithOne(tr => tr.ScheduleDay)
-                .OnDelete(DeleteBehavior.Cascade);
-
-
-
-
-
-
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.Start)
+                .HasPrecision(0);
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.End)
+                .HasPrecision(0);
             modelBuilder.Entity<Booking>()
                 .HasOne<Customer>(b => b.Customer)
                 .WithMany(c => c.BookingHistory)
                 .OnDelete(DeleteBehavior.NoAction);
+
+
+            modelBuilder.Entity<Employee>()
+                .HasMany<ScheduleDay>(b => b.Schedule)
+                .WithOne(s => s.Employee)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ScheduleDay>()
+                .HasMany<TimeRange>(b => b.TimeRanges)
+                .WithOne(s => s.ScheduleDay)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TimeRange>()
+                .Property(b => b.End)
+                .HasPrecision(0);
+            modelBuilder.Entity<TimeRange>()
+                .Property(b => b.Start)
+                .HasPrecision(0);
+
+
+
 
             //Campaign 
             modelBuilder.Entity<Campaign>()
@@ -188,6 +189,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
             modelBuilder.Entity<Customer>()
                 .HasMany(b => b.BookingHistory);
+            modelBuilder.Entity<Customer>()
+                .Property(e => e.PointBalance)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.BasePriceMultiplier)
@@ -206,7 +210,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasPrecision(18, 2);
-
+            modelBuilder.Entity<Product>()
+                .Property(p => p.DiscountedPrice)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Discount>()
                 .Property(d => d.ProductDiscount)
@@ -224,11 +230,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             .WithOne(ol => ol.OrderSnapshot)
             .HasForeignKey(ol => ol.OrderSnapshotId)
             .OnDelete(DeleteBehavior.NoAction);
-
+            modelBuilder.Entity<OrderSnapshot>()
+                .Property(o => o.DateOfPayment)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<OrderSnapshot>()
+                .Property(o => o.CustomDiscount)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<OrderSnapshot>()
+                .Property(o => o.TotalAfterDiscount)
+                .HasPrecision(18, 2);
             modelBuilder.Entity<OrderSnapshot>()
                 .HasOne(o => o.BookingSnapshot)
                 .WithOne(b => b.OrderSnapshot)
-                
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<OrderSnapshot>()
@@ -236,6 +249,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .WithOne(ad => ad.OrderSnapshot)
                 .HasForeignKey<OrderSnapshot>(o => o.AppliedSnapshotId)
                 .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<AppliedDiscountSnapshot>()
+                .Property(apd=>apd.TreatmentDiscount)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<AppliedDiscountSnapshot>()
+                .Property(apd => apd.ProductDiscount)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<BookingSnapshot>()
                 .HasMany(b => b.TreatmentSnapshot)
@@ -256,17 +275,22 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<ProductSnapshot>()
-    .HasMany(p => p.OrderLines)
-    .WithOne(o => o.ProductSnapshot)
-    .HasForeignKey(o => o.ProductSnapshotId);
-
+                .HasMany(p => p.OrderLines)
+                .WithOne(o => o.ProductSnapshot)
+                .HasForeignKey(o => o.ProductSnapshotId);
+            modelBuilder.Entity<ProductSnapshot>()
+                .Property(ps => ps.PricePerUnit)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<ProductSnapshot>()
+                .Property(ps => ps.DiscountedPrice)
+                .HasPrecision(18, 2);
             
 
-            
-            
-            
 
-            
+
+
+
+
 
             base.OnModelCreating(modelBuilder);
         }

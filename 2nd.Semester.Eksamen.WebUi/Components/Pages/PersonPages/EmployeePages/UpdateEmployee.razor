@@ -1,61 +1,114 @@
-﻿@page "/employees/edit/{id:int}"
+﻿@page "/edit-employee/{id:int}"
 @namespace Components.Pages.PersonPages.EmployeePages
 @rendermode InteractiveServer
 @using _2nd.Semester.Eksamen.Domain.Entities;
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
 @using _2nd.Semester.Eksamen.Domain.Helpers;
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using WebUIServices;
+<div style="width:100%; height:96vh; display:flex; justify-content:center; align-items:center;">
+    <FloatingPage>
+        <div style="margin:30px;">
+            <h2>Rediger Medarbejder</h2>
 
-<h3>Employee Details</h3>
+            <EditForm Model="Input" OnValidSubmit="UpdateEmployeeAsync" class="row p-3">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
+                <div class="form-inputs">
+                    <!-- Basic Info -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <InputText @bind-Value="Input.FirstName" placeholder="Fornavn" class="form-control m-1" />
+                        </div>
+                        <div class="col-md-6">
+                            <InputText @bind-Value="Input.LastName" placeholder="Efternavn" class="form-control m-1" />
+                        </div>
+                    </div>
 
-<EditForm Model="Input" OnValidSubmit="UpdateEmployeeAsync">
-    <InputText @bind-Value="Input.FirstName" placeholder="First Name" class="form-control" />
-    <InputText @bind-Value="Input.LastName" placeholder="Last Name" class="form-control mt-2" />
-    <InputText @bind-Value="Input.Email" placeholder="Email" class="form-control mt-2" />
-    <InputText @bind-Value="Input.PhoneNumber" placeholder="Phone Number" class="form-control mt-2" />
-    <InputNumber @bind-Value="Input.BasePriceMultiplier" placeholder="Base Price Multiplier" class="form-control mt-2" />
-    @for (int i = 0; i < Input.Specialties.Count; i++)
-    {
-        var specialty = Input.Specialties[i];
-        <div class="mb-2 d-flex align-items-center" @key="specialty.Id">
-            <InputText @bind-Value="specialty.Value" placeholder="Specialty" class="form-control me-2" />
-            <button type="button" class="btn btn-danger" @onclick="() => RemoveSpecialty(specialty.Id)">X</button>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <InputText @bind-Value="Input.Email" placeholder="Email" class="form-control m-1" />
+                        </div>
+                        <div class="col-md-6">
+                            <InputText @bind-Value="Input.PhoneNumber" placeholder="Telefonnummer" class="form-control m-1" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <select @bind="Input.Gender" class="form-select m-1">
+                                @foreach (var gender in Enum.GetValues(typeof(Gender)).Cast<Gender>())
+                                {
+                                    <option value="@gender">@gender.GetDescription()</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <select @bind="Input.ExperienceLevel" class="form-select m-1">
+                                @foreach (var level in Enum.GetValues(typeof(ExperienceLevels)).Cast<ExperienceLevels>())
+                                {
+                                    <option value="@level">@level.GetDescription()</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <select @bind="Input.Type" class="form-select m-1">
+                                @foreach (var type in Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>())
+                                {
+                                    <option value="@type">@type.GetDescription()</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <InputNumber @bind-Value="Input.BasePriceMultiplier"
+                                         placeholder="Omregningsfaktor"
+                                         title="Prisen på en behandling udregnes som 'behandlingens pris' * 'medarbejderens omregningsfaktor' (1 vil være behandlingens normal pris)"
+                                         class="form-control m-1" />
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <InputText @bind-Value="Input.Address.City" placeholder="By" class="form-control m-1" />
+                        </div>
+                        <div class="col-md-6">
+                            <InputText @bind-Value="Input.Address.PostalCode" placeholder="Postkode" class="form-control m-1" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <InputText @bind-Value="Input.Address.StreetName" placeholder="Gade" class="form-control m-1" />
+                        </div>
+                        <div class="col-md-6">
+                            <InputText @bind-Value="Input.Address.HouseNumber" placeholder="Hus Nummer" class="form-control m-1" />
+                        </div>
+                    </div>
+
+                    <!-- Specialties -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            @for (int i = 0; i < Input.Specialties.Count; i++)
+                            {
+                                var specialty = Input.Specialties[i];
+                                <div class="mb-2 d-flex align-items-center" @key="specialty.Id">
+                                    <InputText @bind-Value="specialty.Value" placeholder="Specialty" class="form-control me-2" />
+                                    <button type="button" class="btn btn-danger" @onclick="() => RemoveSpecialty(specialty.Id)">X</button>
+                                </div>
+                            }
+                            <button type="button" class="btn btn-success mb-2" @onclick="AddSpecialty">+ Add Specialty</button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" style="width:100%;" type="submit">Update</button>
+                </div>
+            </EditForm>
         </div>
-    }
-
-    <button type="button" class="btn btn-primary mb-3" @onclick="AddSpecialty">+ Add Specialty</button>
-
-
-    <select @bind="Input.Gender">
-        @foreach (var gender in Enum.GetValues(typeof(Gender)).Cast<Gender>())
-        {
-            <!--Shows enum description-->
-            <option value="@gender">@gender.GetDescription()</option>
-        }
-    </select>
-
-    <select @bind="Input.ExperienceLevel">
-        @foreach (var level in Enum.GetValues(typeof(ExperienceLevels)).Cast<ExperienceLevels>())
-        {
-            <option value="@level">@level.GetDescription()</option>
-        }
-    </select>
-
-    <select @bind="Input.Type">
-        @foreach (var type in Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>())
-        {
-            <option value="@type">@type.GetDescription()</option>
-        }
-    </select>
-
-    <!-- Address fields -->
-    <InputText @bind-Value="Input.Address.StreetName" placeholder="Street" />
-    <InputText @bind-Value="Input.Address.HouseNumber" placeholder="House #" />
-    <InputText @bind-Value="Input.Address.City" placeholder="City" />
-    <InputText @bind-Value="Input.Address.PostalCode" placeholder="Postal Code" />
-
-    <button class="btn btn-primary mt-3" type="submit">Update</button>
-</EditForm>
-
+    </FloatingPage>
+</div>

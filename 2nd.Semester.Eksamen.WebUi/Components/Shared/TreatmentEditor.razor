@@ -1,67 +1,66 @@
 ﻿@namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
 <div class="Treatment">
     <div class="treatment-header">
-        <span>Treatment - @(Index+1)</span>
+        <span>@TreatmentBooking.Treatment.Name</span>
         <div class="btn-group">
-           <button type="button" class="updown-btn" style="background-color:transparent; border: none;" @onclick="() => OnUp.InvokeAsync(Index)">▲</button>
-           <button type="button" class="updown-btn" style="background-color:transparent; border: none;" @onclick="() => OnDown.InvokeAsync(Index)">▼</button>
-           <button type="button" class="close-btn" @onclick="Remove">✖</button>
+           <button type="button" class="updown-btn" title="Flyt behandling op i booking rækkefølgen" style="background-color:transparent; border: none;" @onclick="() => OnUp.InvokeAsync(Index)">▲</button>
+           <button type="button" class="updown-btn" title="Flyt behandling ned i booking rækkefølgen" style="background-color:transparent; border: none;" @onclick="() => OnDown.InvokeAsync(Index)">▼</button>
+           <button type="button" class="close-btn" title="Fjern behandling fra bookingen" @onclick="Remove">✖</button>
         </div>
     </div>
     <div class="Treatment-form">
         <div class="mb-2">
-            @if (AnyTreatments())
+            @if (!PossibleTreatments.Any())
+            {
+                <span>Det ser ud til at ingen Behandlinger er registret: </span> <button type="button">Registrer ny behandling</button>
+            }
+            else
             {
                 <label>Behandlings Kategori:</label>
-                <InputSelect class="form-control w-75" @bind-Value="SelectedTreatmentCategory">
-                    <option value="">-- Select --</option>
+                <InputSelect class="form-control w-75" @bind-Value="Category">
+                    <option value="">-- Vælg Behandlings Kategori --</option>
                     @foreach (string category in PossibleTreatments.Select(t => t.Category).Distinct())
                     {
                         <option value="@category">@category</option>
                     }
                 </InputSelect>
             }
-            else
-            {
-                <span>Det ser ud til at ingen Behandlinger er registret:</span> <button type="button">Registrer ny behandling</button>
-            }
         </div>
         <div class="mb-2">
-            @if (PossibleTreatments.Any())
+            @if (!PossibleTreatments.Any())
             {
-                <label>Treatment:</label>
-                <InputSelect class="form-control w-75" @bind-Value="SelectedTreatmentId"  disabled="@(string.IsNullOrEmpty(TreatmentBooking.Treatment.Category))">
-                    <option value="">-- Select --</option>
-                    @foreach (var treatment in PossibleTreatments.Where(t => t.Category == TreatmentBooking.Treatment.Category))
+                <div style="display: flex; flex-direction: row;">
+                    <span>Det ser ud til at ingen Behandlinger er registret:</span>
+                    <button type="button">Registrer ny behandling</button>
+                </div>
+            }
+            else
+            {
+                <label>Behandling:</label>
+                <InputSelect class="form-control w-75" @bind-Value="TreatmentId">
+                    <option value="">-- Vælg Behandling --</option>
+                    @foreach (var treatment in PossibleTreatments.Where(t => t.Category == Category))
                     {
                         <option value="@treatment.TreatmentId">@treatment.Name</option>
                     }
                 </InputSelect>
             }
-            else
-            {
-                <div style="display: flex; flex-direction: row;">
-                <span>Det ser ud til at ingen Behandlinger er registret:</span>
-                <button type="button">Registrer ny behandling</button>
-                </div>
-            }
         </div>
         <div class="mb-2">
-            @if (PossibleEmployees.Any())
+            @if (!PossibleEmployees.Any())
             {
-                <label>Employee:</label>
-                <InputSelect class="form-control w-75" @bind-Value="SelectedEmployeeId" disabled="@(SelectedTreatmentId==0 || string.IsNullOrEmpty(TreatmentBooking.Treatment.Category))">
-                    <option value="">-- Select --</option> 
+                 <span>Det ser ud til at ingen Medarbejdere er registret:</span> <button type="button">Registrer ny Medarbejder</button>
+            }
+            else
+            {
+                <label>Medarbejder:</label>
+                <InputSelect class="form-control w-75" @bind-Value="EmployeeId" >
+                    <option value="">-- Vælg Medarbejder --</option> 
                     @foreach (var Employee in PossibleEmployees.Where(e => TreatmentBooking.Treatment.RequiredSpecialties.All(tr=>e.Specialties.Contains(tr))))
                     {
                         <option value="@Employee.EmployeeId">@Employee.Name</option>
                     }
                 </InputSelect>
-                @(TreatmentBooking.Employee.Name)
-            }
-            else
-            {
-                <span>Det ser ud til at ingen Medarbejdere er registret:</span> <button type="button">Registrer ny Medarbejder</button>
             }
         </div>
         <div class="mb-2">
@@ -69,10 +68,5 @@
             <InputNumber class="form-control w-75" @bind-Value="TreatmentBooking.Price" @onchange="Change">
             </InputNumber>
         </div>
-            <b>@TreatmentBooking.Treatment.Name</b>
-            <txt>@TreatmentBooking.Treatment.Category</txt>
-            <txt>@TreatmentBooking.Treatment.Duration</txt>
-            <b>@TreatmentBooking.Employee.Name</b>
-            <txt>@TreatmentBooking.Employee.ExperienceLevel</txt>
     </div>
 </div>

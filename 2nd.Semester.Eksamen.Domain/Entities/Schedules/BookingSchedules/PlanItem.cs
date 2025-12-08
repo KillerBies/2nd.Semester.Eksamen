@@ -12,8 +12,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.BookingSchedules
     internal class PlanItem
     {
         public Treatment Treatment { get; set; } = null!;
+        public int EmployeeId { get; set; }
         public Employee Employee { get; set; } = null!;
         public TimeSpan Duration { get; set; }
-        public EmployeeSchedule Schedule { get; set; } = null!;
     }
 }
