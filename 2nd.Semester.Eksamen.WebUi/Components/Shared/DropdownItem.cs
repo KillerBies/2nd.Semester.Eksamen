@@ -1,4 +1,4 @@
-﻿namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
+﻿namespace Components.Shared
 {
     public class DropdownItem
     {

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
+namespace Components.Pages.PersonPages.EmployeePages
 {
     public partial class EmployeeDetails
 {

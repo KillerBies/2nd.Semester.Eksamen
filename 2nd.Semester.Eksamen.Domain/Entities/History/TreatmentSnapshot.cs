@@ -4,26 +4,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
-    public class TreatmentSnapshot : BaseEntity
+    public record TreatmentSnapshot : ProductSnapshot
     {
         //Snapshot of a treatment that had been booked
         //Snapshot is made at time of payment so no need to change anything here when its made.
-        public string? Name { get; set; }
-        public decimal? BasePrice { get; set; }
-        public string? Category { get; set; }
-        public TreatmentSnapshot() { }
-        public TreatmentSnapshot(Treatment treatment)
+        public string? Category { get; private set; }
+        public int BookingSnapshotId { get; set; }
+        public BookingSnapshot BookingSnapshot { get; set; }
+
+        
+        private TreatmentSnapshot() { }
+
+        public TreatmentSnapshot( Treatment treatment)
         {
+
             Name = treatment.Name;
+            PricePerUnit = treatment.Price;
+            DiscountedPrice = treatment.DiscountedPrice;
             Category = treatment.Category;
         }
 
-        public void Snap(decimal price) 
-        {
-            BasePrice = price;
-        }
+
     }
+
 }

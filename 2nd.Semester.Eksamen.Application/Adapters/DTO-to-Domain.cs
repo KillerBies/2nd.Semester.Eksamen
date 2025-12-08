@@ -45,7 +45,7 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             List<TreatmentBooking> treatments = new();
             foreach(var treatment in booking.TreatmentBookingDTOs)
             {
-                treatments.Add(await DTOTreatmentBookingToDomainFix(treatment));
+                treatments.Add(await DTOTreatmentBookingToDomainToDb(treatment));
             }
             var customer = await DTOCustomerToDomain(booking.Customer.id);
             //BEFORE SENT FULL CUSTOMER IN
@@ -58,7 +58,7 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             var result = new TreatmentBooking(treatment, employee, treatmentBookingDTO.Start, treatmentBookingDTO.End);
             return result;
         }
-        public async Task<TreatmentBooking> DTOTreatmentBookingToDomainFix(TreatmentBookingDTO treatmentBookingDTO)
+        public async Task<TreatmentBooking> DTOTreatmentBookingToDomainToDb(TreatmentBookingDTO treatmentBookingDTO)
         {
             var treatment = await DTOTreatmentToDomain(treatmentBookingDTO.Treatment);
             var employee = await DTOEmployeeToDomain(treatmentBookingDTO.Employee);
