@@ -122,6 +122,11 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
                 paymentSuccess = true;
                 Console.WriteLine($"Order #{order.Id} created with {products.Count} unique products.");
+
+                if (!customer.SaveAsCustomer)
+                {
+                    await CustomerService.DeleteAsync(customer);
+                }
             }
             catch (Exception ex)
             {
@@ -131,6 +136,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
             finally
             {
                 isLoading = false;
+
             }
         }
 

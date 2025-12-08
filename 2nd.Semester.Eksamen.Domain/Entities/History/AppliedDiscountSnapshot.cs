@@ -18,7 +18,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public AppliedDiscountSnapshot(Discount discount)
         {
             Name = discount.Name;
-            DiscountAmount = discount.DiscountAmount; // make it take discount.ProductDiscount and discount.TreatmentDiscount as discount now has field for both product and treatment now
+            //DiscountAmount = discount.DiscountAmount; // make it take discount.ProductDiscount and discount.TreatmentDiscount as discount now has field for both product and treatment now
         }
 
 

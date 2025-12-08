@@ -23,7 +23,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             CustomDiscount = customDiscount;
             OrderLinesSnapshot = order.Products.Select(oL => new OrderLineSnapshot(oL)).ToList();
             DateOfPayment = DateOnly.FromDateTime(DateTime.Now);
-            AppliedDiscountSnapshot = new AppliedDiscountSnapshot(order.AppliedDiscount);
+            //AppliedDiscountSnapshot = new AppliedDiscountSnapshot(order.AppliedDiscount);
         }
     }
 

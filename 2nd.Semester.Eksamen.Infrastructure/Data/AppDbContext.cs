@@ -81,6 +81,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         {
             modelBuilder.Entity<Customer>().UseTphMappingStrategy();
             modelBuilder.Entity<Product>().UseTphMappingStrategy();
+            modelBuilder.Entity<Discount>().UseTptMappingStrategy();
 
             modelBuilder.Entity<Campaign>().ToTable("Campaigns");
             modelBuilder.Entity<LoyaltyDiscount>().ToTable("LoyaltyDiscounts");
