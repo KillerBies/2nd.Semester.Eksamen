@@ -6,6 +6,7 @@
 @using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts
 @using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.Pages.PaymentPages
 @inject IBookingService bookingService;
 
 
@@ -67,6 +68,7 @@
 
         <div class="card-header text-white rounded-top gap-5 px-3 py-2" style="background-color:#034265; display:flex; flex-direction:row; width:60vw;">
             <h2 class="mb-0 text-white">@SelectedBooking.Customer.Name</h2>
+            <button class="btn btn-primary ms-auto" style="width: 15%;" @onclick="PayBooking"><b>Betal</b></button>
         </div>
 
 
@@ -116,6 +118,11 @@
     </div>
 </SidePage>
 
+<SidePage IsVisible="ShowPaymentWindow">
+    <div style="width:30vw;"></div>
+    <FinalizePayment id="@SelectedBooking.Customer.Id"></FinalizePayment>
+</SidePage>
+
 
 
 
@@ -139,6 +146,7 @@
     private bool LoadFailed = false;
     private IEnumerable<Booking> FilteredBookings => bookingList.Where(b => string.IsNullOrWhiteSpace(SearchTermCustomer) || b.Customer.Name.Contains(SearchTermCustomer, StringComparison.OrdinalIgnoreCase)).Where(b => !SearchTermDate.HasValue || b.Start.Date == SearchTermDate.Value.Date);
     private bool ShowBookingDetails = false;
+    private bool ShowPaymentWindow = false;
 
     private string SearchTermCustomer = "";
     private DateTime? SearchTermDate;
@@ -188,5 +196,9 @@
         {
             errorMessage = "Noget gik galt i forbindelse med at slette bookingen!";
         }
+    }
+    private void PayBooking()
+    {
+        ShowPaymentWindow = true;
     }
 }
