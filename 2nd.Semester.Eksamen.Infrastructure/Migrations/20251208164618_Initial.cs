@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,8 +50,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    TreatmentDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
+                    ProductDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    TreatmentDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -84,8 +84,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PricePerUnit = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DiscountedPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
+                    PricePerUnit = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    DiscountedPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -122,7 +122,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NumberOfVisists = table.Column<int>(type: "int", nullable: false),
-                    PointBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PointBalance = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SaveAsCustomer = table.Column<bool>(type: "bit", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
@@ -156,8 +156,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Specialties = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WorkStart = table.Column<TimeSpan>(type: "time", nullable: false),
-                    WorkEnd = table.Column<TimeSpan>(type: "time", nullable: false),
+                    WorkStart = table.Column<TimeOnly>(type: "time", nullable: false),
+                    WorkEnd = table.Column<TimeOnly>(type: "time", nullable: false),
                     ExperienceLevel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BasePriceMultiplier = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -240,8 +240,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    Start = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    End = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Start = table.Column<DateTime>(type: "datetime2(0)", precision: 0, nullable: false),
+                    End = table.Column<DateTime>(type: "datetime2(0)", precision: 0, nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
@@ -256,18 +256,19 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EmployeeSchedules",
+                name: "ScheduleDays",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EmployeeId = table.Column<int>(type: "int", nullable: false)
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeSchedules", x => x.Id);
+                    table.PrimaryKey("PK_ScheduleDays", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EmployeeSchedules_Employees_EmployeeId",
+                        name: "FK_ScheduleDays_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "Id",
@@ -283,7 +284,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DiscountedPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    DiscountedPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     CampaignId = table.Column<int>(type: "int", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     RequiredSpecialties = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -307,9 +308,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BookingSnapshotId = table.Column<int>(type: "int", nullable: true),
-                    CustomDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    DateOfPayment = table.Column<DateOnly>(type: "date", nullable: false),
-                    TotalAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    CustomDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    DateOfPayment = table.Column<DateOnly>(type: "date", precision: 18, scale: 2, nullable: false),
+                    TotalAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     PdfInvoice = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     AppliedSnapshotId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -374,21 +375,31 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ScheduleDays",
+                name: "TimeRanges",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ScheduleId = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateOnly>(type: "date", nullable: false)
+                    ScheduleDayId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ActivityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    BookingId = table.Column<int>(type: "int", nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Start = table.Column<TimeOnly>(type: "time(0)", precision: 0, nullable: false),
+                    End = table.Column<TimeOnly>(type: "time(0)", precision: 0, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScheduleDays", x => x.Id);
+                    table.PrimaryKey("PK_TimeRanges", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ScheduleDays_EmployeeSchedules_ScheduleId",
-                        column: x => x.ScheduleId,
-                        principalTable: "EmployeeSchedules",
+                        name: "FK_TimeRanges_Bookings_BookingId",
+                        column: x => x.BookingId,
+                        principalTable: "Bookings",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_TimeRanges_ScheduleDays_ScheduleDayId",
+                        column: x => x.ScheduleDayId,
+                        principalTable: "ScheduleDays",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -508,29 +519,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TimeRanges",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ScheduleDayId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Start = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    End = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TimeRanges", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TimeRanges_ScheduleDays_ScheduleDayId",
-                        column: x => x.ScheduleDayId,
-                        principalTable: "ScheduleDays",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TreatmentBookingProducts",
                 columns: table => new
                 {
@@ -601,12 +589,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeSchedules_EmployeeId",
-                table: "EmployeeSchedules",
-                column: "EmployeeId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_OrderLines_OrderID",
                 table: "OrderLines",
                 column: "OrderID");
@@ -662,9 +644,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 column: "TreatmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScheduleDays_ScheduleId",
+                name: "IX_ScheduleDays_EmployeeId",
                 table: "ScheduleDays",
-                column: "ScheduleId");
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TimeRanges_BookingId",
+                table: "TimeRanges",
+                column: "BookingId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TimeRanges_ScheduleDayId",
@@ -733,19 +720,16 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 name: "BookingsSnapshots");
 
             migrationBuilder.DropTable(
-                name: "EmployeeSchedules");
+                name: "Bookings");
 
             migrationBuilder.DropTable(
-                name: "Bookings");
+                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
                 name: "CustomerSnapshots");
-
-            migrationBuilder.DropTable(
-                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Customers");

@@ -51,8 +51,8 @@ namespace _2nd.Semester.Eksamen.Tests
                 type: "Staff",
                 specialties: "Specialty1",
                 gender: "Male",
-                workStart: new System.TimeSpan(8, 0, 0),
-                workEnd: new System.TimeSpan(18, 0, 0)
+                workStart: new System.TimeOnly(8, 0, 0),
+                workEnd: new System.TimeOnly(18, 0, 0)
             )
             {
                 Id = employeeId
@@ -170,8 +170,8 @@ namespace _2nd.Semester.Eksamen.Tests
                 type: "Staff",
                 specialties: "Haircut",
                 gender: "Female",
-                workStart: new System.TimeSpan(8, 0, 0),
-                workEnd: new System.TimeSpan(17, 0, 0)
+                workStart: new System.TimeOnly(8, 0, 0),
+                workEnd: new System.TimeOnly(17, 0, 0)
             )
             {
                 Id = employeeId
@@ -222,8 +222,8 @@ namespace _2nd.Semester.Eksamen.Tests
             type: "Staff",
             specialties: "Haircut",
             gender: "Female",
-            workStart: new System.TimeSpan(8, 0, 0),
-            workEnd: new System.TimeSpan(17, 0, 0))
+            workStart: new System.TimeOnly(8, 0, 0),
+            workEnd: new System.TimeOnly(17, 0, 0))
         { Id = 1 },
 
         new Employee(
@@ -237,8 +237,8 @@ namespace _2nd.Semester.Eksamen.Tests
             type: "Staff",
             specialties: "Massage",
             gender: "Male",
-            workStart: new System.TimeSpan(9, 0, 0),
-            workEnd: new System.TimeSpan(18, 0, 0))
+            workStart: new System.TimeOnly(9, 0, 0),
+            workEnd: new System.TimeOnly(18, 0, 0))
         { Id = 2 }
     };
 
@@ -284,8 +284,8 @@ namespace _2nd.Semester.Eksamen.Tests
                 type: "Staff",
                 specialties: "Massage",
                 gender: "Male",
-                workStart: new TimeSpan(8, 0, 0),
-                workEnd: new TimeSpan(17, 0, 0))
+                workStart: new TimeOnly(8, 0, 0),
+                workEnd: new TimeOnly(17, 0, 0))
             { Id = employeeId };
 
             _employeeRepoMock.Setup(x => x.GetByIDAsync(employeeId)).ReturnsAsync(employee);

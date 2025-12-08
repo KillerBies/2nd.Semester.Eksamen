@@ -1,0 +1,75 @@
+﻿using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
+{
+    public partial class CreateTreatment
+{
+
+        public class SpecialtyItem
+        {
+            public string Specialty { get; set; }
+            public bool Status { get; set; }
+        }
+        private List<SpecialtyItem> specialtyItems = new();
+        TreatmentDTO treatment = new TreatmentDTO();
+        public int hour;
+        public int min;
+        List<string> specialties = new();
+        List<string> manuallyAddedSpecialties = new();
+        string newSpecialty = "";
+        void AddSpecialty()
+        {
+            if (!string.IsNullOrWhiteSpace(newSpecialty))
+            {
+                manuallyAddedSpecialties.Add(newSpecialty.Trim());
+                newSpecialty = "";
+            }
+        }
+
+        void RemoveSpecialty(string item)
+        {
+            manuallyAddedSpecialties.Remove(item);
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            specialties = await treatmentService.GetAllUniqueSpecialtiesAsync();
+            specialtyItems = specialties.Select(s => new SpecialtyItem() { Specialty = s }).ToList();
+        }
+
+        public async Task HandleValidSubmit()
+        {
+            treatment.Duration = new TimeSpan(hour, min, 0);
+            List<string> requiredSpecialties = new();
+
+            foreach (var specialtyItem in specialtyItems)
+            {
+                if (specialtyItem.Status == true)
+                {
+
+                    requiredSpecialties.Add(specialtyItem.Specialty);
+                }
+            }
+            requiredSpecialties.AddRange(manuallyAddedSpecialties);
+            treatment.RequiredSpecialties = requiredSpecialties
+        .Select(s => s + ", ")
+        .ToList();
+
+
+
+
+
+            await treatmentService.CreateNewTreatmentAsync(treatment);
+        }
+
+
+
+
+
+
+
+
+
+
+    }
+}

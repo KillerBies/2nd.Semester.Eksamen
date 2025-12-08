@@ -3,6 +3,7 @@
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 @inject ITreatmentService treatmentService;
 @using _2nd.Semester.Eksamen.Application.Adapters;
+@using System.Collections.Generic;
 @inject DTO_to_Domain dtoDomain;
 @rendermode InteractiveServer
 
@@ -35,18 +36,32 @@
 
 		<div class="form-group">
 			<label for="ExistingSpecialty" class="form-labels">Vælg eksisterende specialitet:</label>
-			<select multiple class="form-control" @onchange="OnSpecialtiesChanged">
-				@foreach (var specialty in specialties)
+			<li>
+				@foreach (var specialty in specialtyItems)
 				{
-					<option value="@specialty">@specialty</option>
+			<ul><InputCheckbox @bind-Value="@specialty.Status" />@specialty.Specialty</ul>
 				}
-			</select>
+			</li>
 		</div>
+	
+		<div>
+		<InputText @bind-Value="newSpecialty" class="form-control" placeholder="Tilføj ny specialitet..." />
+		<button type="button" class="btn" @onclick="AddSpecialty">Tilføj</button>
+	</div>
+
+	<ul>
+		@foreach (var item in manuallyAddedSpecialties)
+		{
+			<li>
+				@item
+				<button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveSpecialty(item)">Annuller tilføjelse</button>
+			</li>
+		}
+	</ul>
 
 		<div class="form-group">
 			<label for="Description" class="form-labels"> Beskrivelse</label>
 			<InputTextArea id="Notes" @bind-Value="@treatment.Description" maxlength="200" class="form-control" placeholder="Beskrivelse..." />
-
 		</div>
 
 		<div class="form-btn">
@@ -64,30 +79,4 @@
 
 
 
-@code {
-	TreatmentDTO treatment = new TreatmentDTO();
-	public int hour;
-	public int min;
-	List<string> specialties = new();
-	List<string> selectedSpecialties = new();
-	private void OnSpecialtiesChanged(ChangeEventArgs e)
-	{
-		var selectedOptions = e.Value as IEnumerable<string>;
 
-		selectedSpecialties = selectedOptions?.Select(s => s + ", ").ToList()?? new List<string>();
-	}
-
-	protected override async Task OnInitializedAsync()
-	{
-		specialties = await treatmentService.GetAllUniqueSpecialtiesAsync();
-	}
-
-	public async Task HandleValidSubmit()
-	{
-		treatment.Duration = new TimeSpan(hour, min, 0);
-		treatment.RequiredSpecialties = selectedSpecialties;
-		await treatmentService.CreateNewTreatmentAsync(treatment);
-	}
-
-
-}

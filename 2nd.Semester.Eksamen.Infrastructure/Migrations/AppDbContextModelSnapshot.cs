@@ -131,9 +131,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("ProductDiscount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("TreatmentDiscount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -239,15 +241,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal?>("CustomDiscount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateOnly>("DateOfPayment")
+                        .HasPrecision(18, 2)
                         .HasColumnType("date");
 
                     b.Property<byte[]>("PdfInvoice")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<decimal?>("TotalAfterDiscount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -272,6 +277,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal?>("DiscountedPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
@@ -279,6 +285,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PricePerUnit")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -352,6 +359,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PointBalance")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("SaveAsCustomer")
@@ -415,10 +423,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("WorkEnd")
+                    b.Property<TimeOnly>("WorkEnd")
                         .HasColumnType("time");
 
-                    b.Property<TimeSpan>("WorkStart")
+                    b.Property<TimeOnly>("WorkStart")
                         .HasColumnType("time");
 
                     b.HasKey("Id");
@@ -444,10 +452,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("time");
 
                     b.Property<DateTime>("End")
-                        .HasColumnType("datetime2");
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<DateTime>("Start")
-                        .HasColumnType("datetime2");
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -591,6 +601,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("DiscountedPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Discriminator")
@@ -617,25 +628,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.EmployeeSchedule", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
-
-                    b.ToTable("EmployeeSchedules");
-                });
-
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.ScheduleDay", b =>
                 {
                     b.Property<int>("Id")
@@ -647,12 +639,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
-                    b.Property<int>("ScheduleId")
+                    b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ScheduleId");
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("ScheduleDays");
                 });
@@ -665,8 +657,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("End")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid?>("ActivityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeOnly>("End")
+                        .HasPrecision(0)
+                        .HasColumnType("time(0)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -675,13 +674,17 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<int>("ScheduleDayId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeOnly>("Start")
+                        .HasPrecision(0)
+                        .HasColumnType("time(0)");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
 
                     b.HasIndex("ScheduleDayId");
 
@@ -990,35 +993,30 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasForeignKey("CampaignId");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.EmployeeSchedule", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.ScheduleDay", b =>
                 {
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Employees.Employee", "Employee")
-                        .WithOne("Schedule")
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.EmployeeSchedule", "EmployeeId")
+                        .WithMany("Schedule")
+                        .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.ScheduleDay", b =>
-                {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.EmployeeSchedule", "Schedule")
-                        .WithMany("Days")
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Schedule");
-                });
-
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.TimeRange", b =>
                 {
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Booking", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId");
+
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.ScheduleDay", "ScheduleDay")
                         .WithMany("TimeRanges")
                         .HasForeignKey("ScheduleDayId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Booking");
 
                     b.Navigation("ScheduleDay");
                 });
@@ -1123,11 +1121,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.Order", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.EmployeeSchedule", b =>
-                {
-                    b.Navigation("Days");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.ScheduleDay", b =>
