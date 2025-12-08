@@ -5,7 +5,6 @@ using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using Microsoft.AspNetCore.Components;
 using WebUIServices;
-using WebUIServices;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Components.Pages.PersonPages.EmployeePages

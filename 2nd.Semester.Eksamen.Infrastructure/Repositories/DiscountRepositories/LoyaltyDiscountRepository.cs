@@ -1,5 +1,6 @@
 ﻿using _2nd.Semester.Eksamen.Domain;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.DiscountRepositories
 {
-    public class LoyaltyDiscountRepository
+    public class LoyaltyDiscountRepository : ILoyaltyDiscountRepository
     {
         private readonly IDbContextFactory<AppDbContext> _factory;
         public LoyaltyDiscountRepository(IDbContextFactory<AppDbContext> factory)

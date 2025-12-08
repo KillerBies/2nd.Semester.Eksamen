@@ -25,12 +25,14 @@ using _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.Custo
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
+using _2nd.Semester.Eksamen.Infrastructure.Repositories.DiscountRepositories;
 
 using _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces;
 using QuestPDF.Infrastructure;
 using _2nd.Semester.Eksamen.Infrastructure.PDFManagement;
 using _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices;
+using _2nd.Semester.Eksamen.Application.Services.ProductServices;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -76,6 +78,9 @@ builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IDiscountCalculator, DiscountCalculator>();
+builder.Services.AddScoped<IDiscountApplicationService, DiscountApplicationService>();
+builder.Services.AddScoped<ILoyaltyDiscountRepository, LoyaltyDiscountRepository>();
+builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
 
 
 // if your repositories and services are separate:
