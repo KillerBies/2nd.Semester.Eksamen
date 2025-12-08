@@ -4,95 +4,162 @@
 @using _2nd.Semester.Eksamen.Domain;
 @using _2nd.Semester.Eksamen.Domain.Entities.Products;
 @using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts
+@using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @inject IBookingService bookingService;
-<h1>BookingOverview</h1>
-
-@foreach (Booking booking in bookingList)
-{
-    <p>Fra @booking.Start til @booking.End</p>
-    <p><button @onclick="() => ShowOverlay(booking)">Mere information</button></p>
-}
 
 
-
-
-@if (visibleOverlay == true)
-{
-    <div class="overlay" @onclick=HideOverlay>
-        @if (!string.IsNullOrEmpty(errorMessage))
-        {
-            <div class="alert alert-danger">@errorMessage</div>
-        }
-        <div class="overlay-content" @onclick:stopPropagation>
-            <h2>@selectedBooking.Start til @selectedBooking.End</h2>
-            <p>@selectedBooking.Treatments</p>
-            <button @onclick="HideOverlay">Luk</button>
-            <button @onclick="DeleteBookingWarning">Slet booking</button>
-    @if (toggleBookingWarning == true)
-    {
-        <p>Er du sikker på du vil slette bookingen?</p>
-        <button @onclick="() => toggleBookingWarning = false">Annuller</button>
-        <button  @onclick="ConfirmDeleteBooking">Slet booking</button>
-    
-    }
+<div style="height:100vh;">
+    <FloatingPage>
+        <div class="employee-nav" style="border-radius: 12px 12px 0 0;">
+            <div class="employee-nav-header">
+                <h3 class="title">Bookinger</h3>
+                <div class="input-group">
+                    <input type="text" placeholder="Søg Kunde..." @bind="SearchTermCustomer" @bind:event="oninput" />
+                </div>
+                <div class="input-group">
+                    <input type="date" placeholder="Dato..." @bind="SearchTermDate" />
+                </div>
+            </div>
         </div>
-    </div>
+
+        <div style="margin:30px;">
+            @if (LoadFailed)
+            {
+                <div class="alert alert-danger">
+                    Kunne ikke hente bookinger. Prøv igen senere.
+                </div>
+            }
+            else if (bookingList == null)
+            {
+                <div>Loader...</div>
+            }
+            else
+            {
+                <div class="grid">
+                    @foreach (var booking in bookingList)
+                    {
+                        <div class="grid-item">
+                            <div class="card booking-card-clickable" style="cursor:pointer;" @onclick="() => ShowOverlay(booking)">
+                                <div class="info">
+                                    <h4>@booking.Customer.Name</h4>
+                                    <p>@booking.Start.ToString("g") til @booking.End.ToString("g")</p>
+                                    <p>Status: @booking.Status</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </FloatingPage>
+</div>
+
+@if (visibleOverlay)
+{
+        <FloatingPage PageContentScrollable="false" IsVisible=visibleOverlay>
+            <div>
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger">@errorMessage</div>
+                }
+                <div class="card-header" style="background-color:#034265; border-radius: 12px 12px 0 0; padding-left: 10px;">
+                    <h2 class="mb-0" style="color:white;">@SelectedBooking.Customer.Name</h2>
+                </div>
+                <div style="margin: 30px; display:flex;">
+                    <div>
+                        <div style="border:dashed 1px;">
+                            <h3>@DateOnly.FromDateTime(SelectedBooking.Start)</h3>
+                            @TimeOnly.FromDateTime(SelectedBooking.Start) - @TimeOnly.FromDateTime(SelectedBooking.End)
+                        </div>
+                        @if (SelectedBooking.Treatments.Any())
+                        {
+                            @foreach (var treatment in SelectedBooking.Treatments)
+                            {
+                                <p><b>@treatment.Treatment.Name</b></p>
+                                <p>@TimeOnly.FromDateTime(treatment.Start) - @TimeOnly.FromDateTime(treatment.End)</p>
+                                <p>@treatment.Treatment.Price</p>
+                                <p><b>@treatment.Employee.Name @treatment.Employee.LastName</b></p>
+                                <p>@treatment.Employee.ExperienceLevel</p>
+                            }
+                        }
+                        <button class="btn btn-outline-primary me-2" @onclick="HideOverlay">Luk</button>
+                        <button class="btn btn-outline-danger" @onclick="DeleteBookingWarning">Slet booking</button>
+
+                        @if (toggleBookingWarning)
+                        {
+                            <p class="mt-2">Er du sikker på du vil slette bookingen?</p>
+                            <button class="btn btn-secondary me-2" @onclick="() => toggleBookingWarning = false">Annuller</button>
+                            <button class="btn btn-danger" @onclick="ConfirmDeleteBooking">Slet booking</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </FloatingPage>
 }
-
-
 
 @code {
-
-
-    private Booking? selectedBooking;
-    List<Booking> bookingList = new List<Booking>();
-    Filter filter = new();
+    private Booking SelectedBooking { get; set; } = new Booking
+    {
+        Treatments = new List<TreatmentBooking>()
+    };
+    private List<Booking> bookingList = new();
     private string? errorMessage;
-
+    private bool visibleOverlay = false;
     private bool toggleBookingWarning = false;
+    private bool LoadFailed = false;
+
+    private bool ShowBookingDetails = false;
+
+    private string SearchTermCustomer = "";
+    private DateTime? SearchTermDate;
+
     protected override async Task OnInitializedAsync()
     {
-        filter.Status = BookingStatus.Pending;
-        bookingList = (await bookingService.GetBookingsByFilterAsync(filter)).ToList();
+        try
+        {
+            bookingList = (await bookingService.GetBookingsByFilterAsync(new Filter { Status = BookingStatus.Pending })).ToList();
+            if (bookingList.Any())
+            {
+                SelectedBooking = bookingList.First();
+            };
+        }
+        catch
+        {
+            LoadFailed = true;
+        }
     }
-    //Shows overlay with booking details
-    private bool visibleOverlay = false;
-    void ShowOverlay(Booking booking) 
-    { 
+
+    void ShowOverlay(Booking booking)
+    {
+        SelectedBooking = booking;
         visibleOverlay = true;
-        selectedBooking = booking;
     }
-    //Opens the 'Are you sure you want to delete booking'
+
+    void HideOverlay()
+    {
+        visibleOverlay = false;
+        toggleBookingWarning = false;
+        errorMessage = null;
+    }
+
     void DeleteBookingWarning()
     {
         toggleBookingWarning = true;
     }
 
-    void HideOverlay() 
-    {
-        visibleOverlay = false;
-        errorMessage = null;
-        toggleBookingWarning = false;
-    }
     private async Task ConfirmDeleteBooking()
     {
         try
         {
-            await bookingService.DeleteBookingAsync(selectedBooking);
-            bookingList.Remove(selectedBooking);
-            selectedBooking = null;
-            visibleOverlay = false;
-            toggleBookingWarning = false;
-
+            await bookingService.DeleteBookingAsync(SelectedBooking);
+            bookingList.Remove(SelectedBooking);
+            HideOverlay();
             StateHasChanged();
         }
-        catch (Exception)
+        catch
         {
             errorMessage = "Noget gik galt i forbindelse med at slette bookingen!";
         }
-
-    
     }
-
-
 }

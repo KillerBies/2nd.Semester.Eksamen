@@ -8,7 +8,7 @@ namespace Components.Pages.PersonPages.CreateCustomer
     {
         public PrivateCustomerDTO privateCustomerDTO = new PrivateCustomerDTO()
         {
-            BirthdayWrapper = new DateTime(1920, 1, 1)
+            BirthdayWrapper = DateTime.Now
         };
 
         private async Task HandleValidSubmit()

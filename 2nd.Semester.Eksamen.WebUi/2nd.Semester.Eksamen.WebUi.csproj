@@ -23,7 +23,11 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+    <PackageReference Include="MudBlazor.Extensions" Version="8.15.0" />
     <PackageReference Include="Quick.AspNetCore.Components.Web.Extensions" Version="6.0.2" />
+    <PackageReference Include="Radzen.Blazor" Version="8.3.8" />
+    <PackageReference Include="Syncfusion.Blazor.Schedule" Version="31.2.16" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="31.2.16" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -9,10 +9,11 @@
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
 @using Microsoft.AspNetCore.Components.Web.Extensions;
-
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages;
 @namespace Components.Pages.ProductPages.BookingPages
 @inject NavigationManager Navi
 @inject ICustomerRepository customerRepository
+
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
     <div class="alert alert-danger">
@@ -20,7 +21,7 @@
     </div>
 }
 <div class="page-header">
-    <span class="title">Kunde Navn</span>
+    <span class="title">Kunde: @CustomerName</span>
 </div>
 <EditForm EditContext="@EditContext" class="row p-5" style="margin-left: 20%; margin-right: 20%;"
           OnValidSubmit="@HandleValidSubmit"
@@ -45,21 +46,21 @@
     <div class="possible-times-container">
         <div class="possible-times-header" style="border-radius:@(IsDropdownOpen ? "12px 12px 0 0" : "12px 12px 12px 12px");">
             <div>
-                <span>Start Tid</span>
-                <input type="date" @bind-value="startDate" @onselect="Arrange" />
+                <span>Start Dato</span>
+                <input type="date" @bind-value="startDate" @onselect="Arrange" title="Sæt start dato på genereret tider" />
             </div>
             <div class="btn-group">
                 <div>
                     <label>Tidsrum:</label>
-                    <input type="time" @bind="StartTime" class="input-time" />
+                    <input type="time" @bind="StartTime" class="input-time" title="Sæt start tid for genereret tiders tidsrum" />
                     <b>-</b>
-                    <input type="time" @bind="EndTime" class="input-time" />
+                    <input type="time" @bind="EndTime" class="input-time" title="Sæt slut tid for genereret tiders tidsrum" />
                 </div>
             </div>
             <div class="btn-group">
-                <button @onclick="PageBackwards" disabled="@(CurrentIndex == 0)"><span>&#9664;</span></button>
-                <button @onclick="FowardPage" disabled="@(checkfields())"><span>&#9654;</span></button>
-                <button type="button" class="refesh" @onclick="refreshAvailableSlots" disabled="@(checkfields())" title="Generer Mulige Tider">Generer Mulige Tider</button>
+                <button type="button" class="btn btn-primary time-button" @onclick="PageBackwards" disabled="@(CurrentIndex == 0)" title="Gå Tilbage I Tid">&#9664;</button>
+                <button type="button" class="btn btn-primary time-button" @onclick="FowardPage" disabled="@(checkfields())" title="Gå Frem I Tid">&#9654;</button>
+                <button type="button" class="btn btn-success time-button" @onclick="refreshAvailableSlots" disabled="@(checkfields())" title="Generer Mulige Tider"><i class="bi bi-search"></i></button>
             </div>
         </div>
         @if (IsDropdownOpen)
@@ -75,27 +76,50 @@
 
     <div class="btn-group">
         <button type="button" class="btn btn-primary mt-3" title="Anuller Booking" @onclick="OnCancel">Anuller</button>
-        <button type="submit" class="btn btn-primary mt-3" title="Lav Booking" @onclick="CreateBooking" disabled="@(checkfields())">Lav Booking</button>
+        <button type="submit" class="btn btn-primary mt-3" title="Lav Booking" @onclick="() => showPopup = true" disabled="@(checkfieldsAndTime())">Lav Booking</button>
     </div>
+
+
+
+    <BookingNotification @bind-IsVisible="showPopup" MaxWidth="600">
+        <div>
+            <div style="border-bottom: dashed 0.1px; border-top: dashed 0.1px;">
+                <h4>Booking</h4>
+                <div style="margin-left: 5%;">
+                    <p>    Pris: @Booking.Price .Kr</p>
+                    <p>    Dato: @DateOnly.FromDateTime(Booking.Start)</p>
+                    <p>    Tidsrum: @TimeOnly.FromDateTime(Booking.Start) - @TimeOnly.FromDateTime(Booking.End)</p>
+                </div>
+            </div>
+            <div style="border-bottom: dashed 0.1px;">
+                <h4>Kunde</h4>
+                <div style="margin-left: 5%;">
+                    <p>    Navn: @Booking.Customer.Name</p>
+                    <p>    Tlf-Nummer: @Booking.Customer.PhoneNumber</p>
+                    <p>    Type: @Booking.Customer.Type.ToString()</p>
+                </div>
+            </div>
+            @foreach (var treatment in Booking.TreatmentBookingDTOs)
+            {
+                <div style="border-bottom: dashed 0.1px; margin-left: 5%;">
+                    <h4>Behandling</h4>
+                    <div style="margin-left: 5%;">
+                        <p>Navn: @treatment.Treatment.Name</p>
+                        <p>Længde: @treatment.Treatment.Duration</p>
+                        <p>Tidsrum: @TimeOnly.FromDateTime(treatment.Start) - @TimeOnly.FromDateTime(treatment.End)</p>
+                        <p>Pris: @treatment.Price</p>
+                    </div>
+                    <h4>Medarbejder</h4>
+                    <div style="margin-left: 5%;">
+                        <p>Navn: @treatment.Employee.Name</p>
+                        <p>Erfaring: @treatment.Employee.ExperienceLevel</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary mt-3" @onclick="() => showPopup = false">Anuller</button>
+            <button type="button" class="btn btn-primary mt-3" @onclick="CreateBooking">Bekræft Booking</button>
+        </div>
+    </BookingNotification>
 </EditForm>
-<p>@Booking.Start</p>
-<p>@Booking.End</p>
-<p>@Booking.TreatmentBookingDTOs.Count()</p>z
-@foreach (var treatment in Booking.TreatmentBookingDTOs)
-{
-    <div>
-        @treatment.Treatment.Name
-    </div>
-    <p>@Booking.TreatmentBookingDTOs.Any(tb => tb.Treatment == null)</p>
-    <p>@Booking.TreatmentBookingDTOs.Any(tb => tb.Employee == null)</p>
-    <p>@Booking.TreatmentBookingDTOs.Any(tb => tb.End == null)</p>
-    <p>@Booking.TreatmentBookingDTOs.Any(tb => tb.Start == null)</p>
-    <p>@treatment.Start</p>
-    <p>@treatment.End</p>
-}
-@foreach(var treatment in timeSelected.TreatmentBookingDTOs)
-{
-    <p>@treatment.Start</p>
-    <p>@treatment.End</p>
-    <p>@treatment.Employee.Name</p>
-}

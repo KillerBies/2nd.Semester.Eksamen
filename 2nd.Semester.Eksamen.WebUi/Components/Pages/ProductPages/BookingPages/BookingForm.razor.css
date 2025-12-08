@@ -16,6 +16,16 @@
     box-sizing: border-box;
 }
 
+.time-button {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: white;
+}
+    .time-button:hover {
+        color: #333;
+    }
+
 .add-treatment {
     background: transparent;
     border: none;

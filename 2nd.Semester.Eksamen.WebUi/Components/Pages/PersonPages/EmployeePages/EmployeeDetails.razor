@@ -1,30 +1,76 @@
-﻿@page "/employees/{id:int}"
+﻿@page "/employeedetails/{id:int}"
 @rendermode InteractiveServer
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 @using _2nd.Semester.Eksamen.Domain.Helpers;
 @using _2nd.Semester.Eksamen.Domain.Entities;
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using WebUIServices;
-@namespace Components.Pages.PersonPages.EmployeePages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
+
+
+@if(ShowConfirmDelete)
+{
+    <BookingNotification IsVisible="ShowConfirmDelete">
+        <div style="display:flex;align-content:center;align-items:center; flex-direction:column">
+        <div style="border-bottom:dashed 1px;">
+            <h4>Er du sikker på at du vil slette medarbejder</h4>
+        </div>
+        <div class="btn btn-group">
+                <button type="button" class="btn btn-primary mt-3" @onclick="() => ShowConfirmDelete = false">Anuller</button>
+                <button type="button" class="btn btn-primary mt-3" @onclick="ConfirmDelete">Bekræft Sletning</button>
+        </div>
+        </div>
+    </BookingNotification>
+}
 <h3>Employee Details</h3>
 
+<div class="container my-4" style="display:flex;">
 
-@if (Employee == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <div class="employee-card">
-        <p><strong>Name:</strong> @Employee.Name @Employee.LastName</p>
-        <p><strong>Email:</strong> @Employee.Email</p>
-        <p><strong>Phone:</strong> @Employee.PhoneNumber</p>
-        <p><strong>Type:</strong> @Employee.Type</p>
-        <p><strong>Specialty:</strong> @Employee.Specialties</p>
-        <p><strong>Experience Level:</strong> @Employee.ExperienceLevel</p>
-        <p><strong>Gender:</strong> @Employee.Gender</p>
-        <p><strong>Address:</strong> @Employee.Address.StreetName @Employee.Address.HouseNumber, @Employee.Address.City, @Employee.Address.PostalCode</p>
+    @if (Employee == null)
+    {
+        <div class="text-center my-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-header" style="background-color:#034265;">
+                <h5 class="mb-0" style="color:white;">@Employee.Name @Employee.LastName</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Email:</strong> @Employee.Email</p>
+                        <p><strong>Phone:</strong> @Employee.PhoneNumber</p>
+                        <p><strong>Type:</strong> @Employee.Type</p>
+                        <p>
+                            <strong>Specialties:</strong>
+                            @foreach (var Specialty in Employee.Specialties.Split(','))
+                            {
+                                <span class="badge bg-secondary me-1">@Specialty</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Experience Level:</strong> @Employee.ExperienceLevel</p>
+                        <p><strong>Gender:</strong> @Employee.Gender</p>
+                        <p>
+                            <strong>Address:</strong>
+                            @Employee.Address.StreetName @Employee.Address.HouseNumber,<br />
+                            @Employee.Address.City, @Employee.Address.PostalCode
+                        </p>
+                    </div>
+                </div>
 
-        <button class="btn btn-primary" @onclick="StartEdit">Edit</button>
-        <button class="btn btn-primary"  @onclick="ConfirmDelete">Delete</button>
-    </div>
-}
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-outline-primary me-2" @onclick="StartEdit">Edit</button>
+                    <button class="btn btn-outline-danger" @onclick="() => ShowConfirmDelete = true">Delete</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
