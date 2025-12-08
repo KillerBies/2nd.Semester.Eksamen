@@ -83,6 +83,209 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.ToTable("PunchCards");
                 });
 
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.AddressSnapshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerSnapshotId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("HouseNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StreetName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerSnapshotId")
+                        .IsUnique();
+
+                    b.ToTable("AddressSnapshots");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.AppliedDiscountSnapshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderSnapshotId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderSnapshotId")
+                        .IsUnique();
+
+                    b.ToTable("AppliedDiscountSnapshots");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerSnapshotId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OrderSnapshotId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderSnapshotId")
+                        .IsUnique()
+                        .HasFilter("[OrderSnapshotId] IS NOT NULL");
+
+                    b.ToTable("BookingsSnapshots");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.CustomerSnapshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookingSnapshotId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingSnapshotId")
+                        .IsUnique();
+
+                    b.ToTable("CustomerSnapshots");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.OrderLineSnapshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("NumberOfProducts")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderSnapshotId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderSnapshotId");
+
+                    b.ToTable("OrderLinesSnapshots");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.OrderSnapshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal?>("CustomDiscount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateOnly>("DateOfPayment")
+                        .HasColumnType("date");
+
+                    b.Property<byte[]>("PdfInvoice")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<decimal?>("TotalAfterDiscount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderSnapshots");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("DiscountedPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OrderLineSnapshotId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PricePerUnit")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("TreatmentSnapshotId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderLineSnapshotId")
+                        .IsUnique()
+                        .HasFilter("[OrderLineSnapshotId] IS NOT NULL");
+
+                    b.HasIndex("TreatmentSnapshotId");
+
+                    b.ToTable("ProductSnapshots");
+
+                    b.HasDiscriminator().HasValue("ProductSnapshot");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -387,6 +590,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("DiscountedPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -399,9 +610,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.HasIndex("CampaignId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
 
-                    b.UseTptMappingStrategy();
+                    b.HasDiscriminator().HasValue("Product");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules.ScheduleDay", b =>
@@ -496,6 +709,21 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.ToTable("LoyaltyDiscounts", (string)null);
                 });
 
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.TreatmentSnapshot", b =>
+                {
+                    b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot");
+
+                    b.Property<int>("BookingSnapshotId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("BookingSnapshotId");
+
+                    b.HasDiscriminator().HasValue("TreatmentSnapshot");
+                });
+
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.CompanyCustomer", b =>
                 {
                     b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer");
@@ -538,7 +766,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.PrimitiveCollection<string>("RequiredSpecialties")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Treatments", (string)null);
+                    b.HasDiscriminator().HasValue("Treatment");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Discounts.PunchCard", b =>
@@ -558,6 +786,76 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Treatment");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.AddressSnapshot", b =>
+                {
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.CustomerSnapshot", "CustomerSnapshot")
+                        .WithOne("AddressSnapshot")
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.History.AddressSnapshot", "CustomerSnapshotId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CustomerSnapshot");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.AppliedDiscountSnapshot", b =>
+                {
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.OrderSnapshot", "OrderSnapshot")
+                        .WithOne("AppliedDiscountSnapshot")
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.History.AppliedDiscountSnapshot", "OrderSnapshotId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("OrderSnapshot");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", b =>
+                {
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.OrderSnapshot", "OrderSnapshot")
+                        .WithOne("BookingSnapshot")
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", "OrderSnapshotId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("OrderSnapshot");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.CustomerSnapshot", b =>
+                {
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", "BookingSnapshot")
+                        .WithOne("CustomerSnapshot")
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.History.CustomerSnapshot", "BookingSnapshotId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("BookingSnapshot");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.OrderLineSnapshot", b =>
+                {
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.OrderSnapshot", "OrderSnapshot")
+                        .WithMany("OrderLinesSnapshot")
+                        .HasForeignKey("OrderSnapshotId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("OrderSnapshot");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot", b =>
+                {
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.OrderLineSnapshot", "OrderLineSnapshot")
+                        .WithOne("ProductSnapshot")
+                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot", "OrderLineSnapshotId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.TreatmentSnapshot", "TreatmentSnapshot")
+                        .WithMany()
+                        .HasForeignKey("TreatmentSnapshotId");
+
+                    b.Navigation("OrderLineSnapshot");
+
+                    b.Navigation("TreatmentSnapshot");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer", b =>
@@ -730,13 +1028,44 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.Treatment", b =>
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.TreatmentSnapshot", b =>
                 {
-                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Products.Product", null)
-                        .WithOne()
-                        .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.Treatment", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", "BookingSnapshot")
+                        .WithMany("TreatmentSnapshot")
+                        .HasForeignKey("BookingSnapshotId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("BookingSnapshot");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", b =>
+                {
+                    b.Navigation("CustomerSnapshot")
+                        .IsRequired();
+
+                    b.Navigation("TreatmentSnapshot");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.CustomerSnapshot", b =>
+                {
+                    b.Navigation("AddressSnapshot")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.OrderLineSnapshot", b =>
+                {
+                    b.Navigation("ProductSnapshot");
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.OrderSnapshot", b =>
+                {
+                    b.Navigation("AppliedDiscountSnapshot");
+
+                    b.Navigation("BookingSnapshot")
+                        .IsRequired();
+
+                    b.Navigation("OrderLinesSnapshot");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer", b =>
