@@ -144,7 +144,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
         public async Task<Order?> GetOrderByBookingIdAsync(int bookingId)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Orders.FirstOrDefaultAsync(o => o.BookingId == bookingId);
+            return await _context.Orders.Include(o => o.Booking).FirstOrDefaultAsync(o => o.BookingId == bookingId);
         }
 
         // ================= BOOKINGS =================

@@ -12,19 +12,20 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         //Snapshot of a treatment that had been booked
         //Snapshot is made at time of payment so no need to change anything here when its made.
         public string? Category { get; private set; }
-        public int BookingSnapshotId { get; set; }
-        public BookingSnapshot BookingSnapshot { get; set; }
+        public int? BookingSnapshotId { get; set; }
+        public BookingSnapshot? BookingSnapshot { get; set; }
 
         
         private TreatmentSnapshot() { }
 
-        public TreatmentSnapshot( Treatment treatment)
+        public TreatmentSnapshot(Treatment treatment, BookingSnapshot bookingSnapshot)
         {
 
             Name = treatment.Name;
             PricePerUnit = treatment.Price;
             DiscountedPrice = treatment.DiscountedPrice;
             Category = treatment.Category;
+            BookingSnapshot = bookingSnapshot;
         }
 
 

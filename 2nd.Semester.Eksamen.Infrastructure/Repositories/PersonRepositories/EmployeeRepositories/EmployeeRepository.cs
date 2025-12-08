@@ -44,7 +44,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         public async Task<IEnumerable<Employee?>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees.ToListAsync();
+            return await _context.Employees.Include(c => c.Address).ToListAsync();
         }
         public async Task UpdateAsync(Employee employee)
         {
@@ -106,6 +106,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
             var _context = await _factory.CreateDbContextAsync();
             return await _context.Employees.Where(e => specialties.All(s=>e.Specialties.Contains(s))).ToListAsync();
         }
-
+        public async Task<List<string>> GetAllSpecialtiesAsync()
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Employees.Select(e => e.Specialties).ToListAsync();
+        }
     }
 }

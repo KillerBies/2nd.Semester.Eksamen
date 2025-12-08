@@ -12,7 +12,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
     public class Order : BaseEntity
     {
         public int BookingId { get; set; }
-        public Booking Booking { get; private set; } = null!;
+        public Booking Booking { get;  set; } = null!;
         public decimal Total { get; private set; }
         public decimal DiscountedTotal { get; private set; }
         public int AppliedDiscountId { get; private set; }

@@ -26,6 +26,13 @@ public class DiscountRepository : IDiscountRepository
             .OrderBy(ld => ld.MinimumVisits)
             .ToListAsync();
     }
+    public async Task <Discount> GetByIdAsync(int id)
+    {
+        await using var context = await _factory.CreateDbContextAsync();
+        return await context.Discounts.FirstOrDefaultAsync(d => d.Id == id);
+
+    }
+
 
     public async Task<List<Product>> GetByIdsAsync(List<int> ids)
     {

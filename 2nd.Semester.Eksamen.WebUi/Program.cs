@@ -97,6 +97,8 @@ builder.Services.AddScoped<IOrderLineService, OrderLineService>();
 builder.Services.AddScoped<ISnapshotRepository, SnapshotRepository>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IGenerateInvoice, GenerateInvoice>();
+builder.Services.AddScoped<ITreatmentService, TreatmentService>();
+builder.Services.AddScoped<ITreatmentRepository, TreatmentRepository>();
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 

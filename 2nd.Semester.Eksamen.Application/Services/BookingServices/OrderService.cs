@@ -3,6 +3,8 @@ using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,15 +15,17 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
     {
         private readonly ICustomerService _customerService;
         private readonly IOrderLineService _orderLineService;
+        private readonly IInvoiceService _invoiceService;
         private readonly IDiscountCalculator _discountCalculator;
 
         public OrderService(ICustomerService customerService,
                             IOrderLineService orderLineService,
+                            IInvoiceService invoiceService,
                             IDiscountCalculator discountCalculator)
         {
             _customerService = customerService;
             _orderLineService = orderLineService;
-            _discountCalculator = discountCalculator;
+            _invoiceService = invoiceService;
         }
 
         public async Task<Order> CreateOrUpdateOrderForBookingAsync(int bookingId)
@@ -76,7 +80,12 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 order = new Order(bookingId, originalTotal, finalTotal, appliedDiscount?.Id ?? 0);
 
                 await _customerService.AddOrderAsync(order);
-            }
+                
+                //ONLY A TEST TO SEE IF CREATING SNAPSHOT WORKS!!!!!!!!
+                await _invoiceService.CreateSnapshotInDBAsync(order);
+
+
+            }       
             else
             {
                 order = new Order(bookingId, originalTotal, finalTotal, appliedDiscount?.Id ?? 0);

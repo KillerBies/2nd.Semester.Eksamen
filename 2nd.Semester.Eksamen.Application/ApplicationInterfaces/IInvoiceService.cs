@@ -10,7 +10,7 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {
     public interface IInvoiceService
     {
-        public Task CreateSnapshotInDBAsync(Order order, int customDiscount);
+        public Task CreateSnapshotInDBAsync(Order order);
         public Task<List<OrderSnapshotDTO>> GetAllSnapshotsAsync();
         
     

@@ -135,7 +135,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
                 // An order belongs to one booking
                 entity.HasOne(o => o.Booking)
-                      .WithOne()
+                      .WithOne(b => b.Order)
                       .HasForeignKey<Order>(o => o.BookingId)
                       .OnDelete(DeleteBehavior.NoAction);
 
@@ -217,7 +217,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
             //SNAPSHOTS
             modelBuilder.Entity<CustomerSnapshot>().UseTphMappingStrategy();
-            modelBuilder.Entity<ProductSnapshot>().UseTphMappingStrategy();
+            modelBuilder.Entity<ProductSnapshot>().UseTptMappingStrategy();
             
             modelBuilder.Entity<OrderSnapshot>()
             .HasMany(o => o.OrderLinesSnapshot)
@@ -228,41 +228,45 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<OrderSnapshot>()
                 .HasOne(o => o.BookingSnapshot)
                 .WithOne(b => b.OrderSnapshot)
-                .HasForeignKey<BookingSnapshot>(b => b.OrderSnapshotId)
+                
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<OrderSnapshot>()
                 .HasOne(o => o.AppliedDiscountSnapshot)
                 .WithOne(ad => ad.OrderSnapshot)
-                .HasForeignKey<AppliedDiscountSnapshot>(ad => ad.OrderSnapshotId)
+                .HasForeignKey<OrderSnapshot>(o => o.AppliedSnapshotId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<BookingSnapshot>()
                 .HasMany(b => b.TreatmentSnapshot)
                 .WithOne(t => t.BookingSnapshot)
-                .HasForeignKey(t => t.BookingSnapshotId)
+                
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<BookingSnapshot>()
                 .HasOne(b => b.CustomerSnapshot)
                 .WithOne(c => c.BookingSnapshot)
-                .HasForeignKey<CustomerSnapshot>(c => c.BookingSnapshotId)
+                
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<CustomerSnapshot>()
                 .HasOne(c => c.AddressSnapshot)
                 .WithOne(a => a.CustomerSnapshot)
-                .HasForeignKey<AddressSnapshot>(a => a.CustomerSnapshotId)
+                
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<OrderLineSnapshot>()
-                .HasOne(ol => ol.ProductSnapshot)
-                .WithOne(p => p.OrderLineSnapshot)
-                .HasForeignKey<ProductSnapshot>(p => p.OrderLineSnapshotId)
-                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ProductSnapshot>()
+    .HasMany(p => p.OrderLines)
+    .WithOne(o => o.ProductSnapshot)
+    .HasForeignKey(o => o.ProductSnapshotId);
 
+            
 
+            
+            
+            
 
+            
 
             base.OnModelCreating(modelBuilder);
         }

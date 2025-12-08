@@ -52,7 +52,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 {
                     column.Item().Height(2, Unit.Centimetre).Image(_logo);
                     var scale = 0.8f;
-                    column.Item().Scale(scale).Text($"{InvoiceOrder.BookingSnapshot.CustomerSnapshot.AddressSnapshot}");
+                    var address = InvoiceOrder.BookingSnapshot.CustomerSnapshot?.AddressSnapshot;
+
+                    if (address != null)
+                    {
+                        column.Item().Scale(scale).Text($"{address.PostalCode} {address.City}");
+                        column.Item().Scale(scale).Text($"{address.StreetName} {address.HouseNumber}");
+                    }
                     //Checks if customer is companycustomer, if true inserts CVR.
                     if (InvoiceOrder.BookingSnapshot.CustomerSnapshot is CompanyCustomerSnapshot companyCustomer)
                     {

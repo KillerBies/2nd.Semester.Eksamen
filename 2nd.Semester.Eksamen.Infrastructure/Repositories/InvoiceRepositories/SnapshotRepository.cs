@@ -29,6 +29,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
             try
             {
                 await _context.OrderSnapshots.AddAsync(orderSnapshot);
+                
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -45,7 +46,20 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
             return await _context.OrderSnapshots.ToListAsync();
 
         }
-    
-    
+        public async Task<OrderSnapshot?> GetByIdAsync(int id)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.OrderSnapshots
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.CustomerSnapshot)
+                        .ThenInclude(c => c.AddressSnapshot)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.TreatmentSnapshot) 
+                .Include(o => o.OrderLinesSnapshot)
+                    .ThenInclude(ol => ol.ProductSnapshot)
+                .Include(o => o.AppliedDiscountSnapshot)
+                .FirstOrDefaultAsync(o => o.Id == id);
+        }
+
     }
 }
