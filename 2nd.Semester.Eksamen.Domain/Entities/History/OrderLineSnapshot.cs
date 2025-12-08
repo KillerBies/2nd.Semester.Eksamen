@@ -9,9 +9,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record OrderLineSnapshot : BaseSnapshot
     {
-        public int OrderSnapshotId { get;  set; }
-        public OrderSnapshot OrderSnapshot { get; private set; } = null!;
-        public ProductSnapshot? ProductSnapshot { get; private set; }
+        public int? OrderSnapshotId { get; set; }
+        public OrderSnapshot OrderSnapshot { get; set; } = null!;
+        public int ProductSnapshotId { get; set; }
+        public  ProductSnapshot? ProductSnapshot { get; set; }
         public int NumberOfProducts { get; private set; } = 0;
 
         

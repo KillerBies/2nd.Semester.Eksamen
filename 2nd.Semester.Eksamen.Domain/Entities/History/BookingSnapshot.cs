@@ -9,10 +9,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record BookingSnapshot : BaseSnapshot
     {
-        public List<TreatmentSnapshot> TreatmentSnapshot { get; private set; }
-        public int CustomerSnapshotId { get; set; }
+        public List<TreatmentSnapshot> TreatmentSnapshot { get;  set; }
+        public int? CustomerSnapshotId { get; set; }
+        
         public CustomerSnapshot CustomerSnapshot { get;  set; }
-        public int? OrderSnapshotId { get; set; }
+       
         public OrderSnapshot OrderSnapshot { get; set; }
         
 
@@ -21,11 +22,18 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 
         public BookingSnapshot(Booking booking)
         {
-            TreatmentSnapshot = booking.Treatments
-        .Select(t => new TreatmentSnapshot(t.Treatment))
-        .ToList();
+            TreatmentSnapshot = new List<TreatmentSnapshot>();
+
+          
+            foreach (var t in booking.Treatments)
+            {
+                var snapshot = new TreatmentSnapshot(t.Treatment, this);
+                TreatmentSnapshot.Add(snapshot);
+            }
             CustomerSnapshot = CustomerSnapshot.CreateCustomerSnapshot(booking.Customer);
 
+            
+            CustomerSnapshot.BookingSnapshot = this;
         }
 
     }

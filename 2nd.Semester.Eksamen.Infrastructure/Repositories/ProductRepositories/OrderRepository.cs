@@ -87,5 +87,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
                 throw;
             }
         }
+        public async Task<Order> GetOrderByIdAsync(int id)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Orders
+                .Include(o => o.Booking)
+                .ThenInclude(b => b.Customer)
+                .FirstOrDefaultAsync(o => o.Id == id);
+        }
+
     }
 }

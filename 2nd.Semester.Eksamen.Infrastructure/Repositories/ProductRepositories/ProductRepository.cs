@@ -81,5 +81,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
                 throw;
             }
         }
+
+        public async Task<List<Product>> GetByIdsAsync(List<int> ids)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Products
+                .Where(p => ids.Contains(p.Id))
+                .ToListAsync();
+        }
+
     }
 }

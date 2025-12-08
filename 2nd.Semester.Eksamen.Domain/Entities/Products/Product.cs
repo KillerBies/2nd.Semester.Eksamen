@@ -25,14 +25,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
 
 
 
-
-
-
-
-
-
-
-
         //Method to change the name of the product if the new name is not null or whitespace
         public bool TryChangeName(string newName)
         {

@@ -9,7 +9,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record AddressSnapshot : BaseSnapshot
     {
-       public int CustomerSnapshotId { get; set; }
+       
         public CustomerSnapshot CustomerSnapshot { get; set; }
         public string City { get; private set; } = null!;
         public string PostalCode { get; private set; } = null!;

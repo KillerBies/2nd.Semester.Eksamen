@@ -1,4 +1,8 @@
-﻿using System;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,27 +17,36 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
     [NotMapped]
     public class Discount : BaseEntity
     {
-        //Basic elements of a discount
-        public string Name { get; set; } = null!;
-        public decimal DiscountAmount { get; set; }
-        //Bools representing if the campaign is for products or treatments
-        public bool AppliesToProduct { get; set; }
+        public string Name { get; set; } = string.Empty;
+
+        public decimal TreatmentDiscount { get; set; }
+        public decimal ProductDiscount { get; set; }
+
+        public bool IsLoyalty { get; set; }
+
         public bool AppliesToTreatment { get; set; }
-        //Times the discount has been used
+        public bool AppliesToProduct {  get; set; }
         public int NumberOfUses { get; set; }
 
-        public Discount(string name, decimal discountAmount)
-        {
-            Name = name;
-            DiscountAmount = discountAmount;
-        }
         public Discount() { }
 
-
-        public void UseDiscount()
+        public Discount(string name, decimal treatmentDiscount, decimal productDiscount)
         {
-            NumberOfUses++;
+            Name = name;
+            TreatmentDiscount = treatmentDiscount;
+            ProductDiscount = productDiscount;
+        }
+        public decimal GetDiscountAmountFor(Product product)
+        {
+            return product is Treatment ? TreatmentDiscount : ProductDiscount;
         }
 
+        public decimal GetDiscountForProduct(Product product)
+        {
+            if (product is Treatment)
+                return TreatmentDiscount;
+
+            return ProductDiscount;
+        }
     }
 }

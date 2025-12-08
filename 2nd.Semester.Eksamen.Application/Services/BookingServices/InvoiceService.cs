@@ -14,6 +14,8 @@ using System.Reflection.Metadata.Ecma335;
 using QuestPDF.Infrastructure;
 using QuestPDF.Fluent;
 using System.Net.Http.Headers;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
 
 namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 {
@@ -21,30 +23,37 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
     {
         private readonly ISnapshotRepository _snapshotRepository;
         private readonly IGenerateInvoice _generateInvoice;
-
-        public InvoiceService(ISnapshotRepository snapshotRepository, IGenerateInvoice generateInvoice)
+        private readonly IDiscountRepository _discountRepository;
+        private readonly IBookingRepository _bookingRepository;
+        
+        public InvoiceService(ISnapshotRepository snapshotRepository, IGenerateInvoice generateInvoice, IDiscountRepository discountRepository, IBookingRepository bookingRepository)
         {
             _snapshotRepository = snapshotRepository;
             _generateInvoice = generateInvoice;
+            _discountRepository = discountRepository;
+            _bookingRepository = bookingRepository;
         }
 
        
 
-        public async Task CreateSnapshotInDBAsync(Order order, int customDiscount)
+        public async Task CreateSnapshotInDBAsync(Order order)
         {
-
+            OrderSnapshot snapshot;
             try
             {
-                OrderSnapshot snapshot = new OrderSnapshot(order, customDiscount);
-               snapshot.PdfInvoice = _generateInvoice.GenerateInvoicePDF(snapshot);
-                
+                var discount = await _discountRepository.GetByIdAsync(order.AppliedDiscountId);
+                var booking = await _bookingRepository.GetByIDAsync(order.BookingId);
+                 snapshot = new OrderSnapshot(order, discount, booking);
                 await _snapshotRepository.CreateNewAsync(snapshot);
+                
             }
             catch (Exception)
             { throw new Exception("Noget gik galt ved oprettele af ordren"); }
 
             
             
+                var dbSnapshot = await _snapshotRepository.GetByIdAsync(snapshot.Id);
+              // snapshot.PdfInvoice = _generateInvoice.GenerateInvoicePDF(dbSnapshot);
         }
         
          

@@ -26,6 +26,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
         //Order data
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderLine> OrderLines { get; set; }
+
 
         //Booking Data
         public DbSet<Booking> Bookings { get; set; }
@@ -49,6 +51,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         public DbSet<PunchCard> PunchCards { get; set; }
         public DbSet<LoyaltyDiscount> LoyaltyDiscounts { get; set; }
         public DbSet<Campaign> Campaigns { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
 
         //Schedule data
         public DbSet<EmployeeSchedule> EmployeeSchedules { get; set; }
@@ -78,9 +81,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         {
             modelBuilder.Entity<Customer>().UseTphMappingStrategy();
             modelBuilder.Entity<Product>().UseTphMappingStrategy();
-            
+
             modelBuilder.Entity<Campaign>().ToTable("Campaigns");
             modelBuilder.Entity<LoyaltyDiscount>().ToTable("LoyaltyDiscounts");
+            modelBuilder.Entity<Discount>().ToTable("Discount");
 
             //Booking model
             modelBuilder.Entity<Booking>()
@@ -120,23 +124,45 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasMany(T => T.ProductsInCampaign);
 
             //Order
-            modelBuilder.Entity<Order>()
-                .HasMany(o => o.Products)
-                .WithOne(p => p.Order)
-                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Order>(entity =>
+            {
+                // An order has many products (OrderLines)
+                entity.HasMany(o => o.Products)
+                      .WithOne(p => p.Order)
+                      .HasForeignKey(p => p.OrderID)
+                      .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Booking);
+                // An order belongs to one booking
+                entity.HasOne(o => o.Booking)
+                      .WithOne(b => b.Order)
+                      .HasForeignKey<Order>(o => o.BookingId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                // Configure precision for totals
+                entity.Property(o => o.Total).HasPrecision(18, 2);
+                entity.Property(o => o.DiscountedTotal).HasPrecision(18, 2);
+            });
+
 
             //Treatment booking
             modelBuilder.Entity<TreatmentBooking>()
                 .HasOne(tb => tb.Employee)
                 .WithMany(e => e.Appointments)
                 .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<TreatmentBooking>()
-                .HasMany(tb => tb.ProductsUsed)
-                .WithOne(up => up.TreatmentBooking)
+            // TreatmentBooking TreatmentBookingProducts
+            modelBuilder.Entity<TreatmentBookingProduct>()
+                .HasOne(tbp => tbp.TreatmentBooking)
+                .WithMany(tb => tb.TreatmentBookingProducts)
+                .HasForeignKey(tbp => tbp.TreatmentBookingID)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // TreatmentBookingProduct Product
+            modelBuilder.Entity<TreatmentBookingProduct>()
+                .HasOne(tbp => tbp.Product)
+                .WithMany()
+                .HasForeignKey(tbp => tbp.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
 
 
@@ -182,12 +208,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
 
             modelBuilder.Entity<Discount>()
-                .Property(d => d.DiscountAmount)
+                .Property(d => d.ProductDiscount)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<Discount>()
+                .Property(d => d.TreatmentDiscount)
                 .HasPrecision(18, 2);
 
             //SNAPSHOTS
             modelBuilder.Entity<CustomerSnapshot>().UseTphMappingStrategy();
-            modelBuilder.Entity<ProductSnapshot>().UseTphMappingStrategy();
+            modelBuilder.Entity<ProductSnapshot>().UseTptMappingStrategy();
             
             modelBuilder.Entity<OrderSnapshot>()
             .HasMany(o => o.OrderLinesSnapshot)
@@ -198,41 +227,45 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<OrderSnapshot>()
                 .HasOne(o => o.BookingSnapshot)
                 .WithOne(b => b.OrderSnapshot)
-                .HasForeignKey<BookingSnapshot>(b => b.OrderSnapshotId)
+                
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<OrderSnapshot>()
                 .HasOne(o => o.AppliedDiscountSnapshot)
                 .WithOne(ad => ad.OrderSnapshot)
-                .HasForeignKey<AppliedDiscountSnapshot>(ad => ad.OrderSnapshotId)
+                .HasForeignKey<OrderSnapshot>(o => o.AppliedSnapshotId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<BookingSnapshot>()
                 .HasMany(b => b.TreatmentSnapshot)
                 .WithOne(t => t.BookingSnapshot)
-                .HasForeignKey(t => t.BookingSnapshotId)
+                
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<BookingSnapshot>()
                 .HasOne(b => b.CustomerSnapshot)
                 .WithOne(c => c.BookingSnapshot)
-                .HasForeignKey<CustomerSnapshot>(c => c.BookingSnapshotId)
+                
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<CustomerSnapshot>()
                 .HasOne(c => c.AddressSnapshot)
                 .WithOne(a => a.CustomerSnapshot)
-                .HasForeignKey<AddressSnapshot>(a => a.CustomerSnapshotId)
+                
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<OrderLineSnapshot>()
-                .HasOne(ol => ol.ProductSnapshot)
-                .WithOne(p => p.OrderLineSnapshot)
-                .HasForeignKey<ProductSnapshot>(p => p.OrderLineSnapshotId)
-                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ProductSnapshot>()
+    .HasMany(p => p.OrderLines)
+    .WithOne(o => o.ProductSnapshot)
+    .HasForeignKey(o => o.ProductSnapshotId);
 
+            
 
+            
+            
+            
 
+            
 
             base.OnModelCreating(modelBuilder);
         }
