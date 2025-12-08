@@ -53,7 +53,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             
             
                 var dbSnapshot = await _snapshotRepository.GetByIdAsync(snapshot.Id);
-               snapshot.PdfInvoice = _generateInvoice.GenerateInvoicePDF(dbSnapshot);
+              // snapshot.PdfInvoice = _generateInvoice.GenerateInvoicePDF(dbSnapshot);
         }
         
          

@@ -216,7 +216,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
 
             //SNAPSHOTS
             modelBuilder.Entity<CustomerSnapshot>().UseTphMappingStrategy();
-            modelBuilder.Entity<ProductSnapshot>().UseTphMappingStrategy();
+            modelBuilder.Entity<ProductSnapshot>().UseTptMappingStrategy();
             
             modelBuilder.Entity<OrderSnapshot>()
             .HasMany(o => o.OrderLinesSnapshot)
