@@ -11,10 +11,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
     {
        public int CustomerSnapshotId { get; set; }
         public CustomerSnapshot CustomerSnapshot { get; set; }
-        public string City { get; init; } = null!;
-        public string PostalCode { get; init; } = null!;
-        public string StreetName { get; init; } = null!;
-        public string HouseNumber { get; init; } = null!;
+        public string City { get; private set; } = null!;
+        public string PostalCode { get; private set; } = null!;
+        public string StreetName { get; private set; } = null!;
+        public string HouseNumber { get; private set; } = null!;
 
 
 
