@@ -1,10 +1,10 @@
-﻿.customer-overview-container {
+﻿.treatment-overview-container {
 padding: 40px;
 background-color: #F3F2F2;
 min-height: 100vh;
 }
 
-.customer-overview-container h {
+.treatment-overview-container h {
 font-size: 32px;
 font-weight: bold;
 color: #034265;
@@ -21,7 +21,7 @@ gap: 25px;
 }
 
 
-.customer-card {
+.treatment-card {
 background: white;
 border-radius: 12px;
 padding: 20px;
@@ -31,26 +31,26 @@ flex-direction: column;
 transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.customer-card:hover {
+.treatment-card:hover {
 transform: translateY(-4px);
 box-shadow: 0 4px 12px rgba(0,0,0,0.20);
 }
 
 
-.customer-card-header {
+.treatment-card-header {
 display: flex;
 justify-content: space-between;
 align-items: center;
 margin-bottom: 15px;
 }
 
-.customer-card-header h3 {
+.treatment-card-header h3 {
 margin: 0;
 font-size: 20px;
 color: #034265;
 }
 
-.customer-type {
+.treatment-type {
 background-color: #034265;
 color: white;
 padding: 4px 10px;
@@ -59,29 +59,29 @@ font-size: 12px;
 }
 
 
-.customer-card-body {
+.treatment-card-body {
 margin-bottom: 15px;
 }
 
-.customer-card-body p {
+.treatment-card-body p {
 margin: 4px 0;
 font-size: 15px;
 }
 
-.customer-card-footer {
+.treatment-card-footer {
 margin-top: auto;
 display: flex;
 justify-content: center;
 }
 
-.customer-card-footer .btn {
+.treatment-card-footer .btn {
 width: 100%;
 background-color: #034265;
 border: none;
 transition: 0.2s ease;
 }
 
-.customer-card-footer .btn:hover {
+.treatment-card-footer .btn:hover {
 transform: scale(1.03);
 }
 
@@ -90,12 +90,12 @@ transform: scale(1.03);
 position: fixed;
 inset: 0;
 background: rgba(0,0,0,0.25);
-backdrop-filter: blur(2px); 
+backdrop-filter: blur(2px);
 z-index: 1200;
 }
 
 
-.customer-details-overlay {
+.treatment-details-overlay {
 position: fixed;
 top: 50%;
 left: 50%;
@@ -110,15 +110,24 @@ z-index: 1300;
 transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
-.customer-details-overlay h2 {
+.treatment-details-overlay h2 {
 margin-bottom: 1rem;
 font-size: 1.6rem;
 color: #034265;
 }
 
-.customer-details-overlay p {
+.treatment-details-overlay p {
 margin-bottom: 0.5rem;
 font-size: 1rem;
 }
 
+.treatment-new .btn {
+width: 100%;
+background-color: #034265;
+border: none;
+transition: 0.2s ease;
+}
 
+.treatment-new .btn:hover {
+transform: scale(1.03);
+}

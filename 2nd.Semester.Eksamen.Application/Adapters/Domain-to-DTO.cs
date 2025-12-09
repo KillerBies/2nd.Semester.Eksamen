@@ -24,6 +24,8 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 Category = treatment.Category,
                 Duration = treatment.Duration,
                 BasePrice = treatment.Price,
+                RequiredSpecialties = treatment.RequiredSpecialties,
+                Description = treatment.Description
             };
         }
         public EmployeeDTO EmployeeToDTO(Employee employee)
