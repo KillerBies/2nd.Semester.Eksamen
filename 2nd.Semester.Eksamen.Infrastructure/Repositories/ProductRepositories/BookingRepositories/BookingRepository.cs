@@ -70,12 +70,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                     if (day == null) break;
                     day.CancelBooking(treatment);
                     _context.ScheduleDays.Update(day);
-                    await _context.SaveChangesAsync();
+
                     _context.BookedTreatments.Remove(treatment);
-                    await _context.SaveChangesAsync();
                 }
-                _context.Bookings.Remove(booking);
-                await _context.SaveChangesAsync();
+
                 _context.Bookings.Remove(trackedBooking);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
