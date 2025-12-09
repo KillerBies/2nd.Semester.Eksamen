@@ -35,8 +35,8 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
             var (originalTotal, appliedDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
                 await _discountCalculator.CalculateAsync(booking.CustomerId, products);
-
-            var order = await GetOrCreateOrderAsync(bookingId, booking.CustomerId, originalTotal, finalTotal, appliedDiscount);
+            //finalTotal is timed by 1.25 to do VAT
+            var order = await GetOrCreateOrderAsync(bookingId, booking.CustomerId, originalTotal, finalTotal * 1.25m, appliedDiscount);
 
             await AddOrderLinesAsync(order, products);
 

@@ -55,9 +55,10 @@
             @if (selectedCustomer is PrivateCustomerDTO p)
             {
                 <h2>@p.Name @p.LastName</h2>
-                    <p><b>Køn:</b> @p.Gender</p>
-                <p><b>Email:</b> @p.Email</p>
+                <p><b>Køn:</b> @p.Gender</p>
+                    <p><b>Antal besøg</b> @p.NumberOfVisits</p>
                 <p><b>Telefon:</b> @p.PhoneNumber</p>
+                <p><b>Email:</b> @p.Email</p>
                 <p><b>By:</b>@p.PostalCode @p.City</p>
                 <p><b>Addresse:</b> @p.StreetName @p.HouseNumber</p>
                 <p><b>Fødselsdato:</b> @p.BirthdayWrapper.ToShortDateString()</p>
@@ -66,8 +67,9 @@
                 {
                 
                 <h2>@c.Name</h2>
-                <p><b>Email:</b> @c.Email</p>
+                    <p><b>Antal besøg</b> @c.NumberOfVisits</p>
                 <p><b>Telefon:</b> @c.PhoneNumber</p>
+                <p><b>Email:</b> @c.Email</p>
                 <p><b>By:</b>@c.PostalCode @c.City</p>
                 <p><b>Addresse:</b> @c.StreetName @c.HouseNumber</p>
                 <p><b>CVR:</b> @c.CVRNumber</p>

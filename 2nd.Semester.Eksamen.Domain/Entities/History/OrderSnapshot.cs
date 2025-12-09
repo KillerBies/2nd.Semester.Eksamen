@@ -25,7 +25,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public OrderSnapshot(Order order, Discount discount, Booking booking)
         {
             BookingSnapshot = new BookingSnapshot(booking);
-            
+            TotalAfterDiscount = order.DiscountedTotal;
             OrderLinesSnapshot = order.Products.Select(oL => new OrderLineSnapshot(oL)).ToList();
             DateOfPayment = DateOnly.FromDateTime(DateTime.Now);
             AppliedDiscountSnapshot = new AppliedDiscountSnapshot(discount);
