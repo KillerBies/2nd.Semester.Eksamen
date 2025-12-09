@@ -7,7 +7,7 @@ using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentPr
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 
-namespace DomainTests
+namespace _2nd.Semester.Eksamen.Domain.Test.DomainTests.BookingTests
 {
     [TestFixture]
     public class BookingDomainTests

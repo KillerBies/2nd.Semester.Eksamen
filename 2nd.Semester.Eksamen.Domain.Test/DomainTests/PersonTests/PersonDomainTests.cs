@@ -2,7 +2,7 @@
 using System;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 
-namespace DomainTests
+namespace _2nd.Semester.Eksamen.Domain.Test.DomainTests.PersonTests
 {
     // Dummy class to test abstract Person
     public class TestPerson : Person

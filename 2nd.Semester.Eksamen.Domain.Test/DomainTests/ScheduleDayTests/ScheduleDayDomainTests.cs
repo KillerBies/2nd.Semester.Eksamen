@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tests.ScheduleTests
+namespace _2nd.Semester.Eksamen.Domain.Test.DomainTests.ScheduleDayTests
 {
     [TestFixture]
     public class ScheduleDayDomainTests

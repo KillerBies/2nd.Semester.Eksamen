@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Tests.DomainServiceTests
+namespace _2nd.Semester.Eksamen.Domain.Test.DomainTests.BookingTests.BookingServiceTests
 {
     [TestFixture]
     public class BookingDomainServiceTests
