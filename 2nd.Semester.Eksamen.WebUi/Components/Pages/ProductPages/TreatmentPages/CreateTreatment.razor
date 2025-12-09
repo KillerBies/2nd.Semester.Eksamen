@@ -1,10 +1,6 @@
 ﻿@page "/Create-Treatment"
-@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
-@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-@inject ITreatmentService treatmentService;
-@using _2nd.Semester.Eksamen.Application.Adapters;
-@using System.Collections.Generic;
-@inject DTO_to_Domain dtoDomain;
+
+
 @rendermode InteractiveServer
 
 <EditForm Model="@treatment" OnValidSubmit="@HandleValidSubmit" class="col-10 p-0" FormName="CreateTreatment">

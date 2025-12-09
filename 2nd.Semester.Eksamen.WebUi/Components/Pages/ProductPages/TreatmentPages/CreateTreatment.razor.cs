@@ -1,9 +1,21 @@
-﻿using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
-
+﻿using System.Net.NetworkInformation;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.Adapters;
+using System.Collections.Generic;
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
 {
     public partial class CreateTreatment
 {
+        private readonly ITreatmentService _treatmentService;
+        private readonly DTO_to_Domain dtoDomain;
+        public CreateTreatment(ITreatmentService treatmentService)
+        {
+            _treatmentService = treatmentService;
+        }
+
+
 
         public class SpecialtyItem
         {
@@ -33,7 +45,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
 
         protected override async Task OnInitializedAsync()
         {
-            specialties = await treatmentService.GetAllUniqueSpecialtiesAsync();
+            specialties = await _treatmentService.GetAllUniqueSpecialtiesAsync();
             specialtyItems = specialties.Select(s => new SpecialtyItem() { Specialty = s }).ToList();
         }
 
@@ -59,7 +71,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
 
 
 
-            await treatmentService.CreateNewTreatmentAsync(treatment);
+            await _treatmentService.CreateNewTreatmentAsync(treatment);
         }
 
 

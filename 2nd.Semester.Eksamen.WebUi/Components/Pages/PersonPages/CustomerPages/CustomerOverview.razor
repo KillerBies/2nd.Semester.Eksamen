@@ -1,11 +1,6 @@
 ﻿@page "/CustomerOverview"
-@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
-@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
-@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-@inject ICustomerService _customerService;
-@using _2nd.Semester.Eksamen.WebUi.Components.Shared;
 @rendermode InteractiveServer
-
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 <div class="customer-overview-container">
     <h2>Kundeoversigt</h2>
     @if (dTOs == null)
@@ -93,34 +88,5 @@
 
 @code {
 
-    List <CustomerDTO> dTOs = new();
-    private CustomerDTO? selectedCustomer;
-
-
-    public bool isVisible;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        dTOs = await _customerService.GetAllCustomersAsDTO();
-    }
-
-    //Overlays true or false
-    private void ShowOverlay(CustomerDTO customer)
-    {
-        selectedCustomer = customer;
-        isVisible = true;
-        
-    }
-    private void HideOverlay()
-    {
-        selectedCustomer = null;
-        isVisible = false;
-    }
-    private async Task DeleteCustomer(int id)
-    {
-        
-        await _customerService.DeleteByIdAsync(selectedCustomer.id);
-
-    }
+   
 }
