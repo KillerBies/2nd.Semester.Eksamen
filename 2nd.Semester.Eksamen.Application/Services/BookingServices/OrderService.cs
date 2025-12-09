@@ -57,7 +57,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             {
                 if (tb.Treatment != null && tb.Employee != null)
                 {
-                    productsList.Add(new Product
+                    productsList.Add(new Treatment
                     {
                         Id = tb.Treatment.Id,
                         Name = tb.Treatment.Name,

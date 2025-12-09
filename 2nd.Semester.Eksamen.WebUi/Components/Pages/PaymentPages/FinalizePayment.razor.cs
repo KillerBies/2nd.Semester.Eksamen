@@ -162,7 +162,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                     {
 
                         // Clone the treatment so we don't overwrite DB values accidentally
-                        var treatmentWithMultiplier = new Product
+                        var treatmentWithMultiplier = new Treatment
                         {
                             Id = tb.Treatment.Id,
                             Name = tb.Treatment.Name,
