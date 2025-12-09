@@ -157,9 +157,23 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
             {
                 foreach (var tb in booking.Treatments)
                 {
-                    if (tb.Treatment != null)
-                        allItems.Add((tb.Treatment, 1));
+                    // Apply employee multiplier only to the treatment itself
+                    if (tb.Treatment != null && tb.Employee != null)
+                    {
 
+                        // Clone the treatment so we don't overwrite DB values accidentally
+                        var treatmentWithMultiplier = new Product
+                        {
+                            Id = tb.Treatment.Id,
+                            Name = tb.Treatment.Name,
+                            Price = tb.Treatment.Price * tb.Employee.BasePriceMultiplier,
+                            DiscountedPrice = tb.Treatment.DiscountedPrice * tb.Employee.BasePriceMultiplier
+                        };
+
+                        allItems.Add((treatmentWithMultiplier, 1));
+                    }
+
+                    // Add all additional products without any multiplier
                     if (tb.TreatmentBookingProducts != null)
                     {
                         foreach (var tbp in tb.TreatmentBookingProducts)
@@ -173,5 +187,6 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
             return allItems;
         }
+
     }
 }
