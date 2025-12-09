@@ -122,7 +122,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
                 await _customerService.UpdateAsync(customer);
 
-                booking.Status = BookingStatus.Completed;
+                booking.TryChangeStatus(BookingStatus.Completed);
                 await _customerService.UpdateBookingAsync(booking);
 
                 paymentSuccess = true;
