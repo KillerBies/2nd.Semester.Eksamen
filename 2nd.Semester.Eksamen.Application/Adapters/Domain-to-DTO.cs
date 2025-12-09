@@ -10,6 +10,8 @@ using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 
 namespace _2nd.Semester.Eksamen.Application.Adapters
 {
@@ -27,6 +29,11 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 RequiredSpecialties = treatment.RequiredSpecialties,
                 Description = treatment.Description
             };
+        }
+
+        public ProductDTO ProductToDTO(Product product)
+        {
+            return new ProductDTO() {ProductId=product.Id,Name=product.Name,Price=product.Price};
         }
         public EmployeeDTO EmployeeToDTO(Employee employee)
         {

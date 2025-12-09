@@ -1,5 +1,6 @@
 ﻿using _2nd.Semester.Eksamen.Domain;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.DiscountRepositories
 {
-    public class PunchCardRepository
+    public class PunchCardRepository : IPunchCardRepository
     {
         private readonly IDbContextFactory<AppDbContext> _factory;
         public PunchCardRepository(IDbContextFactory<AppDbContext> factory)
