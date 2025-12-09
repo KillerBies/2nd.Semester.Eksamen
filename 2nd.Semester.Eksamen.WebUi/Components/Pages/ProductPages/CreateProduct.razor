@@ -46,11 +46,11 @@
 
     private async Task HandleValidSubmit()
     {
-        await productService.CreateProductAsync(productDTO);
-        Navi.NavigateTo("/products"); // Navigate back to product list after creation
+        // await productService.CreateProductAsync(productDTO);
+        // Navi.NavigateTo("/products"); // Navigate back to product list after creation
     }
 
-    // DTO for binding
+
     public class ProductDTO
     {
         public string Name { get; set; } = string.Empty;

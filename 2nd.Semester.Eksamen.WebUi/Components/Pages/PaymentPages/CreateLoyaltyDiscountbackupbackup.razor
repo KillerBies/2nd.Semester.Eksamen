@@ -1,4 +1,4 @@
-﻿@page "/create-discount"
+﻿@page "/create-loyalty-discount"
 @using _2nd.Semester.Eksamen.Domain.Entities.Discounts
 @using _2nd.Semester.Eksamen.Application.Services
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
@@ -66,18 +66,13 @@
                     }
                 </div>
             }
-            <div class="row" style="padding-top: 20px;">
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-primary col-md-12">Opret Rabat</button>
-                </div>
-            </div>
 
         </EditForm>
     </FloatingPage>
 </div>
 
 @code {
-    public LoyaltyDiscountDTO discount = new();
+    [Parameter] public LoyaltyDiscountDTO discount = new();
 
     private async Task HandleValidSubmit()
     {
