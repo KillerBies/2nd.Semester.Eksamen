@@ -35,8 +35,8 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
             var (originalTotal, appliedDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
                 await _discountCalculator.CalculateAsync(booking.CustomerId, products);
-            //finalTotal is timed by 1.25 to do VAT
-            var order = await GetOrCreateOrderAsync(bookingId, booking.CustomerId, originalTotal, finalTotal * 1.25m, appliedDiscount);
+            
+            var order = await GetOrCreateOrderAsync(bookingId, booking.CustomerId, originalTotal, finalTotal, finalTotal * 0.20m, appliedDiscount);
 
             await AddOrderLinesAsync(order, products);
 
@@ -70,19 +70,19 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             return productsList;
         }
 
-        private async Task<Order> GetOrCreateOrderAsync(int bookingId, int customerId, decimal originalTotal, decimal finalTotal, Discount? appliedDiscount)
+        private async Task<Order> GetOrCreateOrderAsync(int bookingId, int customerId, decimal originalTotal, decimal finalTotal, decimal vat, Discount? appliedDiscount)
         {
             var order = await _customerService.GetOrderByBookingIdAsync(bookingId);
             if (order == null)
             {
-                order = new Order(bookingId, originalTotal, finalTotal, appliedDiscount?.Id ?? 0);
+                order = new Order(bookingId, originalTotal, finalTotal, vat, appliedDiscount?.Id ?? 0);
 
                 await _customerService.AddOrderAsync(order);
 
             }       
             else
             {
-                order = new Order(bookingId, originalTotal, finalTotal, appliedDiscount?.Id ?? 0);
+                order = new Order(bookingId, originalTotal, finalTotal, vat ,appliedDiscount?.Id ?? 0);
                 await _customerService.UpdateOrderAsync(order);
             }
             return order;

@@ -145,6 +145,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 // Configure precision for totals
                 entity.Property(o => o.Total).HasPrecision(18, 2);
                 entity.Property(o => o.DiscountedTotal).HasPrecision(18, 2);
+                entity.Property(o => o.VAT).HasPrecision(18, 2);
             });
 
 
