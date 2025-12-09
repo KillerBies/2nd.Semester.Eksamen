@@ -142,26 +142,28 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
         }
         public bool UpdateDaySchedule(TreatmentBooking treatment, Guid bookingId)
         {
-            var _start = TimeOnly.FromDateTime(treatment.Start);
-            var _end = TimeOnly.FromDateTime(treatment.End);
-            var booking = TimeRanges.FirstOrDefault(r => r.Type == "Booked" &&
-                                              r.Start == _start &&
-                                              r.End == _end && r.ActivityId == bookingId);
-            if (booking == null) return false;
-            var oldStart = booking.Start;
-            var oldEnd = booking.End;
-            booking.Start = _start;
-            booking.End = _end;
-            if(_start > oldStart)
-            {
-                TimeRanges.Add(new TimeRange(oldStart, _start) { Type = "Freetime" });
-            }
-            if (_end < oldEnd)
-            {
-                TimeRanges.Add(new TimeRange(_end, oldEnd) { Type = "Freetime" });
-            }
+            // Find booked TimeRange by ActivityId only
+            var bookingRange = TimeRanges.FirstOrDefault(r => r.Type == "Booked" && r.ActivityId == bookingId);
+            if (bookingRange == null) return false;
+
+            var oldStart = bookingRange.Start;
+            var oldEnd = bookingRange.End;
+
+            var newStart = TimeOnly.FromDateTime(treatment.Start);
+            var newEnd = TimeOnly.FromDateTime(treatment.End);
+
+            bookingRange.Start = newStart;
+            bookingRange.End = newEnd;
+
+            if (newStart > oldStart)
+                TimeRanges.Add(new TimeRange(oldStart, newStart) { Type = "Freetime" });
+
+            if (newEnd < oldEnd)
+                TimeRanges.Add(new TimeRange(newEnd, oldEnd) { Type = "Freetime" });
+
             MergeAdjacentFreetime();
             return true;
         }
+
     }
 }
