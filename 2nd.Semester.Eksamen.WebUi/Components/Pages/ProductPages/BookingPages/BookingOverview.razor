@@ -87,7 +87,7 @@
                         <div class="mb-3 p-3 border rounded shadow-sm">
                             <h5 class="fw-bold mb-1">@treatment.Treatment.Name</h5>
                             <p class="mb-1"><strong>Tid:</strong> @treatment.Start.ToString("HH:mm") - @treatment.End.ToString("HH:mm")</p>
-                            <p class="mb-1"><strong>Pris:</strong> @treatment.Treatment.Price.ToString("C")</p>
+                            <p class="mb-1"><strong>Pris:</strong> @( (treatment.Treatment.Price * treatment.Employee.BasePriceMultiplier).ToString("C") )</p>
                             <p class="mb-1"><strong>Ansat:</strong> @treatment.Employee.Name @treatment.Employee.LastName</p>
                             <p class="mb-0"><strong>Erfaring:</strong> @treatment.Employee.ExperienceLevel</p>
                         </div>

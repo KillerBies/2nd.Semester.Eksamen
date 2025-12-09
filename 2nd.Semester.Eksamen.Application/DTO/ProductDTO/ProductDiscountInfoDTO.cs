@@ -14,7 +14,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
         public string ProductName { get; set; } = string.Empty;
         public decimal OriginalPrice { get; set; }
         public decimal FinalPrice { get; set; }
-        public decimal DiscountAmount { get; set; } // 0.10 = 10%
+        public decimal DiscountAmount { get; set; }
         public string? DiscountName { get; set; }
         public bool IsLoyalty { get; set; }
     }

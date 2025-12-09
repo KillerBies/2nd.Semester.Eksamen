@@ -182,12 +182,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 .Include(b => b.Treatments)
                     .ThenInclude(tb => tb.Treatment)
                 .Include(b => b.Treatments)
+                    .ThenInclude(tb => tb.Employee)
+                .Include(b => b.Treatments)
                     .ThenInclude(tb => tb.TreatmentBookingProducts)
                         .ThenInclude(tbp => tbp.Product)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
 
             return booking;
         }
+
 
 
 
@@ -198,6 +201,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 .Include(b => b.Treatments)
                     .ThenInclude(tb => tb.Treatment)
                 .Include(b => b.Treatments)
+                    .ThenInclude(tb => tb.Employee)
+                .Include(b => b.Treatments)
                     .ThenInclude(tb => tb.TreatmentBookingProducts)
                         .ThenInclude(tbp => tbp.Product)
                 .Include(b => b.Customer)
@@ -205,6 +210,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 .OrderBy(b => b.Start)
                 .FirstOrDefaultAsync();
         }
+
+
 
 
         public async Task AddOrderAsync(Order order)
