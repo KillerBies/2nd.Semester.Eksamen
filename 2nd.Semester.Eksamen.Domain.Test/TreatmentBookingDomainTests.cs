@@ -33,7 +33,7 @@ namespace DomainTests
                 name: "Relaxing Massage",
                 price: 100m,
                 discription: "Full body massage",
-                category: "Wellness",
+                category: "Massage",
                 duration: TimeSpan.FromMinutes(60)
             );
         }

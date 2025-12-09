@@ -52,9 +52,8 @@ namespace Tests.ScheduleTests
             Assert.That(tr.End, Is.EqualTo(new TimeOnly(17, 0)));
         }
 
-        // ---------------------------
         // BookDayForVacation
-        // ---------------------------
+
         [Test]
         public void BookDayForVacation_ReplacesAllTimeRanges()
         {
@@ -80,9 +79,8 @@ namespace Tests.ScheduleTests
             Assert.That(result, Is.False);
         }
 
-        // ---------------------------
         // AvailableInTimeRange
-        // ---------------------------
+
         [Test]
         public void AvailableInTimeRange_True_WhenNoOverlapWithNonFree()
         {
@@ -103,9 +101,8 @@ namespace Tests.ScheduleTests
             Assert.That(day.AvailableInTimeRange(range), Is.False);
         }
 
-        // ---------------------------
         // CheckIfAvailable
-        // ---------------------------
+
         [Test]
         public void CheckIfAvailable_True_WhenFreetimeBigEnough()
         {
@@ -125,9 +122,8 @@ namespace Tests.ScheduleTests
             Assert.That(day.CheckIfAvailable(TimeSpan.FromHours(1)), Is.False);
         }
 
-        // ---------------------------
         // GetAvailableTimeRange
-        // ---------------------------
+
         [Test]
         public void GetAvailableTimeRange_ReturnsCorrectSlot()
         {
@@ -139,9 +135,8 @@ namespace Tests.ScheduleTests
             Assert.That(slot.Duration, Is.EqualTo(TimeSpan.FromHours(8)));
         }
 
-        // ---------------------------
         // GetAllAvailableSlots
-        // ---------------------------
+
         [Test]
         public void GetAllAvailableSlots_ReturnsAllValidFreetime()
         {
@@ -152,9 +147,8 @@ namespace Tests.ScheduleTests
             Assert.That(slots.First().Type, Is.EqualTo("Freetime"));
         }
 
-        // ---------------------------
         // GetOverlappingFreetime
-        // ---------------------------
+
         [Test]
         public void GetOverlappingFreetime_ReturnsCorrectRanges()
         {
@@ -166,9 +160,8 @@ namespace Tests.ScheduleTests
             Assert.That(result.Any(), Is.True);
         }
 
-        // ---------------------------
         // AddBooking
-        // ---------------------------
+
         [Test]
         public void AddBooking_SplitsFreetimeCorrectly()
         {
@@ -208,9 +201,8 @@ namespace Tests.ScheduleTests
             Assert.That(result, Is.False);
         }
 
-        // ---------------------------
         // CancelBooking
-        // ---------------------------
+
         [Test]
         public void CancelBooking_ReturnsSlotToFreetime()
         {
@@ -230,9 +222,8 @@ namespace Tests.ScheduleTests
             Assert.That(day.TimeRanges.Any(r => r.Type == "Freetime"), Is.True);
         }
 
-        // ---------------------------
         // UpdateDaySchedule
-        // ---------------------------
+
         [Test]
         public void UpdateDaySchedule_UpdatesBookingAndCreatesFreetime()
         {
@@ -261,9 +252,9 @@ namespace Tests.ScheduleTests
 
             // Arrange: Create a treatment and booking
             var treatment = new Treatment(
-                name: "Corporate Shoulder Massage",
+                name: "Shoulder Massage",
                 price: 250m,
-                discription: "High-end corporate massage for productivity",
+                discription: "Best shoulder massage",
                 category: "Massage",
                 duration: TimeSpan.FromHours(2)
             );

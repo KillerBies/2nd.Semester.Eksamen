@@ -212,11 +212,11 @@ namespace _2nd.Semester.Eksamen.Tests
             var employees = new List<Employee>
     {
         new Employee(
-            firstname: "Alice",
-            lastname: "Smith",
-            email: "alice@company.com",
+            firstname: "Jane",
+            lastname: "Doe",
+            email: "Jane.Doe@company.com",
             phoneNumber: "11122233",
-            address: new Address("CityA", "1000", "StreetA", "1"),
+            address: new Address("Vejle", "7100", "Kolding Vej", "1"),
             basePriceMultiplier: 1.1m,
             experience: "Junior",
             type: "Staff",
@@ -227,11 +227,11 @@ namespace _2nd.Semester.Eksamen.Tests
         { Id = 1 },
 
         new Employee(
-            firstname: "Bob",
-            lastname: "Johnson",
-            email: "bob@company.com",
+            firstname: "John",
+            lastname: "Doe",
+            email: "John.Doe@company.com",
             phoneNumber: "44455566",
-            address: new Address("CityB", "2000", "StreetB", "2"),
+            address: new Address("Kolding", "6000", "Vejle vej", "2"),
             basePriceMultiplier: 1.2m,
             experience: "Senior",
             type: "Staff",
@@ -255,12 +255,12 @@ namespace _2nd.Semester.Eksamen.Tests
             Assert.That(result.Count(), Is.EqualTo(2));
 
             var firstCard = result.First(e => e.Id == 1);
-            Assert.That(firstCard.Name, Is.EqualTo("Alice"));
+            Assert.That(firstCard.Name, Is.EqualTo("Jane"));
             Assert.That(firstCard.Type, Is.EqualTo("Staff"));
             Assert.That(firstCard.PhoneNumber, Is.EqualTo("11122233"));
 
             var secondCard = result.First(e => e.Id == 2);
-            Assert.That(secondCard.Name, Is.EqualTo("Bob"));
+            Assert.That(secondCard.Name, Is.EqualTo("John"));
             Assert.That(secondCard.Type, Is.EqualTo("Staff"));
             Assert.That(secondCard.PhoneNumber, Is.EqualTo("44455566"));
 

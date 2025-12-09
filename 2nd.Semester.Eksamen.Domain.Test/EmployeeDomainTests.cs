@@ -22,7 +22,7 @@ namespace DomainTests
                 "Expert",                           // experience
                 "Hair",                             // type
                 "Massage",                           // specialties
-                "Female",                            // gender
+                "Male",                            // gender
                 new TimeOnly(9, 0),                 // workStart
                 new TimeOnly(17, 0)                 // workEnd
             );
@@ -31,10 +31,10 @@ namespace DomainTests
         private Treatment CreateDummyTreatment()
         {
             return new Treatment(
-                "Relaxing Massage",
+                "Massage",
                 100m,
                 "Full body massage",
-                "Wellness",
+                "Massage",
                 TimeSpan.FromMinutes(60)
             );
         }
@@ -43,17 +43,17 @@ namespace DomainTests
         public void TrySetLastName_Should_Set_When_Valid()
         {
             var emp = CreateEmployee();
-            bool result = emp.TrySetLastName("Luna", "Sparkle");
+            bool result = emp.TrySetLastName("John", "Butcher");
 
             Assert.That(result, Is.True);
-            Assert.That(emp.LastName, Is.EqualTo("Sparkle"));
+            Assert.That(emp.LastName, Is.EqualTo("Butcher"));
         }
 
         [Test]
         public void TrySetLastName_Should_Reject_Invalid()
         {
             var emp = CreateEmployee();
-            bool result = emp.TrySetLastName("Luna", "   ");
+            bool result = emp.TrySetLastName("John", "   ");
 
             Assert.That(result, Is.False);
             Assert.That(emp.LastName, Is.EqualTo("Doe"));
@@ -125,10 +125,10 @@ namespace DomainTests
         public void TrySetType_Should_Set_When_Valid()
         {
             var emp = CreateEmployee();
-            bool result = emp.TrySetType("Barber");
+            bool result = emp.TrySetType("Staff");
 
             Assert.That(result, Is.True);
-            Assert.That(emp.Type, Is.EqualTo("Barber"));
+            Assert.That(emp.Type, Is.EqualTo("Staff"));
         }
 
         [Test]
@@ -155,10 +155,10 @@ namespace DomainTests
         public void TrySetExperience_Should_Set_When_Valid()
         {
             var emp = CreateEmployee();
-            bool result = emp.TrySetExperience("Intermediate");
+            bool result = emp.TrySetExperience("Senior");
 
             Assert.That(result, Is.True);
-            Assert.That(emp.ExperienceLevel, Is.EqualTo("Intermediate"));
+            Assert.That(emp.ExperienceLevel, Is.EqualTo("Senior"));
         }
 
         [Test]
