@@ -14,8 +14,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
 
         public Campaign() { }
 
-        public Campaign(string name, decimal treatmentDiscount, decimal productDiscount, DateTime start, DateTime end)
-            : base(name, treatmentDiscount, productDiscount)
+        public Campaign(string name, decimal treatmentDiscount, decimal productDiscount, DateTime start, DateTime end): base(name, treatmentDiscount, productDiscount)
         {
             Start = start;
             End = end;
