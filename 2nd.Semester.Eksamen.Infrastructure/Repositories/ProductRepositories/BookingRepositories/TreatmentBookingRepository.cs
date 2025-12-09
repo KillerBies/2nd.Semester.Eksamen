@@ -1,14 +1,17 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.BookingRepositories
 {
@@ -97,5 +100,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         {
             throw new NotImplementedException();
         }
+       //public async Task<TreatmentBooking> GetByBooking(Booking booking)
+       // {
+       //     var _context = await _factory.CreateDbContextAsync();
+       //     return await _context.BookedTreatments
+       //     .Include(tb => tb.Booking).ThenInclude( b=> b.Customer)
+            
+       //     .FirstOrDefaultAsync(tb => tb.Booking == booking);
+       // }
+
+
     }
 }

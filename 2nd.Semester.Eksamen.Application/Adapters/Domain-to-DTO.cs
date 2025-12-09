@@ -24,6 +24,8 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 Category = treatment.Category,
                 Duration = treatment.Duration,
                 BasePrice = treatment.Price,
+                RequiredSpecialties = treatment.RequiredSpecialties,
+                Description = treatment.Description
             };
         }
         public EmployeeDTO EmployeeToDTO(Employee employee)
@@ -52,17 +54,23 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             return new CustomerDTO
             {
                 id = customer.Id,
+                NumberOfVisits = customer.NumberOfVisists,
                 Type = customer.GetType().Name,
                 Name = customer.Name,
                 Email = customer.Email,
                 PhoneNumber = customer.PhoneNumber,
+                City = customer.Address.City,
+                PostalCode = customer.Address.PostalCode,
+                StreetName = customer.Address.StreetName,
+                HouseNumber = customer.Address.HouseNumber,
             };
         }
         public PrivateCustomerDTO PrivateCustomerToDTO(PrivateCustomer PrivateCustomer)
         {
             var dto = CustomerToDTO(PrivateCustomer);
             return new PrivateCustomerDTO
-            {
+            {   id = dto.id,
+                NumberOfVisits = dto.NumberOfVisits,
                 Name = dto.Name,
                 Email = dto.Email,
                 PhoneNumber = dto.PhoneNumber,
@@ -80,6 +88,8 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             var dto = CustomerToDTO(CompanyCustomer);
             return new CompanyCustomerDTO
             {
+                id = dto.id,
+                NumberOfVisits = dto.NumberOfVisits,
                 Name = dto.Name,
                 Email = dto.Email,
                 PhoneNumber = dto.PhoneNumber,

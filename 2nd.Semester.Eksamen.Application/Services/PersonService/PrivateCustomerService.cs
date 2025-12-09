@@ -68,4 +68,12 @@ public class PrivateCustomerService : IPrivateCustomerService, ICustomerService
         var inserted = await _customerRepository.GetByPhoneAsync(dto.PhoneNumber);
         return inserted.Id;
     }
+    public async Task<List<CustomerDTO>> GetAllCustomersAsDTO()
+    {
+        throw new NotImplementedException();
+    }
+    public async Task DeleteByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
 }

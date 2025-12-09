@@ -21,17 +21,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices
     public class BookingService : IBookingService
     {
 
-
+        private readonly ITreatmentBookingRepository _treatmentBookingRepository;
         private readonly IBookingRepository _bookingRepository;
         private readonly IPrivateCustomerRepository _privateCustomerRepository;
         private readonly ICompanyCustomerRepository _companyCustomerRepository;
         private readonly AppDbContext _context;
-        public BookingService(AppDbContext context,IBookingRepository bookingRepository, IPrivateCustomerRepository privateCustomerRepository, ICompanyCustomerRepository companyCustomerRepository)
+        public BookingService(AppDbContext context,IBookingRepository bookingRepository, IPrivateCustomerRepository privateCustomerRepository, ICompanyCustomerRepository companyCustomerRepository, ITreatmentBookingRepository treatmentBookingRepository)
         {
             _bookingRepository = bookingRepository;
             _privateCustomerRepository = privateCustomerRepository;
             _companyCustomerRepository = companyCustomerRepository;
             _context = context;
+            _treatmentBookingRepository = treatmentBookingRepository;
         }
 
 
@@ -64,16 +65,21 @@ namespace _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices
         public async Task DeleteBookingAsync(Booking booking)
         {
             
-                var customer = booking.Customer;
+                var customer = booking.Customer;                                                                                         
                 //Checks if Customer has chosen to be deleted from database. If false sendes to infrastructure layer and deletes customer.
                 if (booking.Customer.SaveAsCustomer == false && customer is PrivateCustomer privateCustomer)
                 {
-                    await _privateCustomerRepository.DeleteAsync(privateCustomer);
-                }
+                //var treatmentBooking = _treatmentBookingRepository.GetByBooking(booking);
+                //await _treatmentBookingRepository.CancleBookedTreatmentAsync(treatmentBooking);
+                await _bookingRepository.CancelBookingAsync(booking);
+                 await _privateCustomerRepository.DeleteAsync(privateCustomer);
+                 }
                 if (booking.Customer.SaveAsCustomer == false && customer is CompanyCustomer companyCustomer)
                 {
-                    await _companyCustomerRepository.DeleteAsync(companyCustomer);
+                await _bookingRepository.CancelBookingAsync(booking);
+                 await _companyCustomerRepository.DeleteAsync(companyCustomer);
                 }
+            else
                 //Deletes customer
                 await _bookingRepository.CancelBookingAsync(booking);
         }

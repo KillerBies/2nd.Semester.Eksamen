@@ -23,7 +23,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         public async Task<Treatment> GetByIDAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Treatments.FirstOrDefaultAsync(t=>t.Id==id);
+            return await _context.Treatments.FirstOrDefaultAsync(t => t.Id == id);
         }
         public async Task<IEnumerable<Treatment>> GetAllAsync()
         {
@@ -88,8 +88,29 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             await using var _context = await _factory.CreateDbContextAsync();
             return await _context.Treatments.Where(t => t.Category == category).ToListAsync();
         }
+        public async Task DeleteByIdAsync(int id)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                var treatment = await _context.Treatments.FirstOrDefaultAsync(c => c.Id == id);
 
-        
+                if (treatment != null)
+                {
+                    _context.Treatments.Remove(treatment);
+                    await _context.SaveChangesAsync();
+                }
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
 
+
+        }
     }
 }

@@ -1,9 +1,10 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 
 namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces
 {
@@ -19,5 +20,6 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.Bo
         public Task CancleBookedTreatmentAsync(TreatmentBooking TreatmentBooking);
         public Task<bool> TreatmentBookingOverlapsAsync(TreatmentBooking TreatmentBooking);
         public Task DeleteAsync(TreatmentBooking treatmentBooking);
+        //public Task<TreatmentBooking> GetByBooking(Booking booking);
     }
 }

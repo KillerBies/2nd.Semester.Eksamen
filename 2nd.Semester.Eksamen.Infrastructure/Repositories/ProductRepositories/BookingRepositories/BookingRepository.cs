@@ -60,7 +60,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.Bookings.Remove(booking);
                 await _context.SaveChangesAsync();
                 Guid ActivityId = Guid.NewGuid();
                 foreach (var treatment in booking.Treatments)
@@ -75,7 +74,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                     day.CancelBooking(treatment, ActivityId);
                     _context.ScheduleDays.Update(day);
                     await _context.SaveChangesAsync();
+                     _context.BookedTreatments.Remove(treatment);
+                    await _context.SaveChangesAsync();
                 }
+                _context.Bookings.Remove(booking);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
