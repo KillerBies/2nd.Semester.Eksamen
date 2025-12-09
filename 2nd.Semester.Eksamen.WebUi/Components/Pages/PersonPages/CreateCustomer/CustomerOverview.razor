@@ -1,0 +1,126 @@
+﻿@page "/CustomerOverview"
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@inject ICustomerService _customerService;
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared;
+@rendermode InteractiveServer
+
+<div class="customer-overview-container">
+    <h2>Kundeoversigt</h2>
+    @if (dTOs == null)
+    {
+    <p>Indlæser kunder...</p>
+    }
+    else if (!dTOs.Any())
+    {
+    <p>Ingen kunder fundet.</p>
+    }
+    <div class="dTO-grid">
+           @foreach (var dTO in dTOs)
+            {
+                <div class="customer-card">
+                    <div class="customer-card-header">
+                        @if(dTO is PrivateCustomerDTO pr)
+                        {
+                            <h3> @pr.Name @pr.LastName </h3>
+                        }
+                        else
+                        {
+                            <h3>@dTO.Name</h3>
+                    }
+                        <span class="customer-type">@dTO.Type</span>
+                    </div>
+
+                    <div class="customer-card-body">
+                        <p>Email: @dTO.Email</p>
+                        <p>Tlf: @dTO.PhoneNumber</p>
+                        <p>By: @dTO.City</p>
+                    </div>
+
+                    <div class="customer-card-footer">
+                        <button class="btn btn-primary"
+                            @onclick="() => ShowOverlay(dTO)">
+                            Se detaljer
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+
+    @if(isVisible == true)
+    {   
+        <div class="overlay-background" @onclick="HideOverlay"></div>
+    <div class="customer-details-overlay">
+
+        @if (selectedCustomer != null)
+        {
+           
+
+            @if (selectedCustomer is PrivateCustomerDTO p)
+            {
+                <h2>@p.Name @p.LastName</h2>
+                    <p><b>Køn:</b> @p.Gender</p>
+                <p><b>Email:</b> @p.Email</p>
+                <p><b>Telefon:</b> @p.PhoneNumber</p>
+                <p><b>By:</b>@p.PostalCode @p.City</p>
+                <p><b>Addresse:</b> @p.StreetName @p.HouseNumber</p>
+                <p><b>Fødselsdato:</b> @p.BirthdayWrapper.ToShortDateString()</p>
+            }
+            else if (selectedCustomer is CompanyCustomerDTO c)
+                {
+                
+                <h2>@c.Name</h2>
+                <p><b>Email:</b> @c.Email</p>
+                <p><b>Telefon:</b> @c.PhoneNumber</p>
+                <p><b>By:</b>@c.PostalCode @c.City</p>
+                <p><b>Addresse:</b> @c.StreetName @c.HouseNumber</p>
+                <p><b>CVR:</b> @c.CVRNumber</p>
+            }
+
+            <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
+                <button class="btn btn-danger mt-3" @onclick="() => DeleteCustomer(selectedCustomer.id)">Slet kunde</button>
+        }
+    </div>
+    }
+   
+</div>
+
+
+
+
+
+
+@code {
+
+    List <CustomerDTO> dTOs = new();
+    private CustomerDTO? selectedCustomer;
+
+
+    public bool isVisible;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        dTOs = await _customerService.GetAllCustomersAsDTO();
+    }
+
+    //Overlays true or false
+    private void ShowOverlay(CustomerDTO customer)
+    {
+        selectedCustomer = customer;
+        isVisible = true;
+        
+    }
+    private void HideOverlay()
+    {
+        selectedCustomer = null;
+        isVisible = false;
+    }
+    private async Task DeleteCustomer(int id)
+    {
+        
+        await _customerService.DeleteByIdAsync(selectedCustomer.id);
+
+    }
+}

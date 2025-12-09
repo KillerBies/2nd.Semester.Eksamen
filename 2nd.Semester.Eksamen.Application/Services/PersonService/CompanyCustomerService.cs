@@ -92,4 +92,12 @@ public class CompanyCustomerService : ICustomerService, ICompanyCustomerService
     public async Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId)
         => await _customerRepository.GetBookingWithTreatmentsAndTreatmentAsync(bookingId);
 
+    public async Task<List<CustomerDTO>> GetAllCustomersAsDTO()
+    {
+        throw new NotImplementedException();
+    }
+    public async Task DeleteByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
 }

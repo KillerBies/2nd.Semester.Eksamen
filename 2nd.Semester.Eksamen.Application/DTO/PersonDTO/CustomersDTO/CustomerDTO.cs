@@ -9,6 +9,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
 {
     public class CustomerDTO
     {
+        
         public string Type { get; set; }
         public int id { get; set; }
         [Required(ErrorMessage = "Udfyld venligst fornavn eller firmanavn")]

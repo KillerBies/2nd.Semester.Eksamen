@@ -11,7 +11,7 @@
 	<DataAnnotationsValidator />
 	<ValidationSummary />
 	<div class="whole-form">
-
+		<h2> Lav ny behandlingstype </h2>
 		<div class="form-group">
 			<label for="Name" class="form-labels">Navn:</label>
 			<InputText id="Name" @bind-Value="treatment.Name" class="form-control" placeholder="Navn..." />
@@ -36,15 +36,15 @@
 
 		<div class="form-group">
 			<label for="ExistingSpecialty" class="form-labels">Vælg eksisterende specialitet:</label>
-			<li>
+			<li1>
 				@foreach (var specialty in specialtyItems)
 				{
 			<ul><InputCheckbox @bind-Value="@specialty.Status" />@specialty.Specialty</ul>
 				}
-			</li>
+			</li1>
 		</div>
-	
-		<div>
+
+	<div class=" d-flex gap-2">
 		<InputText @bind-Value="newSpecialty" class="form-control" placeholder="Tilføj ny specialitet..." />
 		<button type="button" class="btn" @onclick="AddSpecialty">Tilføj</button>
 	</div>
@@ -52,10 +52,10 @@
 	<ul>
 		@foreach (var item in manuallyAddedSpecialties)
 		{
-			<li>
+			<li2>
 				@item
 				<button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveSpecialty(item)">Annuller tilføjelse</button>
-			</li>
+			</li2>
 		}
 	</ul>
 

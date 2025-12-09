@@ -54,7 +54,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                                            .FirstOrDefaultAsync(c => c.PhoneNumber == phoneNumber);
         }
 
-        public async Task<IEnumerable<Customer?>> GetAllAsync()
+        public async Task<List<Customer?>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
             return await _context.Customers.Include(c => c.Address).ToListAsync();
@@ -134,7 +134,32 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 throw;
             }
         }
+        public async Task DeleteByIdDbAsync(int id)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
 
+                if (customer != null)
+                {
+                    _context.Customers.Remove(customer);
+                    await _context.SaveChangesAsync();
+                }
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
+
+
+
+        }
         public async Task DeleteAsync(Customer customer)
         {
             var _context = await _factory.CreateDbContextAsync();
