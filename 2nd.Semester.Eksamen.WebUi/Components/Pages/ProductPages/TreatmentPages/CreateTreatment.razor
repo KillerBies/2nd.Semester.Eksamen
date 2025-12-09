@@ -1,16 +1,13 @@
 ﻿@page "/Create-Treatment"
-@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
-@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-@inject ITreatmentService treatmentService;
-@using _2nd.Semester.Eksamen.Application.Adapters;
-@inject DTO_to_Domain dtoDomain;
+
+
 @rendermode InteractiveServer
 
 <EditForm Model="@treatment" OnValidSubmit="@HandleValidSubmit" class="col-10 p-0" FormName="CreateTreatment">
 	<DataAnnotationsValidator />
 	<ValidationSummary />
 	<div class="whole-form">
-
+		<h2> Lav ny behandlingstype </h2>
 		<div class="form-group">
 			<label for="Name" class="form-labels">Navn:</label>
 			<InputText id="Name" @bind-Value="treatment.Name" class="form-control" placeholder="Navn..." />
@@ -35,18 +32,32 @@
 
 		<div class="form-group">
 			<label for="ExistingSpecialty" class="form-labels">Vælg eksisterende specialitet:</label>
-			<select multiple class="form-control" @onchange="OnSpecialtiesChanged">
-				@foreach (var specialty in specialties)
+			<li1>
+				@foreach (var specialty in specialtyItems)
 				{
-					<option value="@specialty">@specialty</option>
+			<ul><InputCheckbox @bind-Value="@specialty.Status" />@specialty.Specialty</ul>
 				}
-			</select>
+			</li1>
 		</div>
+
+	<div class=" d-flex gap-2">
+		<InputText @bind-Value="newSpecialty" class="form-control" placeholder="Tilføj ny specialitet..." />
+		<button type="button" class="btn" @onclick="AddSpecialty">Tilføj</button>
+	</div>
+
+	<ul>
+		@foreach (var item in manuallyAddedSpecialties)
+		{
+			<li2>
+				@item
+				<button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveSpecialty(item)">Annuller tilføjelse</button>
+			</li2>
+		}
+	</ul>
 
 		<div class="form-group">
 			<label for="Description" class="form-labels"> Beskrivelse</label>
 			<InputTextArea id="Notes" @bind-Value="@treatment.Description" maxlength="200" class="form-control" placeholder="Beskrivelse..." />
-
 		</div>
 
 		<div class="form-btn">
@@ -64,30 +75,4 @@
 
 
 
-@code {
-	TreatmentDTO treatment = new TreatmentDTO();
-	public int hour;
-	public int min;
-	List<string> specialties = new();
-	List<string> selectedSpecialties = new();
-	private void OnSpecialtiesChanged(ChangeEventArgs e)
-	{
-		var selectedOptions = e.Value as IEnumerable<string>;
 
-		selectedSpecialties = selectedOptions?.Select(s => s + ", ").ToList()?? new List<string>();
-	}
-
-	protected override async Task OnInitializedAsync()
-	{
-		specialties = await treatmentService.GetAllUniqueSpecialtiesAsync();
-	}
-
-	public async Task HandleValidSubmit()
-	{
-		treatment.Duration = new TimeSpan(hour, min, 0);
-		treatment.RequiredSpecialties = selectedSpecialties;
-		await treatmentService.CreateNewTreatmentAsync(treatment);
-	}
-
-
-}

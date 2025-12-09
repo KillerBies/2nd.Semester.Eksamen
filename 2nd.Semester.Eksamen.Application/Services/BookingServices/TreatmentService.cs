@@ -17,11 +17,12 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
         private readonly IEmployeeRepository _employeeRepository;
         private readonly ITreatmentRepository _treatmentRepository;
-       
-        public TreatmentService(IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository)
+        private readonly Domain_to_DTO _domain_To_DTO;
+        public TreatmentService(IEmployeeRepository employeeRepository, ITreatmentRepository treatmentRepository, Domain_to_DTO domain_To_DTO)
         {
             _employeeRepository = employeeRepository;
             _treatmentRepository = treatmentRepository;
+            _domain_To_DTO = domain_To_DTO;
         }
 
         public async Task<List<string>> GetAllUniqueSpecialtiesAsync()
@@ -40,5 +41,28 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
            
             await _treatmentRepository.CreateNewAsync(treatment);
         }
+
+        public async Task<List<TreatmentDTO>> GetAllTreatmentsAsDTOAsync()
+        {
+            
+            List<TreatmentDTO> treatmentDTOs = new();
+            var treatments = await _treatmentRepository.GetAllAsync();
+            if (treatments == null)
+            { return null; }
+            foreach (var treatment in treatments)
+            {
+              TreatmentDTO dTO = _domain_To_DTO.TreatmentToDTO(treatment);
+                treatmentDTOs.Add(dTO);
+            }
+            return treatmentDTOs;
+
+        }
+    
+        public async Task DeleteByIdDbAsync(int id)
+        {
+            await _treatmentRepository.DeleteByIdAsync(id);
+        }
+
+
     }
 }

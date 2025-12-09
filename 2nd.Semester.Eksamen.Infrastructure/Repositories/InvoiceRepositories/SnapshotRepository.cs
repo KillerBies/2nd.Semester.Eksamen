@@ -43,7 +43,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
         public async Task <List<OrderSnapshot>> GetAllOrderSnapshotsAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.OrderSnapshots.ToListAsync();
+            return await _context.OrderSnapshots.Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.CustomerSnapshot)
+                        .ThenInclude(c => c.AddressSnapshot)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.TreatmentSnapshot)
+                .Include(o => o.OrderLinesSnapshot)
+                    .ThenInclude(ol => ol.ProductSnapshot)
+                .Include(o => o.AppliedDiscountSnapshot).ToListAsync();
 
         }
         public async Task<OrderSnapshot?> GetByIdAsync(int id)

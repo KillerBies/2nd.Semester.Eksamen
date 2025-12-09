@@ -1,0 +1,86 @@
+﻿
+@page "/TreatmentOverview"
+@inject NavigationManager Navi
+@rendermode InteractiveServer
+
+
+<div class="treatment-overview-container">
+    <h2>Behandlingsoversigt</h2>
+    <div class="treatment-new">
+    <button class="btn btn-primary" @onclick="NewTreatmentNavigation">Lav ny behandling</button>
+    </div>
+    @if (dTOs == null)
+    {
+        <p>Indlæser behandlinger...</p>
+    }
+    else if (!dTOs.Any())
+    {
+        <p>Ingen behandlinger fundet.</p>
+    }
+    <div class="dTO-grid">
+        @foreach (var dTO in dTOs)
+        {
+        <div class="treatment-card">
+                <div class="treatment-card-header">
+                   
+                <div class="treatment-card-body">
+                    <p>Navn: @dTO.Name</p>
+                    <p>Pris: @dTO.BasePrice</p>
+                </div>
+
+                <div class="treatment-card-footer">
+                    <button class="btn btn-primary"
+                            @onclick="() => ShowOverlay(dTO)">
+                        Se detaljer
+                    </button>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+
+    @if (isVisible == true)
+    {
+        <div class="overlay-background" @onclick="HideOverlay"></div>
+        <div class="treatment-details-overlay">
+
+            @if (selectedTreatment != null)
+            {
+                    <h2><b>Navn:</b> @selectedTreatment.Name</h2>
+                    <p><b>Pris:</b> @selectedTreatment.BasePrice</p>
+                    <p><b>Varighed:</b> @selectedTreatment.Duration</p>
+                    <p><b>Kategori:</b> @selectedTreatment.Category</p>
+                    
+                    <p><b>Påkrævede specialiteter:</b></p> 
+                    <ul>
+                        @if(selectedTreatment.RequiredSpecialties != null)
+                        {
+                        @foreach (var s in selectedTreatment.RequiredSpecialties)
+                        {
+                            <li>@s.Replace(",", "")</li>
+                         }
+                        }
+                    </ul>
+                    <p><b>Beskrivelse:</b> @selectedTreatment.Description</p>
+                  
+                <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
+                <button class="btn btn-danger mt-3" @onclick="() => DeleteTreatment(selectedTreatment.TreatmentId)">Slet behandling</button>
+            }
+        </div>
+    }
+
+</div>
+
+
+
+
+
+
+
+
+
+@code {
+	
+
+
+}

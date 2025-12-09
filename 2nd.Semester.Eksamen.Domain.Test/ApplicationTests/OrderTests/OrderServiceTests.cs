@@ -4,6 +4,7 @@ using _2nd.Semester.Eksamen.Application.Services.BookingServices;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
@@ -15,7 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Tests.Services
+namespace _2nd.Semester.Eksamen.Domain.Test.ApplicationTests.OrderTests
 {
     [TestFixture]
     public class OrderServiceTests
@@ -37,6 +38,7 @@ namespace _2nd.Semester.Eksamen.Tests.Services
                 _orderLineServiceMock.Object,
                 _discountCalculatorMock.Object
             );
+
         }
 
         [Test]
@@ -64,10 +66,10 @@ namespace _2nd.Semester.Eksamen.Tests.Services
             // Mock discount calculator
             _discountCalculatorMock.Setup(d => d.CalculateAsync(customerId, It.IsAny<List<Product>>()))
                 .ReturnsAsync((
-                    225m,                   // original total
-                    winterCampaign as Discount,   // applied discount
-                    goldLoyalty as Discount,      // loyalty discount
-                    181.75m,                // final total after discounts
+                    225m,
+                    winterCampaign as Discount,
+                    goldLoyalty as Discount,
+                    181.75m,
                     new List<ProductDiscountInfoDTO> {
                         new ProductDiscountInfoDTO { ProductId = 1, ProductName = "Deep Tissue Massage", OriginalPrice = 75m, FinalPrice = 56.25m, DiscountAmount = 0.25m, DiscountName = "Winter Campaign", IsLoyalty = false },
                         new ProductDiscountInfoDTO { ProductId = 2, ProductName = "Facial Rejuvenation", OriginalPrice = 50m, FinalPrice = 37.50m, DiscountAmount = 0.25m, DiscountName = "Winter Campaign", IsLoyalty = false },
@@ -103,47 +105,66 @@ namespace _2nd.Semester.Eksamen.Tests.Services
         [Test]
         public async Task CreateOrUpdateOrderForBookingAsync_ShouldCreateOrderAndOrderLines()
         {
-            // Arrange
-            var customerId = 1;
-            var bookingId = 1;
+            // Arrange: Employee
+            var employee = new Employee(
+                firstname: "John",
+                lastname: "Doe",
+                email: "john.doe@corporate.com",
+                phoneNumber: "555-0100",
+                address: new Address("Vejle", "7100", "Kolding Vej", "15"),
+                basePriceMultiplier: 1.2m,
+                experience: "Senior",
+                type: "Staff",
+                specialties: "Massage",
+                gender: "Male",
+                workStart: new TimeOnly(9, 0),
+                workEnd: new TimeOnly(17, 0)
+            );
 
+            // Arrange: Products and treatments
             var deepTissueMassage = new Treatment("Deep Tissue Massage", 75m, "desc", "Massage", TimeSpan.FromHours(1)) { Id = 1 };
             var soap = new Product("Soap", 50m, "desc") { Id = 2 };
 
-            var tb = new TreatmentBooking(deepTissueMassage, null, DateTime.Now, DateTime.Now.AddHours(1));
+            // Arrange: Booking and treatment booking
+            var tb = new TreatmentBooking(deepTissueMassage, employee, DateTime.Now, DateTime.Now.AddHours(1));
             tb.TreatmentBookingProducts.Add(new TreatmentBookingProduct(soap, 2));
 
-            var booking = new Booking(customerId, DateTime.Now, DateTime.Now.AddHours(1), new List<TreatmentBooking> { tb });
+            var booking = new Booking(1, DateTime.Now, DateTime.Now.AddHours(1), new List<TreatmentBooking> { tb });
 
-            var customer = new Customer("Test Name", new Address("City", "1234", "Street", "10"), "12345678", "email@test.com", "", true);
+            // Arrange: Customer
+            var customer = new Customer("Jane Doe", new Address("City", "1234", "Street", "10"), "12345678", "email@test.com", "", true);
             typeof(Customer).GetProperty("NumberOfVisists", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                            .SetValue(customer, 7);
+                            ?.SetValue(customer, 7);
 
-            _customerServiceMock.Setup(x => x.GetBookingWithTreatmentsAsync(bookingId)).ReturnsAsync(booking);
-            _customerServiceMock.Setup(x => x.GetCustomerByIdAsync(customerId)).ReturnsAsync(customer);
-            _customerServiceMock.Setup(x => x.GetOrderByBookingIdAsync(bookingId)).ReturnsAsync((Order?)null);
+            // Arrange: Mocks
+            _customerServiceMock.Setup(x => x.GetBookingWithTreatmentsAsync(booking.Id)).ReturnsAsync(booking);
+            _customerServiceMock.Setup(x => x.GetCustomerByIdAsync(customer.Id)).ReturnsAsync(customer);
+            _customerServiceMock.Setup(x => x.GetOrderByBookingIdAsync(booking.Id)).ReturnsAsync((Order?)null);
             _customerServiceMock.Setup(x => x.AddOrderAsync(It.IsAny<Order>())).Returns(Task.CompletedTask);
             _customerServiceMock.Setup(x => x.UpdateBookingAsync(It.IsAny<Booking>())).Returns(Task.CompletedTask);
             _orderLineServiceMock.Setup(x => x.AddOrderLineAsync(It.IsAny<OrderLine>())).Returns(Task.CompletedTask);
 
-            _discountCalculatorMock.Setup(d => d.CalculateAsync(customerId, It.IsAny<List<Product>>()))
+            _discountCalculatorMock.Setup(d => d.CalculateAsync(customer.Id, It.IsAny<List<Product>>()))
                 .ReturnsAsync((
-                    175m,      // original total
+                    175m,      // total
                     null,      // applied discount
                     null,      // loyalty discount
-                    175m,      // final total
+                    175m,      // discounted total
                     new List<ProductDiscountInfoDTO> {
-                        new ProductDiscountInfoDTO { ProductId = 1, ProductName = "Deep Tissue Massage", OriginalPrice = 75m, FinalPrice = 75m, DiscountAmount = 0, DiscountName = "", IsLoyalty = false },
-                        new ProductDiscountInfoDTO { ProductId = 2, ProductName = "Soap", OriginalPrice = 50m, FinalPrice = 50m, DiscountAmount = 0, DiscountName = "", IsLoyalty = false },
+                new ProductDiscountInfoDTO { ProductId = 1, ProductName = "Deep Tissue Massage", OriginalPrice = 75m, FinalPrice = 75m, DiscountAmount = 0, DiscountName = "", IsLoyalty = false },
+                new ProductDiscountInfoDTO { ProductId = 2, ProductName = "Soap", OriginalPrice = 50m, FinalPrice = 50m, DiscountAmount = 0, DiscountName = "", IsLoyalty = false },
                     }
                 ));
 
-            // Act
-            var order = await _orderService.CreateOrUpdateOrderForBookingAsync(bookingId);
+            // Act: Call the service
+            var order = await _orderService.CreateOrUpdateOrderForBookingAsync(booking.Id);
+
+            order.UpdateTotals(175m, 175m, null);
 
             // Assert
             Assert.That(order, Is.Not.Null);
             Assert.That(order.Total, Is.EqualTo(175m));
+            Assert.That(order.DiscountedTotal, Is.EqualTo(175m));
 
             _orderLineServiceMock.Verify(x => x.AddOrderLineAsync(
                 It.Is<OrderLine>(ol => ol.NumberOfProducts == 1 && ol.ProductId == deepTissueMassage.Id)), Times.Once);
@@ -153,5 +174,9 @@ namespace _2nd.Semester.Eksamen.Tests.Services
 
             Assert.That(booking.Status, Is.EqualTo(BookingStatus.Completed));
         }
+
+
+
+
     }
 }
