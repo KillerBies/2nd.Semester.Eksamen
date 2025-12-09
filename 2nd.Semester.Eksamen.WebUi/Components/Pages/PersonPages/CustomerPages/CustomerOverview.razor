@@ -1,94 +1,124 @@
 ﻿@page "/CustomerOverview"
-@rendermode InteractiveServer
 @using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
-<div class="customer-overview-container">
-    <h2>Kundeoversigt</h2>
-    @if (dTOs == null)
-    {
-    <p>Indlæser kunder...</p>
-    }
-    else if (!dTOs.Any())
-    {
-    <p>Ingen kunder fundet.</p>
-    }
-    <div class="dTO-grid">
-           @foreach (var dTO in dTOs)
+@rendermode InteractiveServer
+
+<div style="height:100vh;">
+    <FloatingPage>
+        <div class="customer-nav" style="border-radius: 12px 12px 0 0;">
+            <div class="customer-nav-header">
+                <h3 class="title">Kunder</h3>
+
+                <div class="input-group">
+                    <input type="text"
+                           placeholder="Søg Navn..."
+                           @bind="SearchName"
+                           @bind:event="oninput" />
+                </div>
+
+                <div class="input-group">
+                    <input type="text"
+                           placeholder="Søg Tlf. Nummer..."
+                           @bind="SearchPhone"
+                           @bind:event="oninput" />
+                </div>
+
+            </div>
+        </div>
+
+
+        <div style="margin:30px;">
+            @if (dTOs == null)
             {
-                <div class="customer-card">
-                    <div class="customer-card-header">
-                        @if(dTO is PrivateCustomerDTO pr)
-                        {
-                            <h3> @pr.Name @pr.LastName </h3>
-                        }
-                        else
-                        {
-                            <h3>@dTO.Name</h3>
+                <div>Indlæser kunder...</div>
+            }
+            else if (!dTOs.Any())
+            {
+                <div>Ingen kunder fundet.</div>
+            }
+            else
+            {
+                <div class="grid">
+                    @foreach (var dTO in FilteredCustomers)
+                    {
+                        <div class="grid">
+                            <div class="card customer-card-clickable"
+                                 style="cursor:pointer;"
+                                 @onclick="() => ShowOverlay(dTO)">
+
+                                <div class="color-box" style="background:@GetCustomerColor(dTO)"></div>
+
+                                <div class="info">
+                                    @if (dTO is PrivateCustomerDTO pr)
+                                    {
+                                        <h4>@pr.Name @pr.LastName</h4>
+                                    }
+                                    else
+                                    {
+                                        <h4>@dTO.Name</h4>
+                                    }
+                                    <p>@dTO.Type</p>
+                                </div>
+
+                                <div>
+                                    <p>Email: @dTO.Email</p>
+                                    <p>Tlf: @dTO.PhoneNumber</p>
+                                </div>
+                            </div>
+                        </div>
                     }
-                        <span class="customer-type">@dTO.Type</span>
-                    </div>
-
-                    <div class="customer-card-body">
-                        <p>Email: @dTO.Email</p>
-                        <p>Tlf: @dTO.PhoneNumber</p>
-                        <p>By: @dTO.City</p>
-                    </div>
-
-                    <div class="customer-card-footer">
-                        <button class="btn btn-primary"
-                            @onclick="() => ShowOverlay(dTO)">
-                            Se detaljer
-                        </button>
-                    </div>
                 </div>
             }
         </div>
 
-    @if(isVisible == true)
-    {   
-        <div class="overlay-background" @onclick="HideOverlay"></div>
-    <div class="customer-details-overlay">
-
-        @if (selectedCustomer != null)
+        @if (isVisible && selectedCustomer != null)
         {
-           
-
-            @if (selectedCustomer is PrivateCustomerDTO p)
-            {
-                <h2>@p.Name @p.LastName</h2>
-                <p><b>Køn:</b> @p.Gender</p>
-                    <p><b>Antal besøg</b> @p.NumberOfVisits</p>
-                <p><b>Telefon:</b> @p.PhoneNumber</p>
-                <p><b>Email:</b> @p.Email</p>
-                <p><b>By:</b>@p.PostalCode @p.City</p>
-                <p><b>Addresse:</b> @p.StreetName @p.HouseNumber</p>
-                <p><b>Fødselsdato:</b> @p.BirthdayWrapper.ToShortDateString()</p>
-            }
-            else if (selectedCustomer is CompanyCustomerDTO c)
+            <div class="overlay-background" @onclick="HideOverlay"></div>
+            <div class="customer-details-overlay">
+                @if (selectedCustomer is PrivateCustomerDTO p)
                 {
-                
-                <h2>@c.Name</h2>
-                    <p><b>Antal besøg</b> @c.NumberOfVisits</p>
-                <p><b>Telefon:</b> @c.PhoneNumber</p>
-                <p><b>Email:</b> @c.Email</p>
-                <p><b>By:</b>@c.PostalCode @c.City</p>
-                <p><b>Addresse:</b> @c.StreetName @c.HouseNumber</p>
-                <p><b>CVR:</b> @c.CVRNumber</p>
-            }
+                    <h2>@p.Name @p.LastName</h2>
+                    <p><b>Køn:</b> @p.Gender</p>
+                    <p><b>Antal besøg:</b> @p.NumberOfVisits</p>
+                    <p><b>Telefon:</b> @p.PhoneNumber</p>
+                    <p><b>Email:</b> @p.Email</p>
+                    <p><b>By:</b>@p.PostalCode @p.City</p>
+                    <p><b>Addresse:</b> @p.StreetName @p.HouseNumber</p>
+                    <p><b>Fødselsdato:</b> @p.BirthdayWrapper.ToShortDateString()</p>
+                }
+                else if (selectedCustomer is CompanyCustomerDTO c)
+                {
+                    <h2>@c.Name</h2>
+                    <p><b>Antal besøg:</b> @c.NumberOfVisits</p>
+                    <p><b>Telefon:</b> @c.PhoneNumber</p>
+                    <p><b>Email:</b> @c.Email</p>
+                    <p><b>By:</b>@c.PostalCode @c.City</p>
+                    <p><b>Addresse:</b> @c.StreetName @c.HouseNumber</p>
+                    <p><b>CVR:</b> @c.CVRNumber</p>
+                }
 
-            <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
+                <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
                 <button class="btn btn-danger mt-3" @onclick="() => DeleteCustomer(selectedCustomer.id)">Slet kunde</button>
+            </div>
         }
-    </div>
-    }
-   
+    </FloatingPage>
 </div>
 
-
-
-
-
-
 @code {
+    string SearchName = "";
+    string SearchPhone = "";
 
-   
+    IEnumerable<CustomerDTO> FilteredCustomers =>
+        dTOs?
+        .Where(c =>
+            (string.IsNullOrWhiteSpace(SearchName) ||
+             (c is PrivateCustomerDTO pr ?
+                $"{pr.Name} {pr.LastName}".Contains(SearchName, StringComparison.OrdinalIgnoreCase) :
+                c.Name.Contains(SearchName, StringComparison.OrdinalIgnoreCase)))
+            &&
+            (string.IsNullOrWhiteSpace(SearchPhone) ||
+             c.PhoneNumber.Contains(SearchPhone, StringComparison.OrdinalIgnoreCase))
+        )
+        .ToList() ?? new List<CustomerDTO>();
+
+    private string GetCustomerColor(CustomerDTO c) => c is PrivateCustomerDTO ? "#8ecae6" : "#ffb703";
 }
