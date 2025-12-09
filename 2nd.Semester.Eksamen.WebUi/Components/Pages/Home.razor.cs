@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Net;
 
-namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
+namespace Components.Pages
 {
     public partial class Home
     {

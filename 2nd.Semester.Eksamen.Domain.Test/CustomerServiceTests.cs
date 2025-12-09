@@ -6,7 +6,7 @@ using NUnit.Framework;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Tests.Services
+namespace _2nd.Semester.Eksamen.Domain.Test
 {
     [TestFixture]
     public class CustomerDeletionTests

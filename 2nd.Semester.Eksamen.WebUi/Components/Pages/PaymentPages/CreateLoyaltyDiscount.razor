@@ -8,7 +8,7 @@
 @inject NavigationManager Navi
 @rendermode InteractiveServer
 
-<EditForm Model="@discount" class="row p-3" @onchange="OnChange">
+<EditForm Model="@discount" class="row p-3">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -70,7 +70,7 @@
 
 @code {
     [Parameter] public LoyaltyDiscountDTO discount = new();
-    [Parameter] public EventCallback<LoyaltyDiscount> DiscountChanged { get; set; }
+    [Parameter] public EventCallback<LoyaltyDiscount> discountChanged { get; set; }
     public async Task OnChange()
     {
         await DiscountChanged.InvokeAsync(discount);

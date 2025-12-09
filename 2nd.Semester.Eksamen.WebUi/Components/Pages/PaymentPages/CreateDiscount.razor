@@ -2,13 +2,14 @@
 @inject NavigationManager Navi
 @rendermode InteractiveServer
 @using Components.Shared
-@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 @using _2nd.Semester.Eksamen.Domain.Entities.Discounts
 @using _2nd.Semester.Eksamen.Application.Services
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @inject IDiscountApplicationService _discountService
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
@@ -18,7 +19,7 @@
 }
 <div style="width:100%; display:flex;flex-direction:column; align-items:center; margin-top:15vh; height:100vh;">
 	<div style="width:28%; display:flex;flex-direction:column;">
-		<_2nd.Semester.Eksamen.WebUi.Components.Shared.FloatingPage PageContentScrollable="false">
+		<FloatingPage PageContentScrollable="false">
 			<div class="page-header" style="padding: 0; align-content:center;">
 				<div class="btn-group" style="width:100%;">
 					<button type="button" class="@GetCampaignButtonClass()" @onclick="DiscountTypeButtonClicked" style="border-radius: 12px 0 0 0;"><b>Kampagne Rabat</b></button>
@@ -29,27 +30,27 @@
 				<div style="padding: 30px; display: flex;">
 					@if (IsCampaign)
 					{
-						<CreateCampaignDiscount />
+						<CreateCampaignDiscount @bind-campaignDTO="@CampaignDiscountDTO" />
+						<div class="row mt-4">
+							<div class="col-md-12 text-center">
+								<button class="btn btn-outline-secondary w-75 " type="button" @onclick="() => OpenPopUp = true;">
+									Vælg produkter...
+								</button>
+							</div>
+						</div>
 					}
 					else if (IsLoyalty)
 					{
-						<CreateLoyaltyDiscount />
+						<CreateLoyaltyDiscount @bind-discount="@LoyaltyDiscountDTO" />
 					}
-					<div class="row mt-4">
-						<div class="col-md-12 text-center">
-							<button class="btn btn-outline-secondary w-75 " type="button" @onclick="() => OpenPopUp = true;" @onclick:stopPropagation="true">
-								Vælg produkter...
-							</button>
-						</div>
-					</div>
 					<div class="row" style="padding-top: 20px;">
 						<div class="col-md-12">
-							<button type="button" class="btn btn-primary col-md-12">Opret Rabat</button>
+							<button type="button" class="btn btn-primary col-md-12" @onclick="() => OpenConfirmation=true">Opret Rabat</button>
 						</div>
 					</div>
 				</div>
 			</div>
-		</_2nd.Semester.Eksamen.WebUi.Components.Shared.FloatingPage>
+		</FloatingPage>
 		<div style="margin-top: 24%;"></div>
 	</div>
 </div>
@@ -59,7 +60,7 @@
 @if (OpenPopUp)
 {
 	<BookingNotification IsVisible="OpenPopUp">
-		<div style="overflow-y: auto;" @onclick:stopPropagation="true">
+		<div style="overflow-y: auto;">
 			@foreach (var product in allProducts)
 			{
 				<div class="card shadow-sm">
@@ -67,6 +68,19 @@
 					<input type="checkbox" @bind="product.Selected" />
 				</div>
 			}
+		</div>
+	</BookingNotification>
+}
+
+@if (OpenConfirmation)
+{
+	<BookingNotification IsVisible="OpenConfirmation">
+		<div>
+			<h1>Vil du Oprette denne rabat</h1>
+		</div>
+		<div class="d-flex gap-2 btn-group" style="margin-left:20px;">
+			<button class="btn btn-outline-danger flex-grow-1" @onclick="() => OpenConfirmation = false;">Opret>Anuller</button>
+			<button class="btn btn-outline-primary flex-grow-1" @onclick="HandleValidSubmit">Opret</button>
 		</div>
 	</BookingNotification>
 }

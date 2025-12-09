@@ -10,7 +10,7 @@
 @rendermode InteractiveServer
 
 
-<EditForm Model="@campaignDTO" class="row p-3" @onclick:stopPropagation="true" @onchange="OnChange">
+<EditForm Model="@campaignDTO" class="row p-3">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -68,7 +68,7 @@
 </EditForm>
 @code {
     [Parameter] public CampaignDiscountDTO campaignDTO = new();
-    [Parameter] public EventCallback<CampaignDiscountDTO> DiscountChanged {get;set;}
+    [Parameter] public EventCallback<CampaignDiscountDTO> campaignDTOChanged { get; set; }
     public async Task OnChange()
     {
         await DiscountChanged.InvokeAsync(campaignDTO);

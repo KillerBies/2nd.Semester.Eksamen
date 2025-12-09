@@ -12,17 +12,10 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
         private bool IsLoyalty { get; set; }
         private bool OpenPopUp { get; set; } = false;
         private List<ProductItem> allProducts = new();
+        private bool OpenConfirmation { get; set; } = false;
         private LoyaltyDiscountDTO LoyaltyDiscountDTO { get; set; } = new();
         private CampaignDiscountDTO CampaignDiscountDTO { get; set; } = new();
 
-        private void CampaignChanged(CampaignDiscountDTO campaignDiscountDTO)
-        {
-            CampaignDiscountDTO = campaignDiscountDTO;
-        }
-        private void LoyaltyDiscountChanged(LoyaltyDiscountDTO loyaltyDiscountDTO)
-        {
-            LoyaltyDiscountDTO = loyaltyDiscountDTO;
-        }
         protected override async Task OnInitializedAsync()
         {
             IsCampaign = true;
