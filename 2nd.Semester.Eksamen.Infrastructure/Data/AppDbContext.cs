@@ -63,6 +63,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
         public DbSet<AppliedDiscountSnapshot> AppliedDiscountSnapshots { get; set; }
         public DbSet<BookingSnapshot> BookingsSnapshots { get; set; }
         public DbSet<CustomerSnapshot> CustomerSnapshots { get; set; }
+        public DbSet<PrivateCustomerSnapshot> PrivateCustomerSnapshots { get; set; }
+        public DbSet<CompanyCustomerSnapshot> CompanyCustomerSnapshots { get; set; }
         public DbSet<OrderLineSnapshot> OrderLinesSnapshots { get; set; }
         public DbSet<ProductSnapshot> ProductSnapshots { get; set; }
         public DbSet<TreatmentSnapshot> TreatmentSnapshots { get; set; }
@@ -143,6 +145,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 // Configure precision for totals
                 entity.Property(o => o.Total).HasPrecision(18, 2);
                 entity.Property(o => o.DiscountedTotal).HasPrecision(18, 2);
+                entity.Property(o => o.VAT).HasPrecision(18, 2);
             });
 
 

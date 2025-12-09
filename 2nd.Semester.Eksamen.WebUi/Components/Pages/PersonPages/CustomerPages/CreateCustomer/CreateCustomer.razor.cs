@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Forms;
 using System;
 
-namespace Components.Pages.PersonPages.CreateCustomer
+namespace Components.Pages.PersonPages.CustomerPages.CreateCustomer
 {
     public partial class CreateCustomer
     {
