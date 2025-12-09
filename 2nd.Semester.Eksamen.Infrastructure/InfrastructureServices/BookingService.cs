@@ -66,6 +66,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices
             
                 var customer = booking.Customer;
                 //Checks if Customer has chosen to be deleted from database. If false sendes to infrastructure layer and deletes customer.
+                await _bookingRepository.CancelBookingAsync(booking);
                 if (booking.Customer.SaveAsCustomer == false && customer is PrivateCustomer privateCustomer)
                 {
                     await _privateCustomerRepository.DeleteAsync(privateCustomer);
@@ -74,8 +75,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices
                 {
                     await _companyCustomerRepository.DeleteAsync(companyCustomer);
                 }
-                //Deletes customer
-                await _bookingRepository.CancelBookingAsync(booking);
         }
 
         public async Task<Booking> CreateBookingAsync(Booking booking)

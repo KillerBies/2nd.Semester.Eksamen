@@ -102,9 +102,21 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
 
         public async Task DeleteAsync(CompanyCustomer customer)
         {
-            using var context = _factory.CreateDbContext();
-            context.CompanyCustomers.Remove(customer);
-            await context.SaveChangesAsync();
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                CompanyCustomer trackedcustomer = await _context.CompanyCustomers.FirstOrDefaultAsync(c => c.Id == customer.Id);
+                if (await _context.CompanyCustomers.AnyAsync(c => c.PhoneNumber == customer.PhoneNumber)) throw new Exception("Telefonnummer findes allerede!");
+                _context.CompanyCustomers.Remove(trackedcustomer);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
 

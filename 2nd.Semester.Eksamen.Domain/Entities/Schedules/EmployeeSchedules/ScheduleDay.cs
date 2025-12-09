@@ -121,13 +121,13 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
 
             TimeRanges = merged;
         }
-        public bool CancelBooking(TreatmentBooking treatment, Guid bookingId)
+        public bool CancelBooking(TreatmentBooking treatment)
         {
             var _start = TimeOnly.FromDateTime(treatment.Start);
             var _end = TimeOnly.FromDateTime(treatment.End);
             var booking = TimeRanges.FirstOrDefault(r => r.Type == "Booked" &&
                                                           r.Start == _start &&
-                                                          r.End == _end && r.ActivityId == bookingId);
+                                                          r.End == _end);
             if (booking == null) return false;
 
             TimeRanges.Remove(booking);

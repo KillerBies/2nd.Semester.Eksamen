@@ -134,7 +134,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.PrivateCustomers.Remove(Customer);
+                PrivateCustomer trackedcustomer = await _context.PrivateCustomers.FirstOrDefaultAsync(c => c.Id == Customer.Id);
+                _context.PrivateCustomers.Remove(trackedcustomer);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
