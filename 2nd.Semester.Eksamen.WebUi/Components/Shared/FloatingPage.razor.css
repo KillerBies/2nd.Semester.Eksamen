@@ -3,6 +3,7 @@
     max-height: 100vh;
     height: 100%;
     display: flex;
+    justify-content: center;
 }
 
 .page-header {
@@ -33,6 +34,7 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     transform: scale(0.8);
     animation: popIn 0.3s forwards;
+    
 }
 
 @keyframes popIn {
