@@ -56,8 +56,10 @@
     </FloatingPage>
 </div>
 
-
-<SidePage IsVisible="visibleOverlay">
+@if (visibleOverlay)
+{
+<SidePage IsVisible="visibleOverlay"
+    IsVisibleChanged="@(v => visibleOverlay = v)">
     <div class="d-flex flex-column h-100">
 
         @if (!string.IsNullOrEmpty(errorMessage))
@@ -117,12 +119,16 @@
         </div>
     </div>
 </SidePage>
+}
 
-<SidePage IsVisible="ShowPaymentWindow">
-    <div style="width:30vw;"></div>
-    <FinalizePayment id="@SelectedBooking.Customer.Id"></FinalizePayment>
-</SidePage>
-
+@if (ShowPaymentWindow)
+{
+    <SidePage IsVisible="ShowPaymentWindow"
+              IsVisibleChanged="@(v => ShowPaymentWindow = v)">
+        <div style="width:30vw;"></div>
+        <FinalizePayment id="@SelectedBooking.Customer.Id"></FinalizePayment>
+    </SidePage>
+}
 
 
 
