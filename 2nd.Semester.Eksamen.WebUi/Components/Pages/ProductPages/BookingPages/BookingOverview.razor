@@ -9,8 +9,6 @@
 @using _2nd.Semester.Eksamen.Pages.PaymentPages
 @inject IBookingService bookingService;
 
-
-<div style="height:100vh; width: 100vw; justify-content: center; display:flex;">
     <FloatingPage>
         <div class="employee-nav" style="border-radius: 12px 12px 0 0;">
             <div class="employee-nav-header">
@@ -54,7 +52,6 @@
             }
         </div>
     </FloatingPage>
-</div>
 
 @if (visibleOverlay)
 {
@@ -104,20 +101,21 @@
                     <button class="btn btn-outline-primary flex-grow-1" @onclick="HideOverlay">Luk</button>
                     <button class="btn btn-outline-danger flex-grow-1" @onclick="DeleteBookingWarning">Slet booking</button>
                 </div>
-
-                @if (toggleBookingWarning)
-                {
-                    <div class="mt-2">
-                        <p>Er du sikker på du vil slette bookingen?</p>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-secondary" @onclick="() => toggleBookingWarning = false">Annuller</button>
-                            <button class="btn btn-danger" @onclick="ConfirmDeleteBooking">Slet booking</button>
-                        </div>
-                    </div>
-                }
             </div>
         </div>
     </div>
+    @if (toggleBookingWarning)
+    {
+        <BookingNotification IsVisible="toggleBookingWarning">
+            <div class="mt-2">
+                <p>Er du sikker på du vil slette bookingen?</p>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-secondary" @onclick="() => toggleBookingWarning = false">Annuller</button>
+                    <button class="btn btn-danger" @onclick="ConfirmDeleteBooking">Slet booking</button>
+                </div>
+            </div>
+        </BookingNotification>
+    }
 </SidePage>
 }
 
@@ -141,6 +139,7 @@
 
 
 @code {
+    [Inject] NavigationManager Navi { get; set; }
     private Booking SelectedBooking { get; set; } = new Booking
     {
         Treatments = new List<TreatmentBooking>()
@@ -197,6 +196,7 @@
             bookingList.Remove(SelectedBooking);
             HideOverlay();
             StateHasChanged();
+            Navi.Refresh();
         }
         catch
         {

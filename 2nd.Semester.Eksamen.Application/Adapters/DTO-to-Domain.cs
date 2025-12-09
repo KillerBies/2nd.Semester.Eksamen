@@ -1,6 +1,8 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using _2nd.Semester.Eksamen.Domain.DomainInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
@@ -11,6 +13,7 @@ using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Custome
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +44,11 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         public async Task<Employee> DTOEmployeeToDomain(EmployeeDTO employeeDTO)
         {
             var result = await _employeeRepository.GetByIDAsync(employeeDTO.EmployeeId);
+            return result;
+        }
+        public Product DTOProductToNewDomain(NewProductDTO productDTO)
+        {
+            var result = new Product(productDTO.Name, productDTO.Price, productDTO.Description);
             return result;
         }
         public async Task<Booking> DTOBookingToDomain(BookingDTO booking)
@@ -77,6 +85,15 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             if (customer == null) throw new NullReferenceException("Customer is null");
             return customer;
             throw new InvalidOperationException($"Customer with ID {CustomerId} is not a valid derived type.");
+        }
+
+        public LoyaltyDiscount DTOLoyaltyDiscountToDomain(LoyaltyDiscountDTO discount)
+        {
+            return new LoyaltyDiscount(discount.MinimumVisits, discount.DiscountType, discount.Name, discount.TreatmentDiscount, discount.ProductDiscount);
+        }
+        public Campaign DTOCampaignDiscountToDomain(CampaignDiscountDTO discount)
+        {
+            return new Campaign(discount.Name, discount.TreatmentDiscount, discount.ProductDiscount, discount.Start,discount.End);
         }
 
         public async Task<Employee> DTOEmployeeInputToDomain(EmployeeInputDTO dto)
