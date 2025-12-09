@@ -908,7 +908,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.Persons.Customer.Customer", "Customer")
                         .WithMany("BookingHistory")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
