@@ -20,12 +20,12 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         [Inject] private IEmployeeRepository _employeeRepository { get; set; }
         public async void InjectData()
         {
-            var customer1 = new PrivateCustomer("poop", Domain.Entities.Persons.Gender.Male, new DateOnly(2004, 2, 1), "shit", new Address("oiio", "323212", "fda", "43f"), "12345678", "21w@dwq.com", "", false);
-            var customer2 = new PrivateCustomer("pwop", Domain.Entities.Persons.Gender.Male, new DateOnly(2004, 2, 1), "sfgds", new Address("oiio", "323217", "fda", "43f"), "12345578", "21w@dwq.com","",false);
+            var customer1 = new PrivateCustomer("Andersen", Domain.Entities.Persons.Gender.Male, new DateOnly(2004, 2, 1), "Hans Christian", new Address("oiio", "323212", "fda", "43f"), "12345678", "21w@dwq.com", "", false);
+            var customer2 = new PrivateCustomer("Jensen", Domain.Entities.Persons.Gender.Male, new DateOnly(2004, 2, 1), "Jens", new Address("oiio", "323217", "fda", "43f"), "12345578", "21w@dwq.com","",false);
             var address1 = new Address("New York", "10001", "Main St", "101");
             var address2 = new Address("Los Angeles", "90001", "Elm St", "202");
-            var employee1 = new Employee("Alice", "Johnson", "alice.johnson@example.com", "55511141", address1, 1.2m, "5 years", "Technician", "POOPING, SHITTING, PISSING, CUMMING", "Female", new TimeOnly(08, 0), new TimeOnly(16,0));
-            var employee2 = new Employee("Bob", "Smith", "bob.smith@example.com", "45552222", address2, 1.5m, "10 years", "Electrician", "POOPING, SHITTING, PISSING, CUMMING, joking, gooning, pulling my finger and farting", "Male", new TimeOnly(09,0), new TimeOnly(17,0));
+            var employee1 = new Employee("Alice", "Johnson", "alice.johnson@example.com", "55511141", address1, 1.2m, "5 years", "Tekniker", "Styling, Maskinklip, ", "Female", new TimeOnly(08, 0), new TimeOnly(16,0));
+            var employee2 = new Employee("Bob", "Smith", "bob.smith@example.com", "45552222", address2, 1.5m, "10 years", "Electrician", "Maskinklip, Makeup, Massage, ", "Male", new TimeOnly(09,0), new TimeOnly(17,0));
             var treatment1 = new Treatment("Deep Tissue Massage", 75.00m, "Intense massage targeting deep muscle layers to relieve tension.", "Massage", TimeSpan.FromMinutes(60));
 
             var treatment2 = new Treatment("Facial Rejuvenation", 50.00m, "Revitalizing facial treatment to cleanse and hydrate skin.", "Skincare", TimeSpan.FromMinutes(45));

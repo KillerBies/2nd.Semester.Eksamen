@@ -9,7 +9,9 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
 {
     public class CustomerDTO
     {
+        
         public string Type { get; set; }
+        public int NumberOfVisits { get; set; }
         public int id { get; set; }
         [Required(ErrorMessage = "Udfyld venligst fornavn eller firmanavn")]
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Kun bogstaver er tilladt")]

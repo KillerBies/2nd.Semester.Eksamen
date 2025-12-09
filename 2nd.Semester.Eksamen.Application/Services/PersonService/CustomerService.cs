@@ -6,8 +6,11 @@ using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
+using _2nd.Semester.Eksamen.Application.Adapters;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,10 +19,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
-
-        public CustomerService(ICustomerRepository customerRepository)
+        private readonly Domain_to_DTO _domain_To_DTO;
+        public CustomerService(ICustomerRepository customerRepository, Domain_to_DTO domain_To_DTO)
         {
             _customerRepository = customerRepository;
+            _domain_To_DTO = domain_To_DTO;
         }
 
         // --- CREATION (kept DTO helpers like before) ---
@@ -78,6 +82,10 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
         public Task DeleteAsync(Customer customer)
             => _customerRepository.DeleteAsync(customer);
 
+        public async Task DeleteByIdAsync(int id)
+        { 
+            await _customerRepository.DeleteByIdDbAsync(id);
+        }
         // --- BOOKINGS / ORDERS ---
         public Task<Booking?> GetBookingWithTreatmentsAsync(int bookingId)
             => _customerRepository.GetBookingWithTreatmentsAndProductsAsync(bookingId);
@@ -99,6 +107,33 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
 
         public Task UpdateDiscountAsync(Discount discount)
             => _customerRepository.UpdateDiscountAsync(discount);
+
+        public async Task <List<CustomerDTO?>>  GetAllCustomersAsDTO()
+        {
+            List<Customer?> customers = await _customerRepository.GetAllAsync();
+
+            if (customers == null) return new List<CustomerDTO>();
+
+            List<CustomerDTO> dtoList = new();
+            foreach (Customer customer in customers)
+            {
+                if (customer is PrivateCustomer p)
+                {
+                    var privateCustomerDTO = _domain_To_DTO.PrivateCustomerToDTO(p);
+                    dtoList.Add(privateCustomerDTO);
+                }
+                else if (customer is CompanyCustomer c)
+                {
+                    var companyCustomerDTO = _domain_To_DTO.BusinessCustomerToDTO(c);
+                    dtoList.Add(companyCustomerDTO);
+                }
+            }
+            return dtoList;
+
+
+        }
+
+
     }
 
 }
