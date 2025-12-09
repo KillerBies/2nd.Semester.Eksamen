@@ -2,7 +2,7 @@
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 
-namespace DomainTests
+namespace _2nd.Semester.Eksamen.Domain.Test.DomainTests.PersonTests.CustomerTests
 {
     [TestFixture]
     public class CustomersDomainTests

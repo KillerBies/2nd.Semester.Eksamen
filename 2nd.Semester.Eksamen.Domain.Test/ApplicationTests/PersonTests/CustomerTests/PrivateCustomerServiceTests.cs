@@ -6,7 +6,7 @@ using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using Moq;
 using _2nd.Semester.Eksamen.Application.Services.PersonService;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
-namespace _2nd.Semester.Eksamen.Domain.Test;
+namespace _2nd.Semester.Eksamen.Domain.Test.ApplicationTests.PersonTests.CustomerTests;
 
 
 [TestFixture]

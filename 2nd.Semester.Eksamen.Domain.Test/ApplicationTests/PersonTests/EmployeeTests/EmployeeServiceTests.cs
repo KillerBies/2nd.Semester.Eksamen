@@ -13,7 +13,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Tests
+namespace _2nd.Semester.Eksamen.Domain.Test.ApplicationTests.PersonTests.EmployeeTests
 {
     [TestFixture]
     public class EmployeeServiceTests
@@ -51,8 +51,8 @@ namespace _2nd.Semester.Eksamen.Tests
                 type: "Staff",
                 specialties: "Specialty1",
                 gender: "Male",
-                workStart: new System.TimeOnly(8, 0, 0),
-                workEnd: new System.TimeOnly(18, 0, 0)
+                workStart: new TimeOnly(8, 0, 0),
+                workEnd: new TimeOnly(18, 0, 0)
             )
             {
                 Id = employeeId
@@ -170,8 +170,8 @@ namespace _2nd.Semester.Eksamen.Tests
                 type: "Staff",
                 specialties: "Haircut",
                 gender: "Female",
-                workStart: new System.TimeOnly(8, 0, 0),
-                workEnd: new System.TimeOnly(17, 0, 0)
+                workStart: new TimeOnly(8, 0, 0),
+                workEnd: new TimeOnly(17, 0, 0)
             )
             {
                 Id = employeeId
@@ -222,8 +222,8 @@ namespace _2nd.Semester.Eksamen.Tests
             type: "Staff",
             specialties: "Haircut",
             gender: "Female",
-            workStart: new System.TimeOnly(8, 0, 0),
-            workEnd: new System.TimeOnly(17, 0, 0))
+            workStart: new TimeOnly(8, 0, 0),
+            workEnd: new TimeOnly(17, 0, 0))
         { Id = 1 },
 
         new Employee(
@@ -237,8 +237,8 @@ namespace _2nd.Semester.Eksamen.Tests
             type: "Staff",
             specialties: "Massage",
             gender: "Male",
-            workStart: new System.TimeOnly(9, 0, 0),
-            workEnd: new System.TimeOnly(18, 0, 0))
+            workStart: new TimeOnly(9, 0, 0),
+            workEnd: new TimeOnly(18, 0, 0))
         { Id = 2 }
     };
 

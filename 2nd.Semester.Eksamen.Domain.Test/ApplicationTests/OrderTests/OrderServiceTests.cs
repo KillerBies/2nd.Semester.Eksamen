@@ -16,7 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace _2nd.Semester.Eksamen.Tests.Services
+namespace _2nd.Semester.Eksamen.Domain.Test.ApplicationTests.OrderTests
 {
     [TestFixture]
     public class OrderServiceTests

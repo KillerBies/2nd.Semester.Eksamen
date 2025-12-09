@@ -2,7 +2,7 @@
 using System;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
 
-namespace Tests.ScheduleTests
+namespace _2nd.Semester.Eksamen.Domain.Test.DomainTests.TimeRangeTests
 {
     [TestFixture]
     public class TimeRangeDomainTests
