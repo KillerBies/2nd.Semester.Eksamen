@@ -18,7 +18,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
         private string? errorMessage;
         private bool paymentSuccess = false;
 
-        private PrivateCustomer? customer;
+        private Customer? customer;
         private List<Product> products = new();
         private decimal originalTotal;
         private Discount? appliedDiscount;
@@ -43,7 +43,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
             try
             {
-                customer = await _customerService.GetByIDAsync(id) as PrivateCustomer;
+                customer = await _customerService.GetByIDAsync(id);
                 if (customer == null) throw new Exception("Customer not found");
 
                 var booking = await _customerService.GetNextPendingBookingAsync(customer.Id);
