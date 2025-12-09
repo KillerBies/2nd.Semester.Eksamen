@@ -14,11 +14,12 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Cus
     {
         public Task<Customer?> GetByIDAsync(int id);
         public Task<Customer?> GetByPhoneNumberAsync(string PhoneNumber);
-        public Task<IEnumerable<Customer?>> GetAllAsync();
+        public Task<List<Customer?>> GetAllAsync();
         public Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter);
         public Task CreateNewCustomerAsync(Customer Customer);
         public Task UpdateCustomerAsync(Customer Customer);
         public Task DeleteCustomerAsync(Customer Customer);
+        public Task DeleteByIdDbAsync(int id);
         public Task<Customer?> GetByPhoneAsync(string phoneNumber);
         public Task CreateNewAsync(Customer customer);
         public Task UpdateAsync(Customer customer);

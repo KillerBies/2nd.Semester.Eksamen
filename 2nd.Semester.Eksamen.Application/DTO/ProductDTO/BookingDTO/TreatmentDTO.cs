@@ -9,6 +9,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
 {
     public class TreatmentDTO
     {
+
         [Required]
         public string Category { get; set; } = string.Empty;
         

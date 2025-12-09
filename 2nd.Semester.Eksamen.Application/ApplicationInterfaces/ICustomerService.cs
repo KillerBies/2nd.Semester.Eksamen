@@ -1,8 +1,9 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+﻿using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
-using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {
@@ -16,8 +17,10 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         public Task UpdateOrderAsync(Order order);
         public Task UpdateAsync(Customer customer);
         public Task DeleteAsync(Customer customer);
+        public Task DeleteByIdAsync(int id);
         public Task<Booking?> GetNextPendingBookingAsync(int customerId);
         public Task UpdateBookingAsync(Booking booking);
         public Task UpdateDiscountAsync(Discount discount);
+        public Task<List<CustomerDTO?>> GetAllCustomersAsDTO();
     }
 }

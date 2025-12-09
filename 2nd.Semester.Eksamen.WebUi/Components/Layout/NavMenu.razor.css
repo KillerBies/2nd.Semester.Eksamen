@@ -6,11 +6,13 @@
 
 .topnav {
     justify-content: space-between;
+    
 }
 
 .navbar.nav { /*Container of the other nav elements besides logo*/
     display: flex; /*Makes the container flexible*/
     justify-content: space-between; /*Evenly spaces out the elements*/
+
 }
 
 nav { /*The navbar container of all the nav elements*/
@@ -36,8 +38,9 @@ nav { /*The navbar container of all the nav elements*/
         }
 
 .topnav .navbar-nav {
-    display: flex; 
-    flex-wrap: wrap; 
+    display: flex;
+    flex-wrap: wrap;
+    
 }
 
 .topnav .nav-item {
