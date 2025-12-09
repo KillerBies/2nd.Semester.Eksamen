@@ -1,14 +1,8 @@
-﻿@page "/create-campaign-discount"
+﻿
 @using _2nd.Semester.Eksamen.Domain.Entities.Discounts
-@using _2nd.Semester.Eksamen.Application.Services
-@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
-@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
-@using _2nd.Semester.Eksamen.WebUi.Components.Shared
-@inject IDiscountApplicationService campaignService
-@inject NavigationManager Navi
 @rendermode InteractiveServer
-
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 
 <EditForm Model="@campaignDTO" class="row p-3">
     <DataAnnotationsValidator />
@@ -67,10 +61,11 @@
     </div>
 </EditForm>
 @code {
-    [Parameter] public CampaignDiscountDTO campaignDTO = new();
-    [Parameter] public EventCallback<CampaignDiscountDTO> campaignDTOChanged { get; set; }
+[Parameter] public CampaignDiscountDTO campaignDTO { get; set; }
+[Parameter] public EventCallback<CampaignDiscountDTO> campaignDTOChanged { get; set; }
+
     public async Task OnChange()
     {
-        await DiscountChanged.InvokeAsync(campaignDTO);
+        await campaignDTOChanged.InvokeAsync(campaignDTO);
     }
 }

@@ -1,0 +1,144 @@
+﻿@page "/create-discount-page"
+@rendermode InteractiveServer
+@using _2nd.Semester.Eksamen.Domain.Entities.Discounts
+@using _2nd.Semester.Eksamen.Application.Services
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+	<div class="alert alert-danger">
+		@_errorMessage
+	</div>
+}
+<div style="width:100%; display:flex;flex-direction:column; align-items:center; margin-top:15vh; height:100vh;">
+	<div style="width:28%; display:flex;flex-direction:column;">
+		<FloatingPage PageContentScrollable="false">
+			<div class="page-header" style="padding: 0; align-content:center;">
+				<div class="btn-group" style="width:100%;">
+					<button type="button" class="@GetCampaignButtonClass()" @onclick="DiscountTypeButtonClicked" style="border-radius: 12px 0 0 0;" @onclick:stopPropagation><b>Kampagne Rabat</b></button>
+					<button type="button" class="@GetLoyaltyButtonClass()" @onclick="DiscountTypeButtonClicked" style="border-radius: 0 12px 0 0;" @onclick:stopPropagation><b>Loyalitets Rabat</b></button>
+				</div>
+			</div>
+			<div style="padding: 30px; display: flex;">
+				<div style="padding: 30px; display: flex; flex-direction:column;">
+					@if (IsCampaign)
+					{
+						<CreateCampaignDiscount campaignDTO="@campaignDiscountDTO" campaignDTOChanged="@((value) => campaignDiscountDTO = value)" />
+						<div class="col-md-12 text-center">
+							<button type="button"class="btn btn-outline-secondary w-75 " @onclick="() => OpenPopUp = true"> Vælg produkter...</button>
+						</div>
+					}
+					else if (IsLoyalty)
+					{
+						<CreateLoyaltyDiscount discount="@loyaltyDiscountDTO" discountChanged="@((v) => loyaltyDiscountDTO = v)" />
+					}
+					<div class="col-md-12" style="padding-top:30px;">
+						<button type="button" class="btn btn-primary col-md-12" @onclick="() => OpenConfirmation = true">Opret Rabat</button>
+					</div>
+				</div>
+			</div>
+		</FloatingPage>
+		<div style="margin-top: 24%;"></div>
+	</div>
+</div>
+
+
+
+@if (OpenPopUp)
+{
+	<BookingNotification IsVisible="OpenPopUp">
+		<div>
+			<div style="overflow-y: auto;">
+				@foreach (var product in allProducts)
+				{
+					<div class="card shadow-sm">
+						<label class="form-check-label">@product.Name</label>
+						<input type="checkbox" @bind="product.Selected" />
+					</div>
+				}
+			</div>
+		</div>
+	</BookingNotification>
+}
+
+@if (OpenConfirmation)
+{
+	<BookingNotification IsVisible="OpenConfirmation">
+		<div>
+			<h1>Vil du Oprette denne rabat</h1>
+		</div>
+		<div class="d-flex gap-2 btn-group" style="margin-left:20px;">
+			<button class="btn btn-outline-danger flex-grow-1" @onclick="() => OpenConfirmation = false">Anuller</button>
+			<button class="btn btn-outline-primary flex-grow-1" @onclick="HandleValidSubmit">Opret</button>
+		</div>
+	</BookingNotification>
+}
+
+
+@code {
+	[Inject] IDiscountApplicationService _discountService { get; set; }
+	[Inject] NavigationManager Navi { get; set; }
+	private bool IsCampaign { get; set; }
+	private string _errorMessage = "";
+	private bool IsLoyalty { get; set; }
+	private bool OpenPopUp { get; set; } = false;
+	private List<ProductItem> allProducts = new();
+	private bool OpenConfirmation { get; set; } = false;
+	private LoyaltyDiscountDTO loyaltyDiscountDTO { get; set; } = new();
+	private CampaignDiscountDTO campaignDiscountDTO { get; set; } = new();
+	protected override async Task OnInitializedAsync()
+	{
+		IsCampaign = true;
+		IsLoyalty = false;
+		allProducts = (await _discountService.GetAllProductsAsync()).Select(p => new ProductItem() { Id = p.ProductId, Name = p.Name, Selected = false }).ToList();
+	}
+
+	private string GetCampaignButtonClass()
+	{
+		if (IsCampaign) return "customer-type-btn-clicked";
+		return "customer-type-btn";
+	}
+	private string GetLoyaltyButtonClass()
+	{
+		if (IsLoyalty) return "customer-type-btn-clicked";
+		return "customer-type-btn";
+	}
+	private void DiscountTypeButtonClicked()
+	{
+		IsLoyalty = !IsLoyalty;
+		IsCampaign = !IsCampaign;
+		OpenConfirmation = false;
+		OpenPopUp = false;
+	}
+
+	private async Task HandleValidSubmit()
+	{
+		try
+		{
+			if (IsLoyalty)
+			{
+				await _discountService.CreateNewLoyaltyDiscountAsync(loyaltyDiscountDTO);
+			}
+			if (IsCampaign)
+			{
+				campaignDiscountDTO.ProductIds.AddRange(allProducts.Where(p => p.Selected == true).Select(p => p.Id).ToList());
+				await _discountService.CreateNewCampaignDiscountAsync(campaignDiscountDTO);
+			}
+		}
+		catch
+		{
+			_errorMessage = "Noget gik galt så din rabat blev ikke oprettet";
+		}
+		Navi.NavigateTo("/");
+	}
+
+	private class ProductItem
+	{
+		public int Id { get; set; }
+		public string Name { get; set; } = string.Empty;
+		public bool Selected { get; set; }
+	}
+}

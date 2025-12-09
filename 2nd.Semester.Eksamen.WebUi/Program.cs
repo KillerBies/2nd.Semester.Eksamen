@@ -81,6 +81,7 @@ builder.Services.AddScoped<IDiscountCalculator, DiscountCalculator>();
 builder.Services.AddScoped<IDiscountApplicationService, DiscountApplicationService>();
 builder.Services.AddScoped<ILoyaltyDiscountRepository, LoyaltyDiscountRepository>();
 builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
+builder.Services.AddScoped<IProductApplicationService, ProductApplicationService>();
 
 
 // if your repositories and services are separate:

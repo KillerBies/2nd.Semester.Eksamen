@@ -1,12 +1,8 @@
-﻿@page "/create-loyalty-discount"
+﻿
 @using _2nd.Semester.Eksamen.Domain.Entities.Discounts
-@using _2nd.Semester.Eksamen.Application.Services
-@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
-@using _2nd.Semester.Eksamen.WebUi.Components.Shared
-@inject IDiscountApplicationService discountService
-@inject NavigationManager Navi
 @rendermode InteractiveServer
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 
 <EditForm Model="@discount" class="row p-3">
     <DataAnnotationsValidator />
@@ -69,11 +65,11 @@
 
 
 @code {
-    [Parameter] public LoyaltyDiscountDTO discount = new();
-    [Parameter] public EventCallback<LoyaltyDiscount> discountChanged { get; set; }
+[Parameter] public LoyaltyDiscountDTO discount { get; set; }
+[Parameter] public EventCallback<LoyaltyDiscountDTO> discountChanged { get; set; }
     public async Task OnChange()
     {
-        await DiscountChanged.InvokeAsync(discount);
+        await discountChanged.InvokeAsync(discount);
     }
 }
 
