@@ -20,8 +20,8 @@ namespace Components.Pages
         [Inject] private IEmployeeRepository _employeeRepository { get; set; }
         public async void InjectData()
         {
-            var customer1 = new PrivateCustomer("Andersen", Domain.Entities.Persons.Gender.Male, new DateOnly(2004, 2, 1), "Hans Christian", new Address("oiio", "323212", "fda", "43f"), "12345678", "21w@dwq.com", "", false);
-            var customer2 = new PrivateCustomer("Jensen", Domain.Entities.Persons.Gender.Male, new DateOnly(2004, 2, 1), "Jens", new Address("oiio", "323217", "fda", "43f"), "12345578", "21w@dwq.com","",false);
+            var customer1 = new PrivateCustomer("Andersen", Gender.Male, new DateOnly(2004, 2, 1), "Hans Christian", new Address("oiio", "323212", "fda", "43f"), "12345678", "21w@dwq.com", "", false);
+            var customer2 = new PrivateCustomer("Jensen", Gender.Male, new DateOnly(2004, 2, 1), "Jens", new Address("oiio", "323217", "fda", "43f"), "12345578", "21w@dwq.com","",false);
             var address1 = new Address("New York", "10001", "Main St", "101");
             var address2 = new Address("Los Angeles", "90001", "Elm St", "202");
             var employee1 = new Employee("Alice", "Johnson", "alice.johnson@example.com", "55511141", address1, 1.2m, "5 years", "Tekniker", "Styling, Maskinklip, ", "Female", new TimeOnly(08, 0), new TimeOnly(16,0));
