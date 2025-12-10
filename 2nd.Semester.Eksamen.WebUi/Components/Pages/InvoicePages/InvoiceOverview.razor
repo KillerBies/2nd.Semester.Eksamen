@@ -4,8 +4,9 @@
 @using _2nd.Semester.Eksamen.Application.DTO;
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 @inject IInvoiceService invoiceService;
+@rendermode InteractiveServer
 <h3>InvoiceOverview</h3>
-
+<button @onclick="() => MakeNewInvoice(1)"></button>
 @if (orderSnapshotDTOs == null)
 {
 	<p>Ingen ordrer fundet.</p>
@@ -42,6 +43,12 @@ else
     protected override async Task OnInitializedAsync()
     {
         orderSnapshotDTOs = await invoiceService.GetAllSnapshotsAsync();
+    }
+
+    
+    private async Task MakeNewInvoice(int TESTSelectId)
+    {
+        await invoiceService.GenerateInvoiceById(TESTSelectId);
     }
     private async Task DownloadInvoiceAsync(Byte[] Pdfbytes)
     {

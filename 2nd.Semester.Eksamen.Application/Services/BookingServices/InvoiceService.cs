@@ -45,7 +45,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 var booking = await _bookingRepository.GetByIDAsync(order.BookingId);
                  snapshot = new OrderSnapshot(order, discount, booking);
                 await _snapshotRepository.CreateNewAsync(snapshot);
-                
+               
             }
             catch (Exception)
             { throw new Exception("Noget gik galt ved oprettele af ordren"); }
@@ -76,7 +76,15 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             catch (Exception)
             { throw new Exception("Noget gik galt ved hentning af ordrer"); }
         }
+        public async Task GenerateInvoiceById(int orderSnapshotId)
+        {
+            var snap = await _snapshotRepository.GetByIdAsync(orderSnapshotId);
+            var bytes = _generateInvoice.GenerateInvoicePDF(snap);
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "invoice.pdf");
+            await File.WriteAllBytesAsync(path, bytes);
 
+
+        }
         
     
         

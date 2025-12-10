@@ -13,11 +13,11 @@ using QuestPDF.Helpers;
 namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
 {
 
-    public class InvoicePDFCreator : IDocument
+    public class InvoicePrivateCustomerPDFCreator : IDocument
     {
         private byte[] _logo;
         public OrderSnapshot InvoiceOrder { get; set; }
-        public InvoicePDFCreator(OrderSnapshot orderSnapshot)
+        public InvoicePrivateCustomerPDFCreator(OrderSnapshot orderSnapshot)
         {
             InvoiceOrder = orderSnapshot;
             var assembly = Assembly.GetExecutingAssembly();
@@ -50,33 +50,22 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
             {
                 row.RelativeItem().Column(column =>
                 {
-                    column.Item().Height(2, Unit.Centimetre).Image(_logo);
+                    column.Item().Scale(0.5f).Image(_logo);
                     var scale = 0.8f;
-                    var address = InvoiceOrder.BookingSnapshot.CustomerSnapshot?.AddressSnapshot;
+                    var address = InvoiceOrder.BookingSnapshot.CustomerSnapshot.AddressSnapshot;
 
-                    if (address != null)
-                    {
-                        column.Item().Scale(scale).Text($"{address.PostalCode} {address.City}");
-                        column.Item().Scale(scale).Text($"{address.StreetName} {address.HouseNumber}");
-                    }
-                    //Checks if customer is companycustomer, if true inserts CVR.
-                    if (InvoiceOrder.BookingSnapshot.CustomerSnapshot is CompanyCustomerSnapshot companyCustomer)
-                    {
-                        column.Item().Scale(scale).Text($"CVR:{companyCustomer.CVR}");
-                    }
+
                     column.Item().Text("");
-                    column.Item().Scale(scale).Text($"Dato: {InvoiceOrder.DateOfPayment}");
                     column.Item().Text("");
-                    //Checks if customer is companycustomer, if true inserts name.
-                    if (InvoiceOrder.BookingSnapshot.CustomerSnapshot is CompanyCustomerSnapshot)
-                    {
-                        column.Item().Scale(scale).Text($"Kunde: {InvoiceOrder.BookingSnapshot.CustomerSnapshot.Name}");
-                    }
+                    column.Item().Text("");
+                    column.Item().Scale(scale).Text("Kundeinformation:").SemiBold() ;
                     //Checks if customer is privatecustomer, if true inserts first and last name.
                     if (InvoiceOrder.BookingSnapshot.CustomerSnapshot is PrivateCustomerSnapshot privateCustomer)
                     {
                         column.Item().Scale(scale).Text($"Kunde: {privateCustomer.Name + " " + privateCustomer.LastName}");
                     }
+                        column.Item().Scale(scale).Text($"{address.PostalCode} {address.City}");
+                        column.Item().Scale(scale).Text($"{address.StreetName} {address.HouseNumber}");
 
                 });
 
@@ -85,9 +74,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                     var padding = 5;
                     //INVOICE BOX UPPER RIGHT OF PAGE
                     column.Item().BorderBottom(1).Padding(padding).Text("Faktura for behandlinger").SemiBold();
-
-                    //TODO       column.Item().Padding(padding).Text($"Faktura #{}"); //INSERT INVOICE ID REMEMBER THIS REMEMBER THIS REMEMBER THIS
                     column.Item().Text("");
+                    column.Item().Padding(padding).Text($"Faktura #{InvoiceOrder.Id}");
+                    column.Item().Text("");
+                    column.Item().Padding(padding).Text($"Betalt dato: {InvoiceOrder.DateOfPayment}").SemiBold();
+                    column.Item().Text("");
+
+                    
 
                 });
             });
