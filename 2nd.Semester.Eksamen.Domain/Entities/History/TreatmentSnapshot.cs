@@ -14,7 +14,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public string? Category { get; private set; }
         public int? BookingSnapshotId { get; set; }
         public BookingSnapshot? BookingSnapshot { get; set; }
-
+        public decimal? FinalPrice { get; set; }
         
         private TreatmentSnapshot() { }
 
