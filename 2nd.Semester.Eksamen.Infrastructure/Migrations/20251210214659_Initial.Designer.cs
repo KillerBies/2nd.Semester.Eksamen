@@ -12,8 +12,8 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251209222400_initial")]
-    partial class initial
+    [Migration("20251210214659_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -256,6 +256,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.Property<decimal?>("TotalAfterDiscount")
                         .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("VAT")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");

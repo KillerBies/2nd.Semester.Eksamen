@@ -17,7 +17,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
 
         public Byte[] GenerateInvoicePDF(OrderSnapshot orderSnapshot)
         {
-            var document = new InvoicePrivateCustomerPDFCreator(orderSnapshot);
+            var document = new InvoicePDFCreator(orderSnapshot);
 
             Byte[] pdfAsBytes = document.GeneratePdf();
             return pdfAsBytes;
@@ -25,7 +25,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
         }
         public void ShowCompanionInvoicePDF(OrderSnapshot orderSnapshot)
         {
-            var document = new InvoicePrivateCustomerPDFCreator(orderSnapshot);
+            var document = new InvoicePDFCreator(orderSnapshot);
             document.ShowInCompanion();
         }
     }

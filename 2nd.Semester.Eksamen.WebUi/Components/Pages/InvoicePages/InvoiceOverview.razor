@@ -31,7 +31,7 @@ else
                     <td>@orderSnapshotDTO.Name</td>
                     <td>@orderSnapshotDTO.TotalPaid</td>
                     <td>@orderSnapshotDTO.PaymentDate</td>
-                    <td>  <button @onclick="() => DownloadInvoiceAsync(orderSnapshotDTO.PdfFile)"> download faktura </button> </td>
+                    <td>  <button @onclick="() => MakeNewInvoice(orderSnapshotDTO.Id)"> download faktura </button> </td>
                 </tr>
             }
         </tbody>
@@ -44,11 +44,11 @@ else
     {
         orderSnapshotDTOs = await invoiceService.GetAllSnapshotsAsync();
     }
-
     
-    private async Task MakeNewInvoice(int TESTSelectId)
+
+    private async Task MakeNewInvoice(int id)
     {
-        await invoiceService.GenerateInvoiceById(TESTSelectId);
+        await invoiceService.GenerateInvoiceById(id);
     }
     private async Task DownloadInvoiceAsync(Byte[] Pdfbytes)
     {

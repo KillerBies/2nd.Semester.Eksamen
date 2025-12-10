@@ -115,6 +115,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     OrderID = order.Id,
                     ProductId = group.Key,
                     NumberOfProducts = group.Count()
+                    //FinalPrice = order.Booking.Treatments.Em
                 });
             }
 

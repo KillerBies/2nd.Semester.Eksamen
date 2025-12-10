@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -312,6 +312,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     DateOfPayment = table.Column<DateOnly>(type: "date", precision: 18, scale: 2, nullable: false),
                     TotalAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     PdfInvoice = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    VAT = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AppliedSnapshotId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

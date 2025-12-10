@@ -13,11 +13,11 @@ using QuestPDF.Helpers;
 namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
 {
 
-    public class InvoicePrivateCustomerPDFCreator : IDocument
+    public class InvoicePDFCreator : IDocument
     {
         private byte[] _logo;
         public OrderSnapshot InvoiceOrder { get; set; }
-        public InvoicePrivateCustomerPDFCreator(OrderSnapshot orderSnapshot)
+        public InvoicePDFCreator(OrderSnapshot orderSnapshot)
         {
             InvoiceOrder = orderSnapshot;
             var assembly = Assembly.GetExecutingAssembly();
@@ -64,7 +64,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                     {
                         column.Item().Scale(scale).Text($"Kunde: {privateCustomer.Name + " " + privateCustomer.LastName}");
                     }
-                        column.Item().Scale(scale).Text($"{address.PostalCode} {address.City}");
+                    if (InvoiceOrder.BookingSnapshot.CustomerSnapshot is CompanyCustomerSnapshot companyCustomer)
+                    {
+                        column.Item().Scale(scale).Text($"Kunde: {companyCustomer.Name}");
+                        column.Item().Scale(scale).Text($"CVR: {companyCustomer.CVR}");
+                    }
+
+                    column.Item().Scale(scale).Text($"{address.PostalCode} {address.City}");
                         column.Item().Scale(scale).Text($"{address.StreetName} {address.HouseNumber}");
 
                 });
@@ -93,8 +99,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
             {
                 column.Spacing(5);
                 column.Item().Element(ComposeTable);
-
-                column.Item().AlignRight().Text($"Rabat: {InvoiceOrder.CustomDiscount}");
+                column.Item().Text("");
+                column.Item().Text("");
+                column.Item().AlignRight().Text($"Produktrabat: {InvoiceOrder.AppliedDiscountSnapshot.ProductDiscount}");
+                column.Item().AlignRight().Text($"Behandlingsrabat: {InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount}");
+                column.Item().AlignRight().Text($"Moms: {InvoiceOrder.VAT}");
                 column.Item().AlignRight().Text($"Total: {InvoiceOrder.TotalAfterDiscount}");
             });
         }
@@ -128,7 +137,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 // ///
                 foreach (var item in InvoiceOrder.BookingSnapshot.TreatmentSnapshot) //Runs through list of treatments
                 {
-                    table.Cell().Element(CellStyling).Text(item.Name);
+                    table.Cell().Element(CellStyling).Text($"item.Name");
+                    table.Cell().Element(CellStyling).Text($"1");
                     table.Cell().Element(CellStyling).AlignRight().Text($"{item.PricePerUnit}");
                     table.Cell().Element(CellStyling).AlignRight().Text($"{item.DiscountedPrice}");
 
