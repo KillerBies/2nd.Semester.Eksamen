@@ -101,17 +101,25 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 column.Item().Element(ComposeTable);
                 column.Item().Text("");
                 column.Item().Text("");
+                string percentage = "%";
+                if (InvoiceOrder.AppliedDiscountSnapshot != null)
+                {
+                    column.Item().AlignRight().Text($"Rabat: {InvoiceOrder.AppliedDiscountSnapshot.Name}");
+                }
+
+
                 if (InvoiceOrder.AppliedDiscountSnapshot.ProductDiscount != null)
                 { 
-                column.Item().AlignRight().Text($"Produktrabat: {InvoiceOrder.AppliedDiscountSnapshot.ProductDiscount}");
+                column.Item().AlignRight().Text($"Produktrabat: {InvoiceOrder.AppliedDiscountSnapshot.ProductDiscount}{percentage}");
+                
                 }
                 if (InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount != null)
                 {
-                    column.Item().AlignRight().Text($"Behandlingsrabat: {InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount}");
+                    column.Item().AlignRight().Text($"Behandlingsrabat: {InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount}{percentage}");
                 }
                 
-                column.Item().AlignRight().Text($"Moms: {InvoiceOrder.VAT}");
-                column.Item().AlignRight().Text($"Total: {InvoiceOrder.TotalAfterDiscount}");
+                column.Item().AlignRight().Text($"Moms: {InvoiceOrder.VAT} DKK");
+                column.Item().AlignRight().Text($"Total: {InvoiceOrder.TotalAfterDiscount} DKK");
             });
         }
 
@@ -126,15 +134,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                     columns.RelativeColumn(2);
                     columns.RelativeColumn();
                     columns.RelativeColumn();
-                    columns.RelativeColumn();
+                   
                 });
                 // //
                 table.Header(header =>
                 {
                     header.Cell().Element(CellStyling).Text("Produkt:");
                     header.Cell().Element(CellStyling).AlignRight().Text("Mængde:");
-                    header.Cell().Element(CellStyling).AlignRight().Text("Pris:");
-                    header.Cell().Element(CellStyling).AlignRight().Text("Total:");
+                    header.Cell().Element(CellStyling).AlignRight().Text("Enhedspris:");
+                   
                     static IContainer CellStyling(IContainer container)
                     {
 
@@ -145,10 +153,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 foreach (var item in InvoiceOrder.BookingSnapshot.TreatmentSnapshot) //Runs through list of treatments
                 {
                     table.Cell().Element(CellStyling).Text($"{item.Name}");
-                   if item.OrderLines.
-                    table.Cell().Element(CellStyling).Text($"1");
-                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.PriceWithMultiplier}");
-                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.DiscountedPrice}");
+                    table.Cell().Element(CellStyling).AlignRight().Text("1");
+                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.PriceWithMultiplier} DKK");
+                   
 
                     static IContainer CellStyling(IContainer container)
                     {
@@ -159,9 +166,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 foreach (var item in InvoiceOrder.OrderLinesSnapshot) //Runs through list of Products
                 {
                     table.Cell().Element(CellStyling).Text(item.ProductSnapshot.Name);
-                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.ProductSnapshot.PricePerUnit}");
                     table.Cell().Element(CellStyling).AlignRight().Text($"{item.NumberOfProducts}");
-                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.ProductSnapshot.DiscountedPrice}");
+                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.ProductSnapshot.PricePerUnit} DKK");
+                    
                     static IContainer CellStyling(IContainer container)
                     {
                         return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
