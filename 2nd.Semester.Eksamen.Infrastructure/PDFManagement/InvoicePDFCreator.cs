@@ -101,8 +101,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 column.Item().Element(ComposeTable);
                 column.Item().Text("");
                 column.Item().Text("");
+                if (InvoiceOrder.AppliedDiscountSnapshot.ProductDiscount != null)
+                { 
                 column.Item().AlignRight().Text($"Produktrabat: {InvoiceOrder.AppliedDiscountSnapshot.ProductDiscount}");
-                column.Item().AlignRight().Text($"Behandlingsrabat: {InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount}");
+                }
+                if (InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount != null)
+                {
+                    column.Item().AlignRight().Text($"Behandlingsrabat: {InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount}");
+                }
+                
                 column.Item().AlignRight().Text($"Moms: {InvoiceOrder.VAT}");
                 column.Item().AlignRight().Text($"Total: {InvoiceOrder.TotalAfterDiscount}");
             });
@@ -138,6 +145,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 foreach (var item in InvoiceOrder.BookingSnapshot.TreatmentSnapshot) //Runs through list of treatments
                 {
                     table.Cell().Element(CellStyling).Text($"{item.Name}");
+                   if item.OrderLines.
                     table.Cell().Element(CellStyling).Text($"1");
                     table.Cell().Element(CellStyling).AlignRight().Text($"{item.PriceWithMultiplier}");
                     table.Cell().Element(CellStyling).AlignRight().Text($"{item.DiscountedPrice}");
