@@ -17,6 +17,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
     {
         private byte[] _logo;
         public OrderSnapshot InvoiceOrder { get; set; }
+        public bool DiscountOnProducts;
+        public bool DiscountOnTreatments;
         public InvoicePDFCreator(OrderSnapshot orderSnapshot)
         {
             InvoiceOrder = orderSnapshot;
@@ -105,17 +107,19 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 if (InvoiceOrder.AppliedDiscountSnapshot != null)
                 {
                     column.Item().AlignRight().Text($"Rabat: {InvoiceOrder.AppliedDiscountSnapshot.Name}");
+                    
                 }
 
 
-                if (InvoiceOrder.AppliedDiscountSnapshot.ProductDiscount != null)
+                if (InvoiceOrder.AppliedDiscountSnapshot.ProductDiscount != null && DiscountOnProducts == true)
                 { 
                 column.Item().AlignRight().Text($"Produktrabat: {InvoiceOrder.AppliedDiscountSnapshot.ProductDiscount}{percentage}");
-                
+                  
                 }
-                if (InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount != null)
+                if (InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount != null && DiscountOnTreatments == true)
                 {
                     column.Item().AlignRight().Text($"Behandlingsrabat: {InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount}{percentage}");
+                    
                 }
                 
                 column.Item().AlignRight().Text($"Moms: {InvoiceOrder.VAT} DKK");
@@ -161,7 +165,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                     {
                         return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
                     }
-
+                    DiscountOnTreatments = true;
                 }
                 foreach (var item in InvoiceOrder.OrderLinesSnapshot) //Runs through list of Products
                 {
@@ -173,7 +177,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                     {
                         return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
                     }
-
+                    DiscountOnProducts = true;
                 }
             });
         }
