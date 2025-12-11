@@ -12,7 +12,7 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251210214659_Initial")]
+    [Migration("20251211000707_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -201,6 +201,26 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue("CustomerSnapshot");
 
                     b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.EmployeeSnapshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("BasePriceMultiplier")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmployeeSnapshot");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.OrderLineSnapshot", b =>
@@ -763,7 +783,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EmployeeSnapshotId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("PriceWithMultiplier")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasIndex("BookingSnapshotId");
+
+                    b.HasIndex("EmployeeSnapshotId");
 
                     b.ToTable("TreatmentSnapshots");
                 });
@@ -1056,6 +1087,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasForeignKey("BookingSnapshotId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.EmployeeSnapshot", "EmployeeSnapshot")
+                        .WithMany()
+                        .HasForeignKey("EmployeeSnapshotId");
+
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot", null)
                         .WithOne()
                         .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.History.TreatmentSnapshot", "Id")
@@ -1063,6 +1098,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("BookingSnapshot");
+
+                    b.Navigation("EmployeeSnapshot");
                 });
 
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.History.AddressSnapshot", b =>

@@ -78,6 +78,20 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EmployeeSnapshot",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BasePriceMultiplier = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeSnapshot", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductSnapshots",
                 columns: table => new
                 {
@@ -336,7 +350,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BookingSnapshotId = table.Column<int>(type: "int", nullable: true)
+                    BookingSnapshotId = table.Column<int>(type: "int", nullable: true),
+                    PriceWithMultiplier = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    EmployeeSnapshotId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -345,6 +362,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         name: "FK_TreatmentSnapshots_BookingsSnapshots_BookingSnapshotId",
                         column: x => x.BookingSnapshotId,
                         principalTable: "BookingsSnapshots",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_TreatmentSnapshots_EmployeeSnapshot_EmployeeSnapshotId",
+                        column: x => x.EmployeeSnapshotId,
+                        principalTable: "EmployeeSnapshot",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TreatmentSnapshots_ProductSnapshots_Id",
@@ -674,6 +696,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 name: "IX_TreatmentSnapshots_BookingSnapshotId",
                 table: "TreatmentSnapshots",
                 column: "BookingSnapshotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TreatmentSnapshots_EmployeeSnapshotId",
+                table: "TreatmentSnapshots",
+                column: "EmployeeSnapshotId");
         }
 
         /// <inheritdoc />
@@ -711,6 +738,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "BookedTreatments");
+
+            migrationBuilder.DropTable(
+                name: "EmployeeSnapshot");
 
             migrationBuilder.DropTable(
                 name: "ProductSnapshots");

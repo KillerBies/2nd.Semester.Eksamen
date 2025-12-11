@@ -137,9 +137,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 // ///
                 foreach (var item in InvoiceOrder.BookingSnapshot.TreatmentSnapshot) //Runs through list of treatments
                 {
-                    table.Cell().Element(CellStyling).Text($"item.Name");
+                    table.Cell().Element(CellStyling).Text($"{item.Name}");
                     table.Cell().Element(CellStyling).Text($"1");
-                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.PricePerUnit}");
+                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.PriceWithMultiplier}");
                     table.Cell().Element(CellStyling).AlignRight().Text($"{item.DiscountedPrice}");
 
                     static IContainer CellStyling(IContainer container)

@@ -27,7 +27,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
           
             foreach (var t in booking.Treatments)
             {
-                var snapshot = new TreatmentSnapshot(t.Treatment, this);
+                var snapshot = new TreatmentSnapshot(t.Treatment, this, t.Employee.BasePriceMultiplier);
                 TreatmentSnapshot.Add(snapshot);
             }
             CustomerSnapshot = CustomerSnapshot.CreateCustomerSnapshot(booking.Customer);

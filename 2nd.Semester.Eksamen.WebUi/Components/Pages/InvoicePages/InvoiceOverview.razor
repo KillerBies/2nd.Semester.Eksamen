@@ -6,7 +6,7 @@
 @inject IInvoiceService invoiceService;
 @rendermode InteractiveServer
 <h3>InvoiceOverview</h3>
-<button @onclick="() => MakeNewInvoice(1)"></button>
+
 @if (orderSnapshotDTOs == null)
 {
 	<p>Ingen ordrer fundet.</p>
@@ -50,13 +50,5 @@ else
     {
         await invoiceService.GenerateInvoiceById(id);
     }
-    private async Task DownloadInvoiceAsync(Byte[] Pdfbytes)
-    {
-        var fileStream = new MemoryStream(Pdfbytes);
-        var fileName = "Faktura.pdf";
-
-        using var streamRef = new DotNetStreamReference(stream: fileStream);
-
-        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
-    }
+    
 }
