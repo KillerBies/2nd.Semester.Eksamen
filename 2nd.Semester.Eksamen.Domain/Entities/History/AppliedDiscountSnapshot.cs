@@ -19,8 +19,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         {
             if (discount == null) return;
             Name = discount.Name;
-            ProductDiscount = discount.ProductDiscount; 
-            TreatmentDiscount = discount.TreatmentDiscount;
+            ProductDiscount = discount.ProductDiscount * 100; 
+            TreatmentDiscount = discount.TreatmentDiscount * 100;
         }
     }
 }

@@ -11,5 +11,6 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces
     {
 
         public Byte[] GenerateInvoicePDF(OrderSnapshot orderSnapshot);
+        public void ShowCompanionInvoicePDF(OrderSnapshot orderSnapshot);
     }
 }

@@ -93,7 +93,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
 
         .Include(b => b.Treatments)
             .ThenInclude(tb => tb.Treatment)
-
+           .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.Employee)
         .Include(b => b.Treatments)
             .ThenInclude(tb => tb.TreatmentBookingProducts)
                 .ThenInclude(tbp => tbp.Product)

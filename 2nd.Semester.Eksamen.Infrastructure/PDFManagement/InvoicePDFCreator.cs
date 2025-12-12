@@ -17,6 +17,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
     {
         private byte[] _logo;
         public OrderSnapshot InvoiceOrder { get; set; }
+        public bool DiscountOnProducts;
+        public bool DiscountOnTreatments;
         public InvoicePDFCreator(OrderSnapshot orderSnapshot)
         {
             InvoiceOrder = orderSnapshot;
@@ -50,33 +52,28 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
             {
                 row.RelativeItem().Column(column =>
                 {
-                    column.Item().Height(2, Unit.Centimetre).Image(_logo);
+                    column.Item().Scale(0.5f).Image(_logo);
                     var scale = 0.8f;
-                    var address = InvoiceOrder.BookingSnapshot.CustomerSnapshot?.AddressSnapshot;
+                    var address = InvoiceOrder.BookingSnapshot.CustomerSnapshot.AddressSnapshot;
 
-                    if (address != null)
-                    {
-                        column.Item().Scale(scale).Text($"{address.PostalCode} {address.City}");
-                        column.Item().Scale(scale).Text($"{address.StreetName} {address.HouseNumber}");
-                    }
-                    //Checks if customer is companycustomer, if true inserts CVR.
-                    if (InvoiceOrder.BookingSnapshot.CustomerSnapshot is CompanyCustomerSnapshot companyCustomer)
-                    {
-                        column.Item().Scale(scale).Text($"CVR:{companyCustomer.CVR}");
-                    }
+
                     column.Item().Text("");
-                    column.Item().Scale(scale).Text($"Dato: {InvoiceOrder.DateOfPayment}");
                     column.Item().Text("");
-                    //Checks if customer is companycustomer, if true inserts name.
-                    if (InvoiceOrder.BookingSnapshot.CustomerSnapshot is CompanyCustomerSnapshot)
-                    {
-                        column.Item().Scale(scale).Text($"Kunde: {InvoiceOrder.BookingSnapshot.CustomerSnapshot.Name}");
-                    }
+                    column.Item().Text("");
+                    column.Item().Scale(scale).Text("Kundeinformation:").SemiBold() ;
                     //Checks if customer is privatecustomer, if true inserts first and last name.
                     if (InvoiceOrder.BookingSnapshot.CustomerSnapshot is PrivateCustomerSnapshot privateCustomer)
                     {
                         column.Item().Scale(scale).Text($"Kunde: {privateCustomer.Name + " " + privateCustomer.LastName}");
                     }
+                    if (InvoiceOrder.BookingSnapshot.CustomerSnapshot is CompanyCustomerSnapshot companyCustomer)
+                    {
+                        column.Item().Scale(scale).Text($"Kunde: {companyCustomer.Name}");
+                        column.Item().Scale(scale).Text($"CVR: {companyCustomer.CVR}");
+                    }
+
+                    column.Item().Scale(scale).Text($"{address.PostalCode} {address.City}");
+                        column.Item().Scale(scale).Text($"{address.StreetName} {address.HouseNumber}");
 
                 });
 
@@ -85,9 +82,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                     var padding = 5;
                     //INVOICE BOX UPPER RIGHT OF PAGE
                     column.Item().BorderBottom(1).Padding(padding).Text("Faktura for behandlinger").SemiBold();
-
-                    //TODO       column.Item().Padding(padding).Text($"Faktura #{}"); //INSERT INVOICE ID REMEMBER THIS REMEMBER THIS REMEMBER THIS
                     column.Item().Text("");
+                    column.Item().Padding(padding).Text($"Faktura #{InvoiceOrder.Id}");
+                    column.Item().Text("");
+                    column.Item().Padding(padding).Text($"Betalt dato: {InvoiceOrder.DateOfPayment}").SemiBold();
+                    column.Item().Text("");
+
+                    
 
                 });
             });
@@ -100,9 +101,29 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
             {
                 column.Spacing(5);
                 column.Item().Element(ComposeTable);
+                column.Item().Text("");
+                column.Item().Text("");
+                string percentage = "%";
+                if (InvoiceOrder.AppliedDiscountSnapshot != null)
+                {
+                    column.Item().AlignRight().Text($"Rabat: {InvoiceOrder.AppliedDiscountSnapshot.Name}");
+                    
+                }
 
-                column.Item().AlignRight().Text($"Rabat: {InvoiceOrder.CustomDiscount}");
-                column.Item().AlignRight().Text($"Total: {InvoiceOrder.TotalAfterDiscount}");
+
+                if (InvoiceOrder.AppliedDiscountSnapshot.ProductDiscount != null && DiscountOnProducts == true)
+                { 
+                column.Item().AlignRight().Text($"Produktrabat: {InvoiceOrder.AppliedDiscountSnapshot.ProductDiscount}{percentage}");
+                  
+                }
+                if (InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount != null && DiscountOnTreatments == true)
+                {
+                    column.Item().AlignRight().Text($"Behandlingsrabat: {InvoiceOrder.AppliedDiscountSnapshot.TreatmentDiscount}{percentage}");
+                    
+                }
+                
+                column.Item().AlignRight().Text($"Moms: {InvoiceOrder.VAT} DKK");
+                column.Item().AlignRight().Text($"Total: {InvoiceOrder.TotalAfterDiscount} DKK");
             });
         }
 
@@ -117,15 +138,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                     columns.RelativeColumn(2);
                     columns.RelativeColumn();
                     columns.RelativeColumn();
-                    columns.RelativeColumn();
+                   
                 });
                 // //
                 table.Header(header =>
                 {
                     header.Cell().Element(CellStyling).Text("Produkt:");
                     header.Cell().Element(CellStyling).AlignRight().Text("Mængde:");
-                    header.Cell().Element(CellStyling).AlignRight().Text("Pris:");
-                    header.Cell().Element(CellStyling).AlignRight().Text("Total:");
+                    header.Cell().Element(CellStyling).AlignRight().Text("Enhedspris:");
+                   
                     static IContainer CellStyling(IContainer container)
                     {
 
@@ -135,27 +156,28 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 // ///
                 foreach (var item in InvoiceOrder.BookingSnapshot.TreatmentSnapshot) //Runs through list of treatments
                 {
-                    table.Cell().Element(CellStyling).Text(item.Name);
-                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.PricePerUnit}");
-                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.DiscountedPrice}");
+                    table.Cell().Element(CellStyling).Text($"{item.Name}");
+                    table.Cell().Element(CellStyling).AlignRight().Text("1");
+                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.PriceWithMultiplier} DKK");
+                   
 
                     static IContainer CellStyling(IContainer container)
                     {
                         return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
                     }
-
+                    DiscountOnTreatments = true;
                 }
                 foreach (var item in InvoiceOrder.OrderLinesSnapshot) //Runs through list of Products
                 {
                     table.Cell().Element(CellStyling).Text(item.ProductSnapshot.Name);
-                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.ProductSnapshot.PricePerUnit}");
                     table.Cell().Element(CellStyling).AlignRight().Text($"{item.NumberOfProducts}");
-                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.ProductSnapshot.DiscountedPrice}");
+                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.ProductSnapshot.PricePerUnit} DKK");
+                    
                     static IContainer CellStyling(IContainer container)
                     {
                         return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
                     }
-
+                    DiscountOnProducts = true;
                 }
             });
         }

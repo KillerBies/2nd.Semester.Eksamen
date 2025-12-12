@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record TreatmentSnapshot : ProductSnapshot
@@ -14,11 +16,12 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public string? Category { get; private set; }
         public int? BookingSnapshotId { get; set; }
         public BookingSnapshot? BookingSnapshot { get; set; }
-
-        
+        public decimal? PriceWithMultiplier { get; set; }
+        public int EmployeeId { get; set; }
+        public EmployeeSnapshot? EmployeeSnapshot { get; set; }
         private TreatmentSnapshot() { }
 
-        public TreatmentSnapshot(Treatment treatment, BookingSnapshot bookingSnapshot)
+        public TreatmentSnapshot(Treatment treatment, BookingSnapshot bookingSnapshot, decimal customerMultiplier)
         {
 
             Name = treatment.Name;
@@ -26,6 +29,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             DiscountedPrice = treatment.DiscountedPrice;
             Category = treatment.Category;
             BookingSnapshot = bookingSnapshot;
+            PriceWithMultiplier = customerMultiplier * treatment.Price;
+
+          
         }
 
 

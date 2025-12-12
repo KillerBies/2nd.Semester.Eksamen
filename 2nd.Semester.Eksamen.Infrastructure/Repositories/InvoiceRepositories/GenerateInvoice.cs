@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.PDFManagement;
+using QuestPDF.Companion;
 using QuestPDF.Fluent;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
@@ -14,12 +15,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
     {
 
 
-        public Byte[] GenerateInvoicePDF(OrderSnapshot orderSnapshot) 
+        public Byte[] GenerateInvoicePDF(OrderSnapshot orderSnapshot)
         {
             var document = new InvoicePDFCreator(orderSnapshot);
-             Byte[] pdfAsBytes = document.GeneratePdf();
-            return pdfAsBytes;
-        }
 
+            Byte[] pdfAsBytes = document.GeneratePdf();
+            return pdfAsBytes;
+
+        }
+        public void ShowCompanionInvoicePDF(OrderSnapshot orderSnapshot)
+        {
+            var document = new InvoicePDFCreator(orderSnapshot);
+            document.ShowInCompanion();
+        }
     }
 }

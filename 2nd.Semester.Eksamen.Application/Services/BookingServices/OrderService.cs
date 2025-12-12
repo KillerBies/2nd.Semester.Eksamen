@@ -112,9 +112,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             {
                 await _orderLineService.AddOrderLineAsync(new OrderLine
                 {
+                    
                     OrderID = order.Id,
                     ProductId = group.Key,
                     NumberOfProducts = group.Count()
+                    
                 });
             }
 

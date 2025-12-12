@@ -47,7 +47,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
                     .ThenInclude(b => b.CustomerSnapshot)
                         .ThenInclude(c => c.AddressSnapshot)
                 .Include(o => o.BookingSnapshot)
-                    .ThenInclude(b => b.TreatmentSnapshot)
+                    .ThenInclude(b => b.TreatmentSnapshot).ThenInclude(tb => tb.EmployeeSnapshot)
                 .Include(o => o.OrderLinesSnapshot)
                     .ThenInclude(ol => ol.ProductSnapshot)
                 .Include(o => o.AppliedDiscountSnapshot).ToListAsync();
