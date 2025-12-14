@@ -12,8 +12,8 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
 
         [Required]
         public string Category { get; set; } = string.Empty;
-        
-        public int TreatmentId { get; set; }
+
+        public int TreatmentId { get; set; } = 0;
         [Required]
         public string Name { get; set; } = string.Empty;
         [Required]

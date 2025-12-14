@@ -10,6 +10,7 @@ using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentPr
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Mono.TextTemplating;
+using MudBlazor.Interfaces;
 using System.Text.RegularExpressions;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
@@ -22,91 +23,77 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
         [Parameter] public EventCallback<TreatmentBookingDTO> OnRemove { get; set; }
         [Parameter] public EventCallback<TreatmentBookingDTO> OnSelectedParameterChange { get; set; }
         [Parameter] public EventCallback<TreatmentBookingDTO> OnChange { get; set; }
+        
         [Parameter] public List<TreatmentDTO> PossibleTreatments { get; set; }
+        public List<TreatmentDTO> SelectableTreatments { get; set; } = new();
+        
         [Parameter] public List<EmployeeDTO> PossibleEmployees { get; set; }
+        public List<EmployeeDTO> SelectableEmployees { get; set; } = new();
+
         [Parameter] public TreatmentBookingDTO TreatmentBooking { get; set; }
         [Parameter] public EventCallback<int> OnUp { get; set; }
         [Parameter] public EventCallback<int> OnDown { get; set; }
+        [Parameter] public bool IsEdit { get; set; }
         [Parameter] public int Index { get; set; }
         [CascadingParameter] EditContext EditContext { get; set; }
 
+        private TreatmentDTO selectedTreatment => PossibleTreatments.FirstOrDefault(pt => pt.TreatmentId == TreatmentBooking.Treatment.TreatmentId);
+        private EmployeeDTO selectedEmployee => PossibleEmployees.FirstOrDefault(pe => pe.EmployeeId == TreatmentBooking.Employee.EmployeeId);
 
-        private TreatmentDTO selectedTreatment => PossibleTreatments.FirstOrDefault(pt => pt.TreatmentId == TreatmentId);
-        private EmployeeDTO selectedEmployee => PossibleEmployees.FirstOrDefault(pe => pe.EmployeeId == EmployeeId);
 
-        private int? employeeId { get; set; } = null;
-        private int? EmployeeId
+        private void OnCategoryChanged()
         {
-            get => employeeId;
-            set
-            {
-                employeeId = value;
 
-                if (employeeId.HasValue)
-                {
-                    TreatmentBooking.Employee = selectedEmployee;
-                }
-                else
-                {
-                    TreatmentBooking.Employee = new EmployeeDTO();
-                }
-                TreatmentBooking.UpdatePrice();
-
-                Change();
-            }
-        }
-        private int? treatmentId { get; set; } = null;
-        private int? TreatmentId
-        {
-            get => treatmentId;
-            set
-            {
-                treatmentId = value;
-
-                if (treatmentId.HasValue)
-                {
-                    TreatmentBooking.Treatment = selectedTreatment;
-                }
-                else
-                {
-                    TreatmentBooking.Treatment = new TreatmentDTO();
-                }
-
-                // Always reset employee when treatment changes
-                EmployeeId = null;
-                TreatmentBooking.Employee = new EmployeeDTO();
-                TreatmentBooking.Price = 0;
-
-                Change();
-            }
-        }
-        private string? category { get; set; } = null;
-        private string? Category
-        {
-            get => category;
-            set
-            {
-                category = value;
-                TreatmentId = null;
-                TreatmentBooking.Treatment = new TreatmentDTO();
-                EmployeeId = null;
-                TreatmentBooking.Employee = new EmployeeDTO();
-                TreatmentBooking.Price = 0;
-
-                Change();
-            }
-        }
-
-        private void OnCategoryChanged(ChangeEventArgs e)
-        {
-            // Reset everything first
-            EmployeeId = null;
-            TreatmentBooking.Employee = new EmployeeDTO();
-
-            TreatmentId = null;
-            TreatmentBooking.Treatment = new TreatmentDTO();
+            TreatmentBooking.Employee.EmployeeId = 0;
+            TreatmentBooking.Treatment.TreatmentId = 0;
             TreatmentBooking.Price = 0;
+            if (TreatmentBooking.Treatment.Category == "")
+            {
+                SelectableTreatments.Clear();
+                SelectableEmployees.Clear();
+                Change();
+                return;
+            }
+            SelectableTreatments = PossibleTreatments.Where(s => s.Category == TreatmentBooking.Treatment.Category).ToList();
 
+            Change();
+        }
+
+
+        private void OnTreatmentChanged()
+        {
+            var treatment = selectedTreatment;
+            TreatmentBooking.Employee.EmployeeId = 0;
+            TreatmentBooking.Price = 0;
+            if (treatment == null)
+            {
+                SelectableEmployees.Clear();
+                Change();
+                return;
+            }
+            TreatmentBooking.Treatment.Name = treatment.Name;
+            TreatmentBooking.Treatment.Category = treatment.Category;
+            TreatmentBooking.Treatment.RequiredSpecialties = treatment.RequiredSpecialties;
+            TreatmentBooking.Treatment.BasePrice = treatment.BasePrice;
+            TreatmentBooking.Treatment.Duration = treatment.Duration;
+            SelectableEmployees = PossibleEmployees.Where(e => TreatmentBooking.Treatment.RequiredSpecialties.All(tr => e.Specialties.Contains(tr))).ToList();
+
+            Change();
+        }
+
+        private void OnEmployeeChanged()
+        {
+            var employee = selectedEmployee;
+            if (employee == null)
+            {
+                Change();
+                return;
+            }
+            TreatmentBooking.Employee.ExperienceLevel = employee.ExperienceLevel;
+            TreatmentBooking.Employee.Name = employee.Name;
+            TreatmentBooking.Employee.BasePriceMultiplier = employee.BasePriceMultiplier;
+            TreatmentBooking.Employee.EmployeeId = employee.EmployeeId;
+            TreatmentBooking.UpdatePrice();
             Change();
         }
 
@@ -118,10 +105,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
         private async Task NotifyChange()
         {
             await OnSelectedParameterChange.InvokeAsync(TreatmentBooking);
-        }
-        protected override void OnAfterRender(bool firstRender)
-        {
-            Console.WriteLine("Render!");
         }
         private void Change()
         {

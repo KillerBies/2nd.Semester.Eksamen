@@ -7,29 +7,20 @@
     <div class="navbar-nav">
         <!----------------------Logo container--------------------------------->
         <div>
-            <!--Container being fluid means it addapts to the screen and navbar size dinamically (Doesn't do much but kept for safety)-->
             <!--Logo anchore container (to attach a link)-->
             <a href="/" class="navbar-brand">
                 <!--Logo image-->
                 <img src="Logo.png" style="height:40px;" />
             </a>
         </div>
-        <!----------------Each item is within a list element container---------------------->
-        <div class="nav-item px-3"> <!-- px-3 give horizontal padding -->
-            <!--Clickable navbar item (leads to home)------------------->
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All"> <!--Match...All to only match a link that is exactly like the href given (that being empty)-->
-                <span></span> Home
-            </NavLink>
-        </div>
-        <!--Repeats for the next items-->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="EmployeeSchedule">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Medarbejder Skema</span>
+                <span  aria-hidden="true">Medarbejder Skema</span>
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="createbooking">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Lav Booking</span>
+                <span aria-hidden="true">Lav Booking</span>
             </NavLink>
         </div>
         <div class="nav-item px-3">
@@ -39,23 +30,28 @@
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="employees">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Medarbejderoversigt</span>
+                <span  aria-hidden="true">Medarbejderoversigt</span>
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="CustomerOverview">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Kundeoversigt</span>
+                <span  aria-hidden="true">Kundeoversigt</span>
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="InvoiceOverview">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Fakturaoversigt</span>
+                <span aria-hidden="true">Fakturaoversigt</span>
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="TreatmentOverview">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Behandlingsoversigt</span>
+                <span aria-hidden="true">Behandlingsoversigt</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="create-product">
+                <span  aria-hidden="true">Lav Nyt Produkt</span>
             </NavLink>
         </div>
         

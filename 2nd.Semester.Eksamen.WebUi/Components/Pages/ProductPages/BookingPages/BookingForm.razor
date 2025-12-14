@@ -33,6 +33,7 @@
             @for (int i = 0; i < Booking.TreatmentBookingDTOs.Count(); i++)
             {
                 <TreatmentEditor TreatmentBooking="Booking.TreatmentBookingDTOs[i]"
+                                 IsEdit="IsEdit"
                                  OnRemove="RemoveTreatment"
                                  PossibleEmployees="AllEmployees"
                                  PossibleTreatments="AllTreatments"
@@ -77,7 +78,7 @@
 
         <div class="btn-group">
             <button type="button" class="btn btn-primary mt-3" title="Anuller Booking" @onclick="OnCancel">Anuller</button>
-            <button type="submit" class="btn btn-primary mt-3" title="Lav Booking" @onclick="() => showPopup = true" disabled="@(checkfieldsAndTime())">Lav Booking</button>
+            <button type="submit" class="btn btn-primary mt-3" title="Lav Booking" @onclick="() => showPopup = true" disabled="@(checkfieldsAndTime())">@(IsEdit ? "Gem Ændringer" : "Lav Booking")</button>
         </div>
 
 

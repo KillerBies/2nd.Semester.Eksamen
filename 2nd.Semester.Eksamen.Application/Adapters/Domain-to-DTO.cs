@@ -118,6 +118,17 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 Duration = booking.Duration
             };
         }
+        public BookingDTO PartBookingToDTO(Booking booking)
+        {
+            return new BookingDTO
+            {
+                TreatmentBookingDTOs = booking.Treatments.Select(tb => TreatmentBookingToDTO(tb)).ToList(),
+                CustomerId = booking.CustomerId,
+                Start = booking.Start,
+                End = booking.End,
+                Duration = booking.Duration
+            };
+        }
         public EmployeeDetailsDTO EmployeeToDetailsDTO(Employee employee)
         {
             if (employee == null) return null;

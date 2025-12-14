@@ -216,7 +216,7 @@ namespace _2nd.Semester.Eksamen.Domain.Test.DomainTests.ScheduleDayTests
             var id = Guid.NewGuid();
 
             day.AddBooking(booking, id);
-            var cancel = day.CancelBooking(booking, id);
+            var cancel = day.CancelBooking(booking);
 
             Assert.That(cancel, Is.True);
             Assert.That(day.TimeRanges.Any(r => r.Type == "Freetime"), Is.True);

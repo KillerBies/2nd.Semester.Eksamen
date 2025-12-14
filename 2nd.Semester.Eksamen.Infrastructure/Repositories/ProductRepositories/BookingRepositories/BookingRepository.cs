@@ -39,7 +39,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                     {
                         day = new ScheduleDay(DateOnly.FromDateTime(treatment.Start), employee.WorkStart, employee.WorkEnd);
                     }
-                    Console.WriteLine(treatment.EmployeeId);
                     day.EmployeeId = treatment.EmployeeId;
                     day.AddBooking(treatment, ActivityId);
                     _context.ScheduleDays.Update(day);
@@ -67,7 +66,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 {
                     var employee = await _context.Employees.FindAsync(treatment.EmployeeId);
                     var day = await _context.ScheduleDays.FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date == DateOnly.FromDateTime(treatment.Start));
-                    if (day == null) break;
+                    if (day == null) continue;
                     day.CancelBooking(treatment);
                     _context.ScheduleDays.Update(day);
                     await _context.SaveChangesAsync();
@@ -118,22 +117,34 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.Bookings.Update(booking);
-                await _context.SaveChangesAsync();
-                Guid ActivityId = Guid.NewGuid();
+                var oldBooking = await _context.Bookings.Include(b=>b.Treatments).FirstOrDefaultAsync(b => b.Id == booking.Id);
                 foreach (var treatment in booking.Treatments)
                 {
+                    //cancel old treatment
+                    var oldTreatment = await _context.BookedTreatments.FindAsync(treatment.Id);
+                    var Oldday = await _context.ScheduleDays.FirstOrDefaultAsync(es => es.EmployeeId == oldTreatment.EmployeeId && es.Date == DateOnly.FromDateTime(oldTreatment.Start));
+                    if(Oldday != null)
+                    {
+                        Oldday.CancelBooking(oldTreatment);
+                        _context.ScheduleDays.Update(Oldday);
+                    }
+                    _context.SaveChanges();
+
+                    //book new treatment
+                    Guid ActivityId = Guid.NewGuid();
                     string treatmentName = (await _context.Treatments.FindAsync(treatment.TreatmentId)).Name;
                     var employee = await _context.Employees.FindAsync(treatment.EmployeeId);
-                    var day = await _context.ScheduleDays.FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date == DateOnly.FromDateTime(treatment.Start));
+                    var day = await _context.ScheduleDays.Include(sd => sd.TimeRanges).FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date == DateOnly.FromDateTime(treatment.Start));
                     if (day == null)
                     {
-                        break;
+                        day = new ScheduleDay(DateOnly.FromDateTime(treatment.Start), employee.WorkStart, employee.WorkEnd);
                     }
-                    day.UpdateDaySchedule(treatment, ActivityId);
+                    day.EmployeeId = treatment.EmployeeId;
+                    day.AddBooking(treatment, ActivityId);
                     _context.ScheduleDays.Update(day);
                     await _context.SaveChangesAsync();
                 }
+                _context.Bookings.Update(booking);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

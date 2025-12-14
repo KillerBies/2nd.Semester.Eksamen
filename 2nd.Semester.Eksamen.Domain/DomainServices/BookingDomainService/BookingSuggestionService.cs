@@ -40,7 +40,6 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
                 _days[treatment.EmployeeId] = scheduleDaysByDate;
             }
 
-            // Build plan items (treatment + employee + duration + schedule)
             var plan = treatments.Select(t => new PlanItem
             {
                 Treatment = t.Treatment,

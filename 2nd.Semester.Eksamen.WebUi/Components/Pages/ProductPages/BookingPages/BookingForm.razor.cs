@@ -14,6 +14,7 @@ using System.Globalization;
 using System.Security.Principal;
 using _2nd.Semester.Eksamen.Application.Adapters;
 using System.Diagnostics.SymbolStore;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 
 namespace Components.Pages.ProductPages.BookingPages
 {
@@ -28,9 +29,9 @@ namespace Components.Pages.ProductPages.BookingPages
         [Parameter] public CustomerDTO Customer { get; set; }
         private string CustomerName { get; set; } = "";
         [Inject] private Domain_to_DTO ToDTOAdapter { get; set; }
-        private BookingDTO Booking = new();
-        // Filtered dates based on selection
-        //Gets the CustomerID passed from url.
+        [Parameter] public Booking EditBooking { get; set; }
+        public BookingDTO Booking { get; set; } = new();
+        [Parameter] public bool IsEdit { get; set; } = false;
         [Parameter]
         public int CustomerId { get; set; }
         private string ErrorMsg = "";
@@ -54,11 +55,13 @@ namespace Components.Pages.ProductPages.BookingPages
         private TimeOnly EndTime { get; set; } = new TimeOnly(18, 0);
         private bool IsDropdownOpen = false;
 
-        //field for interval, arrow buttons to go back and forth between pages, generate 30 each time.
+
         protected override async Task OnInitializedAsync()
         {
-            DaysOfWeek = Enum.GetNames(typeof(DayOfWeek));
             _errorMessage = "";
+            Booking = IsEdit
+                ? ToDTOAdapter.PartBookingToDTO(EditBooking)
+                : new BookingDTO();
             EditContext = new EditContext(Booking);
             await GetData();
         }
@@ -66,9 +69,9 @@ namespace Components.Pages.ProductPages.BookingPages
         {
             try
             {
+                selectedCustomer = await _bookingQueryService.GetCustomerByIDAsync(CustomerId);
                 AllTreatments = (await _bookingQueryService.GetAllTreatmentsAsync()).ToList();
                 AllEmployees = (await _bookingQueryService.GetAllEmployeesAsync()).ToList();
-                selectedCustomer = await _bookingQueryService.GetCustomerByIDAsync(CustomerId);
                 if (selectedCustomer == null)
                 {
                     ErrorMsg = "Kunden kunne ikke findes. Prøv igen.";
@@ -81,7 +84,6 @@ namespace Components.Pages.ProductPages.BookingPages
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Database connection failed: {ex.Message}");
                 AllTreatments = new List<TreatmentDTO>();
                 AllEmployees = new List<EmployeeDTO>();
 
@@ -98,8 +100,16 @@ namespace Components.Pages.ProductPages.BookingPages
             {
                 try
                 {
-                    await _bookingApplicationService.CreateBookingAsync(Booking);
-                    Navi.NavigateTo("/");
+                    if (IsEdit == false)
+                    {
+                        await _bookingApplicationService.CreateBookingAsync(Booking);
+                        Navi.NavigateTo("/");
+                    }
+                    else
+                    {
+                        await _bookingApplicationService.RescheduleBookingAsync(Booking);
+                        Navi.NavigateTo("/BookingOverview/");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -156,11 +166,7 @@ namespace Components.Pages.ProductPages.BookingPages
         {
             GenReset();
             if (index == 0) return;
-
-            (Booking.TreatmentBookingDTOs[index - 1],
-             Booking.TreatmentBookingDTOs[index]) =
-             (Booking.TreatmentBookingDTOs[index],
-              Booking.TreatmentBookingDTOs[index - 1]);
+            (Booking.TreatmentBookingDTOs[index - 1],Booking.TreatmentBookingDTOs[index]) = (Booking.TreatmentBookingDTOs[index],Booking.TreatmentBookingDTOs[index - 1]);
         }
         private void MoveDown(int index)
         {
@@ -177,6 +183,7 @@ namespace Components.Pages.ProductPages.BookingPages
         {
             timeSelected = new();
             AvailableBookingSpots.Clear();
+
             IsDropdownOpen = false;
         }
         private void HandleValidSubmit()
@@ -230,23 +237,8 @@ namespace Components.Pages.ProductPages.BookingPages
             return Booking.TreatmentBookingDTOs.Any(tb => tb.Employee.EmployeeId == 0 || tb.Treatment == null || tb.Employee == null || string.IsNullOrEmpty(tb.Treatment.Category) || tb.Treatment.TreatmentId == 0 || tb.Start > tb.End || tb.Start == tb.End);
         }
 
-
-        // Bound to dropdown
         private string SelectedDay { get; set; } = "";
 
-        //protected override async Task OnParametersSetAsync()
-        //{
-           
-        //   CustomerDTO selectedCustomer = await _bookingFormService.GetCustomerByIDAsync(CustomerId);
-        //    if (selectedCustomer == null)
-        //    {
-        //        ErrorMsg = "Kunden kunne ikke findes. Prøv igen.";
-        //    }
-        //    else
-        //    {
-        //        Booking.Customer = selectedCustomer;
-        //    }
-        //}
 
     }
 }

@@ -115,7 +115,6 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     End = i.End,
                 }).ToList()
             }).ToList();
-            System.Diagnostics.Debug.WriteLine($"returning result: is null?: {bookingDTOs==null || !bookingDTOs.Any()}");
             return bookingDTOs;
         }
         public async Task<List<TreatmentBookingDTO>> ArangeTreatments(BookingDTO booking)

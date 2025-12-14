@@ -53,9 +53,19 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         {
             throw new NotImplementedException();
         }
-        public async Task RescheduleBookingAsync()
+        public async Task RescheduleBookingAsync(BookingDTO booking)
         {
-            throw new NotImplementedException();
+            if (booking.TreatmentBookingDTOs == null || !booking.TreatmentBookingDTOs.Any())
+                throw new ArgumentException("Booking must contain at least one treatment.");
+            Booking Booking = await _toDomainAdapter.DTOBookingToDomain(booking);
+            try
+            {
+                await _bookingRepository.UpdateAsync(Booking);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Something went wrong while creating booking", ex);
+            }
         }
     }
 }

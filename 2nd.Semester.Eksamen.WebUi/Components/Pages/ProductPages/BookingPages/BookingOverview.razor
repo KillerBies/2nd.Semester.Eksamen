@@ -7,6 +7,7 @@
 @using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using _2nd.Semester.Eksamen.Pages.PaymentPages
+@using Components.Pages.ProductPages.BookingPages
 @inject IBookingService bookingService;
 
     <FloatingPage>
@@ -99,7 +100,8 @@
             <div class="d-flex flex-column gap-2">
                 <div class="d-flex gap-2 btn-group" style="margin-left:20px;">
                     <button class="btn btn-outline-primary flex-grow-1" @onclick="HideOverlay">Luk</button>
-                    <button class="btn btn-outline-danger flex-grow-1" @onclick="DeleteBookingWarning">Slet booking</button>
+                    <button class="btn btn-outline-info flex-grow-1" @onclick="() => OpenEdit = true">Rediger</button>
+                    <button class="btn btn-outline-danger flex-grow-1" @onclick="DeleteBookingWarning">Slet</button>
                 </div>
             </div>
         </div>
@@ -128,6 +130,14 @@
     </SidePage>
 }
 
+@if (OpenEdit)
+{
+    <SidePage IsVisible="OpenEdit"
+              IsVisibleChanged="@(v => OpenEdit = v)">
+        <div style ="width:30vw;"></div>
+        <BookingForm CustomerId="@SelectedBooking.Customer.Id" EditBooking="SelectedBooking" IsEdit="true"></BookingForm>
+    </SidePage>
+}
 
 
 
@@ -149,13 +159,14 @@
     private bool visibleOverlay = false;
     private bool toggleBookingWarning = false;
     private bool LoadFailed = false;
+    private bool OpenEdit = false;
     private IEnumerable<Booking> FilteredBookings => bookingList.Where(b => string.IsNullOrWhiteSpace(SearchTermCustomer) || b.Customer.Name.Contains(SearchTermCustomer, StringComparison.OrdinalIgnoreCase)).Where(b => !SearchTermDate.HasValue || b.Start.Date == SearchTermDate.Value.Date);
     private bool ShowBookingDetails = false;
     private bool ShowPaymentWindow = false;
 
     private string SearchTermCustomer = "";
     private DateTime? SearchTermDate;
-
+    //get all bookings with treatments 
     protected override async Task OnInitializedAsync()
     {
         try

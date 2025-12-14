@@ -10,7 +10,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO
 {
     public class EmployeeDTO
     {
-        public int EmployeeId { get; set; } 
+        public int EmployeeId { get; set; } = 0;
         public string Name { get; set; } = null!;
         public string ExperienceLevel { get; set; } = "";
         public decimal BasePriceMultiplier { get; set; } = 1;

@@ -54,6 +54,10 @@ main {
     }
 }
 
+.content {
+    background-color: #F3F2F2;
+}
+
 #blazor-error-ui {
     color-scheme: light only;
     background: lightyellow;

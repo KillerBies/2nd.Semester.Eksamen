@@ -4,12 +4,14 @@
 @using _2nd.Semester.Eksamen.Domain.Helpers;
 @using WebUIServices;
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@rendermode InteractiveServer
 @namespace Components.Pages.PersonPages.EmployeePages
 <div style="width:100%; height:96vh; align-content:center; align-items:center; display:flex; justify-content:center;">
 	<FloatingPage>
 		<div style="margin: 30px;">
 			<h2>Lav Ny Medarbejder</h2>
-			<EditForm Model="Input" OnValidSubmit="CreateEmployeeAsync" class="row p-3">
+			<EditForm Model="Input" OnValidSubmit="CreateEmployeeAsync" class="row p-3" FormName="CreateEmployeeForm">
 				<DataAnnotationsValidator />
 				<ValidationSummary />
 				<div class="form-inputs">
