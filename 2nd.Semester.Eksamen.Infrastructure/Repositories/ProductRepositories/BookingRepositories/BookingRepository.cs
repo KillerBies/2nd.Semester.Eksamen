@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.BookingRepositories
 {
@@ -132,6 +133,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 foreach(var treatment in booking.Treatments)
                 {
                     //book new treatment
+                    var newBookedTreatment = new TreatmentBooking(treatment.TreatmentId, treatment.EmployeeId, treatment.Start, treatment.End) { Price = treatment.Price, BookingID = treatment.BookingID};
+                    string treatmentname = (await _context.Treatments.FindAsync(treatment.TreatmentId)).Name;
                     Guid ActivityId = Guid.NewGuid();
                     var employee = await _context.Employees.FindAsync(treatment.EmployeeId);
                     var day = await _context.ScheduleDays.Include(sd => sd.TimeRanges).FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date == DateOnly.FromDateTime(treatment.Start));
@@ -140,8 +143,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                         day = new ScheduleDay(DateOnly.FromDateTime(treatment.Start), employee.WorkStart, employee.WorkEnd);
                     }
                     day.EmployeeId = treatment.EmployeeId;
-                    day.AddBooking(treatment, ActivityId);
+                    day.AddBooking(treatment, ActivityId, treatmentname);
                     _context.ScheduleDays.Update(day);
+                    await _context.SaveChangesAsync();
+                    _context.BookedTreatments.Add(newBookedTreatment);
                     await _context.SaveChangesAsync();
                 }
                 _context.Bookings.Update(booking);

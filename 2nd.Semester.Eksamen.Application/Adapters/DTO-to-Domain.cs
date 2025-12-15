@@ -66,6 +66,20 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 newBooking.Id = (int)booking.BookingId;
             return newBooking;
         }
+        public async Task<Booking> DTOBookingToDomainEdit(BookingDTO booking)
+        {
+            List<TreatmentBooking> treatments = new();
+            foreach (var treatment in booking.TreatmentBookingDTOs)
+            {
+                treatments.Add(await DTOTreatmentBookingToDomain(treatment));
+            }
+            var customer = await DTOCustomerToDomain(booking.Customer.id);
+            //BEFORE SENT FULL CUSTOMER IN
+            var newBooking = new Booking(booking.Customer.id, booking.Start, booking.End, treatments);
+            if (booking.BookingId != null)
+                newBooking.Id = (int)booking.BookingId;
+            return newBooking;
+        }
         public async Task<TreatmentBooking> DTOTreatmentBookingToDomain(TreatmentBookingDTO treatmentBookingDTO)
         {
             var treatment = await DTOTreatmentToDomain(treatmentBookingDTO.Treatment);
