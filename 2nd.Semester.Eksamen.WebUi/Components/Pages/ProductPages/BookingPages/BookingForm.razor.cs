@@ -100,13 +100,14 @@ namespace Components.Pages.ProductPages.BookingPages
             {
                 try
                 {
-                    if (IsEdit == false)
+                    if (!IsEdit)
                     {
                         await _bookingApplicationService.CreateBookingAsync(Booking);
                         Navi.NavigateTo("/");
                     }
                     else
                     {
+                        Booking.BookingId = EditBooking.Id;
                         await _bookingApplicationService.RescheduleBookingAsync(Booking);
                         Navi.NavigateTo("/BookingOverview/");
                     }

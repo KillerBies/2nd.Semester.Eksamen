@@ -51,6 +51,7 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             var result = new Product(productDTO.Name, productDTO.Price, productDTO.Description);
             return result;
         }
+
         public async Task<Booking> DTOBookingToDomain(BookingDTO booking)
         {
             List<TreatmentBooking> treatments = new();
@@ -60,20 +61,23 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             }
             var customer = await DTOCustomerToDomain(booking.Customer.id);
             //BEFORE SENT FULL CUSTOMER IN
-            return new Booking(booking.Customer.id, booking.Start, booking.End, treatments);
+            var newBooking = new Booking(booking.Customer.id, booking.Start, booking.End, treatments);
+            if (booking.BookingId != null)
+                newBooking.Id = (int)booking.BookingId;
+            return newBooking;
         }
         public async Task<TreatmentBooking> DTOTreatmentBookingToDomain(TreatmentBookingDTO treatmentBookingDTO)
         {
             var treatment = await DTOTreatmentToDomain(treatmentBookingDTO.Treatment);
             var employee = await DTOEmployeeToDomain(treatmentBookingDTO.Employee);
-            var result = new TreatmentBooking(treatment, employee, treatmentBookingDTO.Start, treatmentBookingDTO.End);
+            var result = new TreatmentBooking(treatment, employee, treatmentBookingDTO.Start, treatmentBookingDTO.End) { Price = treatmentBookingDTO.Price};
             return result;
         }
         public async Task<TreatmentBooking> DTOTreatmentBookingToDomainToDb(TreatmentBookingDTO treatmentBookingDTO)
         {
             var treatment = await DTOTreatmentToDomain(treatmentBookingDTO.Treatment);
             var employee = await DTOEmployeeToDomain(treatmentBookingDTO.Employee);
-            var result = new TreatmentBooking(treatment.Id, employee.Id, treatmentBookingDTO.Start, treatmentBookingDTO.End);
+            var result = new TreatmentBooking(treatment.Id, employee.Id, treatmentBookingDTO.Start, treatmentBookingDTO.End) { Price = treatmentBookingDTO.Price };
             return result;
         }
 

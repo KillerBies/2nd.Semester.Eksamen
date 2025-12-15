@@ -12,7 +12,7 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251213152735_initial")]
+    [Migration("20251214155411_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -488,6 +488,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.Property<DateTime>("End")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("Start")
                         .HasColumnType("datetime2");

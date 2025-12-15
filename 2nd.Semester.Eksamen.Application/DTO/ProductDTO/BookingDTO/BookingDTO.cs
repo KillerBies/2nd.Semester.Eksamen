@@ -27,5 +27,6 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
         [Required]
         public TimeSpan Duration { get; set; } = new();
         public decimal Price => TreatmentBookingDTOs.Select(tb => tb.Price).Sum();
+        public int? BookingId { get; set; }
     }
 }

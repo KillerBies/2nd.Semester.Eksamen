@@ -53,7 +53,8 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 Treatment = TreatmentToDTO(treatmentBooking.Treatment),
                 Employee = EmployeeToDTO(treatmentBooking.Employee),
                 Start = treatmentBooking.Start,
-                End= treatmentBooking.End
+                End = treatmentBooking.End,
+                Price = treatmentBooking.Price
             };
         }
         public CustomerDTO CustomerToDTO(Customer customer)

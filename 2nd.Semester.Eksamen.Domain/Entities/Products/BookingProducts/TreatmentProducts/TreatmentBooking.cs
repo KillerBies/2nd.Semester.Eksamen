@@ -27,7 +27,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
         //Treatment booking details
         public DateTime Start { get; private set; }
         public DateTime End { get; private set; }
-        public decimal Price { get; set; } != null;
+        public decimal Price { get; set; }
 
 
         public TreatmentBooking() { }

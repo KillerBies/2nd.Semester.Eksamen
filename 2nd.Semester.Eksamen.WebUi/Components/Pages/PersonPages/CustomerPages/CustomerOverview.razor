@@ -1,6 +1,8 @@
 ﻿@page "/CustomerOverview"
 @rendermode InteractiveServer
 @using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 <div class="customer-overview-container">
     <h2>Kundeoversigt</h2>
     @if (dTOs == null)
@@ -24,7 +26,7 @@
                         {
                             <h3>@dTO.Name</h3>
                     }
-                        <span class="customer-type">@dTO.Type</span>
+                    <span class="customer-type"></span>
                     </div>
 
                     <div class="customer-card-body">
@@ -43,44 +45,43 @@
             }
         </div>
 
-    @if(isVisible == true)
-    {   
-        <div class="overlay-background" @onclick="HideOverlay"></div>
-    <div class="customer-details-overlay">
+    @if (isVisible == true)
+    {
+        <BookingNotification IsVisible=isVisible>
 
-        @if (selectedCustomer != null)
-        {
-           
-
-            @if (selectedCustomer is PrivateCustomerDTO p)
-            {
-                <h2>@p.Name @p.LastName</h2>
-                <p><b>Køn:</b> @p.Gender</p>
-                    <p><b>Antal besøg</b> @p.NumberOfVisits</p>
-                <p><b>Telefon:</b> @p.PhoneNumber</p>
-                <p><b>Email:</b> @p.Email</p>
-                <p><b>By:</b>@p.PostalCode @p.City</p>
-                <p><b>Addresse:</b> @p.StreetName @p.HouseNumber</p>
-                <p><b>Fødselsdato:</b> @p.BirthdayWrapper.ToShortDateString()</p>
-            }
-            else if (selectedCustomer is CompanyCustomerDTO c)
+                @if (selectedCustomer != null)
                 {
-                
-                <h2>@c.Name</h2>
-                    <p><b>Antal besøg</b> @c.NumberOfVisits</p>
-                <p><b>Telefon:</b> @c.PhoneNumber</p>
-                <p><b>Email:</b> @c.Email</p>
-                <p><b>By:</b>@c.PostalCode @c.City</p>
-                <p><b>Addresse:</b> @c.StreetName @c.HouseNumber</p>
-                <p><b>CVR:</b> @c.CVRNumber</p>
-            }
 
-            <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
-                <button class="btn btn-danger mt-3" @onclick="() => DeleteCustomer(selectedCustomer.id)">Slet kunde</button>
-        }
-    </div>
+
+                    @if (selectedCustomer is PrivateCustomerDTO p)
+                    {
+                        <h2>@p.Name @p.LastName</h2>
+                        <p><b>Køn:</b> @p.Gender</p>
+                        <p><b>Antal besøg</b> @p.NumberOfVisits</p>
+                        <p><b>Telefon:</b> @p.PhoneNumber</p>
+                        <p><b>Email:</b> @p.Email</p>
+                        <p><b>By:</b>@p.PostalCode @p.City</p>
+                        <p><b>Addresse:</b> @p.StreetName @p.HouseNumber</p>
+                        <p><b>Fødselsdato:</b> @p.BirthdayWrapper.ToShortDateString()</p>
+                    }
+                    else if (selectedCustomer is CompanyCustomerDTO c)
+                    {
+
+                        <h2>@c.Name</h2>
+                        <p><b>Antal besøg</b> @c.NumberOfVisits</p>
+                        <p><b>Telefon:</b> @c.PhoneNumber</p>
+                        <p><b>Email:</b> @c.Email</p>
+                        <p><b>By:</b>@c.PostalCode @c.City</p>
+                        <p><b>Addresse:</b> @c.StreetName @c.HouseNumber</p>
+                        <p><b>CVR:</b> @c.CVRNumber</p>
+                    }
+
+                    <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
+                    <button class="btn btn-danger mt-3" @onclick="() => DeleteCustomer(selectedCustomer.id)">Slet kunde</button>
+                }
+        </BookingNotification>
     }
-   
+
 </div>
 
 

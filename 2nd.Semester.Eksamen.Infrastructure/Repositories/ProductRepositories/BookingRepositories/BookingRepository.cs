@@ -32,7 +32,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 Guid ActivityId = Guid.NewGuid();
                 foreach (var treatment in booking.Treatments)
                 {
-                    string treatmentName = (await _context.Treatments.FindAsync(treatment.TreatmentId)).Name;
                     var employee = await _context.Employees.FindAsync(treatment.EmployeeId);
                     var day = await _context.ScheduleDays.Include(sd=>sd.TimeRanges).FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date== DateOnly.FromDateTime(treatment.Start));
                     if(day==null)
@@ -118,21 +117,22 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             try
             {
                 var oldBooking = await _context.Bookings.Include(b=>b.Treatments).FirstOrDefaultAsync(b => b.Id == booking.Id);
-                foreach (var treatment in booking.Treatments)
+                foreach (var treatment in oldBooking.Treatments)
                 {
                     //cancel old treatment
-                    var oldTreatment = await _context.BookedTreatments.FindAsync(treatment.Id);
+                    var oldTreatment = await _context.BookedTreatments.FirstOrDefaultAsync(t => t.Id == treatment.Id);
                     var Oldday = await _context.ScheduleDays.FirstOrDefaultAsync(es => es.EmployeeId == oldTreatment.EmployeeId && es.Date == DateOnly.FromDateTime(oldTreatment.Start));
-                    if(Oldday != null)
+                    if (Oldday != null)
                     {
                         Oldday.CancelBooking(oldTreatment);
                         _context.ScheduleDays.Update(Oldday);
                     }
                     _context.SaveChanges();
-
+                }
+                foreach(var treatment in booking.Treatments)
+                {
                     //book new treatment
                     Guid ActivityId = Guid.NewGuid();
-                    string treatmentName = (await _context.Treatments.FindAsync(treatment.TreatmentId)).Name;
                     var employee = await _context.Employees.FindAsync(treatment.EmployeeId);
                     var day = await _context.ScheduleDays.Include(sd => sd.TimeRanges).FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date == DateOnly.FromDateTime(treatment.Start));
                     if (day == null)

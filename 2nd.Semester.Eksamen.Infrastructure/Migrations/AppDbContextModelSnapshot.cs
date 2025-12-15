@@ -486,6 +486,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<DateTime>("End")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("Start")
                         .HasColumnType("datetime2");
 

@@ -63,8 +63,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
                 .OrderBy(r => r.Start);
         }
 
-        public bool AddBooking(TreatmentBooking treatment, Guid bookingID)
+        public bool AddBooking(TreatmentBooking treatmentbooking, Guid bookingID, Treatment treatmentinfo = null)
         {
+            Treatment treatment = new();
             /*
              check if the timeRange overlaps with any existing TimeRanges
                 if it does, throw an exception
@@ -73,6 +74,14 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
             do this by splitting any existing TimeRanges that overlap with the new booking into multiple TimeRanges
             and adjusting the start and end times of the existing TimeRanges accordingly
              */
+            if(treatmentinfo != null)
+            {
+               treatment = treatmentinfo;
+            }
+            else
+            {
+                treatmentB
+            }
             var booking = new TimeRange(TimeOnly.FromDateTime(treatment.Start), TimeOnly.FromDateTime(treatment.End)) { Name = treatment.Treatment.Name, Type = "Booked", ActivityId = bookingID};
             var free = TimeRanges.FirstOrDefault(r => r.Type == "Freetime" && r.Start <= booking.Start && r.End >= booking.End);
             if (free == null)
