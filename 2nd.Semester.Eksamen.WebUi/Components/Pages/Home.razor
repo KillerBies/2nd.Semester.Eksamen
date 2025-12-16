@@ -2,9 +2,41 @@
 @rendermode InteractiveServer
 @page "/"
 
-<div><button @onclick="InjectData"></button></div>
-<div><button @onclick="getalldata"></button></div>
-@foreach (var treatment in treatments)
-{
-    @treatment.Price;
-}
+<div class="fontpage-body">
+    <div style="width:60%; align-items:center; display:flex; flex-direction:column;">
+        <div style="text-align:left; display:flex; width:100%;">
+            <h1>Opkommende Bookinger</h1>
+        </div>
+        <div>
+            @if(bookings.Any())
+            {
+                @foreach (var booking in bookings)
+                {
+                    <div class="card" style="display: flex; flex-direction: column; cursor:pointer;">
+                        <div class="info">
+                            <div style="display:flex; margin-bottom:20px;">
+                                <h4 style="color: #034265;">@booking.Customer.Name</h4>
+                                <span class="booking-status ms-auto" style="height:2%;"></span>
+                            </div>
+                            <p>@booking.Start.ToString("hh:mm") til @booking.End.ToString("hh:mm")</p> <p><b>(Om @((CurrentTime - booking.Start).ToString("mm")) Minutter)</b></p>
+                        </div>
+                    </div>
+                    <div class="card" style="width:43vw;">
+                        <p>hey</p>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column; cursor:pointer;">
+                    <p>Ingen Bookinger Fundet</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div><button @onclick="InjectData"></button></div>
+    <div><button @onclick="getalldata"></button></div>
+</div>
+
+<div style="height:47rem;"></div>

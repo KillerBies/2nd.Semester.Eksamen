@@ -101,59 +101,122 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
 
         .FirstOrDefaultAsync(b => b.Id == id);
         }
+
+
+
+
+
+
         public async Task<IEnumerable<Booking?>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Bookings.ToListAsync();
+            return await _context.Bookings.Include(b=>b.Customer).ThenInclude(c=>c.Address).Include(b=>b.Treatments).ThenInclude(b=>b.Treatment).Include(b=>b.Treatments).ThenInclude(b=> b.Employee).ThenInclude(e=>e.Address).ToListAsync();
         }
+
+
+
+
+
+
         public async Task<IEnumerable<Booking?>> GetByFilterAsync(Domain.Filter filter)
         {
            var _context = await _factory.CreateDbContextAsync();
            return await _context.Bookings.Where(c => c.Status == filter.Status).OrderBy(c => c.Start).Include(c => c.Customer).Include(c => c.Treatments).ThenInclude(t => t.Treatment).Include(c=>c.Treatments).ThenInclude(t=>t.Employee).ToListAsync();
         }
+        
+
+
+
+
+
+
+
+
+
+
         public async Task UpdateAsync(Booking booking)
         {
-            var _context = await _factory.CreateDbContextAsync();
-            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            await using var context = await _factory.CreateDbContextAsync();
+            await using var transaction =
+                await context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+
             try
             {
-                var oldBooking = await _context.Bookings.Include(b=>b.Treatments).FirstOrDefaultAsync(b => b.Id == booking.Id);
-                foreach (var treatment in oldBooking.Treatments)
+                //Load existing booking WITH treatments
+                var existingBooking = await context.Bookings
+                    .Include(b => b.Treatments)
+                    .FirstOrDefaultAsync(b => b.Id == booking.Id);
+
+                if (existingBooking == null)
+                    throw new InvalidOperationException("Booking not found");
+
+                //Cancel old treatments in schedules
+                foreach (var oldTreatment in existingBooking.Treatments)
                 {
-                    //cancel old treatment
-                    var oldTreatment = await _context.BookedTreatments.FirstOrDefaultAsync(t => t.Id == treatment.Id);
-                    var Oldday = await _context.ScheduleDays.FirstOrDefaultAsync(es => es.EmployeeId == oldTreatment.EmployeeId && es.Date == DateOnly.FromDateTime(oldTreatment.Start));
-                    if (Oldday != null)
-                    {
-                        Oldday.CancelBooking(oldTreatment);
-                        _context.ScheduleDays.Update(Oldday);
-                    }
-                    _context.SaveChanges();
+                    var scheduleDay = await context.ScheduleDays
+                        .Include(sd => sd.TimeRanges)
+                        .FirstOrDefaultAsync(sd =>
+                            sd.EmployeeId == oldTreatment.EmployeeId &&
+                            sd.Date == DateOnly.FromDateTime(oldTreatment.Start));
+
+                    scheduleDay?.CancelBooking(oldTreatment);
                 }
-                foreach(var treatment in booking.Treatments)
+
+                //Remove old treatment bookings
+                context.BookedTreatments.RemoveRange(existingBooking.Treatments);
+
+                //Add new treatments + update schedules
+                foreach (var treatment in booking.Treatments)
                 {
-                    //book new treatment
-                    var newBookedTreatment = new TreatmentBooking(treatment.TreatmentId, treatment.EmployeeId, treatment.Start, treatment.End) { Price = treatment.Price, BookingID = treatment.BookingID};
-                    string treatmentname = (await _context.Treatments.FindAsync(treatment.TreatmentId)).Name;
-                    Guid ActivityId = Guid.NewGuid();
-                    var employee = await _context.Employees.FindAsync(treatment.EmployeeId);
-                    var day = await _context.ScheduleDays.Include(sd => sd.TimeRanges).FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date == DateOnly.FromDateTime(treatment.Start));
-                    if (day == null)
+                    var employee = await context.Employees.FindAsync(treatment.EmployeeId)
+                        ?? throw new InvalidOperationException("Employee not found");
+
+                    var treatmentEntity = await context.Treatments.FindAsync(treatment.TreatmentId)
+                        ?? throw new InvalidOperationException("Treatment not found");
+
+                    var dayDate = DateOnly.FromDateTime(treatment.Start);
+
+                    var scheduleDay = await context.ScheduleDays
+                        .Include(sd => sd.TimeRanges)
+                        .FirstOrDefaultAsync(sd =>
+                            sd.EmployeeId == treatment.EmployeeId &&
+                            sd.Date == dayDate);
+
+                    if (scheduleDay == null)
                     {
-                        day = new ScheduleDay(DateOnly.FromDateTime(treatment.Start), employee.WorkStart, employee.WorkEnd);
+                        scheduleDay = new ScheduleDay(dayDate, employee.WorkStart, employee.WorkEnd)
+                        {
+                            EmployeeId = treatment.EmployeeId
+                        };
+
+                        context.ScheduleDays.Add(scheduleDay);
                     }
-                    day.EmployeeId = treatment.EmployeeId;
-                    day.AddBooking(treatment, ActivityId, treatmentname);
-                    _context.ScheduleDays.Update(day);
-                    await _context.SaveChangesAsync();
-                    _context.BookedTreatments.Add(newBookedTreatment);
-                    await _context.SaveChangesAsync();
+
+                    var activityId = Guid.NewGuid();
+
+                    // Domain logic (modifies TimeRanges)
+                    scheduleDay.AddBooking(treatment, activityId, treatmentEntity.Name);
+
+                    // Create new booked treatment
+                    context.BookedTreatments.Add(new TreatmentBooking(
+                        treatment.TreatmentId,
+                        treatment.EmployeeId,
+                        treatment.Start,
+                        treatment.End)
+                    {
+                        Price = treatment.Price,
+                        BookingID = booking.Id
+                    });
                 }
-                _context.Bookings.Update(booking);
-                await _context.SaveChangesAsync();
+
+                //Update scalar properties of booking
+                context.Entry(existingBooking).CurrentValues.SetValues(booking);
+
+                //Persist everything once
+                await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
-            catch (Exception)
+            catch
             {
                 await transaction.RollbackAsync();
                 throw;

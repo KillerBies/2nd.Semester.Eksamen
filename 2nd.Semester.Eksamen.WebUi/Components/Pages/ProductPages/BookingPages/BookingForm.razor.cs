@@ -20,6 +20,10 @@ namespace Components.Pages.ProductPages.BookingPages
 {
     public partial class BookingForm
     {
+
+        //when treatment is added, removed or changed (duration is diffrent) the selected time needs to reset
+        //when is edit it also should ideally also give a possible time that is simply an extention of the current one.
+
         //replace the inputtext boxes and the like with a button that redirects them to a create employee and so on page.
 
         [Inject] private BookingFormService _bookingFormService { get; set; }
@@ -109,7 +113,7 @@ namespace Components.Pages.ProductPages.BookingPages
                     {
                         Booking.BookingId = EditBooking.Id;
                         await _bookingApplicationService.RescheduleBookingAsync(Booking);
-                        Navi.NavigateTo("/BookingOverview/");
+                        Navi.Refresh();
                     }
                 }
                 catch (Exception ex)

@@ -85,7 +85,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
                 var booking = new TimeRange(TimeOnly.FromDateTime(treatment.Start), TimeOnly.FromDateTime(treatment.End)) { Name = treatmentName, Type = "Booked", ActivityId = bookingID };
             var free = TimeRanges.FirstOrDefault(r => r.Type == "Freetime" && r.Start <= booking.Start && r.End >= booking.End);
             if (free == null)
-                return false;
+                throw new Exception();
             // before the booking
             TimeRanges.Remove(free);
 

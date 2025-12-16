@@ -158,5 +158,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         {
             return ToDTOAdapter.CustomerToDTO(await _customerRepository.GetByIDAsync(id));
         }
+
+
+        public async Task<List<BookingDTO>> GetUpcomingBookingsAsync()
+        {
+            return (await _bookingRepository.GetAllAsync()).Take(10).Select(b => ToDTOAdapter.BookingToDTO(b)).ToList();
+        }
     }
 }

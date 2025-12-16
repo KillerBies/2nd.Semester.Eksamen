@@ -8,16 +8,28 @@ using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Net;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
+using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.Services.BookingServices;
 
 namespace Components.Pages
 {
     public partial class Home
     {
+        private DateTime CurrentTime => DateTime.Now;
         private List<Treatment> treatments = new();
         [Inject] private ICustomerRepository _CustomerRepository { get; set; }
         [Inject] private ITreatmentBookingRepository _treatmentBookingRepository { get; set; }
         [Inject] private ITreatmentRepository _treatmentRepository { get; set; }
         [Inject] private IEmployeeRepository _employeeRepository { get; set; }
+        [Inject] private BookingQueryService _bookingService { get; set; }
+        private List<BookingDTO> bookings { get; set; } = new();
+
+        protected override async Task OnInitializedAsync()
+        {
+            bookings = await _bookingService.GetUpcomingBookingsAsync();
+        }
         public async void InjectData()
         {
             var customer1 = new PrivateCustomer("Andersen", Gender.Male, new DateOnly(2004, 2, 1), "Hans Christian", new Address("oiio", "323212", "fda", "43f"), "12345678", "21w@dwq.com", "", false);
