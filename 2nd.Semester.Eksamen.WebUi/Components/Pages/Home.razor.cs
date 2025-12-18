@@ -25,10 +25,29 @@ namespace Components.Pages
         [Inject] private IEmployeeRepository _employeeRepository { get; set; }
         [Inject] private BookingQueryService _bookingService { get; set; }
         private List<BookingDTO> bookings { get; set; } = new();
+        private bool ShowBookingWarning { get; set; } = false;
+        private bool ShowBookingPayment { get; set; } = false;
+        private BookingDTO selectedBooking { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
             bookings = await _bookingService.GetUpcomingBookingsAsync();
+        }
+
+
+        public void GetBookingWarning(BookingDTO booking)
+        {
+            ShowBookingWarning = true;
+            selectedBooking = booking;
+        }
+        public void PayBooking(BookingDTO booking)
+        {
+            ShowBookingPayment = true;
+            selectedBooking = booking;
+        }
+        public void ConfirmCancelBooking()
+        {
+
         }
         public async void InjectData()
         {

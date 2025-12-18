@@ -1,42 +1,51 @@
 ﻿@namespace Components.Pages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.Pages.PaymentPages
+@using Components.Pages.ProductPages.BookingPages
 @rendermode InteractiveServer
 @page "/"
 
+@if (ShowBookingWarning)
+        {
+            <BookingNotification IsVisible="ShowBookingWarning">
+                <div class="mt-2">
+                    <p>Er du sikker på du vil aflyse bookingen?</p>
+                    <div class="d-flex gap-2 btn-group">
+                        <button class="btn btn-secondary" @onclick="() => ShowBookingWarning = false">Annuller</button>
+                        <button class="btn btn-danger" @onclick="ConfirmCancelBooking">Aflys Booking</button>
+                    </div>
+                </div>
+            </BookingNotification>
+        }
+
 <div class="fontpage-body">
-    <div style="width:60%; align-items:center; display:flex; flex-direction:column;">
-        <div style="text-align:left; display:flex; width:100%;">
-            <h1>Opkommende Bookinger</h1>
+    <div class="w-75" style=" align-items:center; display:flex; flex-direction:column;">
+        <div style="text-align:left; display:flex; width:100%; margin-top:10px; ">
+            <h1 class="card-title">Opkommende Bookinger</h1>
         </div>
         <div>
-            @if(bookings.Any())
-            {
-                @foreach (var booking in bookings)
+        <div class="fontpage-body">
+            <div>
+                @if (bookings.Any())
                 {
-                    <div class="card" style="display: flex; flex-direction: column; cursor:pointer;">
-                        <div class="info">
-                            <div style="display:flex; margin-bottom:20px;">
-                                <h4 style="color: #034265;">@booking.Customer.Name</h4>
-                                <span class="booking-status ms-auto" style="height:2%;"></span>
-                            </div>
-                            <p>@booking.Start.ToString("hh:mm") til @booking.End.ToString("hh:mm")</p> <p><b>(Om @((CurrentTime - booking.Start).ToString("mm")) Minutter)</b></p>
-                        </div>
-                    </div>
-                    <div class="card" style="width:43vw;">
-                        <p>hey</p>
+                    @foreach (var booking in bookings)
+                    {
+                            <BookingHomepage CurrentTime="CurrentTime" booking="booking" OnCancelClick="GetBookingWarning" OnPaymentClick="()=>ShowBookingPayment=true"></BookingHomepage>
+                    }
+                }
+                else
+                {
+                    <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column; cursor:pointer;">
+                        <p>Ingen Bookinger Fundet</p>
                     </div>
                 }
-            }
-            else
-            {
-                <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column; cursor:pointer;">
-                    <p>Ingen Bookinger Fundet</p>
-                </div>
-            }
+            </div>
         </div>
+        </div>
+        <div><button @onclick="InjectData"></button></div>
+        <div><button @onclick="getalldata"></button></div>
     </div>
-
-    <div><button @onclick="InjectData"></button></div>
-    <div><button @onclick="getalldata"></button></div>
 </div>
-
 <div style="height:47rem;"></div>

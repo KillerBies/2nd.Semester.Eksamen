@@ -51,7 +51,10 @@
                             <strong>Specialties:</strong>
                             @foreach (var Specialty in Employee.Specialties.Split(','))
                             {
-                                <span class="badge bg-secondary me-1">@Specialty</span>
+                                @if(!string.IsNullOrWhiteSpace(Specialty))
+                                {
+                                    <span class="badge bg-secondary me-1">@Specialty</span>
+                                }
                             }
                         </p>
                     </div>

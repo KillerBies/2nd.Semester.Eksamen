@@ -9,6 +9,8 @@
 @using _2nd.Semester.Eksamen.Pages.PaymentPages
 @using Components.Pages.ProductPages.BookingPages
 @inject IBookingService bookingService;
+<div style="display:flex;justify-content:center;">
+<div class="w-75">
 <FloatingPage>
     <div style="margin:30px;">
         <div class="card-header" style="border-radius: 12px 12px 0 0; ">
@@ -57,6 +59,8 @@
         </div>
     </div>
 </FloatingPage>
+</div>
+</div>
 @if (visibleOverlay)
 {
     <SidePage IsVisible="visibleOverlay"
