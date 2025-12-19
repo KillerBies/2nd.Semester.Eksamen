@@ -49,9 +49,17 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 throw new InvalidOperationException("Something went wrong while creating booking", ex);
             }
         }
-        public async Task CancelBookingAsync()
+        public async Task CancelBookingAsync(BookingDTO booking)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Booking domainBooking = await _bookingRepository.GetByIDAsync((int)booking.BookingId);
+                await _bookingRepository.CancelBookingAsync(domainBooking);
+            }
+            catch
+            {
+                throw new Exception("Something went wrong and the booking could not be deleted.");
+            }
         }
         public async Task RescheduleBookingAsync(BookingDTO booking)
         {

@@ -122,3 +122,51 @@ font-size: 1rem;
 }
 
 
+.overview-page {
+    padding-left: 10rem;
+    padding-right: 10rem;
+}
+
+.overview-page-content {
+    padding: 1rem;
+    border-radius: 12px 12px 12px 12px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    background-color: #034265;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 12px 12px 0 0;
+}
+
+    .page-header h1 {
+        margin: 0;
+        color: white;
+    }
+
+.subtitle {
+    color: lightgray;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+    .stat-card span {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }

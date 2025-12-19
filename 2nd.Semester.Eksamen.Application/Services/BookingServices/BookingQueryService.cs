@@ -162,7 +162,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
         public async Task<List<BookingDTO>> GetUpcomingBookingsAsync()
         {
-            return (await _bookingRepository.GetAllAsync()).Select(b => ToDTOAdapter.BookingToDTO(b)).OrderBy(b => b.Start).Take(10).ToList();
+            return (await _bookingRepository.GetAllAsync()).Where(b=>b.End>DateTime.Now).Select(b => ToDTOAdapter.BookingToDTO(b)).OrderBy(b => b.Start).ToList();
         }
     }
 }

@@ -8,7 +8,7 @@ using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using Microsoft.AspNetCore.Components;
 
-namespace _2nd.Semester.Eksamen.Pages.PaymentPages
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 {
     public partial class FinalizePayment : ComponentBase
     {

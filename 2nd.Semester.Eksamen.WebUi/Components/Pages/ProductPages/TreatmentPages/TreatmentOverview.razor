@@ -1,7 +1,78 @@
 ﻿
 @page "/TreatmentOverview"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @inject NavigationManager Navi
 @rendermode InteractiveServer
+
+
+
+<div style="background-color:#F3F2F2; height:100vh">
+    <div class="overview-page">
+        <div class="shadow-sm" style="background-color:#F3F2F2;">
+            <div class="page-header">
+                <div>
+                    <h1>Bookinger</h1>
+                    <p class="subtitle">Oversigt over alle bookinger</p>
+                </div>
+                <div class="btn-group ms-auto" style="width:50%; gap:1rem;">
+                    <div class="input-group">
+                        <input type="text" placeholder="Søg Kunde..." @bind="SearchTermCustomer" @bind:event="oninput" />
+                    </div>
+                    <div class="input-group">
+                        <input type="date" placeholder="Dato..." @bind="SearchTermDate" />
+                    </div>
+                </div>
+            </div>
+            <div class="overview-page-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total</h3>
+                        <span>@bookingList.Count</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Idag</h3>
+                        <span>@TodayCount</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending</h3>
+                        <span>@PendingCount</span>
+                    </div>
+                </div>
+
+                <div style="margin:30px;">
+                    @if (LoadFailed)
+                    {
+                        <div class="alert alert-danger">
+                            Kunne ikke hente bookinger. Prøv igen senere.
+                        </div>
+                    }
+                    else if (bookingList == null)
+                    {
+                        <div>Loader...</div>
+                    }
+                    else
+                    {
+                        <div class="grid">
+                            @foreach (var booking in FilteredBookings)
+                            {
+                                <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column; cursor:pointer;" @onclick="() => ShowOverlay(booking)">
+                                    <div class="info">
+                                        <div style="display:flex; margin-bottom:20px;">
+                                            <h4 style="color: #034265;">@booking.Customer.Name</h4>
+                                            <span class="booking-status ms-auto" style="height:2%;"></span>
+                                        </div>
+                                        <p>@booking.Start.ToString("g") til @booking.End.ToString("g")</p>
+                                        <p>Status: @booking.Status</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 <div class="treatment-overview-container">
@@ -41,32 +112,27 @@
 
     @if (isVisible == true)
     {
-        <div class="overlay-background" @onclick="HideOverlay"></div>
-        <div class="treatment-details-overlay">
+        <BookingNotification IsVisible=isVisible>
+            <h2> @selectedTreatment.Name</h2>
+            <p><b>Pris:</b> @selectedTreatment.BasePrice</p>
+            <p><b>Varighed:</b> @selectedTreatment.Duration</p>
+            <p><b>Kategori:</b> @selectedTreatment.Category</p>
 
-            @if (selectedTreatment != null)
-            {
-                    <h2><b>Navn:</b> @selectedTreatment.Name</h2>
-                    <p><b>Pris:</b> @selectedTreatment.BasePrice</p>
-                    <p><b>Varighed:</b> @selectedTreatment.Duration</p>
-                    <p><b>Kategori:</b> @selectedTreatment.Category</p>
-                    
-                    <p><b>Påkrævede specialiteter:</b></p> 
-                    <ul>
-                        @if(selectedTreatment.RequiredSpecialties != null)
-                        {
-                        @foreach (var s in selectedTreatment.RequiredSpecialties)
-                        {
-                            <li>@s.Replace(",", "")</li>
-                         }
-                        }
-                    </ul>
-                    <p><b>Beskrivelse:</b> @selectedTreatment.Description</p>
-                  
-                <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
-                <button class="btn btn-danger mt-3" @onclick="() => DeleteTreatment(selectedTreatment.TreatmentId)">Slet behandling</button>
-            }
-        </div>
+            <p><b>Påkrævede specialiteter:</b></p>
+            <ul>
+                @if (selectedTreatment.RequiredSpecialties != null)
+                {
+                    @foreach (var s in selectedTreatment.RequiredSpecialties)
+                    {
+                        <li>@s.Replace(",", "")</li>
+                    }
+                }
+            </ul>
+            <p><b>Beskrivelse:</b> @selectedTreatment.Description</p>
+
+            <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
+            <button class="btn btn-danger mt-3" @onclick="() => DeleteTreatment(selectedTreatment.TreatmentId)">Slet behandling</button>
+        </BookingNotification>
     }
 
 </div>

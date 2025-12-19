@@ -16,7 +16,7 @@ using _2nd.Semester.Eksamen.Application.Adapters;
 using System.Diagnostics.SymbolStore;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 
-namespace Components.Pages.ProductPages.BookingPages
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 {
     public partial class BookingForm
     {

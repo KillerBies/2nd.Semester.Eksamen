@@ -1,41 +1,57 @@
 ﻿@page "/InvoiceOverview"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.InvoicePages
 @using System.IO;
-@inject IJSRuntime JS;
+@inject IJSRuntime JS
 @using _2nd.Semester.Eksamen.Application.DTO;
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-@inject IInvoiceService invoiceService;
-<h3>InvoiceOverview</h3>
+@inject IInvoiceService invoiceService
 
-@if (orderSnapshotDTOs == null)
-{
-	<p>Ingen ordrer fundet.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Ordre Id</th>
-                <th>Kundenavn</th>
-                <th>Total</th>
-                <th>Betalingsdato</th>
-                <th>Download</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var orderSnapshotDTO in orderSnapshotDTOs)
-            {
-                <tr>
-                    <td>@orderSnapshotDTO.Id</td>
-                    <td>@orderSnapshotDTO.Name</td>
-                    <td>@orderSnapshotDTO.TotalPaid</td>
-                    <td>@orderSnapshotDTO.PaymentDate</td>
-                    <td>  <button @onclick="() => DownloadInvoiceAsync(orderSnapshotDTO.PdfFile)"> download faktura </button> </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<div style="background-color:#F3F2F2; height:100vh">
+    <div class="overview-page">
+        <div class="shadow-sm" style="background-color:#F3F2F2;">
+            <div class="page-header">
+                <div>
+                    <h1>Faktura</h1>
+                    <p class="subtitle">Oversigt over alle Faktura</p>
+                </div>
+            </div>
+            <div class="overview-page-content">
+                @if (orderSnapshotDTOs == null)
+                {
+                    <p>Ingen ordrer fundet.</p>
+                }
+                else
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Ordre Id</th>
+                                <th>Kundenavn</th>
+                                <th>Total</th>
+                                <th>Betalingsdato</th>
+                                <th>Download</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var orderSnapshotDTO in orderSnapshotDTOs)
+                            {
+                                <tr>
+                                    <td>@orderSnapshotDTO.Id</td>
+                                    <td>@orderSnapshotDTO.Name</td>
+                                    <td>@orderSnapshotDTO.TotalPaid</td>
+                                    <td>@orderSnapshotDTO.PaymentDate</td>
+                                    <td>  <button @onclick="() => DownloadInvoiceAsync(orderSnapshotDTO.PdfFile)"> download faktura </button> </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 @code {
     List<OrderSnapshotDTO> orderSnapshotDTOs;

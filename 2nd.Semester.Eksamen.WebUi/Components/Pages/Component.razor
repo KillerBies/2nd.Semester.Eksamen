@@ -1,0 +1,101 @@
+﻿@page "/bookingsss"
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
+
+<div class="overview-page">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>Bookinger</h1>
+            <p class="subtitle">Oversigt over alle bookinger</p>
+        </div>
+
+        <button class="btn-primary" @onclick="CreateBooking">
+            + New Booking
+        </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total</h3>
+            <span>@Bookings.Count</span>
+        </div>
+        <div class="stat-card">
+            <h3>Today</h3>
+            <span>@TodayCount</span>
+        </div>
+        <div class="stat-card">
+            <h3>Pending</h3>
+            <span>@PendingCount</span>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+        <input type="text"
+               placeholder="Search bookings..."
+               @bind="SearchTerm"
+               class="search-input" />
+
+        <select @bind="StatusFilter">
+            <option value="">All statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th class="actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var booking in FilteredBookings)
+                {
+                    <tr>
+                        <td>@booking.Customer.Name</td>
+                        <td>@booking.Start.ToShortDateString()</td>
+                        <td>
+                            <span class="status">
+                                <p>ok</p>
+                            </span>
+                        </td>
+                        <td class="actions">
+                            <button class="btn-link" @onclick="() => View((int)booking.BookingId)">View</button>
+                            <button class="btn-link" @onclick="() => Edit((int)booking.BookingId)">Edit</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+@code {
+    private List<BookingDTO> Bookings = new();
+    private string? SearchTerm;
+    private string? StatusFilter;
+
+    private int TodayCount = 4;
+    private int PendingCount = 2;
+
+    private IEnumerable<BookingDTO> FilteredBookings =>
+        Bookings
+            .Where(b =>
+                (string.IsNullOrWhiteSpace(SearchTerm) ||
+                 b.Customer.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)));
+
+    void CreateBooking() { }
+    void View(int id) { }
+    void Edit(int id) { }
+}

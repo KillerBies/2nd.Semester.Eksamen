@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 using Radzen;
 using Syncfusion.Blazor.Schedule.Internal;
 
-namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
 {
     partial class EmployeeSchedulePage
     {

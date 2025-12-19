@@ -1,88 +1,150 @@
 ﻿@page "/CustomerOverview"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
 @rendermode InteractiveServer
 @using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
-<div class="customer-overview-container">
-    <h2>Kundeoversigt</h2>
-    @if (dTOs == null)
-    {
-    <p>Indlæser kunder...</p>
-    }
-    else if (!dTOs.Any())
-    {
-    <p>Ingen kunder fundet.</p>
-    }
-    <div class="dTO-grid">
-           @foreach (var dTO in dTOs)
-            {
-                <div class="customer-card">
-                    <div class="customer-card-header">
-                        @if(dTO is PrivateCustomerDTO pr)
-                        {
-                            <h3> @pr.Name @pr.LastName </h3>
-                        }
-                        else
-                        {
-                            <h3>@dTO.Name</h3>
-                    }
-                    <span class="customer-type"></span>
-                    </div>
 
-                    <div class="customer-card-body">
-                        <p>Email: @dTO.Email</p>
-                        <p>Tlf: @dTO.PhoneNumber</p>
-                        <p>By: @dTO.City</p>
-                    </div>
 
-                    <div class="customer-card-footer">
-                        <button class="btn btn-primary"
-                            @onclick="() => ShowOverlay(dTO)">
-                            Se detaljer
-                        </button>
+<div style="background-color:#F3F2F2; height:100vh">
+    <div class="overview-page">
+        <div class="shadow-sm" style="background-color:#F3F2F2;">
+            <div class="page-header">
+                <div>
+                    <h1>Kunder</h1>
+                    <p class="subtitle">Oversigt over alle Kunder</p>
+                </div>
+                <div class="btn-group ms-auto" style="width:50%; gap:1rem;">
+                    <div class="input-group">
+                        <div class="input-group">
+                            <input type="text"
+                                   placeholder="Søg Navn..."
+                                   @bind="SearchTermName"
+                                   @bind:event="oninput" />
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text"
+                               placeholder="Søg Tlf. Nummer..."
+                               @bind="SearchTermPhone"
+                               @bind:event="oninput" />
+                    </div>
+                    <button class="add-employee-btn" @onclick="GoToCreateCustomer">
+                        <i class="bi bi-plus-lg"></i> Tilføj Kunde
+                    </button>
+                </div>
+            </div>
+            <div class="overview-page-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total</h3>
+                        <span>@Customers.Count</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Bronze</h3>
+                        <span>@BronzeCount</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Sølv</h3>
+                        <span>@SilverCount</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Guld</h3>
+                        <span>@GoldCount</span>
                     </div>
                 </div>
-            }
+                <div style="margin:30px;">
+                    @if (LoadFailed)
+                    {
+                        <div class="alert alert-danger">
+                            Kunne ikke forbinde til databasen. Prøv igen senere
+                        </div>
+                    }
+                    else if (Customers == null)
+                    {
+                        <div>Loader...</div>
+                    }
+                    else
+                    {
+                        <div class="grid">
+                            @foreach (var Customer in FilterdCustomers)
+                            {
+                                <div class="customer-card">
+                                    <div class="customer-card-header">
+                                        @if (Customer is PrivateCustomerDTO pr)
+                                        {
+                                            <h3> @pr.Name @pr.LastName </h3>
+                                        }
+                                        else
+                                        {
+                                            <h3>@Customer.Name</h3>
+                                        }
+                                        <span class="customer-type"></span>
+                                    </div>
+
+                                    <div class="customer-card-body">
+                                        <p>Email: @Customer.Email</p>
+                                        <p>Tlf: @Customer.PhoneNumber</p>
+                                        <p>By: @Customer.City</p>
+                                    </div>
+
+                                    <div class="customer-card-footer">
+                                        <button class="btn btn-primary"
+                                                @onclick="() => ShowOverlay(Customer)">
+                                            Se detaljer
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
-
-    @if (isVisible == true)
-    {
-        <BookingNotification IsVisible=isVisible>
-
-                @if (selectedCustomer != null)
-                {
-
-
-                    @if (selectedCustomer is PrivateCustomerDTO p)
-                    {
-                        <h2>@p.Name @p.LastName</h2>
-                        <p><b>Køn:</b> @p.Gender</p>
-                        <p><b>Antal besøg</b> @p.NumberOfVisits</p>
-                        <p><b>Telefon:</b> @p.PhoneNumber</p>
-                        <p><b>Email:</b> @p.Email</p>
-                        <p><b>By:</b>@p.PostalCode @p.City</p>
-                        <p><b>Addresse:</b> @p.StreetName @p.HouseNumber</p>
-                        <p><b>Fødselsdato:</b> @p.BirthdayWrapper.ToShortDateString()</p>
-                    }
-                    else if (selectedCustomer is CompanyCustomerDTO c)
-                    {
-
-                        <h2>@c.Name</h2>
-                        <p><b>Antal besøg</b> @c.NumberOfVisits</p>
-                        <p><b>Telefon:</b> @c.PhoneNumber</p>
-                        <p><b>Email:</b> @c.Email</p>
-                        <p><b>By:</b>@c.PostalCode @c.City</p>
-                        <p><b>Addresse:</b> @c.StreetName @c.HouseNumber</p>
-                        <p><b>CVR:</b> @c.CVRNumber</p>
-                    }
-
-                    <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
-                    <button class="btn btn-danger mt-3" @onclick="() => DeleteCustomer(selectedCustomer.id)">Slet kunde</button>
-                }
-        </BookingNotification>
-    }
-
+    </div>
 </div>
+
+
+
+
+
+@if (isVisible == true)
+{
+    <BookingNotification IsVisible=isVisible>
+
+        @if (selectedCustomer != null)
+        {
+
+
+            @if (selectedCustomer is PrivateCustomerDTO p)
+            {
+                <h2>@p.Name @p.LastName</h2>
+                <p><b>Køn:</b> @p.Gender</p>
+                <p><b>Antal besøg</b> @p.NumberOfVisits</p>
+                <p><b>Telefon:</b> @p.PhoneNumber</p>
+                <p><b>Email:</b> @p.Email</p>
+                <p><b>By:</b>@p.PostalCode @p.City</p>
+                <p><b>Addresse:</b> @p.StreetName @p.HouseNumber</p>
+                <p><b>Fødselsdato:</b> @p.BirthdayWrapper.ToShortDateString()</p>
+            }
+            else if (selectedCustomer is CompanyCustomerDTO c)
+            {
+
+                <h2>@c.Name</h2>
+                <p><b>Antal besøg</b> @c.NumberOfVisits</p>
+                <p><b>Telefon:</b> @c.PhoneNumber</p>
+                <p><b>Email:</b> @c.Email</p>
+                <p><b>By:</b>@c.PostalCode @c.City</p>
+                <p><b>Addresse:</b> @c.StreetName @c.HouseNumber</p>
+                <p><b>CVR:</b> @c.CVRNumber</p>
+            }
+
+            <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
+            <button class="btn btn-danger mt-3" @onclick="() => DeleteCustomer(selectedCustomer.id)">Slet kunde</button>
+        }
+    </BookingNotification>
+}
+
 
 
 
@@ -91,5 +153,5 @@
 
 @code {
 
-   
+
 }

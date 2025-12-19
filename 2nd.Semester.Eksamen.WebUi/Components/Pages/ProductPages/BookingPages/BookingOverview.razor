@@ -1,151 +1,172 @@
 ﻿@page "/BookingOverview/"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @rendermode InteractiveServer
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-@using _2nd.Semester.Eksamen.Domain;
-@using _2nd.Semester.Eksamen.Domain.Entities.Products;
+@using _2nd.Semester.Eksamen.Domain
+@using _2nd.Semester.Eksamen.Domain.Entities.Products
 @using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts
 @using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
-@using _2nd.Semester.Eksamen.Pages.PaymentPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 @using Components.Pages.ProductPages.BookingPages
-@inject IBookingService bookingService;
-<div style="display:flex;justify-content:center;">
-<div class="w-75">
-<FloatingPage>
-    <div style="margin:30px;">
-        <div class="card-header" style="border-radius: 12px 12px 0 0; ">
-            <div class="employee-nav-header" style="justify-content:left;">
-                <h1 class="" style="margin: 0;color: black;">Bookinger</h1>
-                <div class="btn-group ms-auto" style="width:20%;">
-                <div class="input-group">
-                    <input type="text" placeholder="Søg Kunde..." @bind="SearchTermCustomer" @bind:event="oninput" />
+@inject IBookingService bookingService
+
+
+
+<div style="background-color:#F3F2F2; height:100vh">
+    <div class="overview-page">
+        <div class="shadow-sm" style="background-color:#F3F2F2;">
+            <div class="page-header">
+                <div>
+                    <h1>Bookinger</h1>
+                    <p class="subtitle">Oversigt over alle bookinger</p>
                 </div>
-                <div class="input-group">
-                    <input type="date" placeholder="Dato..." @bind="SearchTermDate" />
-                </div>
+                <div class="btn-group ms-auto" style="width:50%; gap:1rem;">
+                    <div class="input-group">
+                        <input type="text" placeholder="Søg Kunde..." @bind="SearchTermCustomer" @bind:event="oninput" />
+                    </div>
+                    <div class="input-group">
+                        <input type="date" placeholder="Dato..." @bind="SearchTermDate" />
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div style="margin:30px;">
-            @if (LoadFailed)
-            {
-                <div class="alert alert-danger">
-                    Kunne ikke hente bookinger. Prøv igen senere.
+            <div class="overview-page-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total</h3>
+                        <span>@bookingList.Count</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Idag</h3>
+                        <span>@TodayCount</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending</h3>
+                        <span>@PendingCount</span>
+                    </div>
                 </div>
-            }
-            else if (bookingList == null)
-            {
-                <div>Loader...</div>
-            }
-            else
-            {
-                <div class="grid">
-                    @foreach (var booking in FilteredBookings)
+
+                <div style="margin:30px;">
+                    @if (LoadFailed)
                     {
-                        <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column; cursor:pointer;" @onclick="() => ShowOverlay(booking)">
-                                <div class="info">
-                                    <div style="display:flex; margin-bottom:20px;">
-                                        <h4 style="color: #034265;">@booking.Customer.Name</h4>
-                                        <span class="booking-status ms-auto" style="height:2%;"></span>
+                        <div class="alert alert-danger">
+                            Kunne ikke hente bookinger. Prøv igen senere.
+                        </div>
+                    }
+                    else if (bookingList == null)
+                    {
+                        <div>Loader...</div>
+                    }
+                    else
+                    {
+                        <div class="grid">
+                            @foreach (var booking in FilteredBookings)
+                            {
+                                <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column; cursor:pointer;" @onclick="() => ShowOverlay(booking)">
+                                    <div class="info">
+                                        <div style="display:flex; margin-bottom:20px;">
+                                            <h4 style="color: #034265;">@booking.Customer.Name</h4>
+                                            <span class="booking-status ms-auto" style="height:2%;"></span>
+                                        </div>
+                                        <p>@booking.Start.ToString("g") til @booking.End.ToString("g")</p>
+                                        <p>Status: @booking.Status</p>
                                     </div>
-                                    <p>@booking.Start.ToString("g") til @booking.End.ToString("g")</p>
-                                    <p>Status: @booking.Status</p>
-                            </div>
+                                </div>
+                            }
                         </div>
                     }
                 </div>
-            }
+            </div>
         </div>
     </div>
-</FloatingPage>
-</div>
-</div>
-@if (visibleOverlay)
-{
-    <SidePage IsVisible="visibleOverlay"
-              IsVisibleChanged="@(v => visibleOverlay = v)">
-        <div class="d-flex flex-column h-100">
-
-            @if (!string.IsNullOrEmpty(errorMessage))
-            {
-                <div class="alert alert-danger m-3">@errorMessage</div>
-            }
 
 
-            <div class="card-header text-white rounded-top gap-5 px-3 py-2" style="background-color:#034265; display:flex; flex-direction:row; width:60vw;">
-                <h2 class="mb-0 text-white">@SelectedBooking.Customer.Name</h2>
-                <button class="btn btn-primary ms-auto" style="width: 15%;" @onclick="PayBooking"><b>Betal</b></button>
-            </div>
 
+    @if (visibleOverlay)
+    {
+        <SidePage IsVisible="visibleOverlay"
+                  IsVisibleChanged="@(v => visibleOverlay = v)">
+            <div class="d-flex flex-column h-100">
 
-            <div class="p-4 flex-grow-1 overflow-auto">
-
-                <div class="text-center mb-4 border-bottom border-dashed pb-3">
-                    <h3 class="mb-1">@SelectedBooking.Start.ToString("dd/MM/yyyy")</h3>
-                    <h5 class="mb-0">@SelectedBooking.Start.ToString("HH:mm") - @SelectedBooking.End.ToString("HH:mm")</h5>
-                </div>
-
-
-                @if (SelectedBooking.Treatments.Any())
+                @if (!string.IsNullOrEmpty(errorMessage))
                 {
-                    <div class="mb-4">
-                        @foreach (var treatment in SelectedBooking.Treatments)
-                        {
-                            <div class="mb-3 p-3 border rounded shadow-sm">
-                                <h5 class="fw-bold mb-1">@treatment.Treatment.Name</h5>
-                                <p class="mb-1"><strong>Tid:</strong> @treatment.Start.ToString("HH:mm") - @treatment.End.ToString("HH:mm")</p>
-                                <p class="mb-1"><strong>Pris:</strong> @treatment.Treatment.Price.ToString("C")</p>
-                                <p class="mb-1"><strong>Ansat:</strong> @treatment.Employee.Name @treatment.Employee.LastName</p>
-                                <p class="mb-0"><strong>Erfaring:</strong> @treatment.Employee.ExperienceLevel</p>
-                            </div>
-                        }
-                    </div>
+                    <div class="alert alert-danger m-3">@errorMessage</div>
                 }
 
 
-                <div class="d-flex flex-column gap-2">
-                    <div class="d-flex gap-2 btn-group" style="margin-left:20px;">
-                        <button class="btn btn-outline-primary flex-grow-1" @onclick="HideOverlay">Luk</button>
-                        <button class="btn btn-outline-info flex-grow-1" @onclick="() => OpenEdit = true">Rediger</button>
-                        <button class="btn btn-outline-danger flex-grow-1" @onclick="DeleteBookingWarning">Slet</button>
+                <div class="card-header text-white rounded-top gap-5 px-3 py-2" style="background-color:#034265; display:flex; flex-direction:row; width:60vw;">
+                    <h2 class="mb-0 text-white">@SelectedBooking.Customer.Name</h2>
+                    <button class="btn btn-primary ms-auto" style="width: 15%;" @onclick="PayBooking"><b>Betal</b></button>
+                </div>
+
+
+                <div class="p-4 flex-grow-1 overflow-auto">
+
+                    <div class="text-center mb-4 border-bottom border-dashed pb-3">
+                        <h3 class="mb-1">@SelectedBooking.Start.ToString("dd/MM/yyyy")</h3>
+                        <h5 class="mb-0">@SelectedBooking.Start.ToString("HH:mm") - @SelectedBooking.End.ToString("HH:mm")</h5>
+                    </div>
+
+
+                    @if (SelectedBooking.Treatments.Any())
+                    {
+                        <div class="mb-4">
+                            @foreach (var treatment in SelectedBooking.Treatments)
+                            {
+                                <div class="mb-3 p-3 border rounded shadow-sm">
+                                    <h5 class="fw-bold mb-1">@treatment.Treatment.Name</h5>
+                                    <p class="mb-1"><strong>Tid:</strong> @treatment.Start.ToString("HH:mm") - @treatment.End.ToString("HH:mm")</p>
+                                    <p class="mb-1"><strong>Pris:</strong> @treatment.Treatment.Price.ToString("C")</p>
+                                    <p class="mb-1"><strong>Ansat:</strong> @treatment.Employee.Name @treatment.Employee.LastName</p>
+                                    <p class="mb-0"><strong>Erfaring:</strong> @treatment.Employee.ExperienceLevel</p>
+                                </div>
+                            }
+                        </div>
+                    }
+
+
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex gap-2 btn-group" style="margin-left:20px;">
+                            <button class="btn btn-outline-primary flex-grow-1" @onclick="HideOverlay">Luk</button>
+                            <button class="btn btn-outline-info flex-grow-1" @onclick="() => OpenEdit = true">Rediger</button>
+                            <button class="btn btn-outline-danger flex-grow-1" @onclick="DeleteBookingWarning">Slet</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        @if (toggleBookingWarning)
-        {
-            <BookingNotification IsVisible="toggleBookingWarning">
-                <div class="mt-2">
-                    <p>Er du sikker på du vil slette bookingen?</p>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-secondary" @onclick="() => toggleBookingWarning = false">Annuller</button>
-                        <button class="btn btn-danger" @onclick="ConfirmDeleteBooking">Slet booking</button>
+            @if (toggleBookingWarning)
+            {
+                <BookingNotification IsVisible="toggleBookingWarning">
+                    <div class="mt-2">
+                        <p>Er du sikker på du vil slette bookingen?</p>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-secondary" @onclick="() => toggleBookingWarning = false">Annuller</button>
+                            <button class="btn btn-danger" @onclick="ConfirmDeleteBooking">Slet booking</button>
+                        </div>
                     </div>
-                </div>
-            </BookingNotification>
-        }
-    </SidePage>
-}
+                </BookingNotification>
+            }
+        </SidePage>
+    }
 
-@if (ShowPaymentWindow)
-{
-    <SidePage IsVisible="ShowPaymentWindow"
-              IsVisibleChanged="@(v => ShowPaymentWindow = v)">
-        <div style="width:30vw;"></div>
-        <FinalizePayment id="@SelectedBooking.Customer.Id"></FinalizePayment>
-    </SidePage>
-}
+    @if (ShowPaymentWindow)
+    {
+        <SidePage IsVisible="ShowPaymentWindow"
+                  IsVisibleChanged="@(v => ShowPaymentWindow = v)">
+            <div style="width:30vw;"></div>
+            <FinalizePayment id="@SelectedBooking.Customer.Id"></FinalizePayment>
+        </SidePage>
+    }
 
-@if (OpenEdit)
-{
+    @if (OpenEdit)
+    {
         <SidePage IsVisible="OpenEdit"
                   IsVisibleChanged="@(v => OpenEdit = v)">
             <div style="width:30vw;"></div>
             <BookingForm CustomerId="@SelectedBooking.Customer.Id" EditBooking="SelectedBooking" IsEdit="true"></BookingForm>
         </SidePage>
-}
-<div style="background-color:#F3F2F2; height:100rem"></div>
+    }
+</div>
 
 
 
@@ -167,7 +188,10 @@
     private bool toggleBookingWarning = false;
     private bool LoadFailed = false;
     private bool OpenEdit = false;
+    private DateTime CurrentTime => DateTime.Now;
     private IEnumerable<Booking> FilteredBookings => bookingList.Where(b => string.IsNullOrWhiteSpace(SearchTermCustomer) || b.Customer.Name.Contains(SearchTermCustomer, StringComparison.OrdinalIgnoreCase)).Where(b => !SearchTermDate.HasValue || b.Start.Date == SearchTermDate.Value.Date);
+    private int TodayCount => bookingList.Where(b => b.Start.Date == CurrentTime.Date).Count();
+    private int PendingCount => bookingList.Where(b => b.Start > CurrentTime).Count();
     private bool ShowBookingDetails = false;
     private bool ShowPaymentWindow = false;
 

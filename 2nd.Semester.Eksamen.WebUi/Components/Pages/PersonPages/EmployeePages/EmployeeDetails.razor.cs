@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace Components.Pages.PersonPages.EmployeePages
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 {
     public partial class EmployeeDetails
-{
+    {
         [Parameter] public int Id { get; set; }
         [Inject] NavigationManager Nav { get; set; }
         private Employee Employee { get; set; }
@@ -25,7 +25,7 @@ namespace Components.Pages.PersonPages.EmployeePages
         protected override async Task OnInitializedAsync()
         {
             Employee = await _repo.GetByIDAsync(Id);
-        } 
+        }
         private void StartEdit()
         {
             Nav.NavigateTo($"/edit-employee/{Employee.Id}");

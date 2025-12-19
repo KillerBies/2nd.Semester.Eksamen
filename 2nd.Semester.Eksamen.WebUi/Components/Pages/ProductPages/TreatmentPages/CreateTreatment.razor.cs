@@ -1,6 +1,5 @@
 ﻿using System.Net.NetworkInformation;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
-using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.Adapters;
 using System.Collections.Generic;

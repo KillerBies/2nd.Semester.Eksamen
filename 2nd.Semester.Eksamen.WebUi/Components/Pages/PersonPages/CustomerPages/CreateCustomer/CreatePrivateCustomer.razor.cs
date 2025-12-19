@@ -2,7 +2,7 @@
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 
-namespace Components.Pages.PersonPages.CustomerPages.CreateCustomer
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
 {
     public partial class CreatePrivateCustomer
     {

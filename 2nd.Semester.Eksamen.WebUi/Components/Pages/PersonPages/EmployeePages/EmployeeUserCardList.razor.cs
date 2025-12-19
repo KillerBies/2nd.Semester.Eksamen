@@ -2,7 +2,7 @@
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
 using Microsoft.AspNetCore.Components;
 
-namespace Components.Pages.PersonPages.EmployeePages
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 {
     public partial class EmployeeUserCardList : ComponentBase
     {
@@ -17,6 +17,8 @@ namespace Components.Pages.PersonPages.EmployeePages
         public bool LoadFailed { get; set; }
         public bool ShowEmployeeDetails { get; set; } = false;
         public int SelectedEmployeeId { get; set; } = 0;
+        public int FrilanceCount => Employees.Count(e=>e.Type == "Frilands");
+        public int FuildtidsCount => Employees.Count(e => e.Type == "Fuildtid");
 
         // FINAL AND/OR filter – updates automatically on typing
         public IEnumerable<EmployeeUserCardDTO> FilteredEmployees =>

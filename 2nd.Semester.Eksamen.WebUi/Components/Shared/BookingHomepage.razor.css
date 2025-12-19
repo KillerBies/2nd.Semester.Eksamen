@@ -14,3 +14,7 @@
     .details-btn:hover {
         background-color: aliceblue;
     }
+.subtitle {
+    color: lightgray;
+    font-size:x-small;
+}

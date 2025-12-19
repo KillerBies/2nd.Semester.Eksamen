@@ -4,7 +4,7 @@ using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
 {
     public partial class TreatmentOverview
-{
+    {
 
         private readonly ITreatmentService _treatmentService;
         public TreatmentOverview(ITreatmentService treatmentService)
@@ -12,7 +12,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
             _treatmentService = treatmentService;
         }
 
-        List<TreatmentDTO> dTOs = new();
+        List<TreatmentDTO> Treatments = new();
 
         private TreatmentDTO? selectedTreatment;
 
@@ -22,7 +22,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
 
         protected override async Task OnInitializedAsync()
         {
-            dTOs = await _treatmentService.GetAllTreatmentsAsDTOAsync();
+            Treatments = await _treatmentService.GetAllTreatmentsAsDTOAsync();
         }
 
         //Overlays true or false

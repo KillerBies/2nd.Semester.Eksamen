@@ -1,5 +1,5 @@
 ﻿@page "/employees"
-@namespace Components.Pages.PersonPages.EmployeePages
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @rendermode InteractiveServer
 
@@ -10,70 +10,88 @@
         <EmployeeDetails Id="SelectedEmployeeId"></EmployeeDetails>
     </SidePage>
 }
-
-<div style="height:100vh;">
-    <FloatingPage>
-        <div class="employee-nav" style="border-radius: 12px 12px 0 0;">
-            <div class="employee-nav-header">
-                <h3 class="title">Medarbejdere</h3>
-
-                <div class="input-group">
-                    <input type="text"
-                           placeholder="Søg Navn..."
-                           @bind="SearchTermName"
-                           @bind:event="oninput" />
+<div style="background-color:#F3F2F2; height:100vh">
+    <div class="overview-page">
+        <div class="shadow-sm" style="background-color:#F3F2F2;">
+            <div class="page-header">
+                <div>
+                    <h1>Medarbejdere</h1>
+                    <p class="subtitle">Oversigt over alle medarbejdere</p>
                 </div>
-
-                <div class="input-group">
-                    <input type="text"
-                           placeholder="Søg Tlf. Nummer..."
-                           @bind="SearchTermPhone"
-                           @bind:event="oninput" />
+                <div class="btn-group ms-auto" style="width:50%; gap:1rem;">
+                    <div class="input-group">
+                        <div class="input-group">
+                            <input type="text"
+                                   placeholder="Søg Navn..."
+                                   @bind="SearchTermName"
+                                   @bind:event="oninput" />
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text"
+                               placeholder="Søg Tlf. Nummer..."
+                               @bind="SearchTermPhone"
+                               @bind:event="oninput" />
+                    </div>
+                    <button class="add-employee-btn" @onclick="GoToAddEmployee">
+                        <i class="bi bi-plus-lg"></i> Tilføj Medarbejder
+                    </button>
                 </div>
-
-                <button class="add-employee-btn" @onclick="GoToAddEmployee">
-                    <i class="bi bi-plus-lg"></i> Tilføj Medarbejder
-                </button>
             </div>
-        </div>
-
-        <div style="margin:30px;">
-
-            @if (LoadFailed)
-            {
-                <div class="alert alert-danger">
-                    Kunne ikke forbinde til databasen. Prøv igen senere
+            <div class="overview-page-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total</h3>
+                        <span>@Employees.Count</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Frilance</h3>
+                        <span>@FrilanceCount</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Fuildtids</h3>
+                        <span>@FuildtidsCount</span>
+                    </div>
                 </div>
-            }
-            else if (Employees == null)
-            {
-                <div>Loader...</div>
-            }
-            else
-            {
-                <div class="grid">
-                    @foreach (var emp in FilteredEmployees)
+                <div style="margin:30px;">
+                    @if (LoadFailed)
+                    {
+                        <div class="alert alert-danger">
+                            Kunne ikke forbinde til databasen. Prøv igen senere
+                        </div>
+                    }
+                    else if (Employees == null)
+                    {
+                        <div>Loader...</div>
+                    }
+                    else
                     {
                         <div class="grid">
-                            <div class="card employee-card-clickable"
-                                 style="cursor:pointer;"
-                                 @onclick="() => GoToEmployee(emp.Id)">
+                            @foreach (var emp in FilteredEmployees)
+                            {
+                                <div class="grid">
+                                    <div class="card employee-card-clickable"
+                                         style="cursor:pointer;"
+                                         @onclick="() => GoToEmployee(emp.Id)">
 
-                                <div class="color-box" style="background:@emp.Color"></div>
+                                        <div class="color-box" style="background:@emp.Color"></div>
 
-                                <div class="info">
-                                    <h4>@emp.Name</h4>
-                                    <p>@emp.Type</p>
+                                        <div class="info">
+                                            <h4>@emp.Name</h4>
+                                            <p>@emp.Type</p>
+                                        </div>
+
+                                        <div>
+                                            <p>Visning af opkommende behandlinger</p>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <div>
-                                    <p>Visning af opkommende behandlinger</p>
-                                </div>
-                            </div>
+                            }
                         </div>
                     }
                 </div>
-            }
+            </div>
         </div>
-    </FloatingPage>
+    </div>
 </div>
+

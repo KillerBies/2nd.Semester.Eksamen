@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 using WebUIServices;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace Components.Pages.PersonPages.EmployeePages
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 {
     public partial class CreateEmployee
     {

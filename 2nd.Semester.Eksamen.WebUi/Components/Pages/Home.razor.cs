@@ -1,19 +1,20 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using _2nd.Semester.Eksamen.Application.Services.BookingServices;
+using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+using _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Net;
-using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
-using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
-using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-using _2nd.Semester.Eksamen.Application.Services.BookingServices;
 
-namespace Components.Pages
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 {
     public partial class Home
     {
@@ -23,15 +24,29 @@ namespace Components.Pages
         [Inject] private ITreatmentBookingRepository _treatmentBookingRepository { get; set; }
         [Inject] private ITreatmentRepository _treatmentRepository { get; set; }
         [Inject] private IEmployeeRepository _employeeRepository { get; set; }
-        [Inject] private BookingQueryService _bookingService { get; set; }
+        [Inject] private BookingQueryService _bookingQueryService { get; set; }
+        [Inject] private BookingApplicationService _bookingApplicationService { get; set; }
+        private List<BookingDTO> BookingsToday => bookings.Where(b=>b.Start.Date == CurrentTime.Date).ToList();
+        private int TreatmentCount => BookingsToday.Select(b => b.TreatmentBookingDTOs.Count).Sum();
+        private int CustomerCount => BookingsToday.Select(b => b.Customer.id).Distinct().Count();
+        private int BookingsCount => BookingsToday.Count();
         private List<BookingDTO> bookings { get; set; } = new();
         private bool ShowBookingWarning { get; set; } = false;
         private bool ShowBookingPayment { get; set; } = false;
         private BookingDTO selectedBooking { get; set; } = new();
+        private string errorMessage { get; set; } = "";
 
         protected override async Task OnInitializedAsync()
         {
-            bookings = await _bookingService.GetUpcomingBookingsAsync();
+            try
+            {
+                bookings = await _bookingQueryService.GetUpcomingBookingsAsync();
+                if (!bookings.Any()) errorMessage = "Ingen Bookinger Blev Fundet.";
+            }
+            catch
+            {
+                errorMessage = "Ingen forbindelse til databasen.";
+            }
         }
 
 
@@ -45,9 +60,17 @@ namespace Components.Pages
             ShowBookingPayment = true;
             selectedBooking = booking;
         }
-        public void ConfirmCancelBooking()
+        private async Task ConfirmCancelBooking()
         {
-
+            try
+            {
+                await _bookingApplicationService.CancelBookingAsync(selectedBooking);
+                bookings.Remove(selectedBooking);
+            }
+            catch
+            {
+                errorMessage = "Noget gik galt i forbindelse med at aflyse bookingen!";
+            }
         }
         public async void InjectData()
         {

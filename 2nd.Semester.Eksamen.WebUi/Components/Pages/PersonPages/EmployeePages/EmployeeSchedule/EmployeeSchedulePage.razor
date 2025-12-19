@@ -1,12 +1,13 @@
 ﻿@page "/EmployeeSchedule"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
 @using _2nd.Semester.Eksamen.Application.Services.PersonService
 @using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
 @using Radzen
 @using Radzen.Blazor
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
-@namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
 @rendermode InteractiveServer
+
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
     <div class="alert alert-danger">
