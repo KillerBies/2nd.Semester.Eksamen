@@ -14,6 +14,14 @@
                     <h1>Faktura</h1>
                     <p class="subtitle">Oversigt over alle Faktura</p>
                 </div>
+                <div class="btn-group ms-auto" style="width:20%; gap:1rem;">
+                    <div class="input-group">
+                        <input type="text"
+                               placeholder="Søg Navn..."
+                               @bind="SearchTermName"
+                               @bind:event="oninput" />
+                    </div>
+                </div>
             </div>
             <div class="overview-page-content">
                 @if (orderSnapshotDTOs == null)
@@ -55,8 +63,11 @@
 
 @code {
     //needs filter for customer and date
+    public string SearchTermName { get; set; } = "";
+    private List<OrderSnapshotDTO> FilterdOrders => orderSnapshotDTOs.Where(o => (string.IsNullOrWhiteSpace(SearchTermName) || o.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase))).ToList();
 
-    List<OrderSnapshotDTO> orderSnapshotDTOs;
+    private List<OrderSnapshotDTO> orderSnapshotDTOs;
+
     protected override async Task OnInitializedAsync()
     {
         orderSnapshotDTOs = await invoiceService.GetAllSnapshotsAsync();

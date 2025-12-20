@@ -2,7 +2,6 @@
 @page "/TreatmentOverview"
 @namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
-@inject NavigationManager Navi
 @rendermode InteractiveServer
 
 
@@ -12,58 +11,61 @@
         <div class="shadow-sm" style="background-color:#F3F2F2;">
             <div class="page-header">
                 <div>
-                    <h1>Bookinger</h1>
-                    <p class="subtitle">Oversigt over alle bookinger</p>
+                    <h1>Behandlinger</h1>
+                    <p class="subtitle">Oversigt over alle behandlinger</p>
                 </div>
-                <div class="btn-group ms-auto" style="width:50%; gap:1rem;">
-                    <div class="input-group">
-                        <input type="text" placeholder="Søg Kunde..." @bind="SearchTermCustomer" @bind:event="oninput" />
-                    </div>
-                    <div class="input-group">
-                        <input type="date" placeholder="Dato..." @bind="SearchTermDate" />
+                <div class="btn-group ms-auto" style="width:20%; gap:1rem;">
+                    <div class="input-group" style="padding-right:1rem;">
+                        <input type="text" placeholder="Søg Behandlings Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
                     </div>
                 </div>
+                <button class="add-employee-btn" @onclick="NewTreatmentNavigation">
+                    <i class="bi bi-plus-lg"></i> Tilføj Behandling
+                </button>
             </div>
             <div class="overview-page-content">
                 <div class="stats-grid">
                     <div class="stat-card">
                         <h3>Total</h3>
-                        <span>@bookingList.Count</span>
+                        <span>@Treatments.Count</span>
                     </div>
                     <div class="stat-card">
-                        <h3>Idag</h3>
-                        <span>@TodayCount</span>
+                        <h3>Udførte Behandlinger</h3>
+                        <span>0</span>
                     </div>
                     <div class="stat-card">
                         <h3>Pending</h3>
-                        <span>@PendingCount</span>
+                        <span>0</span>
                     </div>
                 </div>
 
                 <div style="margin:30px;">
-                    @if (LoadFailed)
+                    @if (Treatments == null)
                     {
-                        <div class="alert alert-danger">
-                            Kunne ikke hente bookinger. Prøv igen senere.
-                        </div>
+                        <p>Indlæser behandlinger...</p>
                     }
-                    else if (bookingList == null)
+                    else if (!Treatments.Any())
                     {
-                        <div>Loader...</div>
+                        <p>Ingen behandlinger fundet.</p>
                     }
                     else
                     {
-                        <div class="grid">
-                            @foreach (var booking in FilteredBookings)
+                        <div class="dTO-grid">
+                            @foreach (var treatment in FilterdTreatments)
                             {
-                                <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column; cursor:pointer;" @onclick="() => ShowOverlay(booking)">
-                                    <div class="info">
-                                        <div style="display:flex; margin-bottom:20px;">
-                                            <h4 style="color: #034265;">@booking.Customer.Name</h4>
-                                            <span class="booking-status ms-auto" style="height:2%;"></span>
+                                <div class="treatment-card">
+                                    <div class="treatment-card-header">
+
+                                        <div class="treatment-card-body">
+                                            <p>Navn: @treatment.Name</p>
+                                            <p>Pris: @treatment.BasePrice</p>
                                         </div>
-                                        <p>@booking.Start.ToString("g") til @booking.End.ToString("g")</p>
-                                        <p>Status: @booking.Status</p>
+
+                                        <div class="treatment-card-footer">
+                                            <button class="btn btn-primary"@onclick="() => ShowOverlay(treatment)">
+                                                Se detaljer
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             }
@@ -73,46 +75,11 @@
             </div>
         </div>
     </div>
-
-
-<div class="treatment-overview-container">
-    <h2>Behandlingsoversigt</h2>
-    <div class="treatment-new">
-    <button class="btn btn-primary" @onclick="NewTreatmentNavigation">Lav ny behandling</button>
-    </div>
-    @if (dTOs == null)
-    {
-        <p>Indlæser behandlinger...</p>
-    }
-    else if (!dTOs.Any())
-    {
-        <p>Ingen behandlinger fundet.</p>
-    }
-    <div class="dTO-grid">
-        @foreach (var dTO in dTOs)
-        {
-        <div class="treatment-card">
-                <div class="treatment-card-header">
-                   
-                <div class="treatment-card-body">
-                    <p>Navn: @dTO.Name</p>
-                    <p>Pris: @dTO.BasePrice</p>
-                </div>
-
-                <div class="treatment-card-footer">
-                    <button class="btn btn-primary"
-                            @onclick="() => ShowOverlay(dTO)">
-                        Se detaljer
-                    </button>
-                </div>
-            </div>
-        </div>
-        }
-    </div>
+</div>
 
     @if (isVisible == true)
     {
-        <BookingNotification IsVisible=isVisible>
+    <BookingNotification IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)">
             <h2> @selectedTreatment.Name</h2>
             <p><b>Pris:</b> @selectedTreatment.BasePrice</p>
             <p><b>Varighed:</b> @selectedTreatment.Duration</p>
@@ -134,8 +101,6 @@
             <button class="btn btn-danger mt-3" @onclick="() => DeleteTreatment(selectedTreatment.TreatmentId)">Slet behandling</button>
         </BookingNotification>
     }
-
-</div>
 
 
 

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
     public class CampaignDiscountDTO
     {
         [Required(ErrorMessage = "Navn er påkrævet.")]

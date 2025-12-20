@@ -15,8 +15,8 @@
 @inject ICustomerRepository customerRepository
 
 
-<div style="background-color:#F3F2F2; height:100%;">
-    <div style="background-color:#F3F2F2; height:vh;">
+<div style="background-color:#F3F2F2; min-height:100vh;">
+    <div style="background-color:#F3F2F2; height:100%;">
         @if (!string.IsNullOrEmpty(_errorMessage))
         {
             <div class="alert alert-danger">

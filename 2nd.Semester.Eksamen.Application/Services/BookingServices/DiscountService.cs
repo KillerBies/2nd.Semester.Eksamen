@@ -2,6 +2,7 @@
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
 
 namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 {
@@ -45,8 +46,10 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         {
             return await _repo.GetCampaignByDiscountIdAsync(discountId);
         }
-
-
+        public async Task<List<DiscountOverviewDTO>> GetAllDiscountsForOverviewAsync()
+        {
+            return (await _repo.GetAllAsync()).Select(d => new DiscountOverviewDTO(d)).ToList();
+        }
     }
 
 }

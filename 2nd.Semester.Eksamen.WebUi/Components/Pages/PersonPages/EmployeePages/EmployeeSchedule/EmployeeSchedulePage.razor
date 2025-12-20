@@ -17,7 +17,7 @@
 
 @if (ShowDetailsWindow)
 {
-    <SidePage>
+    <SidePage IsVisible=ShowDetailsWindow IsVisibleChanged="@(v => ShowDetailsWindow = v)">
         @SelectedScheduleItems.Max().Start - @SelectedScheduleItems.Min().End
     </SidePage>
 }
@@ -25,7 +25,7 @@
 
 @if (ShowAddWindow)
 {
-    <BookingNotification IsVisible="ShowAddWindow">
+    <BookingNotification IsVisible="ShowAddWindow" IsVisibleChanged="@(v => ShowAddWindow = v)">
         <h3>Tilføj Til Skema</h3>
         <select @bind="SelectedType" style="margin-bottom:5px;">
             <option value="" disabled selected>-- Vælg En Type --</option>
@@ -82,10 +82,11 @@
                      Style="height:860px; width:100%;"
                      AppointmentRender="@OnAppintmentRender"
                      AppointmentSelect="@OnAppointmentSelect">
-
         <Template Context="scheduleItem">
-            <strong>@scheduleItem.Title</strong>
-            <div>@TimeOnly.FromDateTime((DateTime)scheduleItem.Start) - @TimeOnly.FromDateTime((DateTime)scheduleItem.End)</div>
+            <div style="display:flex;">
+                <strong>@scheduleItem.Title</strong>
+                <p class="subtitle ms-auto" style="font-size:x-small;">@TimeOnly.FromDateTime((DateTime)scheduleItem.Start) - @TimeOnly.FromDateTime((DateTime)scheduleItem.End)</p>
+            </div>
         </Template>
         <ChildContent>
             <RadzenWeekView />

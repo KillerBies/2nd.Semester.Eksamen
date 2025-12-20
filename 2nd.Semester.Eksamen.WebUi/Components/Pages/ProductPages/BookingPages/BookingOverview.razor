@@ -84,8 +84,7 @@
 
     @if (visibleOverlay)
     {
-        <SidePage IsVisible="visibleOverlay"
-                  IsVisibleChanged="@(v => visibleOverlay = v)">
+        <SidePage IsVisible="visibleOverlay" IsVisibleChanged="@(v => visibleOverlay = v)">
             <div class="d-flex flex-column h-100">
 
                 @if (!string.IsNullOrEmpty(errorMessage))
@@ -136,7 +135,7 @@
             </div>
             @if (toggleBookingWarning)
             {
-                <BookingNotification IsVisible="toggleBookingWarning">
+                <BookingNotification IsVisible="toggleBookingWarning" IsVisibleChanged="@(v => toggleBookingWarning = v)">
                     <div class="mt-2">
                         <p>Er du sikker på du vil slette bookingen?</p>
                         <div class="d-flex gap-2">

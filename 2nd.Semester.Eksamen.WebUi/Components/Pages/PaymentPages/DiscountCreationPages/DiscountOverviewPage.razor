@@ -1,0 +1,15 @@
+﻿@page "/DiscountOverviewPage"
+@using _2nd.Semester.Eksamen.Application.Services.ProductServices;
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
+<h3>DiscountOverviewPage</h3>
+
+@code {
+    [Inject] public IDiscountService discountService { get; set; }
+    private List<DiscountOverviewDTO> Discounts { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Discounts = await discountService.GetAllDiscountsForOverviewAsync();
+    }
+
+}

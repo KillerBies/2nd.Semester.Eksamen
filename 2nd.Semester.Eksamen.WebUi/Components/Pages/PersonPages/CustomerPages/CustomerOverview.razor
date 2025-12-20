@@ -1,9 +1,9 @@
 ﻿@page "/CustomerOverview"
-@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
-@rendermode InteractiveServer
 @using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@rendermode InteractiveServer
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
 
 
 <div style="background-color:#F3F2F2; height:100vh">
@@ -110,7 +110,7 @@
 
 @if (isVisible == true)
 {
-    <BookingNotification IsVisible=isVisible>
+    <BookingNotification IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)">
 
         @if (selectedCustomer != null)
         {
@@ -147,11 +147,3 @@
 
 
 
-
-
-
-
-@code {
-
-
-}

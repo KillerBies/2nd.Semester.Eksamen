@@ -230,7 +230,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         private void UpdateTreatment(TreatmentBookingDTO updated)
         {
             GenReset();
-            StateHasChanged();
         }
 
         private bool checkfields()

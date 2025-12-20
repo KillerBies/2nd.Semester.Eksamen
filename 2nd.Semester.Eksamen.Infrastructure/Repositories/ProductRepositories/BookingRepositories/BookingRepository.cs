@@ -35,12 +35,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 {
                     var employee = await _context.Employees.FindAsync(treatment.EmployeeId);
                     var day = await _context.ScheduleDays.Include(sd=>sd.TimeRanges).FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date== DateOnly.FromDateTime(treatment.Start));
+                    string treatmentName = (await _context.Treatments.FindAsync(treatment.TreatmentId)).Name;
                     if(day==null)
                     {
                         day = new ScheduleDay(DateOnly.FromDateTime(treatment.Start), employee.WorkStart, employee.WorkEnd);
                     }
                     day.EmployeeId = treatment.EmployeeId;
-                    day.AddBooking(treatment, ActivityId);
+                    day.AddBooking(treatment, ActivityId, treatmentName);
                     _context.ScheduleDays.Update(day);
                     await _context.SaveChangesAsync();
                 }

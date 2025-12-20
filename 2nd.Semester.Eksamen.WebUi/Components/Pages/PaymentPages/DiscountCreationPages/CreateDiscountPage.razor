@@ -50,7 +50,7 @@
 
 @if (OpenPopUp)
 {
-	<BookingNotification IsVisible="OpenPopUp">
+	<BookingNotification IsVisible="OpenPopUp" IsVisibleChanged="@(v => OpenPopUp = v)">
 		<div>
 			<div style="overflow-y: auto;">
 				@foreach (var product in allProducts)
@@ -67,7 +67,7 @@
 
 @if (OpenConfirmation)
 {
-	<BookingNotification IsVisible="OpenConfirmation">
+	<BookingNotification IsVisible="OpenConfirmation" IsVisibleChanged="@(v => OpenConfirmation = v)">
 		<div>
 			<h1>Vil du Oprette denne rabat</h1>
 		</div>

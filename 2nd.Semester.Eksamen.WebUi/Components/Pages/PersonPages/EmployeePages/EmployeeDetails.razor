@@ -11,7 +11,7 @@
 
 @if(ShowConfirmDelete)
 {
-    <BookingNotification IsVisible="ShowConfirmDelete">
+    <BookingNotification IsVisible="ShowConfirmDelete" IsVisibleChanged="@(v => ShowConfirmDelete = v)">
         <div style="display:flex;align-content:center;align-items:center; flex-direction:column">
         <div style="border-bottom:dashed 1px;">
             <h4>Er du sikker på at du vil slette medarbejder</h4>

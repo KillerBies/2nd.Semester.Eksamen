@@ -3,8 +3,6 @@
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
-@using _2nd.Semester.Eksamen.WebUi.Components.Shared
-@using Components.Pages.ProductPages.BookingPages
 @rendermode InteractiveServer
 @page "/"
 
@@ -64,7 +62,7 @@
 </div>
 @if (ShowBookingWarning)
 {
-    <BookingNotification IsVisible="ShowBookingWarning">
+    <BookingNotification IsVisible="ShowBookingWarning" IsVisibleChanged="@(v => ShowBookingWarning = v)">
         <div class="mt-2">
             <p>Er du sikker på du vil aflyse bookingen?</p>
             <div class="d-flex gap-2 btn-group">

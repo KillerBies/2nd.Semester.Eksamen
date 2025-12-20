@@ -1,7 +1,6 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
-using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.WebUi.Components.Shared;
 using Microsoft.AspNetCore.Components;
@@ -16,6 +15,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
         public string SearchTermPhone { get; set; } = "";
         private bool LoadFailed = false;
         private bool OpenEdit = false;
+        private bool IsVisible = false;
         [Inject] public ICustomerService _customerService { get; set; }
         private int BronzeCount => Customers.Count(c=>c.Type == "Bronze");
         private int SilverCount => Customers.Count(c => c.Type == "Sølv");
@@ -23,9 +23,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
         private List<CustomerDTO> Customers = new();
         private List<CustomerDTO> FilterdCustomers => Customers.Where(c => (string.IsNullOrWhiteSpace(SearchTermName) || c.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && (string.IsNullOrWhiteSpace(SearchTermPhone) || c.PhoneNumber.Contains(SearchTermPhone, StringComparison.OrdinalIgnoreCase))).ToList();
         private CustomerDTO? selectedCustomer;
-
-
-        public bool isVisible;
+        public bool isVisible = false;
 
 
         protected override async Task OnInitializedAsync()
