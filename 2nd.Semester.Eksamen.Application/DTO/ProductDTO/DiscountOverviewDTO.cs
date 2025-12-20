@@ -39,6 +39,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
             {
                 var Discount = (Campaign)discount;
                 Description = Discount.Description;
+                Type = "Kampagne Rabat";
                 Start = Discount.Start;
                 End = Discount.End;
                 AppliesToProducts = Discount.ProductsInCampaign == null ? new() : Discount.ProductsInCampaign.Select(p => new ProductDTO() { Name = p.Name, Price = p.Price, ProductId = p.Id }).ToList();

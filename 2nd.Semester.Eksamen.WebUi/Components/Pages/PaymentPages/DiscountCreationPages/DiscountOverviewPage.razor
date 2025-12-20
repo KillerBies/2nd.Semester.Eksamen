@@ -2,11 +2,123 @@
 @using _2nd.Semester.Eksamen.Application.Services.ProductServices;
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
-<h3>DiscountOverviewPage</h3>
+@rendermode InteractiveServer
+
+
+<div style="background-color:#F3F2F2; height:100vh">
+    <div class="overview-page">
+        <div class="shadow-sm" style="background-color:#F3F2F2;">
+            <div class="page-header">
+                <div>
+                    <h1>Rabatter</h1>
+                    <p class="subtitle">Oversigt over alle rabatter</p>
+                </div>
+                <div class="btn-group ms-auto" style="width:20%; gap:1rem;">
+                    <div class="input-group"">
+                        <input type="text" placeholder="Søg Rabattens Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
+                    </div>
+                    <div class="input-group"">
+                <InputSelect class="form-control" @bind-Value="SearchTermType">
+                        <option value="">-- Alle Rabatter --</option>
+                        <option value="Kampagne Rabat">-- Kampagner --</option>
+                        <option value="Loyalitets Rabat">-- Loyalitets Rabatter --</option>
+                </InputSelect>
+                    </div>
+                </div>
+                <button class="add-employee-btn" @onclick="() => isVisible=true">
+                    <i class="bi bi-plus-lg"></i> Tilføj Rabat
+                </button>
+            </div>
+            <div class="overview-page-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total</h3>
+                        <span>@Discounts.Count</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Kampagner</h3>
+                        <span>0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Loyalitets Discounts</h3>
+                        <span>0</span>
+                    </div>
+                </div>
+
+                <div style="margin:30px;">
+                    @if (Discounts == null)
+                    {
+                        <p>Indlæser behandlinger...</p>
+                    }
+                    else if (!Discounts.Any())
+                    {
+                        <p>Ingen behandlinger fundet.</p>
+                    }
+                    else
+                    {
+                        <div class="grid">
+                            @foreach (var discounts in FilterdDiscounts)
+                            {
+                                <div class="card">
+                                    <div class="treatment-card-header">
+
+                                        <div class="treatment-card-body">
+                                            <p>Navn: @treatment.Name</p>
+                                            <p>Pris: @treatment.BasePrice</p>
+                                        </div>
+
+                                        <div class="treatment-card-footer">
+                                            <button class="btn btn-primary"@onclick="() => ShowOverlay(treatment)">
+                                                Se detaljer
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    @if (isVisible == true)
+    {
+    <BookingNotification IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)">
+            <h2> @selectedTreatment.Name</h2>
+            <p><b>Pris:</b> @selectedTreatment.BasePrice</p>
+            <p><b>Varighed:</b> @selectedTreatment.Duration</p>
+            <p><b>Kategori:</b> @selectedTreatment.Category</p>
+
+            <p><b>Påkrævede specialiteter:</b></p>
+            <ul>
+                @if (selectedTreatment.RequiredSpecialties != null)
+                {
+                    @foreach (var s in selectedTreatment.RequiredSpecialties)
+                    {
+                        <li>@s.Replace(",", "")</li>
+                    }
+                }
+            </ul>
+            <p><b>Beskrivelse:</b> @selectedTreatment.Description</p>
+
+            <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
+            <button class="btn btn-danger mt-3" @onclick="() => DeleteTreatment(selectedTreatment.TreatmentId)">Slet behandling</button>
+        </BookingNotification>
+    }
+
+
+
 
 @code {
     [Inject] public IDiscountService discountService { get; set; }
     private List<DiscountOverviewDTO> Discounts { get; set; }
+    private string SearchTermName { get; set; }
+    private string SearchTermType { get; set; }
+    private bool isVisible = false;
+    private List<DiscountOverviewDTO> FilterdDiscounts => Discounts.Where(d => (string.IsNullOrWhiteSpace(SearchTermName) || d.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && ((string.IsNullOrWhiteSpace(SearchTermType) || d.Type == SearchTermType))).ToList();
+
     protected override async Task OnInitializedAsync()
     {
         Discounts = await discountService.GetAllDiscountsForOverviewAsync();

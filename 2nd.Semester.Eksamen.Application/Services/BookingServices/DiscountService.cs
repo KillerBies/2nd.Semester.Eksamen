@@ -2,7 +2,7 @@
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
-using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
 
 namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 {
