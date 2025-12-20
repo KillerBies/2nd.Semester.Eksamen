@@ -2,6 +2,7 @@
 @using _2nd.Semester.Eksamen.Application.Services.ProductServices;
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages;
 @rendermode InteractiveServer
 
 
@@ -57,21 +58,76 @@
                     else
                     {
                         <div class="grid">
-                            @foreach (var discounts in FilterdDiscounts)
+                            @foreach (var discount in FilterdDiscounts)
                             {
-                                <div class="card">
-                                    <div class="treatment-card-header">
+                                <div class="discount-card @(discount.IsActive ? "active" : "inactive")">
+                                    <div class="discount-card-header">
+                                        <h3>@discount.Name</h3>
 
-                                        <div class="treatment-card-body">
-                                            <p>Navn: @treatment.Name</p>
-                                            <p>Pris: @treatment.BasePrice</p>
-                                        </div>
+                                        <span class="badge @(discount.Type == "Kampagne Rabat" ? "campaign" : "loyalty")">
+                                            @discount.Type
+                                        </span>
+                                    </div>
 
-                                        <div class="treatment-card-footer">
-                                            <button class="btn btn-primary"@onclick="() => ShowOverlay(treatment)">
-                                                Se detaljer
-                                            </button>
+                                    <div class="discount-card-body">
+                                        @if (discount.Type == "Kampagne Rabat")
+                                        {
+                                            <p class="description">@discount.Description</p>
+
+                                            <div class="date-range">
+                                                <span>@discount.Start.ToShortDateString()</span>
+                                                <span>→</span>
+                                                <span>@discount.End.ToShortDateString()</span>
+                                            </div>
+
+                                            @if (discount.AppliesToProducts?.Any() == true)
+                                            {
+                                                <div class="product-list">
+                                                    @foreach (var product in discount.AppliesToProducts.Take(3))
+                                                    {
+                                                        <span class="product-chip">@product.Name</span>
+                                                    }
+
+                                                    @if (discount.AppliesToProducts.Count > 3)
+                                                    {
+                                                        <span class="more">+@(@discount.AppliesToProducts.Count - 3)</span>
+                                                    }
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <p><b>Loyalitetstype:</b> @discount.LoyaltyDiscountType</p>
+                                            <p><b>Minimum besøg:</b> @discount.MinimumVisits</p>
+                                        }
+
+                                        <div class="discount-values">
+                                            @if (discount.TreatmentDiscount > 0)
+                                            {
+                                                <div>
+                                                    <span class="label">Behandling</span>
+                                                    <span class="value">@discount.TreatmentDiscount %</span>
+                                                </div>
+                                            }
+
+                                            @if (discount.ProductDiscount > 0)
+                                            {
+                                                <div>
+                                                    <span class="label">Produkt</span>
+                                                    <span class="value">@discount.ProductDiscount %</span>
+                                                </div>
+                                            }
                                         </div>
+                                    </div>
+
+                                    <div class="discount-card-footer">
+                                        <span class="status @(discount.IsActive ? "active" : "inactive")">
+                                            @(discount.IsActive ? "Aktiv" : "Inaktiv")
+                                        </span>
+
+                                        <button class="btn btn-outline-primary btn-sm">
+                                            Se detaljer
+                                        </button>
                                     </div>
                                 </div>
                             }
@@ -82,6 +138,22 @@
         </div>
     </div>
 </div>
+
+
+
+@* 
+<div class="grid-item  shadow-sm" style="display: flex; flex-direction: column; cursor:pointer;">
+    <div class="info">
+        <div style="display:flex; margin-bottom:20px;">
+            <h4 style="color: #034265;">@discount.Name</h4>
+            <span class="booking-status ms-auto" style="height:2%; background-color: @(discount.IsActive ? "#034265" : "#b55054")" title="Blå: Aktiv/Rød: Inaktiv"></span>
+        </div>
+        <h3>Type: @discount.Type</h3>
+        <p>@booking.Start.ToString("g") til @booking.End.ToString("g")</p>
+        <p>Status: @booking.Status</p>
+    </div>
+</div>
+
 
     @if (isVisible == true)
     {
@@ -107,15 +179,15 @@
             <button class="btn btn-danger mt-3" @onclick="() => DeleteTreatment(selectedTreatment.TreatmentId)">Slet behandling</button>
         </BookingNotification>
     }
-
+ *@
 
 
 
 @code {
     [Inject] public IDiscountService discountService { get; set; }
-    private List<DiscountOverviewDTO> Discounts { get; set; }
-    private string SearchTermName { get; set; }
-    private string SearchTermType { get; set; }
+    private List<DiscountOverviewDTO> Discounts { get; set; } = new();
+    private string SearchTermName { get; set; } = "";
+    private string SearchTermType { get; set; } = "";
     private bool isVisible = false;
     private List<DiscountOverviewDTO> FilterdDiscounts => Discounts.Where(d => (string.IsNullOrWhiteSpace(SearchTermName) || d.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && ((string.IsNullOrWhiteSpace(SearchTermType) || d.Type == SearchTermType))).ToList();
 

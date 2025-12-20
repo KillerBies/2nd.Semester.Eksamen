@@ -21,6 +21,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
         public string Description { get; set; } = string.Empty;
         public int NumberOfUses { get; set; } = 0;
         public int MinimumVisits { get; set; } = 0;
+        public bool IsActive { get; set; } = true;
 
         public DiscountOverviewDTO(Discount discount)
         {
@@ -43,6 +44,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
                 Start = Discount.Start;
                 End = Discount.End;
                 AppliesToProducts = Discount.ProductsInCampaign == null ? new() : Discount.ProductsInCampaign.Select(p => new ProductDTO() { Name = p.Name, Price = p.Price, ProductId = p.Id }).ToList();
+                IsActive = DateTime.Now >= Start && DateTime.Now <= End ?  true : false;
             }
         }
     }
