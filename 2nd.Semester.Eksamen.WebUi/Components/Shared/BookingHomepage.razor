@@ -2,10 +2,10 @@
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 
 <div class="card" style="display: flex; flex-direction: column; cursor:default;">
-    <div class="card-header" style="background-color:#034265; padding-bottom:0;">
-        <div class="btn-group">
-            <h4 class="mb-0" style="color:white;">@booking.Start.ToString("M") @booking.Start.ToString("hh:mm") - @booking.End.ToString("hh:mm") &nbsp;</h4>
-            <p class="subtitle">[ @(CurrentTime<booking.Start? TimeUntil : "")]</p>
+    <div class="card-header bg-transparent" style="padding-bottom:10px;">
+        <div class="btn-group" style="display:flex;">
+            <h4 class="mb-0" style="color:#034265;">@booking.Start.ToString("M") @booking.Start.ToString("hh:mm") - @booking.End.ToString("hh:mm") &nbsp;</h4>
+            <span class="badge bg-dark ms-auto"> @(CurrentTime<booking.Start? TimeUntil : "")</span>
             @if (booking.End < CurrentTime )
             {
                 <span title="Denne booking er over" class="booking-status ms-auto" style="height:2%;"></span>

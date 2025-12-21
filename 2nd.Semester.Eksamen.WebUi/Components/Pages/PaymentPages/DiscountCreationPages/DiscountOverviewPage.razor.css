@@ -30,7 +30,7 @@
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
 }
@@ -79,3 +79,136 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.20);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+.discount-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.discount-card {
+    background: white;
+    border-radius: 14px;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+    .discount-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    }
+
+.discount-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: .5rem;
+}
+
+    .discount-card-header h3 {
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+.badge {
+    font-size: .75rem;
+    padding: .3rem .6rem;
+    border-radius: 8px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+    .badge.campaign {
+        background: #e0f2ff;
+        color: #0369a1;
+    }
+
+    .badge.loyalty {
+        background: #ecfdf5;
+        color: #065f46;
+    }
+
+.discount-card-body {
+    margin-top: .8rem;
+    flex: 1;
+}
+
+.description {
+    font-size: .9rem;
+    color: #555;
+}
+
+.date-range {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .85rem;
+    margin: .5rem 0;
+    color: #666;
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin-top: .5rem;
+}
+
+.product-chip {
+    background: #f3f4f6;
+    padding: .3rem .6rem;
+    border-radius: 999px;
+    font-size: .75rem;
+}
+
+.more {
+    font-size: .75rem;
+    color: #666;
+}
+
+.discount-values {
+    display: flex;
+    gap: 1rem;
+    margin-top: .8rem;
+}
+
+    .discount-values .label {
+        font-size: .7rem;
+        color: #888;
+    }
+
+    .discount-values .value {
+        font-weight: 600;
+    }
+
+.discount-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.status.active {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.status.inactive {
+    color: #dc2626;
+    font-weight: 600;
+}

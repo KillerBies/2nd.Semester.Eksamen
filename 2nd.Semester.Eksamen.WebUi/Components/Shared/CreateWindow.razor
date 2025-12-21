@@ -1,0 +1,23 @@
+﻿@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+
+@if (IsVisible)
+{
+    <div class="notification-overlay" @onclick="Close">
+        <div class="notification-content" @onclick:stopPropagation style="width: 30vw; height:65%;">
+            @ChildContent
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
+    [Parameter] public int Width { get; set; } = 50;
+
+    void Close()
+    {
+        IsVisible = false;
+        IsVisibleChanged.InvokeAsync(IsVisible);
+    }
+}

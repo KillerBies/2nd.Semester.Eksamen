@@ -1,8 +1,10 @@
 ﻿@page "/DiscountOverviewPage"
-@using _2nd.Semester.Eksamen.Application.Services.ProductServices;
-@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
-@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages;
+@using _2nd.Semester.Eksamen.Application.Services.ProductServices
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@inject IDiscountService discountService
 @rendermode InteractiveServer
 
 
@@ -14,21 +16,23 @@
                     <h1>Rabatter</h1>
                     <p class="subtitle">Oversigt over alle rabatter</p>
                 </div>
-                <div class="btn-group ms-auto" style="width:20%; gap:1rem;">
-                    <div class="input-group"">
+                <div class="btn-group ms-auto" style="width:40%; gap:1rem;">
+                    <div class="btn-group" >
+                        <select id="discountType" name="discountType" @bind="SearchTermType" @bind:event="oninput">
+                            <option value="">Alle</option>
+                            <option value="campaign">Kampagne</option>
+                            <option value="loyalty">Loyalitets rabat</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
                         <input type="text" placeholder="Søg Rabattens Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
                     </div>
-                    <div class="input-group"">
-                <InputSelect class="form-control" @bind-Value="SearchTermType">
-                        <option value="">-- Alle Rabatter --</option>
-                        <option value="Kampagne Rabat">-- Kampagner --</option>
-                        <option value="Loyalitets Rabat">-- Loyalitets Rabatter --</option>
-                </InputSelect>
+                    <div >
+                        <button class="btn btn-primary" @onclick="() => isVisible = true">
+                            <i class="bi bi-plus-lg"></i> Tilføj Tilbud
+                        </button>
                     </div>
                 </div>
-                <button class="add-employee-btn" @onclick="() => isVisible=true">
-                    <i class="bi bi-plus-lg"></i> Tilføj Rabat
-                </button>
             </div>
             <div class="overview-page-content">
                 <div class="stats-grid">
@@ -49,11 +53,11 @@
                 <div style="margin:30px;">
                     @if (Discounts == null)
                     {
-                        <p>Indlæser behandlinger...</p>
+                        <p>Indlæser rabatter...</p>
                     }
                     else if (!Discounts.Any())
                     {
-                        <p>Ingen behandlinger fundet.</p>
+                        <p>Ingen rabatter fundet.</p>
                     }
                     else
                     {
@@ -106,7 +110,7 @@
                                             {
                                                 <div>
                                                     <span class="label">Behandling</span>
-                                                    <span class="value">@discount.TreatmentDiscount %</span>
+                                                    <span class="value">@((discount.TreatmentDiscount * 100).ToString("0")) %</span>
                                                 </div>
                                             }
 
@@ -114,7 +118,7 @@
                                             {
                                                 <div>
                                                     <span class="label">Produkt</span>
-                                                    <span class="value">@discount.ProductDiscount %</span>
+                                                    <span class="value">@((discount.ProductDiscount * 100).ToString("0")) %</span>
                                                 </div>
                                             }
                                         </div>
@@ -125,7 +129,7 @@
                                             @(discount.IsActive ? "Aktiv" : "Inaktiv")
                                         </span>
 
-                                        <button class="btn btn-outline-primary btn-sm">
+                                        <button class="btn btn-outline-primary btn-sm" @onclick="() => ShowDiscountDetails(discount)">
                                             Se detaljer
                                         </button>
                                     </div>
@@ -139,7 +143,134 @@
     </div>
 </div>
 
+@if(isVisible)
+{
+    <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v">
+            <div class="shadow-sm">
+                <CreateDiscount></CreateDiscount>
+            </div>
+    </CreateWindow>
+}
 
+@if(ShowDetails)
+{
+    <BookingNotification IsVisible=ShowDetails>
+        <div class="discount-details-card">
+            <div class="header">
+                <h2>@SelectedDiscount.Name</h2>
+
+                <span class="badge @(SelectedDiscount.Type == "Kampagne Rabat" ? "campaign" : "loyalty")">
+                    @SelectedDiscount.Type
+                </span>
+            </div>
+
+            <p class="description">
+                @if (SelectedDiscount.Type == "Kampagne Rabat")
+                {
+                    @SelectedDiscount.Description
+                }
+                else
+                {
+                    <span>
+                        Loyalitetstype: <b>@SelectedDiscount.LoyaltyDiscountType</b>
+                    </span>
+                }
+            </p>
+
+            <div class="info-grid">
+                @if (SelectedDiscount.Type == "Kampagne Rabat")
+                {
+                    <div>
+                        <span class="label">Start</span>
+                        <span>@SelectedDiscount.Start.ToShortDateString()</span>
+                    </div>
+
+                    <div>
+                        <span class="label">Slut</span>
+                        <span>@SelectedDiscount.End.ToShortDateString()</span>
+                    </div>
+                }
+
+                @if (SelectedDiscount.MinimumVisits > 0)
+                {
+                    <div>
+                        <span class="label">Minimum besøg</span>
+                        <span>@SelectedDiscount.MinimumVisits</span>
+                    </div>
+                }
+
+                <div>
+                    <span class="label">Antal anvendelser</span>
+                    <span>@SelectedDiscount.NumberOfUses</span>
+                </div>
+            </div>
+
+            <div class="discount-values">
+                @if (SelectedDiscount.TreatmentDiscount > 0)
+                {
+                    <div class="value-card">
+                        <span class="label">Behandling</span>
+                        <span class="value">@SelectedDiscount.TreatmentDiscount %</span>
+                    </div>
+                }
+
+                @if (SelectedDiscount.ProductDiscount > 0)
+                {
+                    <div class="value-card">
+                        <span class="label">Produkt</span>
+                        <span class="value">@SelectedDiscount.ProductDiscount %</span>
+                    </div>
+                }
+            </div>
+
+            @if (SelectedDiscount.AppliesToProducts?.Any() == true)
+            {
+                <div class="products">
+                    <span class="label">Gælder for produkter</span>
+                    <div class="product-list">
+                        @foreach (var product in SelectedDiscount.AppliesToProducts)
+                        {
+                            <span class="product-chip">@product.Name</span>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="footer">
+                <span class="status @(SelectedDiscount.IsActive ? "active" : "inactive")">
+                    @(SelectedDiscount.IsActive ? "Aktiv" : "Inaktiv")
+                </span>
+
+                <button class="btn btn-outline-secondary" @onclick="()=>ShowDetails=false">
+                    Luk
+                </button>
+            </div>
+        </div>
+    </BookingNotification>
+}
+
+
+
+@code {
+    private List<DiscountOverviewDTO> Discounts { get; set; } = new();
+    private string SearchTermName { get; set; } = "";
+    private string SearchTermType { get; set; } = "";
+    private bool isVisible = false;
+    private DiscountOverviewDTO SelectedDiscount { get; set; }
+    private bool ShowDetails = false;
+    private List<DiscountOverviewDTO> FilterdDiscounts => Discounts.Where(d => (string.IsNullOrWhiteSpace(SearchTermName) || d.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && ((string.IsNullOrWhiteSpace(SearchTermType) || d.Type == SearchTermType))).ToList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Discounts = await discountService.GetAllDiscountsForOverviewAsync();
+        SelectedDiscount = new();
+    }
+    private void ShowDiscountDetails(DiscountOverviewDTO discount)
+    {
+        SelectedDiscount = discount;
+        ShowDetails = true;
+    }
+}
 
 @* 
 <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column; cursor:pointer;">
@@ -180,20 +311,3 @@
         </BookingNotification>
     }
  *@
-
-
-
-@code {
-    [Inject] public IDiscountService discountService { get; set; }
-    private List<DiscountOverviewDTO> Discounts { get; set; } = new();
-    private string SearchTermName { get; set; } = "";
-    private string SearchTermType { get; set; } = "";
-    private bool isVisible = false;
-    private List<DiscountOverviewDTO> FilterdDiscounts => Discounts.Where(d => (string.IsNullOrWhiteSpace(SearchTermName) || d.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && ((string.IsNullOrWhiteSpace(SearchTermType) || d.Type == SearchTermType))).ToList();
-
-    protected override async Task OnInitializedAsync()
-    {
-        Discounts = await discountService.GetAllDiscountsForOverviewAsync();
-    }
-
-}

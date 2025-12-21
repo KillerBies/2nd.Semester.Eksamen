@@ -47,5 +47,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
                 IsActive = DateTime.Now >= Start && DateTime.Now <= End ?  true : false;
             }
         }
+        public DiscountOverviewDTO()
+        { }
     }
 }
