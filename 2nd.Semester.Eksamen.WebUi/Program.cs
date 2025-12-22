@@ -82,18 +82,20 @@ builder.Services.AddScoped<IDiscountApplicationService, DiscountApplicationServi
 builder.Services.AddScoped<ILoyaltyDiscountRepository, LoyaltyDiscountRepository>();
 builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
 builder.Services.AddScoped<IProductApplicationService, ProductApplicationService>();
+builder.Services.AddScoped<IProductOverviewService, ProductOverviewService>();
 
 
-// if your repositories and services are separate:
+
+
 builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
 builder.Services.AddScoped<ICompanyCustomerService, CompanyCustomerService>();
 builder.Services.AddScoped<IOrderLineRepository, OrderLineRepository>();
 
-// and register a default ICustomerService (pick one or create a composite)
+
 builder.Services.AddScoped<ICustomerService>(sp => sp.GetRequiredService<PrivateCustomerService>()); // or CustomerService
 
 
-// Then register services
+
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
@@ -110,11 +112,10 @@ QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 
 var app = builder.Build();
-// Configure the HTTP request pipeline.
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

@@ -1,0 +1,182 @@
+﻿@page "/ProductOverviewPage"
+@using _2nd.Semester.Eksamen.Application.Services.ProductServices
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@inject IProductOverviewService productOverviewService
+@rendermode InteractiveServer
+
+
+<div style="background-color:#F3F2F2; height:100vh">
+    <div class="overview-page">
+        <div class="shadow-sm" style="background-color:#F3F2F2;">
+            <div class="page-header">
+                <div>
+                    <h1>Produkter</h1>
+                    <p class="subtitle">Oversigt over alle produkter</p>
+                </div>
+                <div class="btn-group ms-auto" style="width:40%; gap:1rem;">
+                    <div class="btn-group" >
+                        <select id="discountType" name="discountType" @bind="SearchTermType" @bind:event="oninput">
+                            <option value="">Alle</option>
+                            @foreach (var category in Categories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" placeholder="Søg Produktets Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
+                    </div>
+                    <div style="height:100%">
+                        <button class="btn btn-primary" @onclick="() => isVisible = true">
+                            <i class="bi bi-plus-lg"></i> Tilføj Produkt
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="overview-page-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total</h3>
+                        <span>@Products.Count</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Kategorier</h3>  
+                        <span>@CountCategory</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Solgte Produkter</h3>
+                        <span>@CountSold</span>
+                    </div>
+                </div>
+
+                <div style="margin:30px;">
+                    @if (Products == null)
+                    {
+                        <p>Indlæser rabatter...</p>
+                    }
+                    else if (!Products.Any())
+                    {
+                        <p>Ingen rabatter fundet.</p>
+                    }
+                    else
+                    {
+                        <div class="grid grid-4">
+                            @foreach (var product in FilterdProducts)
+                            {
+                                <div class="card">
+                                    <div class="card-header" style="display:flex;">
+                                        <h3>@product.Name</h3>
+                                        <span class="badge bg-secondary bg-opacity-50 ms-auto" style="height:fit-content">
+                                            @product.Category
+                                        </span>
+                                    </div>
+
+                                    <div class="card-body">
+                                        <h4>@product.Price.ToString("0") Kr.</h4>
+                                        <p style="margin: 16px 0;color: #555;line-height: 1.5;">@product.Description</p>
+                                    </div>
+
+                                    <div class="card-footer">
+                                        <button class="btn btn-outline-primary btn-sm" @onclick="() => ShowProductDetails(product)">
+                                            Se detaljer
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if(isVisible)
+{
+    <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v">
+            <div class="shadow-sm">
+                <CreateProduct></CreateProduct>
+            </div>
+    </CreateWindow>
+}
+
+@if(ShowDetails)
+{
+    <BookingNotification IsVisible=ShowDetails>
+        <div class="card">
+            <div class="card-header">
+                <h2>@SelectedProduct.Name</h2>
+
+                <span class="badge">
+                    @SelectedProduct.Category
+                </span>
+            </div>
+
+            <p style="margin: 16px 0;color: #555;line-height: 1.5;">
+                @SelectedProduct.Description
+            </p>
+
+            <div style="background: #f9f9f9; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 20px;">
+                <span class="label">Pris</span>
+                <span style="display: block; font-size: 2rem; font-weight: bold;">
+                    @SelectedProduct.Price.ToString("0") kr.
+                </span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                <div>
+                    <span class="label">Produkt ID</span>
+                    <span>@SelectedProduct.Id</span>
+                </div>
+            </div>
+            <button class="btn btn-outline-primary" @onclick="() => ShowSalesHistory = !ShowSalesHistory">Se Salgs Historik</button>
+            @if(ShowSalesHistory)
+            {
+                <div style="margin-top:20px;">
+                    <p>Salgs historik data er ikke tilgængelig i denne demo.</p>
+                </div>
+                <div class="grid col-1">
+                </div>
+            }
+            <div class="footer">
+                <button class="btn btn-outline-secondary" @onclick="() => ShowDetails = false">
+                    Luk
+                </button>
+            </div>
+        </div>
+    </BookingNotification>
+}
+
+
+
+@code {
+    private List<ProductOverviewDTO> Products { get; set; } = new();
+    private string SearchTermName { get; set; } = "";
+    private string SearchTermType { get; set; } = "";
+    private bool isVisible = false;
+    private bool ShowSalesHistory = false;
+    private ProductOverviewDTO SelectedProduct { get; set; }
+    private bool ShowDetails = false;
+    private List<ProductOverviewDTO> FilterdProducts => Products.Where(p => (string.IsNullOrWhiteSpace(SearchTermName) || p.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && ((string.IsNullOrWhiteSpace(SearchTermType) || p.Category == SearchTermType))).ToList();
+    private int CountCategory => Products.Select(p => p.Category).Distinct().Count();
+    private int CountSold = 0;
+    private List<string> Categories => Products.Select(p => p.Category).Distinct().ToList();
+    protected override async Task OnInitializedAsync()
+    {
+        Products = await productOverviewService.GetAllProductOverviewsAsync();
+        SelectedProduct = new();
+    }
+    private void ShowProductDetails(ProductOverviewDTO product)
+    {
+        SelectedProduct = product;
+        ShowDetails = true;
+    }
+}
+@*         public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public decimal Price { get; set; } = 0;
+        public string Description { get; set; } = string.Empty;
+        public string Category { get; set;  } = string.Empty;*@

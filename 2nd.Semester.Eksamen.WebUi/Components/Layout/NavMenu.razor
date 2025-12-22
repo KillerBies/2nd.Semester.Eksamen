@@ -1,4 +1,5 @@
 ﻿@using _2nd.Semester.Eksamen.WebUi.Components.Shared;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @rendermode InteractiveServer
 @namespace _2nd.Semester.Eksamen.WebUi.Components.Layout
 <!--Navbar-->
@@ -19,8 +20,14 @@
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="createbooking">
+            <NavLink class="nav-link" @onclick="() => CreateBookingIsVisible = !CreateBookingIsVisible" style="cursor:pointer;">
                 <span aria-hidden="true">Lav Booking</span>
+                @if (CreateBookingIsVisible)
+                {
+                    <CreateWindow IsVisible=CreateBookingIsVisible StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+                        <CreateBooking OnClose="()=>CreateBookingIsVisible=false"></CreateBooking>
+                    </CreateWindow>
+                }
             </NavLink>
         </div>
         <div class="nav-item px-3">
@@ -33,7 +40,6 @@
                 <span  aria-hidden="true">Medarbejderoversigt</span>
             </NavLink>
         </div>
-
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="CustomerOverview">
                 <span  aria-hidden="true">Kundeoversigt</span>
@@ -47,6 +53,11 @@
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="TreatmentOverview">
                 <span aria-hidden="true">Behandlingsoversigt</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="ProductOverviewPage">
+                <span aria-hidden="true">Produkt Oversigt</span>
             </NavLink>
         </div>
         <div class="nav-item px-3">

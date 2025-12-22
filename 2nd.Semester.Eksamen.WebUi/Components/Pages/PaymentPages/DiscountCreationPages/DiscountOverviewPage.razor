@@ -20,14 +20,14 @@
                     <div class="btn-group" >
                         <select id="discountType" name="discountType" @bind="SearchTermType" @bind:event="oninput">
                             <option value="">Alle</option>
-                            <option value="campaign">Kampagne</option>
-                            <option value="loyalty">Loyalitets rabat</option>
+                            <option value="Kampagne Rabat">Kampagner</option>
+                            <option value="Loyalitets Rabat">Loyalitets rabatter</option>
                         </select>
                     </div>
                     <div class="input-group">
                         <input type="text" placeholder="Søg Rabattens Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
                     </div>
-                    <div >
+                    <div style="height:100%">
                         <button class="btn btn-primary" @onclick="() => isVisible = true">
                             <i class="bi bi-plus-lg"></i> Tilføj Tilbud
                         </button>
@@ -41,12 +41,12 @@
                         <span>@Discounts.Count</span>
                     </div>
                     <div class="stat-card">
-                        <h3>Kampagner</h3>
-                        <span>0</span>
+                        <h3>Kampagner</h3>  
+                        <span>@CountCampaign</span>
                     </div>
                     <div class="stat-card">
                         <h3>Loyalitets Discounts</h3>
-                        <span>0</span>
+                        <span>@CountLoyalty</span>
                     </div>
                 </div>
 
@@ -259,7 +259,8 @@
     private DiscountOverviewDTO SelectedDiscount { get; set; }
     private bool ShowDetails = false;
     private List<DiscountOverviewDTO> FilterdDiscounts => Discounts.Where(d => (string.IsNullOrWhiteSpace(SearchTermName) || d.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && ((string.IsNullOrWhiteSpace(SearchTermType) || d.Type == SearchTermType))).ToList();
-
+    private int CountLoyalty => Discounts.Where(d => d.Type == "Loyalitets Rabat").Count();
+    private int CountCampaign => Discounts.Where(d => d.Type == "Kampagne Rabat").Count();
     protected override async Task OnInitializedAsync()
     {
         Discounts = await discountService.GetAllDiscountsForOverviewAsync();

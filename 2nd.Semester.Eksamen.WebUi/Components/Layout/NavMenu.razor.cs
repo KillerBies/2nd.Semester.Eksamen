@@ -12,6 +12,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Layout
         private bool Open = false;
         private void ToggleDropdown() => Open = !Open;
         private void CloseDropdown() => Open = false;
+        private bool CreateBookingIsVisible { get; set; } = false;
     }
 }
 
