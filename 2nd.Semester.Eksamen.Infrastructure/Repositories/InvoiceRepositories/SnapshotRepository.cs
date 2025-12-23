@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
-using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Text;
+using System.Threading.Tasks;
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
 {
     public class SnapshotRepository : ISnapshotRepository
@@ -67,6 +68,19 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
                 .Include(o => o.AppliedDiscountSnapshot)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
-
+        public async Task<IEnumerable<OrderSnapshot>> GetByProduct(string ProductName)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.OrderSnapshots.Where(o => o.OrderLinesSnapshot.Any(p => p.ProductSnapshot.Name == ProductName))
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.CustomerSnapshot)
+                        .ThenInclude(c => c.AddressSnapshot)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.TreatmentSnapshot)
+                .Include(o => o.OrderLinesSnapshot)
+                .ThenInclude(ol => ol.ProductSnapshot)
+                .Include(o => o.AppliedDiscountSnapshot)
+                .ToListAsync();
+        }
     }
 }

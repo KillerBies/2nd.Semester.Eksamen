@@ -16,6 +16,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
         private bool LoadFailed = false;
         private bool OpenEdit = false;
         private bool IsVisible = false;
+        private bool CreateCustomer { get; set; } = false;
         [Inject] public ICustomerService _customerService { get; set; }
         private int BronzeCount => Customers.Count(c=>c.Type == "Bronze");
         private int SilverCount => Customers.Count(c => c.Type == "Sølv");

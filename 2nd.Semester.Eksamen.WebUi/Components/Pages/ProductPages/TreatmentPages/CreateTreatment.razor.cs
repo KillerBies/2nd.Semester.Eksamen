@@ -7,8 +7,9 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
 {
     public partial class CreateTreatment
 {
-        private readonly ITreatmentService _treatmentService;
+
         private readonly DTO_to_Domain dtoDomain;
+        private readonly ITreatmentService _treatmentService;
         public CreateTreatment(ITreatmentService treatmentService)
         {
             _treatmentService = treatmentService;
@@ -25,6 +26,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
         TreatmentDTO treatment = new TreatmentDTO();
         public int hour;
         public int min;
+        private DateTime Varighed { get; set; }
         List<string> specialties = new();
         List<string> manuallyAddedSpecialties = new();
         string newSpecialty = "";

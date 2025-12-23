@@ -19,6 +19,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
         public int SelectedEmployeeId { get; set; } = 0;
         public int FrilanceCount => Employees.Count(e=>e.Type == "Frilands");
         public int FuildtidsCount => Employees.Count(e => e.Type == "Fuildtid");
+        public bool CreateEmployee { get; set; } = false;
 
         // FINAL AND/OR filter – updates automatically on typing
         public IEnumerable<EmployeeUserCardDTO> FilteredEmployees =>

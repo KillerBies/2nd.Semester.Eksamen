@@ -19,7 +19,7 @@
                         <input type="text" placeholder="Søg Behandlings Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
                     </div>
                 </div>
-                <button class="btn btn-primary" @onclick="NewTreatmentNavigation">
+                <button class="btn btn-primary" @onclick="() => CreateTreatment = true">
                     <i class="bi bi-plus-lg"></i> Tilføj Behandling
                 </button>
             </div>
@@ -102,7 +102,12 @@
         </BookingNotification>
     }
 
-
+    @if(CreateTreatment)
+{
+    <CreateWindow StyleParameters="background-color: #F3F2F2; padding:0;width:auto;" IsVisible=CreateTreatment IsVisibleChanged="@(v => CreateTreatment = v)">
+        <CreateTreatment></CreateTreatment>
+    </CreateWindow>
+}
 
 
 

@@ -11,6 +11,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
         [Inject] public NavigationManager Navi {get;set;} 
         private List<TreatmentDTO> Treatments = new();
         private TreatmentDTO? selectedTreatment;
+        private bool CreateTreatment { get; set; } = false;
         private string SearchTermName { get; set; }
         private List<TreatmentDTO> FilterdTreatments => Treatments.Where(t => (string.IsNullOrWhiteSpace(SearchTermName) || t.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase))).ToList();
 

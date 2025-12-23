@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="overview-page-content">
-                @if (orderSnapshotDTOs == null)
+                @if (orderSnapshotDTOs == null || !orderSnapshotDTOs.Any())
                 {
                     <p>Ingen ordrer fundet.</p>
                 }

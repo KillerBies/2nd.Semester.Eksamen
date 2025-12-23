@@ -1,6 +1,7 @@
 ﻿@page "/employees"
 @namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @rendermode InteractiveServer
 
 @if (ShowEmployeeDetails)
@@ -33,7 +34,7 @@
                                @bind="SearchTermPhone"
                                @bind:event="oninput" />
                     </div>
-                    <button class="add-employee-btn" @onclick="GoToAddEmployee">
+                    <button class="add-employee-btn" @onclick="()=>CreateEmployee=true">
                         <i class="bi bi-plus-lg"></i> Tilføj Medarbejder
                     </button>
                 </div>
@@ -95,3 +96,9 @@
     </div>
 </div>
 
+@if(CreateEmployee)
+{
+    <CreateWindow IsVisible=CreateEmployee IsVisibleChanged="v => CreateEmployee = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateEmployee></CreateEmployee>
+    </CreateWindow>
+}

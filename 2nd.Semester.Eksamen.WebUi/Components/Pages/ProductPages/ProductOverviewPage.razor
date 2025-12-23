@@ -4,6 +4,7 @@
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.Application.DTO;
 @inject IProductOverviewService productOverviewService
 @rendermode InteractiveServer
 
@@ -67,7 +68,7 @@
                             @foreach (var product in FilterdProducts)
                             {
                                 <div class="card">
-                                    <div class="card-header" style="display:flex;">
+                                    <div class="card-header bg-transparent" style="display:flex;">
                                         <h3>@product.Name</h3>
                                         <span class="badge bg-secondary bg-opacity-50 ms-auto" style="height:fit-content">
                                             @product.Category
@@ -79,7 +80,7 @@
                                         <p style="margin: 16px 0;color: #555;line-height: 1.5;">@product.Description</p>
                                     </div>
 
-                                    <div class="card-footer">
+                                    <div class="card-footer bg-transparent">
                                         <button class="btn btn-outline-primary btn-sm" @onclick="() => ShowProductDetails(product)">
                                             Se detaljer
                                         </button>
@@ -96,7 +97,7 @@
 
 @if(isVisible)
 {
-    <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v">
+    <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
             <div class="shadow-sm">
                 <CreateProduct></CreateProduct>
             </div>
@@ -105,21 +106,21 @@
 
 @if(ShowDetails)
 {
-    <BookingNotification IsVisible=ShowDetails>
+    <BookingNotification IsVisible=ShowDetails IsVisibleChanged="v => ShowDetails = v">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header bg-transparent" style="display:flex;">
                 <h2>@SelectedProduct.Name</h2>
-
-                <span class="badge">
+                <span class="badge bg-secondary bg-opacity-50 ms-auto" style="height:fit-content">
                     @SelectedProduct.Category
                 </span>
             </div>
+            <div class="card-body">
 
             <p style="margin: 16px 0;color: #555;line-height: 1.5;">
                 @SelectedProduct.Description
             </p>
 
-            <div style="background: #f9f9f9; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 20px;">
+            <div style="background: #f9f9f9; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 20px;" @onclick="() => EditPriceDetail = true">
                 <span class="label">Pris</span>
                 <span style="display: block; font-size: 2rem; font-weight: bold;">
                     @SelectedProduct.Price.ToString("0") kr.
@@ -132,19 +133,50 @@
                     <span>@SelectedProduct.Id</span>
                 </div>
             </div>
-            <button class="btn btn-outline-primary" @onclick="() => ShowSalesHistory = !ShowSalesHistory">Se Salgs Historik</button>
+            <button class="btn btn-outline-primary m-1 w-100" @onclick="() => ShowSalesHistory = !ShowSalesHistory">Se Salgs Historik </button>
+            <div class="p-1">
             @if(ShowSalesHistory)
             {
-                <div style="margin-top:20px;">
-                    <p>Salgs historik data er ikke tilgængelig i denne demo.</p>
-                </div>
-                <div class="grid col-1">
-                </div>
+                @if(SelectedHistory == null || !SelectedHistory.Any())
+                {
+                    <p>Ingen salgs historik fundet for dette produkt.</p>
+                }
+                else
+                {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Kunde</th>
+                            <th>Pris</th>
+                            <th>PDF</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var instance in SelectedHistory)
+                        {
+                            <tr>
+                                <td>@instance.PaymentDate.ToShortDateString()</td>
+                                <td>@instance.Name </td>
+                                <td>@instance.TotalPaid</td>
+                                <td>@instance.PdfFile</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                }
             }
+                </div>
+            </div>
             <div class="footer">
-                <button class="btn btn-outline-secondary" @onclick="() => ShowDetails = false">
-                    Luk
-                </button>
+                <div class="btn-group">
+                    <button class="btn btn-outline-secondary" @onclick="() => CloseDetail()">
+                        Luk
+                    </button>
+                    <button class="btn btn-outline-primary" @onclick="() => SaveProduct(SelectedProduct)">
+                        Gem
+                    </button>
+                </div>
             </div>
         </div>
     </BookingNotification>
@@ -156,6 +188,7 @@
     private List<ProductOverviewDTO> Products { get; set; } = new();
     private string SearchTermName { get; set; } = "";
     private string SearchTermType { get; set; } = "";
+    private List<OrderSnapshotDTO> SelectedHistory { get; set; } = new();
     private bool isVisible = false;
     private bool ShowSalesHistory = false;
     private ProductOverviewDTO SelectedProduct { get; set; }
@@ -164,19 +197,30 @@
     private int CountCategory => Products.Select(p => p.Category).Distinct().Count();
     private int CountSold = 0;
     private List<string> Categories => Products.Select(p => p.Category).Distinct().ToList();
+    private bool EditPriceDetail { get; set; } = false;
+    private bool EditNameDetail { get; set; } = false;
+    private bool EditDescriptionDetail { get; set; } = false;
+
     protected override async Task OnInitializedAsync()
     {
         Products = await productOverviewService.GetAllProductOverviewsAsync();
         SelectedProduct = new();
     }
-    private void ShowProductDetails(ProductOverviewDTO product)
+    private async Task ShowProductDetails(ProductOverviewDTO product)
     {
         SelectedProduct = product;
+        SelectedHistory = await productOverviewService.GetProductSalesHistoryAsync(product.Name);
         ShowDetails = true;
     }
+    private void CloseDetail()
+    {
+        ShowDetails = false;
+        EditPriceDetail = false;
+        EditNameDetail = false;
+        EditDescriptionDetail = false;
+    }
+    private async Task SaveProduct(ProductOverviewDTO product)
+    {
+        CloseDetail();
+    }
 }
-@*         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public decimal Price { get; set; } = 0;
-        public string Description { get; set; } = string.Empty;
-        public string Category { get; set;  } = string.Empty;*@

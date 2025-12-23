@@ -2,6 +2,7 @@
 @using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
 @rendermode InteractiveServer
 @namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
 
@@ -29,7 +30,7 @@
                                @bind="SearchTermPhone"
                                @bind:event="oninput" />
                     </div>
-                    <button class="add-employee-btn" @onclick="GoToCreateCustomer">
+                    <button class="add-employee-btn" @onclick="() => CreateCustomer = true">
                         <i class="bi bi-plus-lg"></i> Tilføj Kunde
                     </button>
                 </div>
@@ -105,8 +106,12 @@
 </div>
 
 
-
-
+@if (CreateCustomer)
+{
+    <CreateWindow IsVisible=CreateCustomer IsVisibleChanged="v => CreateCustomer = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateCustomer></CreateCustomer>
+    </CreateWindow>
+}
 
 @if (isVisible == true)
 {

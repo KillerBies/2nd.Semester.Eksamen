@@ -26,7 +26,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
         public async Task<IEnumerable<Product?>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Products.ToListAsync();
+            return await _context.Products.Where(p => p.GetType() == typeof(Product)).ToListAsync();
         }
         public async Task<IEnumerable<Product?>> GetByFilterAsync(Filter filter)
         {

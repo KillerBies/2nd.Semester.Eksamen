@@ -96,5 +96,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
 
+
     }
 }

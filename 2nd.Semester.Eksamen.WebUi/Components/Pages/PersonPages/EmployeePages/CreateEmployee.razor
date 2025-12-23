@@ -6,7 +6,6 @@
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @rendermode InteractiveServer
 @namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
-<div style="width:100%; height:96vh; align-content:center; align-items:center; display:flex; justify-content:center;">
 	<FloatingPage>
 		<div style="margin: 30px;">
 			<h2>Lav Ny Medarbejder</h2>
@@ -14,7 +13,6 @@
 				<DataAnnotationsValidator />
 				<ValidationSummary />
 				<div class="form-inputs">
-					<!-- Basic Info -->
 					<div class="row">
 						<div class="col-md-6">
 							<InputText @bind-Value="Input.FirstName" placeholder="Fornavn" class="form-control m-1" />
@@ -66,7 +64,6 @@
 						</div>
 					</div>
 
-					<!-- Address -->
 					<div class="row">
 						<div class="col-md-6">
 							<InputText @bind-Value="Input.Address.City" placeholder="By" class="form-control m-1" />
@@ -90,23 +87,56 @@
 
 
 					<div class="row">
-						<div class="col-md-12">
-							<!-- Specialties -->
-							@for (int i = 0; i < Input.Specialties.Count; i++)
-							{
-								var specialty = Input.Specialties[i];
-								<div class="mb-2 d-flex align-items-center" @key="specialty.Id">
-									<InputText @bind-Value="specialty.Value" placeholder="Specialty" class="form-control me-2" />
-									<button type="button" class="btn btn-danger" @onclick="() => RemoveSpecialty(specialty.Id)">X</button>
-								</div>
-							}
-							<button type="button" class="btn btn-success mb-2" @onclick="AddSpecialty">+ Add Specialty</button>
+						<div class="mb-3">
+							<label class="form-label">Vælg eksisterende specialiteter:</label>
+							<div class="border rounded p-2" style="overflow-y:scroll; height:7.7rem">
+								@foreach (var specialty in specialtyItems.Where(s => !string.IsNullOrWhiteSpace(s.Specialty)))
+								{
+									<div class="form-check">
+										<InputCheckbox class="form-check-input"
+													   @bind-Value="specialty.Status" />
+										<label class="form-check-label ms-2">
+											@specialty.Specialty
+										</label>
+									</div>
+								}
+							</div>
 						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Tilføj ny specialitet:</label>
+							<div class="d-flex gap-2">
+								<InputText @bind-Value="newSpecialty"
+										   class="form-control"
+										   placeholder="Ny specialitet..." />
+								<button type="button"
+										class="btn btn-outline-primary h-100"
+										@onclick="AddSpecialty">
+									Tilføj
+								</button>
+							</div>
+						</div>
+
+						@if (manuallyAddedSpecialties.Any())
+						{
+							<ul class="list-group mb-3">
+								@foreach (var item in manuallyAddedSpecialties.Where(s => !string.IsNullOrWhiteSpace(s)))
+								{
+									<li class="list-group-item d-flex justify-content-between align-items-center" style="padding-left:10px;">
+										@item
+										<button class="btn btn-sm bg-transparent" style="height:100%; padding:0;margin:0;margin-right:4px; color:darkred;"
+												@onclick="() => RemoveSpecialty(item)">
+											X
+										</button>
+									</li>
+								}
+							</ul>
+						}
+
 					</div>
 
-					<button class="btn btn-primary" Style="width:100%;" type="submit">Create</button>
+					<button class="btn btn-primary" Style="width:100%;" type="submit">Lav ny Medarbejder</button>
 				</div>
 			</EditForm>
 		</div>
 	</FloatingPage>
-</div>

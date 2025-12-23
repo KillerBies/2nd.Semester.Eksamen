@@ -11,25 +11,19 @@
 @inject IDiscountApplicationService campaignService
 @inject NavigationManager Navi
 
-
-<div style="width:100%; display:flex;flex-direction:column; align-items:center; margin-top:5%;">
-	<FloatingPage PageContentScrollable="false">
-		<div class="page-header" style="padding: 0; align-content:center;">
-			<div class="btn-group" style="width:100%;">
-				<button type="button" class="@GetPrivateCustomerButtonClass()" @onclick="CustomerTypeButtonClicked" style="border-radius: 12px 0 0 0;"><b>Privat</b></button>
-				<button type="button" class="@GetCompanyCustomerButtonClass()" @onclick="CustomerTypeButtonClicked" style="border-radius: 0 12px 0 0;"><b>Firma</b></button>
-			</div>
-		</div>
-		<div style="padding: 30px; display: flex;">
-			@if(IsPrivate)
-			{
-				<CreatePrivateCustomer/>
-			}
-			else if(IsCompany)
-			{
-				<CreateCompanyCustomer/>
-			}
-		</div>
-	</FloatingPage>
-	<div style="margin-top: 24%;"></div>
+<div class="page-header" style="padding: 0; align-content:center;flex-shrink:0;">
+	<div class="btn-group" style="width:100%;">
+		<button type="button" class="@GetPrivateCustomerButtonClass()" @onclick="CustomerTypeButtonClicked" style="border-radius: 12px 0 0 0;"><b>Privat</b></button>
+		<button type="button" class="@GetCompanyCustomerButtonClass()" @onclick="CustomerTypeButtonClicked" style="border-radius: 0 12px 0 0;"><b>Firma</b></button>
+	</div>
+</div>
+<div style="padding: 30px; display: flex;">
+	@if (IsPrivate)
+	{
+		<CreatePrivateCustomer />
+	}
+	else if (IsCompany)
+	{
+		<CreateCompanyCustomer />
+	}
 </div>

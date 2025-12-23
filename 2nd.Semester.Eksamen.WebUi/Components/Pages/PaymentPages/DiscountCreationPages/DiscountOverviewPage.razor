@@ -145,10 +145,8 @@
 
 @if(isVisible)
 {
-    <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v">
-            <div class="shadow-sm">
+    <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
                 <CreateDiscount></CreateDiscount>
-            </div>
     </CreateWindow>
 }
 

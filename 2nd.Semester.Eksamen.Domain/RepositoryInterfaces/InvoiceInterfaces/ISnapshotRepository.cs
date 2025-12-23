@@ -1,9 +1,10 @@
-﻿using System;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Domain.Entities.History;
 
 
 namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces
@@ -14,8 +15,9 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces
 
         public Task<List<OrderSnapshot>>? GetAllOrderSnapshotsAsync();
         public Task<OrderSnapshot?> GetByIdAsync(int id);
-        
-      
+        public Task<IEnumerable<OrderSnapshot>> GetByProduct(string ProductName);
+
+
 
 
 
