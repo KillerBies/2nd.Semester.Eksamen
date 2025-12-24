@@ -20,10 +20,10 @@
 <div style="padding: 30px; display: flex;">
 	@if (IsPrivate)
 	{
-		<CreatePrivateCustomer />
+		<CreatePrivateCustomer IsBooking=IsBooking OnClose="Closing" />
 	}
 	else if (IsCompany)
 	{
-		<CreateCompanyCustomer />
+		<CreateCompanyCustomer IsBooking=IsBooking OnClose="Closing" />
 	}
 </div>

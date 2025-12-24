@@ -85,6 +85,17 @@ transition: 0.2s ease;
 transform: scale(1.03);
 }
 
+.card-btn {
+    width: 50%;
+    background-color: #034265;
+    border: none;
+    color: white;
+    transition: 0.2s ease;
+}
+
+    .card-btn:hover {
+        transform: scale(1.03);
+    }
 
 .overlay-backdrop {
 position: fixed;
@@ -181,3 +192,78 @@ transform: scale(1.03);
         font-size: 1.8rem;
         font-weight: bold;
     }
+
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+}
+
+.info-label {
+    color: #6b7280;
+}
+
+.info-value {
+    font-weight: 500;
+}
+
+
+
+.treatment-card {
+    background: #ffffff;
+    padding: 1.5rem;
+}
+
+.treatment-header {
+    margin-bottom: 1.25rem;
+}
+
+.badge-category {
+    background: rgba(0,0,0,0.55);
+    color: white;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.75rem;
+}
+
+.treatment-info {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.info-label {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    font-weight: 500;
+}
+
+
+.specialties {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.badge-specialty {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.7rem;
+}
+
+
+.treatment-description {
+    color: #374151;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}

@@ -57,7 +57,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.Treatments.Update(treatment);
+                var treatmentToUpdate = await _context.Treatments.FindAsync(treatment.Id);
+                treatmentToUpdate.TrySetDuration(treatment.Duration);
+                treatmentToUpdate.TryChangePrice(treatment.Price);
+                treatmentToUpdate.TryChangeName(treatment.Name);
+                treatmentToUpdate.Description = treatment.Description;
+                treatmentToUpdate.RequiredSpecialties = treatment.RequiredSpecialties;
+                treatmentToUpdate.Category = treatment.Category;
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

@@ -46,3 +46,13 @@
         font-size: 1.8rem;
         font-weight: bold;
     }
+
+.grid-item {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px 12px 12px 12px;
+}
+    .grid-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.20);
+    }

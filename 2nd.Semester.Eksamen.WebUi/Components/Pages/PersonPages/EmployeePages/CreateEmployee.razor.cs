@@ -2,6 +2,7 @@
 using _2nd.Semester.Eksamen.Application.Commands.EmployeeCmd;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using Microsoft.AspNetCore.Components;
@@ -13,14 +14,14 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 {
     public partial class CreateEmployee
     {
-        [Inject]
-        private CreateEmployeeCommand Command { get; set; }
+        [Inject] private CreateEmployeeCommand Command { get; set; }
 
-        [Inject]
-        public EmployeeSpecialtyService SpecialtyService { get; set; }
+        [Inject] public EmployeeSpecialtyService SpecialtyService { get; set; }
         [Inject] public ITreatmentService _treatmentService { get; set; }
 
         [Inject] NavigationManager Nav { get; set; }
+        [Parameter] public EventCallback OnClose { get; set; }
+        private string _errorMessage = "";
         protected EmployeeInputDTO Employee { get; set; } = new();
         public class SpecialtyItem
         {
@@ -56,8 +57,17 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 
         protected async Task CreateEmployeeAsync()
         {
-            await Command.ExecuteAsync(Input);
-            Nav.NavigateTo("/employees");
+            try
+            {
+                await Command.ExecuteAsync(Input);
+                Nav.NavigateTo("/employees");
+                await OnClose.InvokeAsync();
+            }
+            catch
+            {
+
+            }
+
 
         }
         protected override async Task OnInitializedAsync()

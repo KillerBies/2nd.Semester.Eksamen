@@ -40,6 +40,7 @@
             <div class="mb-3">
                 <label class="form-label">Kategori:</label>
                 <InputText @bind-Value="productDTO.Category"
+                           class="form-control"
                            placeholder="Kategori..." />
             </div>
 
@@ -51,13 +52,15 @@
 </FloatingPage>
 @code {
     private NewProductDTO productDTO { get; set; } = new();
+    [Parameter] public EventCallback OnClose { get; set; }
     private string _errorMessage = "";
     private async Task HandleValidSubmit()
     {
         try
         {
             await productService.CreateNewProductAsync(productDTO);
-            Navi.NavigateTo("/");
+            await OnClose.InvokeAsync();
+            Navi.NavigateTo("/ProductOverviewPage");
         }
         catch (Exception)
         {

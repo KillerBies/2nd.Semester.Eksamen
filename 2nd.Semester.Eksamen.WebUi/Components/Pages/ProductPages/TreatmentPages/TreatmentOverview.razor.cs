@@ -13,6 +13,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
         private TreatmentDTO? selectedTreatment;
         private bool CreateTreatment { get; set; } = false;
         private string SearchTermName { get; set; }
+        private bool EditTreatment { get; set; } = false;
         private List<TreatmentDTO> FilterdTreatments => Treatments.Where(t => (string.IsNullOrWhiteSpace(SearchTermName) || t.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase))).ToList();
 
 
@@ -30,6 +31,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
             selectedTreatment = treatment;
             isVisible = true;
 
+        }
+
+        public void Refresh()
+        {
+            Navi.Refresh(true);
         }
         private void HideOverlay()
         {

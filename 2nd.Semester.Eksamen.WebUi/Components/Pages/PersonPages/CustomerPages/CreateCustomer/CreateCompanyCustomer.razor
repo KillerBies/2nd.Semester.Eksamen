@@ -11,7 +11,7 @@
 	<ValidationSummary />
 	<div>
 		<div style="text-align:center;">
-			<h1>Opret Firmakunde</h1>
+			<h1>@(IsEdit ? "Rediger Firmakunde" : "Opret Firmakunde")</h1>
 		</div>
 		<div class="row">
 			<div class="col-md-6">
@@ -76,11 +76,39 @@
 @code{
 
 	public CompanyCustomerDTO companyCustomerDTO = new();
+	[Parameter] public EventCallback OnClose { get; set; }
+	[Parameter] public bool IsBooking { get; set; } = false;
+	[Parameter] public bool IsEdit { get; set; } = false;
+	[Parameter] public CompanyCustomerDTO EditCustomer { get; set; }
+	[Inject] public ICustomerUpdateService _customerService { get; set; }
+	protected override async Task OnInitializedAsync()
+	{
+		if (IsEdit)
+		{
+			companyCustomerDTO = EditCustomer;
+		}
+	}
 	private async Task HandleValidSubmit()
 	{
-		int id = await createCustomerService.CreateCompanyCustomerAsync(companyCustomerDTO);
-		//INDSÆT Manglende TLF SØGNING UD FRA DTO PHONE
-		Navi.NavigateTo($"/BookingForm/{id}");
+		try
+		{
+			if (IsBooking)
+			{
+				int id = await createCustomerService.CreateCompanyCustomerAsync(companyCustomerDTO);
+				Navi.NavigateTo($"/BookingForm/{id}");
+			}
+			else
+			{
+				if (IsEdit)
+					await _customerService.UpdateCustomer(companyCustomerDTO);
+				await OnClose.InvokeAsync();
+				Navi.NavigateTo($"/CustomerOverview");
+			}
+		}
+		catch
+		{
+
+		}
 	}
 }
 

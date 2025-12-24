@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @using _2nd.Semester.Eksamen.Application.DTO;
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@rendermode InteractiveServer
 @inject IInvoiceService invoiceService
 
 <div style="background-color:#F3F2F2; height:100vh">
@@ -14,12 +15,18 @@
                     <h1>Faktura</h1>
                     <p class="subtitle">Oversigt over alle Faktura</p>
                 </div>
-                <div class="btn-group ms-auto" style="width:20%; gap:1rem;">
+                <div class="btn-group ms-auto" style="width:60%; gap:1rem;">
                     <div class="input-group">
                         <input type="text"
                                placeholder="Søg Navn..."
                                @bind="SearchTermName"
                                @bind:event="oninput" />
+                    </div>
+                    <div class="input-group">
+                        <input type="date" title="Fra..." placeholder="Dato..." @bind="SearchTermDateStart" />
+                    </div>
+                    <div class="input-group">
+                        <input type="date" title="Til..." placeholder="Dato..." @bind="SearchTermDateEnd" />
                     </div>
                 </div>
             </div>
@@ -41,7 +48,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var orderSnapshotDTO in orderSnapshotDTOs)
+                            @foreach (var orderSnapshotDTO in FilterdOrders)
                             {
                                 <tr>
                                     <td>@orderSnapshotDTO.Id</td>
@@ -62,9 +69,10 @@
 
 
 @code {
-    //needs filter for customer and date
     public string SearchTermName { get; set; } = "";
-    private List<OrderSnapshotDTO> FilterdOrders => orderSnapshotDTOs.Where(o => (string.IsNullOrWhiteSpace(SearchTermName) || o.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase))).ToList();
+    private DateTime? SearchTermDateStart;
+    private DateTime? SearchTermDateEnd;
+    private List<OrderSnapshotDTO> FilterdOrders => orderSnapshotDTOs.Where(o => (string.IsNullOrWhiteSpace(SearchTermName) || o.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && (!SearchTermDateStart.HasValue || o.PaymentDate >= DateOnly.FromDateTime(SearchTermDateStart.Value)) && (!SearchTermDateEnd.HasValue || o.PaymentDate <= DateOnly.FromDateTime(SearchTermDateEnd.Value))).ToList();
 
     private List<OrderSnapshotDTO> orderSnapshotDTOs;
 

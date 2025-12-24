@@ -68,7 +68,7 @@
                             @foreach (var product in FilterdProducts)
                             {
                                 <div class="card">
-                                    <div class="card-header bg-transparent" style="display:flex;">
+                                    <div class="card-header bg-transparent border-0" style="display:flex;">
                                         <h3>@product.Name</h3>
                                         <span class="badge bg-secondary bg-opacity-50 ms-auto" style="height:fit-content">
                                             @product.Category
@@ -80,8 +80,8 @@
                                         <p style="margin: 16px 0;color: #555;line-height: 1.5;">@product.Description</p>
                                     </div>
 
-                                    <div class="card-footer bg-transparent">
-                                        <button class="btn btn-outline-primary btn-sm" @onclick="() => ShowProductDetails(product)">
+                                    <div class="card-footer bg-transparent border-0">
+                                        <button class="btn btn-treatment" @onclick="() => ShowProductDetails(product)">
                                             Se detaljer
                                         </button>
                                     </div>
@@ -107,76 +107,84 @@
 @if(ShowDetails)
 {
     <BookingNotification IsVisible=ShowDetails IsVisibleChanged="v => ShowDetails = v">
-        <div class="card">
-            <div class="card-header bg-transparent" style="display:flex;">
-                <h2>@SelectedProduct.Name</h2>
-                <span class="badge bg-secondary bg-opacity-50 ms-auto" style="height:fit-content">
-                    @SelectedProduct.Category
-                </span>
+        <div class="card-header bg-transparent d-flex align-items-center">
+            <div>
+                <h4 class="mb-0 fw-semibold">@SelectedProduct.Name</h4>
+                <small class="text-muted">Produkt</small>
             </div>
-            <div class="card-body">
 
-            <p style="margin: 16px 0;color: #555;line-height: 1.5;">
+            <span class="badge bg-dark bg-opacity-50 ms-auto">
+                @SelectedProduct.Category
+            </span>
+        </div>
+
+
+        <div class="card-body">
+            <div class="text-center rounded-3 p-3 mb-4"
+                 style="background:#f9f9f9; cursor:pointer;"
+                 @onclick="() => EditPriceDetail = true">
+                <small class="text-muted">Pris</small>
+                <div class="fs-1 fw-bold">
+                    @SelectedProduct.Price.ToString("0") kr.
+                </div>
+            </div>
+
+
+            <p class="text-muted mb-4" style="line-height:1.6;">
                 @SelectedProduct.Description
             </p>
 
-            <div style="background: #f9f9f9; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 20px;" @onclick="() => EditPriceDetail = true">
-                <span class="label">Pris</span>
-                <span style="display: block; font-size: 2rem; font-weight: bold;">
-                    @SelectedProduct.Price.ToString("0") kr.
-                </span>
-            </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px;">
-                <div>
-                    <span class="label">Produkt ID</span>
-                    <span>@SelectedProduct.Id</span>
+            <div class="row mb-4">
+                <div class="col-6">
+                    <small class="text-muted">Produkt ID</small>
+                    <div class="fw-medium">@SelectedProduct.Id</div>
                 </div>
             </div>
-            <button class="btn btn-outline-primary m-1 w-100" @onclick="() => ShowSalesHistory = !ShowSalesHistory">Se Salgs Historik </button>
-            <div class="p-1">
-            @if(ShowSalesHistory)
-            {
-                @if(SelectedHistory == null || !SelectedHistory.Any())
+
+
+            <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto;">
+                @if (SelectedHistory == null || !SelectedHistory.Any())
                 {
-                    <p>Ingen salgs historik fundet for dette produkt.</p>
+                    <p class="text-muted mb-0 text-center">
+                        Ingen salgs historik fundet for dette produkt.
+                    </p>
                 }
                 else
                 {
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Kunde</th>
-                            <th>Pris</th>
-                            <th>PDF</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var instance in SelectedHistory)
-                        {
+                    <table class="table table-sm mb-0 align-middle">
+                        <thead class="table-light">
                             <tr>
-                                <td>@instance.PaymentDate.ToShortDateString()</td>
-                                <td>@instance.Name </td>
-                                <td>@instance.TotalPaid</td>
-                                <td>@instance.PdfFile</td>
+                                <th>Dato</th>
+                                <th>Kunde</th>
+                                <th>Pris</th>
+                                <th>PDF</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var instance in SelectedHistory)
+                            {
+                                <tr>
+                                    <td>@instance.PaymentDate.ToShortDateString()</td>
+                                    <td>@instance.Name</td>
+                                    <td>@instance.TotalPaid</td>
+                                    <td>@instance.PdfFile</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 }
-            }
-                </div>
             </div>
-            <div class="footer">
-                <div class="btn-group">
-                    <button class="btn btn-outline-secondary" @onclick="() => CloseDetail()">
-                        Luk
-                    </button>
-                    <button class="btn btn-outline-primary" @onclick="() => SaveProduct(SelectedProduct)">
-                        Gem
-                    </button>
-                </div>
+        </div>
+
+        <div class="card-footer bg-transparent border-0 mt-4">
+            <div class="btn-group w-100">
+                <button class="btn btn-danger w-50" @onclick="CloseDetail">
+                    Luk
+                </button>
+                <button class="btn btn-treatment w-50" @onclick="() => SaveProduct(SelectedProduct)">
+                    Rediger
+                </button>
             </div>
         </div>
     </BookingNotification>

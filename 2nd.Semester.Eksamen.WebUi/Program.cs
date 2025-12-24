@@ -83,6 +83,7 @@ builder.Services.AddScoped<ILoyaltyDiscountRepository, LoyaltyDiscountRepository
 builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
 builder.Services.AddScoped<IProductApplicationService, ProductApplicationService>();
 builder.Services.AddScoped<IProductOverviewService, ProductOverviewService>();
+builder.Services.AddScoped<ICustomerUpdateService, CustomerUpdateService>();
 
 
 

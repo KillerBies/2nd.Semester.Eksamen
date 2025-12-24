@@ -6,10 +6,10 @@
 
 @if (ShowEmployeeDetails)
 {
-    <SidePage IsVisible="ShowEmployeeDetails"
-              IsVisibleChanged="@(v => ShowEmployeeDetails = v)">   
+    <CreateWindow IsVisible="ShowEmployeeDetails"
+                  IsVisibleChanged="@(v => ShowEmployeeDetails = v)" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
         <EmployeeDetails Id="SelectedEmployeeId"></EmployeeDetails>
-    </SidePage>
+    </CreateWindow>
 }
 <div style="background-color:#F3F2F2; height:100vh">
     <div class="overview-page">
@@ -70,7 +70,7 @@
                         <div class="grid">
                             @foreach (var emp in FilteredEmployees)
                             {
-                                <div class="grid">
+                                <div class="grid-item">
                                     <div class="card employee-card-clickable"
                                          style="cursor:pointer;"
                                          @onclick="() => GoToEmployee(emp.Id)">

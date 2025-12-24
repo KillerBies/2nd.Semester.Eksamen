@@ -26,7 +26,10 @@
                         <input type="text" placeholder="Søg Kunde..." @bind="SearchTermCustomer" @bind:event="oninput" />
                     </div>
                     <div class="input-group">
-                        <input type="date" placeholder="Dato..." @bind="SearchTermDate" />
+                        <input type="date" title="Fra..." placeholder="Dato..." @bind="SearchTermDateStart" />
+                    </div>
+                    <div class="input-group">
+                        <input type="date" title="Til..." placeholder="Dato..." @bind="SearchTermDateEnd" />
                     </div>
                 </div>
             </div>
@@ -62,14 +65,24 @@
                         <div class="grid">
                             @foreach (var booking in FilteredBookings)
                             {
-                                <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column; cursor:pointer;" @onclick="() => ShowOverlay(booking)">
+                                <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column;" >
                                     <div class="info">
                                         <div style="display:flex; margin-bottom:20px;">
                                             <h4 style="color: #034265;">@booking.Customer.Name</h4>
-                                            <span class="booking-status ms-auto" style="height:2%;"></span>
+                                            @if(booking.Status.ToString()=="Pending")
+                                            {
+                                                <span class="badge ms-auto" style="background: #e0f2ff;  color: #0369a1;">@booking.Status</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge ms-auto" style="background: #ecfdf5;  color: #065f46;">@booking.Status</span>
+                                            }
                                         </div>
-                                        <p>@booking.Start.ToString("g") til @booking.End.ToString("g")</p>
-                                        <p>Status: @booking.Status</p>
+                                        <strong><p>@booking.Start.ToString("ddd/d/MMM")</p></strong>
+                                        <strong><p>@booking.Start.ToString("t") til @booking.End.ToString("t")</p></strong>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-0">
+                                    <button class="btn card-btn" @onclick="() => ShowOverlay(booking)">Se detaljer</button>
                                     </div>
                                 </div>
                             }
@@ -104,6 +117,7 @@
                     <div class="text-center mb-4 border-bottom border-dashed pb-3">
                         <h3 class="mb-1">@SelectedBooking.Start.ToString("dd/MM/yyyy")</h3>
                         <h5 class="mb-0">@SelectedBooking.Start.ToString("HH:mm") - @SelectedBooking.End.ToString("HH:mm")</h5>
+                        <h7><span class="badge bg-dark ms-auto bg-opacity-75"> @(CurrentTime<SelectedBooking.Start? TimeUntil : TimeSinceThen)</span></h7>
                     </div>
 
 
@@ -177,6 +191,16 @@
 
 @code {
     [Inject] NavigationManager Navi { get; set; }
+    private TimeSpan TimeTill => SelectedBooking.Start - CurrentTime;
+    private string TimeUntil => $"Om {DaysUntil} {HoursUntil} {MinutesUntil} ";
+    private string DaysUntil => TimeTill.Days > 0 ? TimeTill.Days.ToString() + " Dage" : "";
+    private string HoursUntil => TimeTill.Hours > 0 ? TimeTill.Hours.ToString() + " Timer" : "";
+    private string MinutesUntil => TimeTill.Minutes > 0 ? TimeTill.Minutes.ToString() + " Minutter" : "";
+    private TimeSpan TimeSince => CurrentTime - SelectedBooking.Start;
+    private string TimeSinceThen => $"For {DaysSinceThen} {HoursSinceThen} {MinutesSinceThen} Siden";
+    private string DaysSinceThen => TimeSince.Days.ToString() + " Dage";
+    private string HoursSinceThen => TimeSince.Hours.ToString() + " Timer";
+    private string MinutesSinceThen => TimeSince.Minutes.ToString() + " Minutter";
     private Booking SelectedBooking { get; set; } = new Booking
     {
         Treatments = new List<TreatmentBooking>()
@@ -188,14 +212,16 @@
     private bool LoadFailed = false;
     private bool OpenEdit = false;
     private DateTime CurrentTime => DateTime.Now;
-    private IEnumerable<Booking> FilteredBookings => bookingList.Where(b => string.IsNullOrWhiteSpace(SearchTermCustomer) || b.Customer.Name.Contains(SearchTermCustomer, StringComparison.OrdinalIgnoreCase)).Where(b => !SearchTermDate.HasValue || b.Start.Date == SearchTermDate.Value.Date);
+    private IEnumerable<Booking> FilteredBookings => bookingList.Where(b => string.IsNullOrWhiteSpace(SearchTermCustomer) || b.Customer.Name.Contains(SearchTermCustomer, StringComparison.OrdinalIgnoreCase)).Where(b => (!SearchTermDateStart.HasValue || b.Start.Date >= SearchTermDateStart.Value.Date) && (!SearchTermDateEnd.HasValue || b.Start.Date <= SearchTermDateEnd.Value.Date));
     private int TodayCount => bookingList.Where(b => b.Start.Date == CurrentTime.Date).Count();
-    private int PendingCount => bookingList.Where(b => b.Start > CurrentTime).Count();
+    private int PendingCount => bookingList.Where(b=>b.Status.ToString() == "Pending").Count();
     private bool ShowBookingDetails = false;
     private bool ShowPaymentWindow = false;
 
     private string SearchTermCustomer = "";
     private DateTime? SearchTermDate;
+    private DateTime? SearchTermDateStart;
+    private DateTime? SearchTermDateEnd;
     //get all bookings with treatments
     protected override async Task OnInitializedAsync()
     {

@@ -195,7 +195,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
 
                     var activityId = Guid.NewGuid();
 
-                    // Domain logic (modifies TimeRanges)
+                    // TimeRanges
                     scheduleDay.AddBooking(treatment, activityId, treatmentEntity.Name);
 
                     // Create new booked treatment

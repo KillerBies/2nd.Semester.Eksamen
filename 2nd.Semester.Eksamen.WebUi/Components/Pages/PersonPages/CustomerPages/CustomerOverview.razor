@@ -38,20 +38,16 @@
             <div class="overview-page-content">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3>Total</h3>
+                        <h3>Kunder</h3>
                         <span>@Customers.Count</span>
                     </div>
                     <div class="stat-card">
-                        <h3>Bronze</h3>
-                        <span>@BronzeCount</span>
+                        <h3>Firma Kunder</h3>
+                        <span>@CompanyCount</span>
                     </div>
                     <div class="stat-card">
-                        <h3>Sølv</h3>
-                        <span>@SilverCount</span>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Guld</h3>
-                        <span>@GoldCount</span>
+                        <h3>Privat Kunder</h3>
+                        <span>@PrivateCount</span>
                     </div>
                 </div>
                 <div style="margin:30px;">
@@ -75,18 +71,27 @@
                                         @if (Customer is PrivateCustomerDTO pr)
                                         {
                                             <h3> @pr.Name @pr.LastName </h3>
+                                            <span class="badge ms-auto" style="background: #e0f2ff;  color: #0369a1;">Privat Kunde</span>
                                         }
                                         else
                                         {
                                             <h3>@Customer.Name</h3>
+                                            <span class="badge ms-auto" style="background: #ecfdf5;  color: #065f46;">Firma Kunde</span>
                                         }
-                                        <span class="customer-type"></span>
                                     </div>
-
                                     <div class="customer-card-body">
-                                        <p>Email: @Customer.Email</p>
-                                        <p>Tlf: @Customer.PhoneNumber</p>
-                                        <p>By: @Customer.City</p>
+                                        <div class="info-row">
+                                            <span class="info-label">Email</span>
+                                            <span class="info-value">@Customer.Email</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Telefon</span>
+                                            <span class="info-value">@Customer.PhoneNumber</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">By</span>
+                                            <span class="info-value">@Customer.City</span>
+                                        </div>
                                     </div>
 
                                     <div class="customer-card-footer">
@@ -115,40 +120,131 @@
 
 @if (isVisible == true)
 {
-    <BookingNotification IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)">
-
+    <CreateWindow IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)" StyleParameters="background-color: #F3F2F2; padding:0;width:20%; height:auto;">
         @if (selectedCustomer != null)
         {
-
-
-            @if (selectedCustomer is PrivateCustomerDTO p)
-            {
-                <h2>@p.Name @p.LastName</h2>
-                <p><b>Køn:</b> @p.Gender</p>
-                <p><b>Antal besøg</b> @p.NumberOfVisits</p>
-                <p><b>Telefon:</b> @p.PhoneNumber</p>
-                <p><b>Email:</b> @p.Email</p>
-                <p><b>By:</b>@p.PostalCode @p.City</p>
-                <p><b>Addresse:</b> @p.StreetName @p.HouseNumber</p>
-                <p><b>Fødselsdato:</b> @p.BirthdayWrapper.ToShortDateString()</p>
-            }
-            else if (selectedCustomer is CompanyCustomerDTO c)
-            {
-
-                <h2>@c.Name</h2>
-                <p><b>Antal besøg</b> @c.NumberOfVisits</p>
-                <p><b>Telefon:</b> @c.PhoneNumber</p>
-                <p><b>Email:</b> @c.Email</p>
-                <p><b>By:</b>@c.PostalCode @c.City</p>
-                <p><b>Addresse:</b> @c.StreetName @c.HouseNumber</p>
-                <p><b>CVR:</b> @c.CVRNumber</p>
-            }
-
-            <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
-            <button class="btn btn-danger mt-3" @onclick="() => DeleteCustomer(selectedCustomer.id)">Slet kunde</button>
+            <div style="background: #ffffff; padding: 1.5rem;">
+                @if (selectedCustomer is PrivateCustomerDTO p)
+                {
+                    <div>
+                        <div class="customer-header d-flex align-items-start">
+                            <div>
+                                <h4 class="fw-semibold mb-1">@p.Name @p.LastName</h4>
+                                <span class="text-muted small">Kunde</span>
+                            </div>
+                            <span class="badge badge-category ms-auto">
+                                Privatkunde
+                            </span>
+                        </div>
+                        <div class="customer-info">
+                            <div class="info-row">
+                                <span class="info-label">Køn</span>
+                                <span class="info-value">@p.Gender</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Antal Besøg</span>
+                                <span class="info-value">@p.NumberOfVisits</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Telefon</span>
+                                <span class="info-value">@p.PhoneNumber</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Email</span>
+                                <span class="info-value">@p.Email</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">By</span>
+                                <span class="info-value">@p.City</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Adresse</span>
+                                <span class="info-value">@p.StreetName @p.HouseNumber</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Postnummer</span>
+                                <span class="info-value">@p.PostalCode</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Fødselsdato</span>
+                                <span class="info-value">@p.BirthdayWrapper.ToShortDateString()</span>
+                            </div>
+                            <p class="customer-description">
+                                @p.Notes
+                            </p>
+                        </div>
+                    </div>
+                }
+                else if (selectedCustomer is CompanyCustomerDTO c)
+                {
+                    <div>
+                        <div class="customer-header d-flex align-items-start">
+                            <div>
+                                <h4 class="fw-semibold mb-1">@c.Name</h4>
+                                <span class="text-muted small">Kunde</span>
+                            </div>
+                            <span class="badge badge-category ms-auto">
+                                Firmakunde
+                            </span>
+                        </div>
+                        <div class="customer-info">
+                            <div class="info-row">
+                                <span class="info-label">Antal Besøg</span>
+                                <span class="info-value">@c.NumberOfVisits</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Telefon</span>
+                                <span class="info-value">@c.PhoneNumber</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Email</span>
+                                <span class="info-value">@c.Email</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">By</span>
+                                <span class="info-value">@c.City</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Adresse</span>
+                                <span class="info-value">@c.StreetName @c.HouseNumber</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Postnummer</span>
+                                <span class="info-value">@c.PostalCode</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">CVR-Nummer</span>
+                                <span class="info-value">@c.CVRNumber</span>
+                            </div>
+                            <p class="customer-description">
+                                @c.Notes
+                            </p>
+                        </div>
+                    </div>
+                }
+                <div class="card-footer bg-transparent border-0" >
+                    <div class="btn-group w-100" style="height:min-content;">
+                        <button class="btn btn-danger w-50" @onclick="() => DeleteCustomer(selectedCustomer.id)">Slet kunde</button>
+                        <button class="btn card-btn" @onclick="() => EditCustomer = true">Rediger</button>
+                    </div>
+                </div>
+            </div>
         }
-    </BookingNotification>
+    </CreateWindow>
 }
 
+@if (EditCustomer)
+{
+    <CreateWindow IsVisible=EditCustomer IsVisibleChanged="v => EditCustomer = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto; overflow-y:visible">
+        @if (selectedCustomer is CompanyCustomerDTO cc)
+        {
+            <CreateCompanyCustomer OnClose="Refresh" IsEdit=true EditCustomer="cc"></CreateCompanyCustomer>
+        }
+        else if (selectedCustomer is PrivateCustomerDTO pc)
+        {
+            <CreatePrivateCustomer OnClose="Refresh" EditCustomer="pc" IsEdit=true></CreatePrivateCustomer>
+        }
+    </CreateWindow>
+}
 
 

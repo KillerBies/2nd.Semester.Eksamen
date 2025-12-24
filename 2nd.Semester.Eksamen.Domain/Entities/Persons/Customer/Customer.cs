@@ -8,12 +8,12 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer
     public class Customer : Person
     {
         // Base class for customers
-        public List<Booking> BookingHistory { get; protected set; } = new();
-        public int NumberOfVisists { get; protected set; }
-        public decimal PointBalance { get; protected set; }
-        public List<PunchCard> PunchCards { get; protected set; } = new();
-        public string? Notes { get; protected set; } = string.Empty;
-        public bool SaveAsCustomer { get; protected set; }
+        public List<Booking> BookingHistory { get;  set; } = new();
+        public int NumberOfVisists { get; set; }
+        public decimal PointBalance { get; set; }
+        public List<PunchCard> PunchCards { get;  set; } = new();
+        public string? Notes { get; set; } = string.Empty;
+        public bool SaveAsCustomer { get;  set; }
 
         public Customer() { }
 

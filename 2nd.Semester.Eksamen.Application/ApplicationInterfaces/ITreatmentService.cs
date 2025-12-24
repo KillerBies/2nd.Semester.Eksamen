@@ -13,10 +13,11 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 
 
 
-    public Task<List<string>> GetAllUniqueSpecialtiesAsync();
-    public Task CreateNewTreatmentAsync(TreatmentDTO treatmentDTO);
+        public Task<List<string>> GetAllUniqueSpecialtiesAsync();
+        public Task CreateNewTreatmentAsync(TreatmentDTO treatmentDTO);
 
-    public Task <List<TreatmentDTO>> GetAllTreatmentsAsDTOAsync();
-    public Task DeleteByIdDbAsync(int id);
+        public Task UpdateTreatment(TreatmentDTO treatmentDTO);
+        public Task<List<TreatmentDTO>> GetAllTreatmentsAsDTOAsync();
+        public Task DeleteByIdDbAsync(int id);
     }
 }

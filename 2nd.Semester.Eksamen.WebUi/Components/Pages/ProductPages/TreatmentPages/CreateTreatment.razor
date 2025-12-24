@@ -2,6 +2,7 @@
 @namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@inject NavigationManager Navi
 @rendermode InteractiveServer
 
     <FloatingPage>
@@ -36,11 +37,10 @@
                                      class="form-control"
                                      placeholder="Pris..." />
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 h-auto">
                         <label class="form-label">Varighed:</label>
-                        <input type="time" @bind-value="Varighed"
-                               class="form-control"
-                               placeholder="Timer..." />
+                    <InputTimeSpan @bind-Value="treatment.Duration"
+                                   class="form-control" />
                     </div>
                 </div>
 
@@ -102,7 +102,7 @@
                 <div class="text-center mt-4">
                     <button type="submit"
                             class="btn btn-primary w-75">
-                        Opret Behandling
+                        @(IsEdit ? "Gem Ændringer" : "Opret Behandling")
                     </button>
                 </div>
 

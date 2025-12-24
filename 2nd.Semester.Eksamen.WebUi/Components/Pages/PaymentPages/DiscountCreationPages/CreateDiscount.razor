@@ -1,6 +1,7 @@
 ﻿@page "/create-discount-page"
 @namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages.DiscountCreationPages
 @rendermode InteractiveServer
+
 @using _2nd.Semester.Eksamen.Domain.Entities.Discounts
 @using _2nd.Semester.Eksamen.Application.Services
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
@@ -71,6 +72,7 @@ else if (IsLoyalty)
 @code {
 	[Inject] IDiscountApplicationService _discountService { get; set; }
 	[Inject] NavigationManager Navi { get; set; }
+	[Parameter] public EventCallback OnClose { get; set; }
 	private bool IsCampaign { get; set; }
 	private string _errorMessage = "";
 	private bool IsLoyalty { get; set; }
@@ -111,11 +113,15 @@ else if (IsLoyalty)
 			if (IsLoyalty)
 			{
 				await _discountService.CreateNewLoyaltyDiscountAsync(loyaltyDiscountDTO);
+				await OnClose.InvokeAsync();
+				Navi.NavigateTo($"/DiscountOverviewPage");
 			}
 			if (IsCampaign)
 			{
 				campaignDiscountDTO.ProductIds.AddRange(allProducts.Where(p => p.Selected == true).Select(p => p.Id).ToList());
 				await _discountService.CreateNewCampaignDiscountAsync(campaignDiscountDTO);
+				await OnClose.InvokeAsync();
+				Navi.NavigateTo($"/DiscountOverviewPage");
 			}
 		}
 		catch

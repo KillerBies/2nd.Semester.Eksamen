@@ -41,7 +41,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
            
             await _treatmentRepository.CreateNewAsync(treatment);
         }
-
+        public async Task UpdateTreatment(TreatmentDTO treatmentDTO)
+        {
+            Treatment treatment = new Treatment(treatmentDTO.Name, treatmentDTO.BasePrice, treatmentDTO.Description, treatmentDTO.Category, treatmentDTO.Duration, treatmentDTO.RequiredSpecialties) { Id=treatmentDTO.TreatmentId};
+            await _treatmentRepository.UpdateAsync(treatment);
+        }
         public async Task<List<TreatmentDTO>> GetAllTreatmentsAsDTOAsync()
         {
             

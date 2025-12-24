@@ -12,15 +12,15 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
     {
         [Inject] private NavigationManager Nav { get; set; } = null!;
         public string SearchTermName { get; set; } = "";
+        private bool EditCustomer { get; set; } = false;
         public string SearchTermPhone { get; set; } = "";
         private bool LoadFailed = false;
         private bool OpenEdit = false;
         private bool IsVisible = false;
         private bool CreateCustomer { get; set; } = false;
         [Inject] public ICustomerService _customerService { get; set; }
-        private int BronzeCount => Customers.Count(c=>c.Type == "Bronze");
-        private int SilverCount => Customers.Count(c => c.Type == "Sølv");
-        private int GoldCount => Customers.Count(c => c.Type == "Guld");
+        private int CompanyCount => Customers.Count(c => c is CompanyCustomerDTO);
+        private int PrivateCount => Customers.Count(c => c is PrivateCustomerDTO);
         private List<CustomerDTO> Customers = new();
         private List<CustomerDTO> FilterdCustomers => Customers.Where(c => (string.IsNullOrWhiteSpace(SearchTermName) || c.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && (string.IsNullOrWhiteSpace(SearchTermPhone) || c.PhoneNumber.Contains(SearchTermPhone, StringComparison.OrdinalIgnoreCase))).ToList();
         private CustomerDTO? selectedCustomer;
@@ -32,6 +32,10 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
             Customers = await _customerService.GetAllCustomersAsDTO();
         }
 
+        private void Refresh()
+        {
+            Nav.Refresh(true);
+        }
 
         private void GoToCreateCustomer()
         {

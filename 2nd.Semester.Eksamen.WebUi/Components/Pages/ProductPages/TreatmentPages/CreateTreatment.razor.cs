@@ -1,8 +1,9 @@
-﻿using System.Net.NetworkInformation;
-using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+﻿using _2nd.Semester.Eksamen.Application.Adapters;
 using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-using _2nd.Semester.Eksamen.Application.Adapters;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
 {
     public partial class CreateTreatment
@@ -10,6 +11,9 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
 
         private readonly DTO_to_Domain dtoDomain;
         private readonly ITreatmentService _treatmentService;
+        [Parameter] public EventCallback OnClose { get; set; }
+        [Parameter] public bool IsEdit { get; set; } = false;
+        [Parameter] public TreatmentDTO TreatmentEdit {get;set;} 
         public CreateTreatment(ITreatmentService treatmentService)
         {
             _treatmentService = treatmentService;
@@ -48,11 +52,31 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
         {
             specialties = await _treatmentService.GetAllUniqueSpecialtiesAsync();
             specialtyItems = specialties.Select(s => new SpecialtyItem() { Specialty = s }).ToList();
+            if(IsEdit)
+            {
+                treatment = TreatmentEdit;
+                foreach(var specialty in treatment.RequiredSpecialties)
+                {
+                    string editSpecialty = specialty.TrimEnd().Trim(',');
+                    var item = specialtyItems.FirstOrDefault(si => si.Specialty == editSpecialty);
+                    if (item == null)
+                    {
+                        manuallyAddedSpecialties.Add(editSpecialty);
+                    }
+                    else
+                    {
+                        var specialtyItem = specialtyItems.FirstOrDefault(si => si.Specialty == editSpecialty);
+                        if (specialtyItem != null)
+                        {
+                            specialtyItem.Status = true;
+                        }
+                    }
+                }
+            }
         }
 
         public async Task HandleValidSubmit()
         {
-            treatment.Duration = new TimeSpan(hour, min, 0);
             List<string> requiredSpecialties = new();
 
             foreach (var specialtyItem in specialtyItems)
@@ -67,12 +91,19 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
             treatment.RequiredSpecialties = requiredSpecialties
         .Select(s => s + ", ")
         .ToList();
+            try
+            {
+                if(IsEdit)
+                    await _treatmentService.UpdateTreatment(treatment);
+                else
+                    await _treatmentService.CreateNewTreatmentAsync(treatment);
+                await OnClose.InvokeAsync();
+                Navi.NavigateTo("/TreatmentOverview");
+            }
+            catch
+            {
 
-
-
-
-
-            await _treatmentService.CreateNewTreatmentAsync(treatment);
+            }
         }
 
 

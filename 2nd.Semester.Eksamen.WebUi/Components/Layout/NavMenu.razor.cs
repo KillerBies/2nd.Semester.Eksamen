@@ -11,8 +11,20 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Layout
         //Controlls for the dropdown menu.
         private bool Open = false;
         private void ToggleDropdown() => Open = !Open;
-        private void CloseDropdown() => Open = false;
         private bool CreateBookingIsVisible { get; set; } = false;
+        public bool CreateProductIsVisible { get; set; } = false;
+        private bool CreateTreatmentIsVisible { get; set; } = false;
+        private bool CreateEmployeeIsVisible { get; set; } = false;
+        private bool CreateCustomerIsVisible { get; set; } = false;
+        private bool CreateDiscountIsVisible { get; set; } = false;
+        private void CloseDropdown(DropdownItem item = null)
+        {
+            Open = false;
+            if(item != null)
+            {
+                item.Open = true;
+            }
+        }
     }
 }
 

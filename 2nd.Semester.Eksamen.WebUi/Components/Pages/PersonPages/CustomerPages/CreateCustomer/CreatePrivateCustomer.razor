@@ -12,7 +12,7 @@
 	<ValidationSummary />
 	<div>
 		<div style="text-align:center;">
-			<h1>Opret Privatkunde</h1>
+			<h1>@(IsEdit ? "Rediger Privatkunde" : "Opret Privatkunde")</h1>
 		</div>
 		<div class="row">
 			<div class="col-md-6">
@@ -84,7 +84,7 @@
 		</div>
 		<div class="row" style="padding-top: 10px;">
 			<div class="col-md-12">
-				<button type="submit" class="btn btn-primary col-md-12">Opret privatkunde</button>
+				<button type="submit" class="btn btn-primary col-md-12">@(IsEdit ? "Gem Ændringer" : "Opret privatkunde")</button>
 			</div>
 		</div>
 	</div>
