@@ -13,7 +13,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public OrderSnapshot OrderSnapshot { get; set; } = null!;
         public int ProductSnapshotId { get; set; }
         public  ProductSnapshot? ProductSnapshot { get; set; }
-        public int NumberOfProducts { get; private set; } = 0;
+        public int NumberOfProducts { get; private set; }
 
         
         private OrderLineSnapshot() { }

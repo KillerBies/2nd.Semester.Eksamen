@@ -60,24 +60,21 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                await _context.SaveChangesAsync();
-                Guid ActivityId = Guid.NewGuid();
-                foreach (var treatment in booking.Treatments)
+                var trackedBooking = await _context.Bookings.Include(b => b.Treatments).FirstOrDefaultAsync(b => b.Id == booking.Id);
+                if (trackedBooking == null)
+                    throw new Exception("Booking not found");
+                foreach (var treatment in trackedBooking.Treatments.ToList())
                 {
-                    string treatmentName = (await _context.Treatments.FindAsync(treatment.TreatmentId)).Name;
                     var employee = await _context.Employees.FindAsync(treatment.EmployeeId);
                     var day = await _context.ScheduleDays.FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date == DateOnly.FromDateTime(treatment.Start));
-                    if (day == null)
-                    {
-                        break;
-                    }
-                    day.CancelBooking(treatment, ActivityId);
+                    if (day == null) break;
+                    day.CancelBooking(treatment);
                     _context.ScheduleDays.Update(day);
-                    await _context.SaveChangesAsync();
-                     _context.BookedTreatments.Remove(treatment);
-                    await _context.SaveChangesAsync();
+
+                    _context.BookedTreatments.Remove(treatment);
                 }
-                _context.Bookings.Remove(booking);
+
+                _context.Bookings.Remove(trackedBooking);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -96,7 +93,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
 
         .Include(b => b.Treatments)
             .ThenInclude(tb => tb.Treatment)
-
+           .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.Employee)
         .Include(b => b.Treatments)
             .ThenInclude(tb => tb.TreatmentBookingProducts)
                 .ThenInclude(tbp => tbp.Product)

@@ -1,11 +1,10 @@
-﻿@page "/create-campaign"
-@using YourProject.Application.DTO
-@using YourProject.Application.Interfaces
-@inject ICampaignService campaignService
-@inject NavigationManager Navi
+﻿
+@using _2nd.Semester.Eksamen.Domain.Entities.Discounts
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
 @rendermode InteractiveServer
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 
-<EditForm Model="@campaignDTO" OnValidSubmit="@HandleValidSubmit" class="row p-3" FormName="CreateCampaignForm">
+<EditForm Model="@campaignDTO" class="row p-3">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -36,19 +35,6 @@
             <InputNumber id="ProductDiscount" @bind-Value="campaignDTO.ProductDiscount" class="form-control" />
         </div>
     </div>
-
-    <div class="row mt-3">
-        <div class="col-md-6">
-            <label class="form-labels">Gælder for behandlinger:</label>
-            <InputCheckbox @bind-Value="campaignDTO.AppliesToTreatment" class="form-check-input" />
-        </div>
-
-        <div class="col-md-6">
-            <label class="form-labels">Gælder for produkter:</label>
-            <InputCheckbox @bind-Value="campaignDTO.AppliesToProduct" class="form-check-input" />
-        </div>
-    </div>
-
     <div class="row mt-3">
         <div class="col-md-6">
             <label for="Start" class="form-labels">Startdato:</label>
@@ -60,46 +46,26 @@
             <InputDate id="End" @bind-Value="campaignDTO.End" class="form-control" />
         </div>
     </div>
+    <div @onclick:stopPropagation="true">
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <label class="form-labels">Gælder for behandlinger:</label>
+                <InputCheckbox @bind-Value="campaignDTO.AppliesToTreatment" />
+            </div>
 
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <label class="form-labels">Vælg produkter:</label>
-            <select multiple class="form-select" @bind="campaignDTO.ProductIds">
-                @foreach (var product in allProducts)
-                {
-                    <option value="@product.Id">@product.Name</option>
-                }
-            </select>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-primary col-md-12">Opret Kampagne</button>
+            <div class="col-md-6">
+                <label class="form-labels">Gælder for produkter:</label>
+                <InputCheckbox @bind-Value="campaignDTO.AppliesToProduct" />
+            </div>
         </div>
     </div>
 </EditForm>
-
 @code {
-    private C campaignDTO = new();
-    private List<ProductDTO> allProducts = new();
+[Parameter] public CampaignDiscountDTO campaignDTO { get; set; }
+[Parameter] public EventCallback<CampaignDiscountDTO> campaignDTOChanged { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    public async Task OnChange()
     {
-        // Load all products for selection
-        allProducts = await campaignService.GetAllProductsAsync();
-    }
-
-    private async Task HandleValidSubmit()
-    {
-        int id = await campaignService.CreateCampaignAsync(campaignDTO);
-        Navi.NavigateTo($"/campaigns/{id}");
-    }
-
-    // ProductDTO for listing in the select
-    public class ProductDTO
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+        await campaignDTOChanged.InvokeAsync(campaignDTO);
     }
 }

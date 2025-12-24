@@ -12,8 +12,9 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
     {
         public Task CreateSnapshotInDBAsync(Order order);
         public Task<List<OrderSnapshotDTO>> GetAllSnapshotsAsync();
-        
-    
+        public Task GenerateInvoiceById(int orderSnapshotId);
+
+
     }
 
 

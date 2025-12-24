@@ -31,6 +31,8 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             var booking = await _customerService.GetBookingWithTreatmentsAsync(bookingId)
                           ?? throw new Exception("Booking not found");
 
+
+
             var products = GetAllProductsFromBooking(booking);
 
             var (originalTotal, appliedDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
@@ -53,14 +55,30 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
             foreach (var tb in booking.Treatments)
             {
-                if (tb.Treatment != null)
-                    productsList.Add(tb.Treatment);
+                if (tb.Treatment != null && tb.Employee != null)
+                {
+                    productsList.Add(new Treatment
+                    {
+                        Id = tb.Treatment.Id,
+                        Name = tb.Treatment.Name,
+                        Price = tb.Treatment.Price * tb.Employee.BasePriceMultiplier
+                    });
+                }
 
                 if (tb.TreatmentBookingProducts != null)
                 {
                     foreach (var tbp in tb.TreatmentBookingProducts)
+                    {
                         for (int i = 0; i < tbp.NumberOfProducts; i++)
-                            productsList.Add(tbp.Product);
+                        {
+                            productsList.Add(new Product
+                            {
+                                Id = tbp.Product.Id,
+                                Name = tbp.Product.Name,
+                                Price = tbp.Product.Price
+                            });
+                        }
+                    }
                 }
             }
 
@@ -94,9 +112,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             {
                 await _orderLineService.AddOrderLineAsync(new OrderLine
                 {
+                    
                     OrderID = order.Id,
                     ProductId = group.Key,
                     NumberOfProducts = group.Count()
+                    
                 });
             }
 

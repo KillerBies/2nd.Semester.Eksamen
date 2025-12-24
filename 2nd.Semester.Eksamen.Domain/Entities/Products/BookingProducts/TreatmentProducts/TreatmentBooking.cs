@@ -81,5 +81,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
         {
             return Start < end && start < End;
         }
+
+
     }
 }

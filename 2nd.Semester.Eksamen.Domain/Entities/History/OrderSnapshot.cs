@@ -17,7 +17,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public DateOnly DateOfPayment { get; private set; }
         public decimal? TotalAfterDiscount { get; private set; }
         public byte[]? PdfInvoice { get; set; }
-       
+        public decimal VAT {  get; set; }
         public List<OrderLineSnapshot>? OrderLinesSnapshot { get; private set; } = new();
         public int? AppliedSnapshotId { get; set; }
         public AppliedDiscountSnapshot? AppliedDiscountSnapshot { get; private set; }
@@ -29,6 +29,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             OrderLinesSnapshot = order.Products.Select(oL => new OrderLineSnapshot(oL)).ToList();
             DateOfPayment = DateOnly.FromDateTime(DateTime.Now);
             AppliedDiscountSnapshot = new AppliedDiscountSnapshot(discount);
+            VAT = order.VAT;
         }
     }
 

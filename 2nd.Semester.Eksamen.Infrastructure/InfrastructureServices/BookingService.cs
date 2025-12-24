@@ -67,21 +67,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices
             
                 var customer = booking.Customer;                                                                                         
                 //Checks if Customer has chosen to be deleted from database. If false sendes to infrastructure layer and deletes customer.
+                await _bookingRepository.CancelBookingAsync(booking);
                 if (booking.Customer.SaveAsCustomer == false && customer is PrivateCustomer privateCustomer)
                 {
-                //var treatmentBooking = _treatmentBookingRepository.GetByBooking(booking);
-                //await _treatmentBookingRepository.CancleBookedTreatmentAsync(treatmentBooking);
-                await _bookingRepository.CancelBookingAsync(booking);
                  await _privateCustomerRepository.DeleteAsync(privateCustomer);
                  }
                 if (booking.Customer.SaveAsCustomer == false && customer is CompanyCustomer companyCustomer)
                 {
-                await _bookingRepository.CancelBookingAsync(booking);
                  await _companyCustomerRepository.DeleteAsync(companyCustomer);
                 }
-            else
-                //Deletes customer
-                await _bookingRepository.CancelBookingAsync(booking);
         }
 
         public async Task<Booking> CreateBookingAsync(Booking booking)

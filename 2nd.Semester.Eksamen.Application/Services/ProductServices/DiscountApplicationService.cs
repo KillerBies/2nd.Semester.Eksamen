@@ -3,6 +3,7 @@ using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
+using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,16 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
     {
         private readonly ILoyaltyDiscountRepository _loyaltyDiscountRepository;
         private readonly ICampaignRepository _campaignDiscountRepository;
+        private readonly IProductRepository _productRepository;
         private DTO_to_Domain _domainAdapter;
-        public DiscountApplicationService(ILoyaltyDiscountRepository discountRepository, DTO_to_Domain dTO_To_Domain, ICampaignRepository campaignRepository)
+        private Domain_to_DTO _dtoAdapter;
+        public DiscountApplicationService(ILoyaltyDiscountRepository discountRepository, DTO_to_Domain dTO_To_Domain, ICampaignRepository campaignRepository, IProductRepository productRepository, Domain_to_DTO domain_To_DTO)
         {
             _loyaltyDiscountRepository = discountRepository;
             _domainAdapter = dTO_To_Domain;
             _campaignDiscountRepository = campaignRepository;
+            _productRepository = productRepository;
+            _dtoAdapter = domain_To_DTO;
         }
         public async Task CreateNewLoyaltyDiscountAsync(LoyaltyDiscountDTO discount)
         {
@@ -90,6 +95,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<List<ProductDTO>> GetAllProductsAsync()
+        {
+            return (await _productRepository.GetAllAsync()).Select(p => _dtoAdapter.ProductToDTO(p)).ToList();
         }
     }
 }

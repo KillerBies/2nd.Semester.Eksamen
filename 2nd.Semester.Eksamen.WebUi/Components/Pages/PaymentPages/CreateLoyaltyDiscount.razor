@@ -1,87 +1,75 @@
-﻿@page "/create-discount"
+﻿
 @using _2nd.Semester.Eksamen.Domain.Entities.Discounts
-@using _2nd.Semester.Eksamen.Application.Services
-@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
-@using _2nd.Semester.Eksamen.WebUi.Components.Shared
-@inject IDiscountApplicationService discountService
-@inject NavigationManager Navi
 @rendermode InteractiveServer
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 
-<div style="width:30%; height:96vh; align-content:center; align-items:center; display:flex; justify-content:center; margin:0 auto;">
-    <FloatingPage PageContentScrollable="false">
-        <EditForm Model="@discount" OnValidSubmit="@HandleValidSubmit" class="row p-3">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+<EditForm Model="@discount" class="row p-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-            <div style="text-align:center;">
-                <h1>Opret LoyalitetsRabat</h1>
+    <div style="text-align:center;">
+        <h1>Opret LoyalitetsRabat</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <label for="Name" class="form-labels">Navn:</label>
+            <InputText id="Name" @bind-Value="discount.Name" class="form-control" placeholder="Rabat navn..." />
+        </div>
+
+        <div class="col-md-6">
+            <label for="MinimumVisits" class="form-labels">Minimum besøg:</label>
+            <InputNumber id="MinimumVisits" @bind-Value="discount.MinimumVisits" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <label for="DiscountType" class="form-labels">Type af loyalitetsrabat:</label>
+            <InputText id="DiscountType" @bind-Value="discount.DiscountType" class="form-control" placeholder="Type..." />
+        </div>
+        <div class="col-md-6 align-content-center" style="margin-top:4px;">
+            <div>
+                <label for="AppliesToTreatment" class="form-labels">Gælder for behandlinger</label>
+                <InputCheckbox id="AppliesToTreatment" @bind-Value="discount.AppliesToTreatment" class="form-check-input" />
             </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="Name" class="form-labels">Navn:</label>
-                    <InputText id="Name" @bind-Value="discount.Name" class="form-control" placeholder="Rabat navn..." />
-                </div>
-
-                <div class="col-md-6">
-                    <label for="MinimumVisits" class="form-labels">Minimum besøg:</label>
-                    <InputNumber id="MinimumVisits" @bind-Value="discount.MinimumVisits" class="form-control" />
-                </div>
+            <div>
+                <label for="AppliesToProduct" class="form-labels">Gælder for produkter</label>
+                <InputCheckbox id="AppliesToProduct" @bind-Value="discount.AppliesToProduct" class="form-check-input" />
             </div>
+        </div>
+    </div>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="DiscountType" class="form-labels">Type af loyalitetsrabat:</label>
-                    <InputText id="DiscountType" @bind-Value="discount.DiscountType" class="form-control" placeholder="Type..." />
-                </div>
-                <div class="col-md-6 align-content-center" style="margin-top:4px;">
-                    <div>
-                        <label for="AppliesToTreatment" class="form-labels">Gælder for behandlinger</label>
-                        <InputCheckbox id="AppliesToTreatment" @bind-Value="discount.AppliesToTreatment" class="form-check-input" />
-                    </div>
-                    <div>
-                        <label for="AppliesToProduct" class="form-labels">Gælder for produkter</label>
-                        <InputCheckbox id="AppliesToProduct" @bind-Value="discount.AppliesToProduct" class="form-check-input" />
-                    </div>
-                </div>
-            </div>
-
-            @if (discount.AppliesToProduct || discount.AppliesToTreatment)
+    @if (discount.AppliesToProduct || discount.AppliesToTreatment)
+    {
+        <div class="row mt-3">
+            @if (discount.AppliesToTreatment)
             {
-                <div class="row mt-3">
-                    @if (discount.AppliesToTreatment)
-                    {
-                        <div class="col-md-6">
-                            <label for="TreatmentDiscount" class="form-labels">Rabat på behandling (%):</label>
-                            <InputNumber id="TreatmentDiscount" @bind-Value="discount.TreatmentDiscount" class="form-control" />
-                        </div>
-                    }
-                    @if (discount.AppliesToProduct)
-                    {
-                        <div class="col-md-6">
-                            <label for="ProductDiscount" class="form-labels">Rabat på produkt (%):</label>
-                            <InputNumber id="ProductDiscount" @bind-Value="discount.ProductDiscount" class="form-control" />
-                        </div>
-                    }
+                <div class="col-md-6">
+                    <label for="TreatmentDiscount" class="form-labels">Rabat på behandling (%):</label>
+                    <InputNumber id="TreatmentDiscount" @bind-Value="discount.TreatmentDiscount" class="form-control" />
                 </div>
             }
-            <div class="row" style="padding-top: 20px;">
-                <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary col-md-12">Opret Rabat</button>
+            @if (discount.AppliesToProduct)
+            {
+                <div class="col-md-6">
+                    <label for="ProductDiscount" class="form-labels">Rabat på produkt (%):</label>
+                    <InputNumber id="ProductDiscount" @bind-Value="discount.ProductDiscount" class="form-control" />
                 </div>
-            </div>
+            }
+        </div>
+    }
 
-        </EditForm>
-    </FloatingPage>
-</div>
+</EditForm>
+
 
 @code {
-    public LoyaltyDiscountDTO discount = new();
-
-    private async Task HandleValidSubmit()
+[Parameter] public LoyaltyDiscountDTO discount { get; set; }
+[Parameter] public EventCallback<LoyaltyDiscountDTO> discountChanged { get; set; }
+    public async Task OnChange()
     {
-        await discountService.CreateNewLoyaltyDiscountAsync(discount);
+        await discountChanged.InvokeAsync(discount);
     }
 }
 

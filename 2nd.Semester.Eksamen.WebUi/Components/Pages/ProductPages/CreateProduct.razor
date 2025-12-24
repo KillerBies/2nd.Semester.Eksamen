@@ -1,0 +1,67 @@
+﻿@page "/create-product"
+@using _2nd.Semester.Eksamen.Domain.Entities.Products
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@inject IProductApplicationService productService
+@inject NavigationManager Navi
+@rendermode InteractiveServer
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger">
+        @_errorMessage
+    </div>
+}
+<div style="width:100%; height:96vh; align-content:center; align-items:center; display:flex; justify-content:center;">
+    <FloatingPage>
+        <div style="margin: 30px;">
+            <EditForm Model="@productDTO" OnValidSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <h2 class="text-center mb-4">Opret Produkt</h2>
+
+                <div class="mb-3">
+                    <label class="form-label">Navn:</label>
+                    <InputText @bind-Value="productDTO.Name" class="form-control" placeholder="Produktnavn..." />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Pris:</label>
+                    <InputNumber @bind-Value="productDTO.Price" class="form-control" placeholder="Pris..." />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Beskrivelse:</label>
+                    <InputTextArea @bind-Value="productDTO.Description" class="form-control" placeholder="Beskrivelse..." maxlength="500" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Rabatteret pris (valgfrit):</label>
+                    <InputNumber @bind-Value="productDTO.DiscountedPrice" class="form-control" placeholder="Rabatteret pris..." />
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary w-75">Opret Produkt</button>
+                </div>
+            </EditForm>
+        </div>
+    </FloatingPage>
+</div>
+@code {
+    private NewProductDTO productDTO = new();
+    private string _errorMessage = "";
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await productService.CreateNewProductAsync(productDTO);
+            Navi.NavigateTo("/");
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Noget gik galt dit produkt blev ikke lavt";
+        }
+    }
+
+}

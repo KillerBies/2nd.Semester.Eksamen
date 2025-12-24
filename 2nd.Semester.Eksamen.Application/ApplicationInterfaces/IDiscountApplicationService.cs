@@ -16,5 +16,6 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         public Task CreateNewCampaignDiscountAsync(CampaignDiscountDTO discount);
         public Task DeleteCampaignDiscountAsync(CampaignDiscountDTO discount);
         public Task UpdateCampaignDiscountAsync(CampaignDiscountDTO discount);
+        public Task<List<ProductDTO>> GetAllProductsAsync();
     }
 }

@@ -13,6 +13,7 @@ using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Custome
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,11 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         public async Task<Employee> DTOEmployeeToDomain(EmployeeDTO employeeDTO)
         {
             var result = await _employeeRepository.GetByIDAsync(employeeDTO.EmployeeId);
+            return result;
+        }
+        public Product DTOProductToNewDomain(NewProductDTO productDTO)
+        {
+            var result = new Product(productDTO.Name, productDTO.Price, productDTO.Description);
             return result;
         }
         public async Task<Booking> DTOBookingToDomain(BookingDTO booking)

@@ -16,20 +16,20 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
         [StringLength(100, ErrorMessage = "Navn må maks være 100 tegn.")]
         public string Name { get; set; } = string.Empty;
 
-        [Range(0, 100, ErrorMessage = "Rabat på behandling skal være mellem 0 og 100%.")]
+        [Range(0, 1, ErrorMessage = "Rabat på behandling skal være mellem 0 og 1.")]
         public decimal TreatmentDiscount { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Rabat på produkter skal være mellem 0 og 100%.")]
+        [Range(0, 1, ErrorMessage = "Rabat på produkter skal være mellem 0 og 1.")]
         public decimal ProductDiscount { get; set; }
 
         public bool AppliesToTreatment { get; set; }
         public bool AppliesToProduct { get; set; }
 
         [Required(ErrorMessage = "Startdato er påkrævet.")]
-        public DateTime Start { get; set; }
+        public DateTime Start { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "Slutdato er påkrævet.")]
-        public DateTime End { get; set; }
+        public DateTime End { get; set; } = DateTime.Now;
 
         [StringLength(500, ErrorMessage = "Beskrivelse må maks være 500 tegn.")]
         public string Description { get; set; } = string.Empty;
