@@ -64,18 +64,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices
         }
         public async Task DeleteBookingAsync(Booking booking)
         {
-            
-                var customer = booking.Customer;                                                                                         
-                //Checks if Customer has chosen to be deleted from database. If false sendes to infrastructure layer and deletes customer.
-                await _bookingRepository.CancelBookingAsync(booking);
-                if (booking.Customer.SaveAsCustomer == false && customer is PrivateCustomer privateCustomer)
-                {
-                 await _privateCustomerRepository.DeleteAsync(privateCustomer);
-                 }
-                if (booking.Customer.SaveAsCustomer == false && customer is CompanyCustomer companyCustomer)
-                {
-                 await _companyCustomerRepository.DeleteAsync(companyCustomer);
-                }
+
+            var customer = booking.Customer;
+            //Checks if Customer has chosen to be deleted from database. If false sendes to infrastructure layer and deletes customer.
+            await _bookingRepository.CancelBookingAsync(booking);
+            if (booking.Customer.SaveAsCustomer == false && customer is PrivateCustomer privateCustomer)
+            {
+                await _privateCustomerRepository.DeleteAsync(privateCustomer);
+            }
+            if (booking.Customer.SaveAsCustomer == false && customer is CompanyCustomer companyCustomer)
+            {
+                await _companyCustomerRepository.DeleteAsync(companyCustomer);
+            }
         }
 
         public async Task<Booking> CreateBookingAsync(Booking booking)

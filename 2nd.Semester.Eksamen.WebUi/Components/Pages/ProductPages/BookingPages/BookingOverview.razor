@@ -4,7 +4,9 @@
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 @using _2nd.Semester.Eksamen.Domain
 @using _2nd.Semester.Eksamen.Domain.Entities.Products
+@using _2nd.Semester.Eksamen.Domain.Entities.History
 @using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer
 @using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
@@ -68,7 +70,7 @@
                                 <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column;" >
                                     <div class="info">
                                         <div style="display:flex; margin-bottom:20px;">
-                                            <h4 style="color: #034265;">@booking.Customer.Name</h4>
+                                            <h4 style="color: #034265;">@(booking.Customer is PrivateCustomer pc ? $"{booking.Customer.Name} {pc.LastName}" : booking.Customer.Name)</h4>
                                             @if(booking.Status.ToString()=="Pending")
                                             {
                                                 <span class="badge ms-auto" style="background: #e0f2ff;  color: #0369a1;">@booking.Status</span>
@@ -83,6 +85,21 @@
                                     </div>
                                     <div class="card-footer bg-transparent border-0">
                                     <button class="btn card-btn" @onclick="() => ShowOverlay(booking)">Se detaljer</button>
+                                    </div>
+                                </div>
+                            }
+                            @foreach (var booking in FilterdCompletedBookings)
+                            {
+                                <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column;">
+                                    <div class="info">
+                                        <div style="display:flex; margin-bottom:20px;">
+                                            <h4 style="color: #034265;">@booking.CustomerSnapshot.Name</h4>
+                                                <span class="badge ms-auto" style="background: #e0f2ff;  color: #0369a1;">Completed</span>
+                                        </div>
+                                        <strong><p>@booking.OrderSnapshot.DateOfPayment.ToString("ddd/d/MMM")</p></strong>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-0" style="margin-top:auto;">
+                                        <button class="btn card-btn" @onclick="() => ShowOverlayCompleted(booking)">Se detaljer</button>
                                     </div>
                                 </div>
                             }
@@ -107,7 +124,7 @@
 
 
                 <div class="card-header text-white rounded-top gap-5 px-3 py-2" style="background-color:#034265; display:flex; flex-direction:row; width:60vw;">
-                    <h2 class="mb-0 text-white">@SelectedBooking.Customer.Name</h2>
+                <h2 class="mb-0 text-white"> @(SelectedBooking.Customer is PrivateCustomer pc ? $"{SelectedBooking.Customer.Name} {pc.LastName}": SelectedBooking.Customer.Name)</h2>
                     <button class="btn btn-primary ms-auto" style="width: 15%;" @onclick="PayBooking"><b>Betal</b></button>
                 </div>
 
@@ -139,10 +156,9 @@
 
 
                     <div class="d-flex flex-column gap-2">
-                        <div class="d-flex gap-2 btn-group" style="margin-left:20px;">
-                            <button class="btn btn-outline-primary flex-grow-1" @onclick="HideOverlay">Luk</button>
-                            <button class="btn btn-outline-info flex-grow-1" @onclick="() => OpenEdit = true">Rediger</button>
-                            <button class="btn btn-outline-danger flex-grow-1" @onclick="DeleteBookingWarning">Slet</button>
+                        <div class="btn-group">
+                            <button class="btn card-btn w-50 " @onclick="DeleteBookingWarning" style="background-color:crimson">Slet</button>
+                            <button class="btn card-btn w-50" @onclick="() => OpenEdit = true">Rediger</button>
                         </div>
                     </div>
                 </div>
@@ -179,6 +195,52 @@
             <BookingForm CustomerId="@SelectedBooking.Customer.Id" EditBooking="SelectedBooking" IsEdit="true"></BookingForm>
         </SidePage>
     }
+
+    @if (ShowCompletedDetails)
+    {
+        <SidePage IsVisible="ShowCompletedDetails" IsVisibleChanged="@(v => ShowCompletedDetails = v)">
+            <div class="d-flex flex-column h-100">
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger m-3">@errorMessage</div>
+                }
+
+
+                <div class="card-header text-white rounded-top gap-5 px-3 py-2" style="background-color:#034265; display:flex; flex-direction:row; width:60vw;">
+                    <h2 class="mb-0 text-white">@SelectedCompletedBooking.CustomerSnapshot.Name</h2>
+                </div>
+
+                <div class="p-4 flex-grow-1 overflow-auto">
+
+                    <div class="text-center mb-4 border-bottom border-dashed pb-3">
+                        <h5><p>@SelectedCompletedBooking.OrderSnapshot.DateOfPayment.ToString("ddd/d/MMM")</p></h5>
+                        <h7><span class="badge bg-dark ms-auto bg-opacity-75">@CompletedTimeSince</span></h7>
+                    </div>
+
+
+                    @if (SelectedCompletedBooking.TreatmentSnapshot.Any())
+                    {
+                        <div class="mb-4">
+                            @foreach (var treatment in SelectedCompletedBooking.TreatmentSnapshot)
+                            {
+                                <div class="mb-3 p-3 border rounded shadow-sm">
+                                    <h5 class="fw-bold mb-1">@treatment.Name</h5>
+                                    <p class="mb-1"><strong>Pris:</strong> @treatment.PricePerUnit.ToString("C")</p>
+                                    <p class="mb-1"><strong>Kategori:</strong> @treatment.Category</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                    <div class="card-footer bg-transparent border-0 d-flex flex-column gap-2">
+                            <button class="btn btn-outline-secondary" @onclick="()=>ShowCompletedDetails = false">Luk</button>
+                    </div>
+                </div>
+            </div>
+        </SidePage>
+    }
+
+
 </div>
 
 
@@ -191,6 +253,7 @@
 
 @code {
     [Inject] NavigationManager Navi { get; set; }
+    [Inject] IBookingOverviewService _bookingOverviewService { get; set; }
     private TimeSpan TimeTill => SelectedBooking.Start - CurrentTime;
     private string TimeUntil => $"Om {DaysUntil} {HoursUntil} {MinutesUntil} ";
     private string DaysUntil => TimeTill.Days > 0 ? TimeTill.Days.ToString() + " Dage" : "";
@@ -198,9 +261,13 @@
     private string MinutesUntil => TimeTill.Minutes > 0 ? TimeTill.Minutes.ToString() + " Minutter" : "";
     private TimeSpan TimeSince => CurrentTime - SelectedBooking.Start;
     private string TimeSinceThen => $"For {DaysSinceThen} {HoursSinceThen} {MinutesSinceThen} Siden";
+    private List<BookingSnapshot> CompletedBookings { get; set; } = new(); //afsluttet bookings
+    private BookingSnapshot SelectedCompletedBooking { get; set; }
     private string DaysSinceThen => TimeSince.Days.ToString() + " Dage";
     private string HoursSinceThen => TimeSince.Hours.ToString() + " Timer";
     private string MinutesSinceThen => TimeSince.Minutes.ToString() + " Minutter";
+    private TimeSpan TimeSinceCompleted => CurrentTime - SelectedCompletedBooking.OrderSnapshot.DateOfPayment.ToDateTime(TimeOnly.MinValue);
+    private string CompletedTimeSince => $"For {TimeSinceCompleted.Days} Dage, {TimeSinceCompleted.Hours} Timer, og {TimeSinceCompleted.Minutes} Minutter Siden";
     private Booking SelectedBooking { get; set; } = new Booking
     {
         Treatments = new List<TreatmentBooking>()
@@ -213,10 +280,12 @@
     private bool OpenEdit = false;
     private DateTime CurrentTime => DateTime.Now;
     private IEnumerable<Booking> FilteredBookings => bookingList.Where(b => string.IsNullOrWhiteSpace(SearchTermCustomer) || b.Customer.Name.Contains(SearchTermCustomer, StringComparison.OrdinalIgnoreCase)).Where(b => (!SearchTermDateStart.HasValue || b.Start.Date >= SearchTermDateStart.Value.Date) && (!SearchTermDateEnd.HasValue || b.Start.Date <= SearchTermDateEnd.Value.Date));
+    private IEnumerable<BookingSnapshot> FilterdCompletedBookings => CompletedBookings.Where(b => string.IsNullOrWhiteSpace(SearchTermCustomer) || b.CustomerSnapshot.Name.Contains(SearchTermCustomer, StringComparison.OrdinalIgnoreCase)).Where(b => (!SearchTermDateStart.HasValue || b.OrderSnapshot.DateOfPayment >= DateOnly.FromDateTime(SearchTermDateStart.Value.Date)) && (!SearchTermDateEnd.HasValue || b.OrderSnapshot.DateOfPayment <= DateOnly.FromDateTime(SearchTermDateEnd.Value.Date)));
     private int TodayCount => bookingList.Where(b => b.Start.Date == CurrentTime.Date).Count();
     private int PendingCount => bookingList.Where(b=>b.Status.ToString() == "Pending").Count();
     private bool ShowBookingDetails = false;
     private bool ShowPaymentWindow = false;
+    private bool ShowCompletedDetails = false;
 
     private string SearchTermCustomer = "";
     private DateTime? SearchTermDate;
@@ -228,6 +297,7 @@
         try
         {
             bookingList = (await bookingService.GetBookingsByFilterAsync(new Filter { Status = BookingStatus.Pending })).ToList();
+            CompletedBookings = await _bookingOverviewService.GetAllCompletedBookings();
             if (bookingList.Any()) SelectedBooking = bookingList.First();
         }
         catch (Exception ex)
@@ -242,7 +312,11 @@
         SelectedBooking = booking;
         visibleOverlay = true;
     }
-
+    void ShowOverlayCompleted(BookingSnapshot booking)
+    {
+        SelectedCompletedBooking = booking;
+        ShowCompletedDetails = true;
+    }
     void HideOverlay()
     {
         visibleOverlay = false;

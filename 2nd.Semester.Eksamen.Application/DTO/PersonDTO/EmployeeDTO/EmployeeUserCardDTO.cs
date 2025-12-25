@@ -13,6 +13,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO
         public string Name { get; set; }
         public string Type { get; set; }
         public string PhoneNumber { get; set; }
+        public string LastName { get; set; }
         public string Color { get; set; } = "#d3d3d3";
 
     }

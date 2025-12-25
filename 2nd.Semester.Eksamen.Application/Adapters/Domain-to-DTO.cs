@@ -88,7 +88,9 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 HouseNumber = dto.HouseNumber,
                 LastName = PrivateCustomer.LastName,
                 Birthday = PrivateCustomer.BirthDate,
-                Gender = PrivateCustomer.Gender.Value
+                Gender = PrivateCustomer.Gender.Value,
+                Notes = PrivateCustomer.Notes
+                
             };
         }
         public CompanyCustomerDTO BusinessCustomerToDTO(CompanyCustomer CompanyCustomer)
@@ -105,7 +107,8 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 PostalCode = dto.PostalCode,
                 StreetName = dto.StreetName,
                 HouseNumber = dto.HouseNumber,
-                CVRNumber = CompanyCustomer.CVRNumber
+                CVRNumber = CompanyCustomer.CVRNumber,
+                Notes = CompanyCustomer.Notes
             };
         }
         public BookingDTO BookingToDTO(Booking booking)

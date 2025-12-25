@@ -15,12 +15,15 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
     public partial class CreateEmployee
     {
         [Inject] private CreateEmployeeCommand Command { get; set; }
+        [Inject] public IEmployeeUpdateService _updateService { get; set; }
 
         [Inject] public EmployeeSpecialtyService SpecialtyService { get; set; }
         [Inject] public ITreatmentService _treatmentService { get; set; }
 
         [Inject] NavigationManager Nav { get; set; }
         [Parameter] public EventCallback OnClose { get; set; }
+        [Parameter] public bool IsEdit { get; set; } = false;
+        [Parameter] public EmployeeUserCardDTO EditEmployee { get; set; }
         private string _errorMessage = "";
         protected EmployeeInputDTO Employee { get; set; } = new();
         public class SpecialtyItem
@@ -74,6 +77,27 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
         {
             specialties = await _treatmentService.GetAllUniqueSpecialtiesAsync();
             specialtyItems = specialties.Select(s => new SpecialtyItem() { Specialty = s }).ToList();
+            if(IsEdit)
+            {
+                Employee = await _updateService.GetEmployeeInputDTOByIdAsync(EditEmployee.Id);
+                foreach (var specialty in Employee.SpecialtiesList)
+                {
+                    string editSpecialty = specialty.TrimEnd().Trim(',');
+                    var item = specialtyItems.FirstOrDefault(si => si.Specialty == editSpecialty);
+                    if (item == null)
+                    {
+                        manuallyAddedSpecialties.Add(editSpecialty);
+                    }
+                    else
+                    {
+                        var specialtyItem = specialtyItems.FirstOrDefault(si => si.Specialty == editSpecialty);
+                        if (specialtyItem != null)
+                        {
+                            specialtyItem.Status = true;
+                        }
+                    }
+                }
+            }
         }
 
         public void RemoveSpecialty(Guid id)

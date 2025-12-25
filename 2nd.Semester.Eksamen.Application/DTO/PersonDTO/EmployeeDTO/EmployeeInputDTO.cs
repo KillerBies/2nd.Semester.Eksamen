@@ -12,6 +12,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO
 {
     public class EmployeeInputDTO : IHasSpecialties
     {
+        public int id { get; set; }
         [Required(ErrorMessage = "Udfyld venligst fornavn eller firmanavn")]
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Kun bogstaver er tilladt")]
         public string FirstName { get; set; }
@@ -34,6 +35,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO
         public EmployeeType Type { get; set; }
         public List<SpecialtyItemBase> Specialties { get; set; } = new();
         public List<Treatment> TreatmentHistory { get; set; } = new();
+        public List<string> SpecialtiesList { get; set; } = new();
     }
 
 }
