@@ -14,7 +14,7 @@
 		<div style="text-align:center;">
 			<h1>@(IsEdit ? "Rediger Privatkunde" : "Opret Privatkunde")</h1>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="FirstName" class="form-labels"> Fornavn </label>
 				<InputText id="FirstName" @bind-Value="@privateCustomerDTO.Name" class="form-control" placeholder="Fornavn..." />
@@ -24,7 +24,7 @@
 				<InputText id="LastName" @bind-Value="@privateCustomerDTO.LastName" class="form-control" placeholder="Efternavn..." />
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="Gender" class="form-labels">Køn:</label>
 				<InputSelect class="form-control w-100" @bind-Value="@privateCustomerDTO.Gender">
@@ -40,7 +40,7 @@
 						   max="@DateTime.Today.ToString("yyyy-MM-dd")" />
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="Email" class="form-labels"> Email</label>
 				<InputText id="Email" @bind-Value="@privateCustomerDTO.Email" class="form-control" placeholder="Email..." />
@@ -50,7 +50,7 @@
 				<InputText id="PhoneNumber" @bind-Value="@privateCustomerDTO.PhoneNumber" class="form-control" placeholder="Tlfnummer..." />
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="City" class="form-labels"> By </label>
 				<InputText id="City" @bind-Value="@privateCustomerDTO.City" class="form-control" placeholder="By..." />
@@ -60,7 +60,7 @@
 				<InputText id="StreetName" @bind-Value="@privateCustomerDTO.StreetName" class="form-control" placeholder="Vejnavn..." />
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="PostalCode" class="form-labels"> Postnummer </label>
 				<InputText id="PostalCode" @bind-Value="@privateCustomerDTO.PostalCode" class="form-control" placeholder="Postnummer..." />
@@ -70,19 +70,19 @@
 				<InputText id="HouseNumber" @bind-Value="@privateCustomerDTO.HouseNumber" class="form-control" placeholder="Husnr..." />
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-12">
 				<label for="Notes" class="form-labels"> Noter</label>
 				<InputTextArea id="Notes" @bind-Value="@privateCustomerDTO.Notes" maxlength="200" class="form-control" placeholder="Noter..." />
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-12">
-				<label for="form-check.label" class="form-labels">Gem kundeoplysninger</label>
+				<label for="form-check.label">Gem kundeoplysninger</label>
 				<InputCheckbox id="SaveAsCustomer" @bind-Value="privateCustomerDTO.SaveAsCustomer" class="form-check-input" />
 			</div>
 		</div>
-		<div class="row" style="padding-top: 10px;">
+		<div class="row mb-3" style="padding-top: 10px;">
 			<div class="col-md-12">
 				<button type="submit" class="btn btn-primary col-md-12">@(IsEdit ? "Gem Ændringer" : "Opret privatkunde")</button>
 			</div>

@@ -13,7 +13,7 @@
 		<div style="text-align:center;">
 			<h1>@(IsEdit ? "Rediger Firmakunde" : "Opret Firmakunde")</h1>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="Name" class="form-labels">Navn:</label>
 				<InputText id="Name" @bind-Value="companyCustomerDTO.Name" class="form-control" placeholder="Firmanavn..." />
@@ -23,7 +23,7 @@
 				<InputText id="CVR-Nummer" @bind-Value="companyCustomerDTO.CVRNumber" class="form-control" placeholder="CVR-nummer..." />
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="Email" class="form-labels"> Email</label>
 				<InputText id="Email" @bind-Value="@companyCustomerDTO.Email" class="form-control" placeholder="Email..." />
@@ -33,7 +33,7 @@
 				<InputText id="PhoneNumber" @bind-Value="@companyCustomerDTO.PhoneNumber" class="form-control" placeholder="Tlfnummer..." />
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="City" class="form-labels">By:</label>
 				<InputText id="City" @bind-Value="companyCustomerDTO.City" class="form-control" placeholder="By..." />
@@ -43,7 +43,7 @@
 				<InputText id="StreetName" @bind-Value="@companyCustomerDTO.StreetName" class="form-control" placeholder="Vejnavn..." />
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="Form-group" class="form-labels">Postnummer:</label>
 				<InputText id="PostalCode" @bind-Value="companyCustomerDTO.PostalCode" class="form-control" placeholder="Postnummer..." />
@@ -53,19 +53,19 @@
 				<InputText id="HouseNumber" @bind-Value="companyCustomerDTO.HouseNumber" class="form-control" placeholder="Husnr..." />
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-12">
 				<label for="Notes" class="form-labels"> Noter</label>
 				<InputTextArea id="Notes" @bind-Value="@companyCustomerDTO.Notes" maxlength="200" class="form-control" placeholder="Noter..." />
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-3">
 			<div class="col-md-12">
 				<label for="form-check.label" class="form-labels">Gem kundeoplysninger</label>
 				<InputCheckbox id="SaveAsCustomer" @bind-Value="@companyCustomerDTO.SaveAsCustomer" class="form-check-input" />
 			</div>
 		</div>
-		<div class="row" style="padding-top: 10px;">
+		<div class="row mb-3" style="padding-top: 10px;">
 			<div class="col-md-12">
 				<button type="submit" class="btn btn-primary col-md-12">Opret Firmakunde</button>
 			</div>
