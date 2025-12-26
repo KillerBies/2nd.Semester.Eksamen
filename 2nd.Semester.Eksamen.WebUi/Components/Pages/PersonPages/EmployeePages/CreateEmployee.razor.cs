@@ -6,6 +6,7 @@ using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.CodeAnalysis;
 using WebUIServices;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -19,13 +20,15 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 
         [Inject] public EmployeeSpecialtyService SpecialtyService { get; set; }
         [Inject] public ITreatmentService _treatmentService { get; set; }
-
+        private EmployeeInputDTO Input { get; set; }
         [Inject] NavigationManager Nav { get; set; }
         [Parameter] public EventCallback OnClose { get; set; }
+        public string ErrorMessage { get; set; } = "";
         [Parameter] public bool IsEdit { get; set; } = false;
-        [Parameter] public EmployeeUserCardDTO EditEmployee { get; set; }
+        [Parameter] public int EditEmployeeID { get; set; }
         private string _errorMessage = "";
-        protected EmployeeInputDTO Employee { get; set; } = new();
+        private EditContext _editContext;
+        private ValidationMessageStore _messageStore;
         public class SpecialtyItem
         {
             public string Specialty { get; set; }
@@ -35,52 +38,16 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
         List<string> specialties = new();
         List<string> manuallyAddedSpecialties = new();
         string newSpecialty = "";
-        void AddSpecialty()
-        {
-            if (!string.IsNullOrWhiteSpace(newSpecialty))
-            {
-                manuallyAddedSpecialties.Add(newSpecialty.Trim());
-                newSpecialty = "";
-            }
-        }
-        void RemoveSpecialty(string item)
-        {
-            manuallyAddedSpecialties.Remove(item);
-        }
-
-        protected EmployeeInputDTO Input { get; set; } = new EmployeeInputDTO
-        {
-            Address = new AddressInputDTO(),
-            Type = EmployeeType.Staff, // Default value
-            Appointments = new List<Appointment>(),
-            TreatmentHistory = new List<Treatment>(),
-            BasePriceMultiplier = 1.0m, // default
-
-        };
-
-        protected async Task CreateEmployeeAsync()
-        {
-            try
-            {
-                await Command.ExecuteAsync(Input);
-                Nav.NavigateTo("/employees");
-                await OnClose.InvokeAsync();
-            }
-            catch
-            {
-
-            }
 
 
-        }
         protected override async Task OnInitializedAsync()
         {
             specialties = await _treatmentService.GetAllUniqueSpecialtiesAsync();
             specialtyItems = specialties.Select(s => new SpecialtyItem() { Specialty = s }).ToList();
-            if(IsEdit)
+            if (IsEdit)
             {
-                Employee = await _updateService.GetEmployeeInputDTOByIdAsync(EditEmployee.Id);
-                foreach (var specialty in Employee.SpecialtiesList)
+                Input = await _updateService.GetEmployeeInputDTOByIdAsync(EditEmployeeID);
+                foreach (var specialty in Input.SpecialtiesList)
                 {
                     string editSpecialty = specialty.TrimEnd().Trim(',');
                     var item = specialtyItems.FirstOrDefault(si => si.Specialty == editSpecialty);
@@ -98,7 +65,77 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
                     }
                 }
             }
+            else
+            {
+                Input = new EmployeeInputDTO
+                {
+                    Address = new AddressInputDTO(),
+                    Type = EmployeeType.Staff, // Default value
+                    Appointments = new List<Appointment>(),
+                    TreatmentHistory = new List<Treatment>(),
+                    BasePriceMultiplier = 1.0m, // default
+
+                };
+            }
+            _editContext = new EditContext(Input);
+            _messageStore = new ValidationMessageStore(_editContext);
         }
+
+
+        void AddSpecialty()
+        {
+            if (!string.IsNullOrWhiteSpace(newSpecialty))
+            {
+                manuallyAddedSpecialties.Add(newSpecialty.Trim());
+                newSpecialty = "";
+            }
+        }
+        void RemoveSpecialty(string item)
+        {
+            manuallyAddedSpecialties.Remove(item);
+        }
+
+        protected async Task CreateEmployeeAsync()
+        {
+            if(Input.WorkEnd <= Input.WorkStart)
+            {
+                _messageStore.Add(_editContext.Field(nameof(Input.WorkEnd)),"Ugyldig Start og Slut tider: Start skal være før Slut");
+                return;
+            }
+            ErrorMessage = "";
+            List<string> requiredSpecialties = new();
+
+            foreach (var specialtyItem in specialtyItems)
+            {
+                if (specialtyItem.Status == true)
+                {
+
+                    requiredSpecialties.Add(specialtyItem.Specialty);
+                }
+            }
+            requiredSpecialties.AddRange(manuallyAddedSpecialties); 
+            Input.SpecialtiesList = requiredSpecialties.Select(s => s + ", ").ToList();
+            try
+            {
+                if(IsEdit)
+                {
+                    _updateService.UpdateEmployee(Input);
+                }
+                else
+                {
+                    await Command.ExecuteAsync(Input);
+                }
+                Nav.NavigateTo("/employees");
+                await OnClose.InvokeAsync();
+            }
+            catch
+            {
+
+            }
+
+
+        }
+
 
         public void RemoveSpecialty(Guid id)
         {

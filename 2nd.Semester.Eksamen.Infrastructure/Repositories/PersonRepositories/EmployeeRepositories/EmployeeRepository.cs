@@ -49,7 +49,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.Employees.Update(employee);
+                var employeeToUpdate = await _context.Employees.FirstOrDefaultAsync(e => e.Id == employee.Id);
+                employeeToUpdate.WorkEnd = employee.WorkEnd;
+                employeeToUpdate.WorkStart = employee.WorkStart;
+                employeeToUpdate.Specialties = employee.Specialties;
+                employeeToUpdate.BasePriceMultiplier = employee.BasePriceMultiplier;
+                employeeToUpdate.TrySetName(employee.Name);
+                employeeToUpdate.TrySetLastName(employee.Name, employee.LastName);
+                employeeToUpdate.TrySetGender(employee.Gender);
+                employeeToUpdate.TrySetEmail(employee.Email);
+                employeeToUpdate.TrySetAddress(employee.Address.City, employee.Address.PostalCode, employee.Address.StreetName, employee.Address.HouseNumber);
+                employeeToUpdate.TrySetExperience(employee.ExperienceLevel);
+                employeeToUpdate.PhoneNumber = employee.PhoneNumber;
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

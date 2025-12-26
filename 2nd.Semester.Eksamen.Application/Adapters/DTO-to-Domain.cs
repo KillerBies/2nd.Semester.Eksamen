@@ -130,8 +130,8 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 email: dto.Email,
                 phoneNumber: dto.PhoneNumber,
                 basePriceMultiplier: dto.BasePriceMultiplier,
-                workEnd: new(08, 0, 0),
-                workStart: new(18, 0, 0)
+                workEnd: dto.WorkEnd != null ? TimeOnly.FromTimeSpan(dto.WorkEnd) : new(08, 0, 0),
+                workStart: dto.WorkStart != null ? TimeOnly.FromTimeSpan(dto.WorkStart) : new(18, 0, 0)
             );
 
             return employee;

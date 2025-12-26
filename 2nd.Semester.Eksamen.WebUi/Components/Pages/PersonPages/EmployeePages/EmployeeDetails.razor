@@ -34,42 +34,66 @@
 }
 else
 {
-    <div class="card shadow-sm">
-        <div class="card-header" style="background-color:#034265;">
-            <h5 class="mb-0" style="color:white;">@Employee.Name @Employee.LastName</h5>
-        </div>
-        <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <p><strong>Email:</strong> @Employee.Email</p>
-                    <p><strong>Phone:</strong> @Employee.PhoneNumber</p>
-                    <p><strong>Type:</strong> @Employee.Type</p>
-                    <p>
-                        <strong>Specialties:</strong>
-                        @foreach (var Specialty in Employee.Specialties.Split(','))
-                        {
-                            @if (!string.IsNullOrWhiteSpace(Specialty))
-                            {
-                                <span class="badge bg-secondary me-1">@Specialty</span>
-                            }
-                        }
-                    </p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Experience Level:</strong> @Employee.ExperienceLevel</p>
-                    <p><strong>Gender:</strong> @Employee.Gender</p>
-                    <p>
-                        <strong>Address:</strong>
-                        @Employee.Address.StreetName @Employee.Address.HouseNumber,<br />
-                        @Employee.Address.City, @Employee.Address.PostalCode
-                    </p>
-                </div>
-            </div>
 
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-outline-primary me-2" @onclick="StartEdit">Edit</button>
-                <button class="btn btn-outline-danger" @onclick="() => ShowConfirmDelete = true">Delete</button>
+    <div class="card shadow-sm" style="background: #ffffff; padding: 1.5rem;">
+        <div>
+            <div class="card-header emp-header d-flex align-items-start" style="background-color:#034265;">
+                <div>
+                    <h4 class="fw-semibold mb-1" style="color:white;">@Employee.Name @Employee.LastName</h4>
+                    <span class=" small" style="color:lightgray;">@Employee.ExperienceLevel</span>
+                </div>
+                <span class="badge badge-category ms-auto">
+                    @Employee.Type
+                </span>
             </div>
+            <div class="emp-info">
+                <div class="info-row">
+                    <span class="info-label">Køn</span>
+                    <span class="info-value">@Employee.Gender</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Telefon</span>
+                    <span class="info-value">@Employee.PhoneNumber</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email</span>
+                    <span class="info-value">@Employee.Email</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">By</span>
+                    <span class="info-value">@Employee.Address.City</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Adresse</span>
+                    <span class="info-value">@Employee.Address.StreetName @Employee.Address.HouseNumber</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Postnummer</span>
+                    <span class="info-value">@Employee.Address.PostalCode</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Pris-multiplikator</span>
+                    <span class="info-value">@Employee.BasePriceMultiplier</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Arbejdstid</span>
+                    <span class="info-value">@Employee.WorkStart til @Employee.WorkEnd</span>
+                </div>
+                <div class="info-row align-items-start">
+                    <span class="info-label">Specialiteter</span>
+                    <div class="specialties">
+                        @foreach (var specialty in Employee.Specialties.Split(','))
+                        {
+                            <span class="badge badge-specialty">@specialty.Trim(' ')</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="btn-group w-100" style="height:min-content;">
+            <button class="btn card-btn w-50" style="background-color:crimson" @onclick="() => ShowConfirmDelete = true">Slet kunde</button>
+            <button class="btn card-btn" @onclick="ShowEditWindow">Rediger</button>
         </div>
     </div>
+
 }

@@ -120,17 +120,17 @@
 
 @if (isVisible == true)
 {
-    <CreateWindow IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)" StyleParameters="background-color: #F3F2F2; padding:0;width:20%; height:auto;">
+    <CreateWindow IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)" StyleParameters="background-color: #F3F2F2; padding:0;width:28%; height:auto;">
         @if (selectedCustomer != null)
         {
-            <div style="background: #ffffff; padding: 1.5rem;">
+            <div class="card shadow-sm" style="background: #ffffff; padding: 1.5rem;">
                 @if (selectedCustomer is PrivateCustomerDTO p)
                 {
                     <div>
-                        <div class="customer-header d-flex align-items-start">
+                        <div class="card-header customer-header d-flex align-items-start" style="background-color:#034265;">
                             <div>
-                                <h4 class="fw-semibold mb-1">@p.Name @p.LastName</h4>
-                                <span class="text-muted small">Kunde</span>
+                                <h4 class="fw-semibold mb-1" style="color:white;">@p.Name @p.LastName</h4>
+                                <span class="small" style="color:lightgray;">Kunde</span>
                             </div>
                             <span class="badge badge-category ms-auto">
                                 Privatkunde
@@ -180,14 +180,14 @@
                 else if (selectedCustomer is CompanyCustomerDTO c)
                 {
                     <div>
-                        <div class="customer-header d-flex align-items-start">
+                        <div class="customer-header d-flex align-items-start" style="background-color:#034265;">
                             <div>
-                                <h4 class="fw-semibold mb-1">@c.Name</h4>
-                                <span class="text-muted small">Kunde</span>
+                                <h4 class="fw-semibold mb-1" style="color:white;">@c.Name</h4>
+                                <span class=" small" style="color:lightgray;">Kunde</span>
+                                <span class="badge badge-category ms-auto">
+                                    Firmakunde
+                                </span>
                             </div>
-                            <span class="badge badge-category ms-auto">
-                                Firmakunde
-                            </span>
                         </div>
                         <div class="customer-info">
                             <div class="info-row">
@@ -224,12 +224,10 @@
                         </div>
                     </div>
                 }
-                <div class="card-footer bg-transparent border-0" >
-                    <div class="btn-group w-100" style="height:min-content;">
-                        <button class="btn btn-danger w-50" @onclick="() => DeleteCustomer(selectedCustomer.id)">Slet kunde</button>
+                    <div class="btn-group w-100">
+                        <button class="btn card-btn w-50" style="background-color:crimson;" @onclick="() => DeleteCustomer(selectedCustomer.id)">Slet kunde</button>
                         <button class="btn card-btn" @onclick="() => EditCustomer = true">Rediger</button>
                     </div>
-                </div>
             </div>
         }
     </CreateWindow>
@@ -237,7 +235,7 @@
 
 @if (EditCustomer)
 {
-    <CreateWindow IsVisible=EditCustomer IsVisibleChanged="v => EditCustomer = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto; overflow-y:visible">
+    <CreateWindow IsVisible=EditCustomer IsVisibleChanged="v => EditCustomer = v" StyleParameters="background-color: #F3F2F2; padding:0;width:30%; height:auto; overflow-y:visible">
         @if (selectedCustomer is CompanyCustomerDTO cc)
         {
             <CreateCompanyCustomer OnClose="Refresh" IsEdit=true EditCustomer="cc"></CreateCompanyCustomer>

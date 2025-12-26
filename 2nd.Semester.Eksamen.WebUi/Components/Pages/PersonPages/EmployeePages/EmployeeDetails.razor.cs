@@ -18,13 +18,18 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
         [Inject] NavigationManager Nav { get; set; }
         private Employee Employee { get; set; }
         [Inject] private IEmployeeRepository _repo { get; set; }
-        [Inject]
-        public IEmployeeService EmployeeService { get; set; }
+        [Inject] public IEmployeeService EmployeeService { get; set; }
+        [Parameter] public EventCallback ShowEdit { get; set; }
         private bool ShowConfirmDelete { get; set; } = false;
         [Inject] IJSRuntime JS { get; set; }
         protected override async Task OnInitializedAsync()
         {
             Employee = await _repo.GetByIDAsync(Id);
+        }
+
+        private async Task ShowEditWindow()
+        {
+            await ShowEdit.InvokeAsync();
         }
         private void StartEdit()
         {

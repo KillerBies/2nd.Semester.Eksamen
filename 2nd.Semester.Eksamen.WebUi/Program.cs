@@ -85,6 +85,7 @@ builder.Services.AddScoped<IProductApplicationService, ProductApplicationService
 builder.Services.AddScoped<IProductOverviewService, ProductOverviewService>();
 builder.Services.AddScoped<ICustomerUpdateService, CustomerUpdateService>();
 builder.Services.AddScoped<IBookingOverviewService, BookingOverviewService>();
+builder.Services.AddScoped<IEmployeeUpdateService, EmployeeUpdateService>();
 
 
 

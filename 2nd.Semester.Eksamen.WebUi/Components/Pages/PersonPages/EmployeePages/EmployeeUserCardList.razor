@@ -7,8 +7,8 @@
 @if (ShowEmployeeDetails)
 {
     <CreateWindow IsVisible="ShowEmployeeDetails"
-                  IsVisibleChanged="@(v => ShowEmployeeDetails = v)" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
-        <EmployeeDetails Id="SelectedEmployeeId"></EmployeeDetails>
+                  IsVisibleChanged="@(v => ShowEmployeeDetails = v)" StyleParameters="background-color: #F3F2F2; padding:0;width:26%;">
+        <EmployeeDetails Id="SelectedEmployeeId" ShowEdit="() => UpdateEmployee=true" ></EmployeeDetails>
     </CreateWindow>
 }
 <div style="background-color:#F3F2F2; height:100vh">
@@ -67,24 +67,34 @@
                     }
                     else
                     {
-                        <div class="grid">
+                        <div class="emp-grid">
                             @foreach (var emp in FilteredEmployees)
                             {
-                                <div class="grid-item">
-                                    <div class="card employee-card-clickable"
-                                         style="cursor:pointer;"
-                                         @onclick="() => GoToEmployee(emp.Id)">
-
-                                        <div class="color-box" style="background:@emp.Color"></div>
-
-                                        <div class="info">
-                                            <h4>@emp.Name</h4>
-                                            <p>@emp.Type</p>
+                                <div class="employee-card">
+                                    <div class="employee-card-header">
+                                        <h3> @emp.Name</h3>
+                                        <span class="badge ms-auto" style="background: #e0f2ff;  color: #0369a1;">@emp.Type</span>
+                                    </div>
+                                    <div class="employee-card-body">
+                                        <div class="info-row">
+                                            <span class="info-label">Email</span>
+                                            <span class="info-value">@emp.Email</span>
                                         </div>
-
-                                        <div>
-                                            <p>Visning af opkommende behandlinger</p>
+                                        <div class="info-row">
+                                            <span class="info-label">Telefon</span>
+                                            <span class="info-value">@emp.PhoneNumber</span>
                                         </div>
+                                        <div class="info-row">
+                                            <span class="info-label">By</span>
+                                            <span class="info-value">@emp.City</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="customer-card-footer">
+                                        <button class="btn btn-primary card-btn w-100"
+                                                @onclick="() => GoToEmployee(emp.Id)">
+                                            Se detaljer
+                                        </button>
                                     </div>
                                 </div>
                             }
@@ -102,3 +112,10 @@
         <CreateEmployee></CreateEmployee>
     </CreateWindow>
 }
+@if(UpdateEmployee)
+{
+    <CreateWindow IsVisible=UpdateEmployee IsVisibleChanged="v => UpdateEmployee = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateEmployee IsEdit=true EditEmployeeID="SelectedEmployeeId" OnClose="Refresh"></CreateEmployee>
+    </CreateWindow>
+}
+)

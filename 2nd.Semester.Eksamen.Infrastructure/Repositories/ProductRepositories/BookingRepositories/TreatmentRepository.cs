@@ -118,5 +118,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
 
 
         }
+
+        public async Task<List<string>> GetAllSpecialtiesAsync()
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            return await _context.Treatments.Select(t => string.Join(',',t.RequiredSpecialties)).ToListAsync();
+        }
     }
 }

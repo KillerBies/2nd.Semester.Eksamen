@@ -14,10 +14,10 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO
     {
         public int id { get; set; }
         [Required(ErrorMessage = "Udfyld venligst fornavn eller firmanavn")]
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Kun bogstaver er tilladt")]
+        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Kun bogstaver er tilladt")]
         public string FirstName { get; set; }
         [Required(ErrorMessage = "Udfyld venligst fornavn eller firmanavn")]
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Kun bogstaver er tilladt")]
+        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Kun bogstaver er tilladt")]
         public string LastName { get; set; }
         [Required(ErrorMessage = "Indtast venligst email")]
         [EmailAddress(ErrorMessage = "Indtast venligst en gyldig email")]
@@ -36,6 +36,34 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO
         public List<SpecialtyItemBase> Specialties { get; set; } = new();
         public List<Treatment> TreatmentHistory { get; set; } = new();
         public List<string> SpecialtiesList { get; set; } = new();
+        public TimeSpan WorkStart { get; set; } = new TimeSpan(0, 0, 0);
+        public TimeSpan WorkEnd { get; set; } = new TimeSpan(0, 0, 0);
+
+        public EmployeeInputDTO(Employee emp)
+        {
+            id = emp.Id;
+            FirstName = emp.Name;
+            LastName = emp.LastName;
+            Email = emp.Email;
+            Gender = Enum.Parse<Gender>(emp.Gender);
+            PhoneNumber = emp.PhoneNumber;
+            BasePriceMultiplier = emp.BasePriceMultiplier;
+            ExperienceLevel = Enum.Parse<ExperienceLevels>(emp.ExperienceLevel);
+            Type = Enum.Parse<EmployeeType>(emp.Type);
+            SpecialtiesList = emp.Specialties.Split(',').ToList();
+            Address = new AddressInputDTO()
+            {
+                City = emp.Address.City,
+                HouseNumber = emp.Address.HouseNumber,
+                PostalCode = emp.Address.PostalCode,
+                StreetName = emp.Address.StreetName
+            };
+            WorkStart = emp.WorkStart.ToTimeSpan();
+            WorkEnd = emp.WorkEnd.ToTimeSpan();
+        }
+        public EmployeeInputDTO()
+        {
+        }
     }
 
 }

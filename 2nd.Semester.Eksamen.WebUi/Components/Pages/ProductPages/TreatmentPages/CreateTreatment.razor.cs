@@ -87,10 +87,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
                     requiredSpecialties.Add(specialtyItem.Specialty);
                 }
             }
-            requiredSpecialties.AddRange(manuallyAddedSpecialties);
-            treatment.RequiredSpecialties = requiredSpecialties
-        .Select(s => s + ", ")
-        .ToList();
+            requiredSpecialties.AddRange(manuallyAddedSpecialties);treatment.RequiredSpecialties = requiredSpecialties.Select(s => s + ", ").ToList();
             try
             {
                 if(IsEdit)

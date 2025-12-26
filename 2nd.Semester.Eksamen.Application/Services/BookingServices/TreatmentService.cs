@@ -30,9 +30,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
 
             var allSpecialties = await _employeeRepository.GetAllSpecialtiesAsync();
-            return allSpecialties.Where(s => s != null).SelectMany(s => s.Split(',', StringSplitOptions.RemoveEmptyEntries))
-            .Select(s => s.Trim()).Distinct().ToList();
-        
+            allSpecialties.AddRange(await _treatmentRepository.GetAllSpecialtiesAsync());
+            var uniqueSpecialties = allSpecialties.Where(s => !string.IsNullOrEmpty(s)).SelectMany(s => s.Split(',', StringSplitOptions.RemoveEmptyEntries)).Select(s => s.Trim()).Distinct().ToList();
+            return uniqueSpecialties;
+
+
         }
         public async Task CreateNewTreatmentAsync(TreatmentDTO treatmentDTO)
         {
