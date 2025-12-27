@@ -13,7 +13,9 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
         private readonly ITreatmentService _treatmentService;
         [Parameter] public EventCallback OnClose { get; set; }
         [Parameter] public bool IsEdit { get; set; } = false;
-        [Parameter] public TreatmentDTO TreatmentEdit {get;set;} 
+        [Parameter] public TreatmentDTO TreatmentEdit {get;set;}
+        [Inject] public IProductOverviewService productOverviewService { get; set; }
+        public List<string> Categories { get; set; } = new();
         public CreateTreatment(ITreatmentService treatmentService)
         {
             _treatmentService = treatmentService;
@@ -50,6 +52,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
 
         protected override async Task OnInitializedAsync()
         {
+            Categories = await productOverviewService.GetAllCategoriesAsync();
+            treatment.Category = "_";
             specialties = await _treatmentService.GetAllUniqueSpecialtiesAsync();
             specialtyItems = specialties.Select(s => new SpecialtyItem() { Specialty = s }).ToList();
             if(IsEdit)

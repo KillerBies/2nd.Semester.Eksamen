@@ -60,14 +60,14 @@
 			</div>
 		</div>
 		<div class="row mb-3">
-			<div class="col-md-12">
+			<div class="col-md-12 d-flex flex-row">
 				<label for="form-check.label" class="form-labels">Gem kundeoplysninger</label>
 				<InputCheckbox id="SaveAsCustomer" @bind-Value="@companyCustomerDTO.SaveAsCustomer" class="form-check-input" />
 			</div>
 		</div>
 		<div class="row mb-3" style="padding-top: 10px;">
 			<div class="col-md-12">
-				<button type="submit" class="btn btn-primary col-md-12">Opret Firmakunde</button>
+				<button type="submit" class="btn w-100 card-btn col-md-12">@(IsEdit ? "Gem Ændringer" : "Opret Firmakunde")</button>
 			</div>
 		</div>
 	</div>

@@ -20,7 +20,7 @@
             <DataAnnotationsValidator />
             <ValidationSummary />
 
-            <h2 class="text-center mb-4">Opret Produkt</h2>
+            <h2 class="text-center mb-4">@(IsEdit ? "Rediger Produkt" : "Opret Produkt")</h2>
 
             <div class="mb-3">
                 <label class="form-label">Navn:</label>
@@ -39,32 +39,73 @@
 
             <div class="mb-3">
                 <label class="form-label">Kategori:</label>
-                <InputText @bind-Value="productDTO.Category"
-                           class="form-control"
-                           placeholder="Kategori..." />
+                <div class="w-100 h-100">
+                    <select id="discountType" class="w-100 h-100 mb-3" name="discountType" @bind="productDTO.Category" @bind:event="oninput">
+                    <option value="_">Vælg Kategori</option>
+                    @foreach (var category in Categories)
+                    {
+                        <option value="@category">@category</option>
+                    }
+                    <option value="">Ny Kategori</option>
+                </select>
+                </div>
+                @if (productDTO.Category == "")
+                {
+                    <InputText @bind-Value="productDTO.Category"
+                               class="form-control"
+                               placeholder="Kategori..." />
+                }
             </div>
 
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary w-75">Opret Produkt</button>
+                <button type="submit" class="btn card-btn w-75">@(IsEdit ? "Gem Ændringer" : "Opret Produkt")</button>
             </div>
         </EditForm>
     </div>
 </FloatingPage>
 @code {
     private NewProductDTO productDTO { get; set; } = new();
+    [Parameter] public ProductOverviewDTO EditProduct { get; set; }
+    [Inject] public IProductOverviewService overviewService { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public bool IsEdit { get; set; } = false;
     private string _errorMessage = "";
+    private List<string> Categories { get; set; } = new();
+    private string SelectedCategory { get; set; } = "";
+    protected override async Task OnInitializedAsync()
+    {
+        Categories = await overviewService.GetAllCategoriesAsync();
+        productDTO.Category = "_";
+        if (IsEdit)
+        {
+            productDTO = new NewProductDTO()
+                {
+                    Id = EditProduct.Id,
+                    Description = EditProduct.Description,
+                    Category = EditProduct.Category,
+                    Price = EditProduct.Price,
+                    Name = EditProduct.Name
+                };
+        }
+    }
+
     private async Task HandleValidSubmit()
     {
         try
         {
-            await productService.CreateNewProductAsync(productDTO);
+            if(IsEdit)
+            {
+                await productService.UpdateProductAsync(productDTO);
+            }
+            else
+            {
+                await productService.CreateNewProductAsync(productDTO);
+            }
             await OnClose.InvokeAsync();
-            Navi.NavigateTo("/ProductOverviewPage");
         }
         catch (Exception)
         {
-            _errorMessage = "Noget gik galt dit produkt blev ikke lavt";
+            _errorMessage = (IsEdit ? "Noget gik galt dit produkt blev ikke redigeret" : "Noget gik galt dit produkt blev ikke lavt");
         }
     }
 

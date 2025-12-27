@@ -98,7 +98,12 @@
 
 
 
-
+.badge-category {
+    background: rgba(0,0,0,0.55);
+    color: white;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.75rem;
+}
 
 
 

@@ -126,8 +126,8 @@
             </p>
             <div class="card-footer w-100 mt-3 bg-transparent border-0">
                 <div class="btn-group w-100">
-                    <button class="btn btn-danger w-50"
-                            @onclick="() => DeleteTreatment(selectedTreatment.TreatmentId)">
+                    <button class="btn card-btn w-50" style="background-color:crimson;"
+                            @onclick="() => ShowDelete = true">
                         Slet behandling
                     </button>
                     <button class="btn card-btn" @onclick="() => EditTreatment = true">
@@ -142,7 +142,7 @@
 @if (CreateTreatment)
 {
     <CreateWindow StyleParameters="background-color: #F3F2F2; padding:0;width:auto;" IsVisible=CreateTreatment IsVisibleChanged="@(v => CreateTreatment = v)">
-        <CreateTreatment></CreateTreatment>
+        <CreateTreatment OnClose="Refresh"></CreateTreatment>
     </CreateWindow>
 }
 @if(EditTreatment)
@@ -151,14 +151,13 @@
         <CreateTreatment IsEdit=true TreatmentEdit="selectedTreatment" OnClose="Refresh"></CreateTreatment>
     </CreateWindow>
 }
-
-
-
-
-
-
-@code {
-
-
-
+@if(ShowDelete)
+{
+    <BookingNotification IsVisible=ShowDelete IsVisibleChanged="v => ShowDelete = v">
+        <div class="d-flex align-items-center flex-column w-100">
+       <p>Er du sikker på at du vil slette denne behandling?</p>
+        <button class="btn card-btn w-100" style="background-color:crimson;" @onclick="() => DeleteTreatment(selectedTreatment.TreatmentId)">Bekræft</button>
+        </div>
+    </BookingNotification>
 }
+

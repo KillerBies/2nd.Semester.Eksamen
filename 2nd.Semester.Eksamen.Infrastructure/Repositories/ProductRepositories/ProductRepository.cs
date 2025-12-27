@@ -55,7 +55,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.Products.Update(Product);
+                var ProductToUpdate = await _context.Products.FindAsync(Product.Id);
+                ProductToUpdate.Name = Product.Name;
+                ProductToUpdate.Price = Product.Price;
+                ProductToUpdate.Description = Product.Description;
+                ProductToUpdate.Category = Product.Category;
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -65,13 +69,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
                 throw;
             }
         }
-        public async Task DeleteAsync(Product Product)
+        public async Task DeleteAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.Products.Remove(Product);
+                var product = await _context.Products.FindAsync(id);
+                _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -90,5 +95,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
                 .ToListAsync();
         }
 
+        public async Task<List<string>> GetAllProductCategoriesAsync()
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Products.Select(p => p.Category).ToListAsync();
+        }
     }
 }

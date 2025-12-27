@@ -48,7 +48,7 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         }
         public Product DTOProductToNewDomain(NewProductDTO productDTO)
         {
-            var result = new Product(productDTO.Name, productDTO.Price, productDTO.Description);
+            var result = new Product(productDTO.Name, productDTO.Price, productDTO.Description) { Category=productDTO.Category};
             return result;
         }
 

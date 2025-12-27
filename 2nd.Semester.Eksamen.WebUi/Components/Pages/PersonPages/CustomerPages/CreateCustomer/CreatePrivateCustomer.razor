@@ -16,17 +16,17 @@
 		</div>
 		<div class="row mb-3">
 			<div class="col-md-6">
-				<label for="FirstName" class="form-labels"> Fornavn </label>
+				<label for="FirstName" class="form-label"> Fornavn </label>
 				<InputText id="FirstName" @bind-Value="@privateCustomerDTO.Name" class="form-control" placeholder="Fornavn..." />
 			</div>
 			<div class="col-md-6">
-				<label for="LastName" class="form-labels"> Efternavn </label>
+				<label for="LastName" class="form-label"> Efternavn </label>
 				<InputText id="LastName" @bind-Value="@privateCustomerDTO.LastName" class="form-control" placeholder="Efternavn..." />
 			</div>
 		</div>
 		<div class="row mb-3">
 			<div class="col-md-6">
-				<label for="Gender" class="form-labels">Køn:</label>
+				<label for="Gender" class="form-label">Køn:</label>
 				<InputSelect class="form-control w-100" @bind-Value="@privateCustomerDTO.Gender">
 					@foreach (var gender in Enum.GetValues<Gender>())
 					{
@@ -35,44 +35,44 @@
 				</InputSelect>
 			</div>
 			<div class="col-md-6">
-				<label for="BirthDayWrapper" class="form-labels"> Fødselsdag</label>
+				<label for="BirthDayWrapper" class="form-label"> Fødselsdag</label>
 				<InputDate id="BirthDayWrapper" @bind-Value="@privateCustomerDTO.BirthdayWrapper" class="form-control" min="1920-01-01"
 						   max="@DateTime.Today.ToString("yyyy-MM-dd")" />
 			</div>
 		</div>
 		<div class="row mb-3">
 			<div class="col-md-6">
-				<label for="Email" class="form-labels"> Email</label>
+				<label for="Email" class="form-label"> Email</label>
 				<InputText id="Email" @bind-Value="@privateCustomerDTO.Email" class="form-control" placeholder="Email..." />
 			</div>
 			<div class="col-md-6">
-				<label for="PhoneNumber" class="form-labels">Telefonnummer</label>
+				<label for="PhoneNumber" class="form-label">Telefonnummer</label>
 				<InputText id="PhoneNumber" @bind-Value="@privateCustomerDTO.PhoneNumber" class="form-control" placeholder="Tlfnummer..." />
 			</div>
 		</div>
 		<div class="row mb-3">
 			<div class="col-md-6">
-				<label for="City" class="form-labels"> By </label>
+				<label for="City" class="form-label"> By </label>
 				<InputText id="City" @bind-Value="@privateCustomerDTO.City" class="form-control" placeholder="By..." />
 			</div>
 			<div class="col-md-6">
-				<label for="StreetName" class="form-labels"> Vejnavn </label>
+				<label for="StreetName" class="form-label"> Vejnavn </label>
 				<InputText id="StreetName" @bind-Value="@privateCustomerDTO.StreetName" class="form-control" placeholder="Vejnavn..." />
 			</div>
 		</div>
 		<div class="row mb-3">
 			<div class="col-md-6">
-				<label for="PostalCode" class="form-labels"> Postnummer </label>
+				<label for="PostalCode" class="form-label"> Postnummer </label>
 				<InputText id="PostalCode" @bind-Value="@privateCustomerDTO.PostalCode" class="form-control" placeholder="Postnummer..." />
 			</div>
 			<div class="col-md-6">
-				<label for="HouseNumber" class="form-labels"> Husnr</label>
+				<label for="HouseNumber" class="form-label"> Husnr</label>
 				<InputText id="HouseNumber" @bind-Value="@privateCustomerDTO.HouseNumber" class="form-control" placeholder="Husnr..." />
 			</div>
 		</div>
 		<div class="row mb-3">
 			<div class="col-md-12">
-				<label for="Notes" class="form-labels"> Noter</label>
+				<label for="Notes" class="form-label"> Noter</label>
 				<InputTextArea id="Notes" @bind-Value="@privateCustomerDTO.Notes" maxlength="200" class="form-control" placeholder="Noter..." />
 			</div>
 		</div>
@@ -84,7 +84,7 @@
 		</div>
 		<div class="row mb-3" style="padding-top: 10px;">
 			<div class="col-md-12">
-				<button type="submit" class="btn btn-primary col-md-12">@(IsEdit ? "Gem Ændringer" : "Opret privatkunde")</button>
+				<button type="submit" class="btn card-btn col-md-12 w-100">@(IsEdit ? "Gem Ændringer" : "Opret privatkunde")</button>
 			</div>
 		</div>
 	</div>

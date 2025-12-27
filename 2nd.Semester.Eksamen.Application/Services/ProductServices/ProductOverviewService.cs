@@ -34,5 +34,20 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
         {
             return (await _snapshotRepository.GetByProduct(ProductName)).Select(os => new OrderSnapshotDTO(os)).ToList();
         }
+        public async Task<List<string>> GetAllCategoriesAsync()
+        {
+            return await _productRepository.GetAllProductCategoriesAsync();
+        }
+        public async Task DeleteProductAsync(ProductOverviewDTO product)
+        {
+            try
+            {
+               await _productRepository.DeleteAsync(product.Id);
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
     }
 }

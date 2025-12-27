@@ -9,7 +9,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
 {
     public class DiscountOverviewDTO
     {
-        public int Id { get; set; }
+        public int Id { get; set; } = 0;
         public string Type { get; set; } = "";
         public string LoyaltyDiscountType { get; set; } = "";
         public string Name { get; set; } = string.Empty;
@@ -22,14 +22,19 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
         public int NumberOfUses { get; set; } = 0;
         public int MinimumVisits { get; set; } = 0;
         public bool IsActive { get; set; } = true;
+        public bool IsActiveForProducts { get; set; } = false;
+        public bool IsActiveForTreatments { get; set; } = false;
 
         public DiscountOverviewDTO(Discount discount)
         {
+            Id = discount.Id;
             Name = discount.Name;
             TreatmentDiscount = discount.TreatmentDiscount;
             ProductDiscount = discount.ProductDiscount;
             NumberOfUses = discount.NumberOfUses;
-            if(discount.IsLoyalty)
+            IsActiveForProducts = discount.AppliesToProduct;
+            IsActiveForTreatments = discount.AppliesToTreatment;
+            if (discount.IsLoyalty)
             {
                 var Discount = (LoyaltyDiscount)discount;
                 Type = "Loyalitets Rabat";

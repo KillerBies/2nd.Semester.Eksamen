@@ -17,7 +17,7 @@
                     <p class="subtitle">Oversigt over alle rabatter</p>
                 </div>
                 <div class="btn-group ms-auto" style="width:40%; gap:1rem;">
-                    <div class="btn-group" >
+                    <div class="btn-group">
                         <select id="discountType" name="discountType" @bind="SearchTermType" @bind:event="oninput">
                             <option value="">Alle</option>
                             <option value="Kampagne Rabat">Kampagner</option>
@@ -41,7 +41,7 @@
                         <span>@Discounts.Count</span>
                     </div>
                     <div class="stat-card">
-                        <h3>Kampagner</h3>  
+                        <h3>Kampagner</h3>
                         <span>@CountCampaign</span>
                     </div>
                     <div class="stat-card">
@@ -65,23 +65,34 @@
                             @foreach (var discount in FilterdDiscounts)
                             {
                                 <div class="discount-card @(discount.IsActive ? "active" : "inactive")">
-                                    <div class="discount-card-header">
-                                        <h3>@discount.Name</h3>
-
-                                        <span class="badge @(discount.Type == "Kampagne Rabat" ? "campaign" : "loyalty")">
-                                            @discount.Type
-                                        </span>
+                                    <div class="discount-card-header d-flex flex-row">
+                                        <div>
+                                            <h3>@discount.Name</h3>
+                                            <span class="small status @(discount.IsActive ? "active" : "inactive")">
+                                                @(discount.IsActive ? "Aktiv" : "Inaktiv")
+                                            </span>
+                                        </div>
+                                        <div class="ms-auto">
+                                            <span class="badge @(discount.Type == "Kampagne Rabat" ? "campaign" : "loyalty")">
+                                                @discount.Type
+                                            </span>
+                                        </div>
                                     </div>
 
                                     <div class="discount-card-body">
                                         @if (discount.Type == "Kampagne Rabat")
                                         {
-                                            <p class="description">@discount.Description</p>
-
-                                            <div class="date-range">
-                                                <span>@discount.Start.ToShortDateString()</span>
-                                                <span>→</span>
-                                                <span>@discount.End.ToShortDateString()</span>
+                                            @if (!string.IsNullOrEmpty(discount.Description))
+                                            {
+                                                <p class="description">@discount.Description</p>
+                                            }
+                                            <div class="info-row">
+                                                <span class="info-label">Fra</span>
+                                                <span class="info-value">@discount.Start.ToShortDateString()</span>
+                                            </div>
+                                            <div class="info-row">
+                                                <span class="info-label">Til</span>
+                                                <span class="info-value">@discount.End.ToShortDateString()</span>
                                             </div>
 
                                             @if (discount.AppliesToProducts?.Any() == true)
@@ -101,35 +112,36 @@
                                         }
                                         else
                                         {
-                                            <p><b>Loyalitetstype:</b> @discount.LoyaltyDiscountType</p>
-                                            <p><b>Minimum besøg:</b> @discount.MinimumVisits</p>
+                                            <div class="info-row">
+                                                <span class="info-label">Loyalitetstype</span>
+                                                <span class="info-value">@discount.LoyaltyDiscountType</span>
+                                            </div>
+                                            <div class="info-row">
+                                                <span class="info-label">Minimum besøg</span>
+                                                <span class="info-value">@discount.MinimumVisits</span>
+                                            </div>
+                                        }
+                                        @if (discount.TreatmentDiscount > 0)
+                                        {
+                                            <div class="info-row">
+                                                <span class="info-label @(discount.IsActiveForTreatments ? "active" : "")">Behandling</span>
+                                                <span class="info-value">@((discount.TreatmentDiscount * 100).ToString("0"))%</span>
+                                            </div>
                                         }
 
-                                        <div class="discount-values">
-                                            @if (discount.TreatmentDiscount > 0)
-                                            {
-                                                <div>
-                                                    <span class="label">Behandling</span>
-                                                    <span class="value">@((discount.TreatmentDiscount * 100).ToString("0")) %</span>
-                                                </div>
-                                            }
-
-                                            @if (discount.ProductDiscount > 0)
-                                            {
-                                                <div>
-                                                    <span class="label">Produkt</span>
-                                                    <span class="value">@((discount.ProductDiscount * 100).ToString("0")) %</span>
-                                                </div>
-                                            }
-                                        </div>
+                                        @if (discount.ProductDiscount > 0)
+                                        {
+                                            <div class="info-row">
+                                                <span class="info-label @(discount.IsActiveForProducts ? "active" : "")">Produkt</span>
+                                                <span class="info-value">@((discount.ProductDiscount * 100).ToString("0"))%</span>
+                                            </div>
+                                        }
                                     </div>
 
                                     <div class="discount-card-footer">
-                                        <span class="status @(discount.IsActive ? "active" : "inactive")">
-                                            @(discount.IsActive ? "Aktiv" : "Inaktiv")
-                                        </span>
 
-                                        <button class="btn btn-outline-primary btn-sm" @onclick="() => ShowDiscountDetails(discount)">
+
+                                        <button class="btn card-btn w-100" @onclick="() => ShowDiscountDetails(discount)">
                                             Se detaljer
                                         </button>
                                     </div>
@@ -143,81 +155,86 @@
     </div>
 </div>
 
-@if(isVisible)
+@if (isVisible)
 {
     <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
-                <CreateDiscount></CreateDiscount>
+        <CreateDiscount></CreateDiscount>
     </CreateWindow>
 }
 
-@if(ShowDetails)
+@if (ShowDetails)
 {
-    <BookingNotification IsVisible=ShowDetails>
+    <BookingNotification IsVisible=ShowDetails IsVisibleChanged="v => ShowDetails = v">
         <div class="discount-details-card">
-            <div class="header">
-                <h2>@SelectedDiscount.Name</h2>
-
-                <span class="badge @(SelectedDiscount.Type == "Kampagne Rabat" ? "campaign" : "loyalty")">
-                    @SelectedDiscount.Type
-                </span>
-            </div>
-
-            <p class="description">
-                @if (SelectedDiscount.Type == "Kampagne Rabat")
-                {
-                    @SelectedDiscount.Description
-                }
-                else
-                {
-                    <span>
-                        Loyalitetstype: <b>@SelectedDiscount.LoyaltyDiscountType</b>
-                    </span>
-                }
-            </p>
-
-            <div class="info-grid">
-                @if (SelectedDiscount.Type == "Kampagne Rabat")
-                {
-                    <div>
-                        <span class="label">Start</span>
-                        <span>@SelectedDiscount.Start.ToShortDateString()</span>
-                    </div>
-
-                    <div>
-                        <span class="label">Slut</span>
-                        <span>@SelectedDiscount.End.ToShortDateString()</span>
-                    </div>
-                }
-
-                @if (SelectedDiscount.MinimumVisits > 0)
-                {
-                    <div>
-                        <span class="label">Minimum besøg</span>
-                        <span>@SelectedDiscount.MinimumVisits</span>
-                    </div>
-                }
-
+            <div class="discount-card-header d-flex flex-row mb-2">
                 <div>
-                    <span class="label">Antal anvendelser</span>
-                    <span>@SelectedDiscount.NumberOfUses</span>
+                    <h3>@SelectedDiscount.Name</h3>
+                    <span class="small status @(SelectedDiscount.IsActive ? "active" : "inactive")">
+                        @(SelectedDiscount.IsActive ? "Aktiv" : "Inaktiv")
+                    </span>
+                </div>
+                <div class="ms-auto">
+                    <span class="badge @(SelectedDiscount.Type == "Kampagne Rabat" ? "campaign" : "loyalty")" style="font-size: .8rem;">
+                        @SelectedDiscount.Type
+                    </span>
                 </div>
             </div>
+            <div class="discount-info">
+                @if (SelectedDiscount.Type != "Kampagne Rabat")
+                {
+                    <div class="info-row">
+                        <span class="info-label">Loyalitetstype</span>
+                        <span class="info-value"><b>@SelectedDiscount.LoyaltyDiscountType</b></span>
+                    </div>
+                }
+                @if (SelectedDiscount.Type == "Kampagne Rabat")
+                {
+                    <div class="d-flex flex-column align-items-center">
+                        <span class="badge bg-dark bg-opacity-50 " style="font-size: .8rem">
+                            @TimeString
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Start</span>
+                        <span class="info-value"><b>@SelectedDiscount.Start.ToShortDateString()</b></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Slut</span>
+                        <span class="info-value"><b>@SelectedDiscount.End.ToShortDateString()</b></span>
+                    </div>
+                }
 
-            <div class="discount-values">
+                @if (SelectedDiscount.MinimumVisits>0)
+                {
+                    <div class="info-row">
+                        <span class="info-label">Minimum besøg</span>
+                        <span class="info-value"><b>@SelectedDiscount.MinimumVisits</b></span>
+                    </div>
+                }
+                <div class="info-row">
+                    <span class="info-label">Antal anvendelser</span>
+                    <span class="info-value"><b>@SelectedDiscount.NumberOfUses</b></span>
+                </div>
                 @if (SelectedDiscount.TreatmentDiscount > 0)
                 {
-                    <div class="value-card">
-                        <span class="label">Behandling</span>
-                        <span class="value">@SelectedDiscount.TreatmentDiscount %</span>
+                    <div class="info-row">
+                        <span class="info-label @(SelectedDiscount.IsActiveForTreatments ? "active" : "")">Behandling</span>
+                        <span class="info-value"><b>@((SelectedDiscount.TreatmentDiscount * 100).ToString("0"))%</b></span>
                     </div>
                 }
 
                 @if (SelectedDiscount.ProductDiscount > 0)
                 {
-                    <div class="value-card">
-                        <span class="label">Produkt</span>
-                        <span class="value">@SelectedDiscount.ProductDiscount %</span>
+                    <div class="info-row">
+                        <span class="info-label @(SelectedDiscount.IsActiveForProducts ? "active" : "")">Produkt</span>
+                        <span class="info-value"><b>@((SelectedDiscount.ProductDiscount * 100).ToString("0"))%</b></span>
                     </div>
+                }
+                @if (SelectedDiscount.Type == "Kampagne Rabat")
+                {
+                    <p class="discount-description">
+                    @SelectedDiscount.Description
+                    </p>
                 }
             </div>
 
@@ -235,18 +252,40 @@
             }
 
             <div class="footer">
-                <span class="status @(SelectedDiscount.IsActive ? "active" : "inactive")">
-                    @(SelectedDiscount.IsActive ? "Aktiv" : "Inaktiv")
-                </span>
-
-                <button class="btn btn-outline-secondary" @onclick="()=>ShowDetails=false">
-                    Luk
-                </button>
+                <div class="btn-group w-100">
+                    <button class="btn card-btn" style="color:white; background-color:crimson" @onclick="() => ShowDelete = true">
+                        Selt
+                    </button>
+                    <button class="btn card-btn" @onclick="() => ShowEdit = true">
+                        Rediger
+                    </button>
+                </div>  
             </div>
         </div>
     </BookingNotification>
 }
-
+@if (ShowDelete)
+{
+    <BookingNotification IsVisible=ShowDelete IsVisibleChanged="v => ShowDelete = v">
+        <div class="d-flex align-items-center flex-column w-100">
+            <p>Er du sikker på at du vil slette denne behandling?</p>
+            <button class="btn card-btn w-100" style="background-color:crimson; color:white;" @onclick="ConfirmDelete">Bekræft</button>
+        </div>
+    </BookingNotification>
+}
+@if (ShowEdit)
+{
+    <CreateWindow IsVisible=ShowEdit IsVisibleChanged="v => ShowEdit = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        @if (SelectedDiscount.Type == "Kampagne Rabat")
+        {
+            <CreateCampaignDiscount OnClose="Refresh" IsEdit=true discountEdit="SelectedDiscount"></CreateCampaignDiscount>
+        }
+        else
+        {
+            <CreateLoyaltyDiscount OnClose="Refresh" IsEdit=true discountEdit="SelectedDiscount"></CreateLoyaltyDiscount>
+        }
+    </CreateWindow>
+}
 
 
 @code {
@@ -259,6 +298,11 @@
     private List<DiscountOverviewDTO> FilterdDiscounts => Discounts.Where(d => (string.IsNullOrWhiteSpace(SearchTermName) || d.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && ((string.IsNullOrWhiteSpace(SearchTermType) || d.Type == SearchTermType))).ToList();
     private int CountLoyalty => Discounts.Where(d => d.Type == "Loyalitets Rabat").Count();
     private int CountCampaign => Discounts.Where(d => d.Type == "Kampagne Rabat").Count();
+    private TimeSpan Time => DateTime.Now > SelectedDiscount.Start ? DateTime.Now - SelectedDiscount.Start : SelectedDiscount.Start - DateTime.Now;
+    private string TimeString => DateTime.Now < SelectedDiscount.Start ? $"Aktiv igen om {Time.Days} Dage, {Time.Hours} Timer, og {Time.Minutes} Minutter" : $"Aktiveret for {Time.Days} Dage, {Time.Hours} Timer, og {Time.Minutes} Minutter Siden";
+    private bool ShowEdit { get; set; } = false;
+    private bool ShowDelete { get; set; } = false;
+    [Inject] private NavigationManager Nav { get; set; } = null!;
     protected override async Task OnInitializedAsync()
     {
         Discounts = await discountService.GetAllDiscountsForOverviewAsync();
@@ -269,44 +313,12 @@
         SelectedDiscount = discount;
         ShowDetails = true;
     }
-}
-
-@* 
-<div class="grid-item  shadow-sm" style="display: flex; flex-direction: column; cursor:pointer;">
-    <div class="info">
-        <div style="display:flex; margin-bottom:20px;">
-            <h4 style="color: #034265;">@discount.Name</h4>
-            <span class="booking-status ms-auto" style="height:2%; background-color: @(discount.IsActive ? "#034265" : "#b55054")" title="Blå: Aktiv/Rød: Inaktiv"></span>
-        </div>
-        <h3>Type: @discount.Type</h3>
-        <p>@booking.Start.ToString("g") til @booking.End.ToString("g")</p>
-        <p>Status: @booking.Status</p>
-    </div>
-</div>
-
-
-    @if (isVisible == true)
+    private void ConfirmDelete()
     {
-    <BookingNotification IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)">
-            <h2> @selectedTreatment.Name</h2>
-            <p><b>Pris:</b> @selectedTreatment.BasePrice</p>
-            <p><b>Varighed:</b> @selectedTreatment.Duration</p>
-            <p><b>Kategori:</b> @selectedTreatment.Category</p>
 
-            <p><b>Påkrævede specialiteter:</b></p>
-            <ul>
-                @if (selectedTreatment.RequiredSpecialties != null)
-                {
-                    @foreach (var s in selectedTreatment.RequiredSpecialties)
-                    {
-                        <li>@s.Replace(",", "")</li>
-                    }
-                }
-            </ul>
-            <p><b>Beskrivelse:</b> @selectedTreatment.Description</p>
-
-            <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
-            <button class="btn btn-danger mt-3" @onclick="() => DeleteTreatment(selectedTreatment.TreatmentId)">Slet behandling</button>
-        </BookingNotification>
     }
- *@
+    private void Refresh()
+    {
+        Nav.Refresh(true);
+    }
+}

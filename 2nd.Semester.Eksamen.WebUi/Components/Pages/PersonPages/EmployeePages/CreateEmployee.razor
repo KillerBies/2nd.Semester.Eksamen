@@ -95,11 +95,11 @@
 					</div>
 					<div class="row mb-3">
 						<div class="col-md-6">
-							<label class="form-label">Arbejde Starter KL:</label>
+							<label class="form-label">Arbejde Starter Kl:</label>
 							<InputTimeSpan @bind-Value="Input.WorkStart" title="Hvornår starter medarbejderen på arbejde til hverdag?" placeholder="Arbejde Begynder" class="form-control" />
 						</div>
 						<div class="col-md-6">
-							<label class="form-label">Arbejde Slutter KL:</label>
+							<label class="form-label">Arbejde Slutter Kl:</label>
 							<InputTimeSpan @bind-Value="Input.WorkEnd" placeholder="Arbejde Slutter" title="Hvornår slutter medarbejderen på arbejde til hverdag?" class="form-control" />
 						</div>
 					</div>
@@ -128,7 +128,7 @@
 										   class="form-control"
 										   placeholder="Ny specialitet..." />
 								<button type="button"
-										class="btn btn-outline-primary h-100"
+										class="btn card-btn w-auto h-100 m-0"
 										@onclick="AddSpecialty">
 									Tilføj
 								</button>
@@ -141,7 +141,7 @@
 								{
 										<li class="list-group-item d-flex justify-content-between align-items-center mt-1" style="padding-left:10px;">
 										@item
-										<button class="btn btn-sm bg-transparent" style="height:100%; padding:0;margin:0;margin-right:3px; color:darkred;"
+										<button type="button" class="btn btn-sm bg-transparent" style="height:100%; padding:0;margin:0;margin-right:3px; color:darkred;"
 												@onclick="() => RemoveSpecialty(item)">
 											X
 										</button>
@@ -153,7 +153,7 @@
 					</div>
 					</div>
 
-					<button class="btn btn-primary" Style="width:100%;" type="submit">@(IsEdit ? "Gem Ændringer" : "Lav ny Medarbejder")</button>
+					<button class="btn card-btn" Style="width:100%;" type="submit">@(IsEdit ? "Gem Ændringer" : "Lav ny Medarbejder")</button>
 				</div>
 			</EditForm>
 		</div>

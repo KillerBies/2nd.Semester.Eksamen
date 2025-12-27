@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -29,5 +30,32 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
 
         [Range(0, int.MaxValue, ErrorMessage = "Minimum besøg skal være et positivt tal.")]
         public int MinimumVisits { get; set; }
+        public int Id { get; set; }
+        public LoyaltyDiscountDTO(LoyaltyDiscount dis)
+        {
+            Name = dis.Name;
+            TreatmentDiscount = dis.TreatmentDiscount;
+            ProductDiscount = dis.ProductDiscount;
+            AppliesToProduct = dis.AppliesToProduct;
+            AppliesToTreatment = dis.AppliesToTreatment;
+            DiscountType = dis.DiscountType;
+            MinimumVisits = dis.MinimumVisits;
+            Id = dis.Id;
+        }
+        public LoyaltyDiscountDTO(DiscountOverviewDTO discountEdit)
+        {
+            AppliesToProduct = discountEdit.IsActiveForProducts;
+            AppliesToTreatment = discountEdit.IsActiveForTreatments;
+            DiscountType = discountEdit.Type;
+            Id = discountEdit.Id;
+            MinimumVisits = discountEdit.MinimumVisits;
+            Name = discountEdit.Name;
+            ProductDiscount = discountEdit.ProductDiscount;
+            TreatmentDiscount = discountEdit.TreatmentDiscount;
+        }
+        public LoyaltyDiscountDTO()
+        {
+
+        }
     }
 }

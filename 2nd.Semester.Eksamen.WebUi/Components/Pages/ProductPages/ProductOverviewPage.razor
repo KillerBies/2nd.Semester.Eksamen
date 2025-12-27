@@ -99,7 +99,7 @@
 {
     <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
             <div class="shadow-sm">
-                <CreateProduct></CreateProduct>
+                <CreateProduct OnClose="Refresh"></CreateProduct>
             </div>
     </CreateWindow>
 }
@@ -109,19 +109,18 @@
     <BookingNotification IsVisible=ShowDetails IsVisibleChanged="v => ShowDetails = v">
         <div class="card-header bg-transparent d-flex align-items-center">
             <div>
-                <h4 class="mb-0 fw-semibold">@SelectedProduct.Name</h4>
-                <small class="text-muted">Produkt</small>
+                <h4 class="mb-1 fw-semibold">@SelectedProduct.Name</h4>
+                <small class="small text-muted">Produkt</small>
             </div>
 
-            <span class="badge bg-dark bg-opacity-50 ms-auto">
+            <span class="badge badge-category ms-auto">
                 @SelectedProduct.Category
             </span>
         </div>
 
-
         <div class="card-body">
             <div class="text-center rounded-3 p-3 mb-4"
-                 style="background:#f9f9f9; cursor:pointer;"
+                 style="background:#f9f9f9;"
                  @onclick="() => EditPriceDetail = true">
                 <small class="text-muted">Pris</small>
                 <div class="fs-1 fw-bold">
@@ -133,14 +132,6 @@
             <p class="text-muted mb-4" style="line-height:1.6;">
                 @SelectedProduct.Description
             </p>
-
-
-            <div class="row mb-4">
-                <div class="col-6">
-                    <small class="text-muted">Produkt ID</small>
-                    <div class="fw-medium">@SelectedProduct.Id</div>
-                </div>
-            </div>
 
 
             <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto;">
@@ -179,40 +170,69 @@
 
         <div class="card-footer bg-transparent border-0 mt-4">
             <div class="btn-group w-100">
-                <button class="btn btn-danger w-50" @onclick="CloseDetail">
-                    Luk
+                <button class="btn card-btn w-50" style="background-color:crimson; color:white;" @onclick="() => ShowDelete=true">
+                    Slet
                 </button>
-                <button class="btn btn-treatment w-50" @onclick="() => SaveProduct(SelectedProduct)">
+                <button class="btn btn-treatment w-50" @onclick="() => UpdateProduct = true">
                     Rediger
                 </button>
             </div>
         </div>
     </BookingNotification>
 }
-
-
+@if (UpdateProduct)
+{
+    <CreateWindow IsVisible="UpdateProduct" IsVisibleChanged="v => UpdateProduct = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateProduct EditProduct="SelectedProduct" IsEdit=true OnClose="Refresh"></CreateProduct>
+    </CreateWindow>
+}
+@if (ShowDelete)
+{
+    <BookingNotification IsVisible=ShowDelete IsVisibleChanged="v => ShowDelete = v">
+        <div class="d-flex align-items-center flex-column w-100">
+            <p>Er du sikker på at du vil slette denne behandling?</p>
+            <button class="btn card-btn w-100" style="background-color:crimson; color:white;" @onclick="DeleteProduct">Bekræft</button>
+        </div>
+    </BookingNotification>
+}
 
 @code {
+    [Inject] private NavigationManager Nav { get; set; } = null!;
     private List<ProductOverviewDTO> Products { get; set; } = new();
     private string SearchTermName { get; set; } = "";
     private string SearchTermType { get; set; } = "";
     private List<OrderSnapshotDTO> SelectedHistory { get; set; } = new();
     private bool isVisible = false;
     private bool ShowSalesHistory = false;
+    private bool UpdateProduct = false;
     private ProductOverviewDTO SelectedProduct { get; set; }
     private bool ShowDetails = false;
     private List<ProductOverviewDTO> FilterdProducts => Products.Where(p => (string.IsNullOrWhiteSpace(SearchTermName) || p.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && ((string.IsNullOrWhiteSpace(SearchTermType) || p.Category == SearchTermType))).ToList();
     private int CountCategory => Products.Select(p => p.Category).Distinct().Count();
     private int CountSold = 0;
-    private List<string> Categories => Products.Select(p => p.Category).Distinct().ToList();
+    private List<string> Categories { get; set; } = new();
     private bool EditPriceDetail { get; set; } = false;
     private bool EditNameDetail { get; set; } = false;
     private bool EditDescriptionDetail { get; set; } = false;
+    private bool ShowDelete { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
         Products = await productOverviewService.GetAllProductOverviewsAsync();
+        Categories = await productOverviewService.GetAllCategoriesAsync();
         SelectedProduct = new();
+    }
+    private async Task DeleteProduct()
+    {
+        try
+        {
+            await productOverviewService.DeleteProductAsync(SelectedProduct);
+            Refresh();
+        }
+        catch
+        {
+            
+        }
     }
     private async Task ShowProductDetails(ProductOverviewDTO product)
     {
@@ -230,5 +250,9 @@
     private async Task SaveProduct(ProductOverviewDTO product)
     {
         CloseDetail();
+    }
+    private void Refresh()
+    {
+        Nav.Refresh(true);
     }
 }

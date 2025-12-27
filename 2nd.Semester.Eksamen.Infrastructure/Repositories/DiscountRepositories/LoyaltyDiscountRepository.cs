@@ -56,7 +56,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.DiscountRepositories
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.LoyaltyDiscounts.Update(LoyaltyDiscount);
+                var DiscountToUpdate = await _context.LoyaltyDiscounts.FindAsync(LoyaltyDiscount.Id);
+                DiscountToUpdate.ProductDiscount = LoyaltyDiscount.ProductDiscount;
+                DiscountToUpdate.TreatmentDiscount = LoyaltyDiscount.TreatmentDiscount;
+                DiscountToUpdate.AppliesToTreatment = LoyaltyDiscount.AppliesToTreatment;
+                DiscountToUpdate.AppliesToProduct = LoyaltyDiscount.AppliesToProduct;
+                DiscountToUpdate.DiscountType = LoyaltyDiscount.DiscountType;
+                DiscountToUpdate.MinimumVisits = LoyaltyDiscount.MinimumVisits;
+                DiscountToUpdate.Name = LoyaltyDiscount.Name;
+                if(LoyaltyDiscount.NumberOfUses != null && LoyaltyDiscount.NumberOfUses != 0)
+                {
+                    DiscountToUpdate.NumberOfUses = LoyaltyDiscount.NumberOfUses;
+                }
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

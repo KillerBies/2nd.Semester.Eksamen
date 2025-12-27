@@ -1,0 +1,11 @@
+﻿.card-btn {
+    width: 100%;
+    background-color: #034265;
+    border: none;
+    transition: 0.2s ease;
+    color: white;
+}
+
+    .card-btn:hover {
+        transform: scale(1.03);
+    }

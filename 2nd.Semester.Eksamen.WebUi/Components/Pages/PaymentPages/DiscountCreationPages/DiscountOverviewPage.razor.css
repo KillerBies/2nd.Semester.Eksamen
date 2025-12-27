@@ -113,24 +113,9 @@
         box-shadow: 0 12px 28px rgba(0,0,0,0.12);
     }
 
-.discount-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    gap: .5rem;
-}
 
-    .discount-card-header h3 {
-        font-size: 1.1rem;
-        margin: 0;
-    }
-
+    
 .badge {
-    font-size: .75rem;
-    padding: .3rem .6rem;
-    border-radius: 8px;
-    font-weight: 600;
-    white-space: nowrap;
 }
 
     .badge.campaign {
@@ -144,7 +129,8 @@
     }
 
 .discount-card-body {
-    margin-top: .8rem;
+    padding-left: 10px;
+    padding-right: 10px;
     flex: 1;
 }
 
@@ -205,10 +191,88 @@
 
 .status.active {
     color: #16a34a;
-    font-weight: 600;
+
 }
 
 .status.inactive {
     color: #dc2626;
-    font-weight: 600;
+    margin: 0;
+}
+
+.card-btn {
+    width: 50%;
+    background-color: #034265;
+    border: none;
+    color: white;
+    transition: 0.2s ease;
+}
+
+    .card-btn:hover {
+        transform: scale(1.03);
+    }
+
+
+.discount-card-header {
+    display: flex;
+}
+
+    .discount-card-header h3 {
+        margin: 0;
+        font-size: 20px;
+        color: #034265;
+    }
+
+
+
+.card-btn {
+    width: 50%;
+    background-color: #034265;
+    border: none;
+    color: white;
+    transition: 0.2s ease;
+}
+
+    .card-btn:hover {
+        transform: scale(1.03);
+    }
+
+.badge-category {
+    background: rgba(0,0,0,0.55);
+    color: white;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.75rem;
+}
+
+.discount-info {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.info-label {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+    .info-label.active {
+        color: #16a34a;
+    }
+
+.info-value {
+    font-weight: 500;
+}
+
+
+.discount-description {
+    color: #374151;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
 }

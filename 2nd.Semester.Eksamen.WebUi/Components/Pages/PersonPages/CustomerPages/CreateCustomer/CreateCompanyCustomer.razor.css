@@ -33,3 +33,27 @@ body {
     margin-top: 15px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
+
+.card-btn {
+    width: 50%;
+    background-color: #034265;
+    border: none;
+    color: white;
+    transition: 0.2s ease;
+}
+
+    .card-btn:hover {
+        transform: scale(1.03);
+    }
+
+
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #cfcfcf;
+    padding: 10px;
+    padding-top:0;
+    margin-top:0;
+    font-size: 1rem;
+    width: 100%;
+}

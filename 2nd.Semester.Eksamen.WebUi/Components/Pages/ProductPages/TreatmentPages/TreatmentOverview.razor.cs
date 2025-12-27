@@ -16,7 +16,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
         private bool EditTreatment { get; set; } = false;
         private List<TreatmentDTO> FilterdTreatments => Treatments.Where(t => (string.IsNullOrWhiteSpace(SearchTermName) || t.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase))).ToList();
 
-
+        public bool ShowDelete = false;
         public bool isVisible;
 
 
@@ -46,6 +46,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
         {
 
             await _treatmentService.DeleteByIdDbAsync(selectedTreatment.TreatmentId);
+            Refresh();
 
         }
 

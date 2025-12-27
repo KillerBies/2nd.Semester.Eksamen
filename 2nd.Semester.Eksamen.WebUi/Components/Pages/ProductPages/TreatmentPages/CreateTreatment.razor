@@ -5,110 +5,127 @@
 @inject NavigationManager Navi
 @rendermode InteractiveServer
 
-    <FloatingPage>
-        <div style="margin: 30px;">
-            <EditForm Model="@treatment"
-                      OnValidSubmit="@HandleValidSubmit"
-                      FormName="CreateTreatment">
+<FloatingPage>
+    <div style="margin: 30px;">
+        <EditForm Model="@treatment"
+                  OnValidSubmit="@HandleValidSubmit"
+                  FormName="CreateTreatment">
 
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-                <h2 class="text-center mb-4">Lav Ny Behandling</h2>
+            <h2 class="text-center mb-4">@(IsEdit ? "Rediger Behandling" : "Lav Ny Behandling")</h2>
 
+            <div class="row">
                 <div class="mb-3">
                     <label class="form-label">Navn:</label>
                     <InputText @bind-Value="treatment.Name"
                                class="form-control"
                                placeholder="Navn..." />
                 </div>
+            </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Kategori:</label>
-                    <InputText @bind-Value="treatment.Category"
-                               class="form-control"
-                               placeholder="Kategori..." />
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <label class="form-label">Pris:</label>
-                        <InputNumber @bind-Value="treatment.BasePrice"
-                                     class="form-control"
-                                     placeholder="Pris..." />
+            <div class="row mb-3">
+                <label class="form-label">Kategori:</label>
+                <div>
+                    <div class="@(treatment.Category == "" ? "h-50 mb-1" : "h-100")">
+                        <select id="discountType" class="w-100 h-100 mb-3" name="discountType" @bind="treatment.Category" @bind:event="oninput">
+                            <option value="_">Vælg Kategori</option>
+                            @foreach (var category in Categories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                            <option value="">Ny Kategori</option>
+                        </select>
                     </div>
-                    <div class="col-md-6 h-auto">
-                        <label class="form-label">Varighed:</label>
+                    @if (treatment.Category == "")
+                    {
+                        <div class="h-50">
+                        <InputText @bind-Value="treatment.Category"
+                                   class="form-control"
+                                   placeholder="Kategori..." />
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Pris:</label>
+                    <InputNumber @bind-Value="treatment.BasePrice"
+                                 class="form-control"
+                                 placeholder="Pris..." />
+                </div>
+                <div class="col-md-6 h-auto">
+                    <label class="form-label">Varighed:</label>
                     <InputTimeSpan @bind-Value="treatment.Duration"
                                    class="form-control" />
-                    </div>
                 </div>
+            </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Vælg eksisterende specialiteter:</label>
-                    <div class="border rounded p-2" style="overflow-y:scroll; height:7.7rem">
-                        @foreach (var specialty in specialtyItems.Where(s => !string.IsNullOrWhiteSpace(s.Specialty)))
-                        {
-                            <div class="form-check">
-                                <InputCheckbox class="form-check-input"
-                                               @bind-Value="specialty.Status" />
-                                <label class="form-check-label ms-2">
-                                    @specialty.Specialty
-                                </label>
-                            </div>
-                        }
-                    </div>
+            <div class="row mb-3">
+                <label class="form-label">Vælg eksisterende specialiteter:</label>
+                <div class="border rounded p-2" style="overflow-y:scroll; height:7.7rem">
+                    @foreach (var specialty in specialtyItems.Where(s => !string.IsNullOrWhiteSpace(s.Specialty)))
+                    {
+                        <div class="form-check">
+                            <InputCheckbox class="form-check-input"
+                                           @bind-Value="specialty.Status" />
+                            <label class="form-check-label ms-2">
+                                @specialty.Specialty
+                            </label>
+                        </div>
+                    }
                 </div>
+            </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Tilføj ny specialitet:</label>
-                    <div class="d-flex gap-2">
-                        <InputText @bind-Value="newSpecialty"
-                                   class="form-control"
-                                   placeholder="Ny specialitet..." />
-                        <button type="button"
-                                class="btn btn-outline-primary h-100"
-                                @onclick="AddSpecialty">
-                            Tilføj
-                        </button>
-                    </div>
-                </div>
-
-                @if (manuallyAddedSpecialties.Any())
-                {
-                    <ul class="list-group mb-3">
-                        @foreach (var item in manuallyAddedSpecialties.Where(s=>!string.IsNullOrWhiteSpace(s)))
-                        {
-                            <li class="list-group-item d-flex justify-content-between align-items-center" style="padding-left:10px;">
-                                @item
-                                <button 
-                                        class="btn btn-sm bg-transparent" style="height:100%; padding:0;margin:0;margin-right:4px; color:darkred;"
-                                        @onclick="() => RemoveSpecialty(item)">
-                                    X
-                                </button>
-                            </li>
-                        }
-                    </ul>
-                }
-
-                <div class="mb-3">
-                    <label class="form-label">Beskrivelse:</label>
-                    <InputTextArea @bind-Value="treatment.Description"
-                                   class="form-control"
-                                   placeholder="Beskrivelse..."
-                                   maxlength="200" />
-                </div>
-
-                <div class="text-center mt-4">
-                    <button type="submit"
-                            class="btn btn-primary w-75">
-                        @(IsEdit ? "Gem Ændringer" : "Opret Behandling")
+            <div class="row mb-3">
+                <label class="form-label">Tilføj ny specialitet:</label>
+                <div class="d-flex gap-2 flex-row w-100 align-content-center align-items-center justify-content-center ms-0 ps-0 p-0">
+                    <InputText @bind-Value="newSpecialty"
+                               class="form-control"
+                               placeholder="Ny specialitet..." />
+                    <button type="button"
+                            class="btn btn-primary m-0"
+                            @onclick="AddSpecialty">
+                        Tilføj
                     </button>
                 </div>
+            </div>
 
-            </EditForm>
-        </div>
-    </FloatingPage>
+            @if (manuallyAddedSpecialties.Any())
+            {
+                <ul class="row list-group mb-3">
+                    @foreach (var item in manuallyAddedSpecialties.Where(s => !string.IsNullOrWhiteSpace(s)))
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center" style="padding-left:10px;">
+                            @item
+                            <button class="btn btn-sm bg-transparent" style="height:100%; padding:0;margin:0;margin-right:4px; color:darkred;"
+                                    @onclick="() => RemoveSpecialty(item)">
+                                X
+                            </button>
+                        </li>
+                    }
+                </ul>
+            }
+
+            <div class="row mb-3">
+                <label class="form-label">Beskrivelse:</label>
+                <InputTextArea @bind-Value="treatment.Description"
+                               class="form-control"
+                               placeholder="Beskrivelse..."
+                               maxlength="200" />
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit"
+                        class="btn btn-primary w-75">
+                    @(IsEdit ? "Gem Ændringer" : "Opret Behandling")
+                </button>
+            </div>
+
+        </EditForm>
+    </div>
+</FloatingPage>
 
 
 
