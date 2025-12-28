@@ -47,13 +47,10 @@ body {
     }
 
 
-
 .form-control {
     border-radius: 5px;
     border: 1px solid #cfcfcf;
     padding: 10px;
-    padding-top:0;
-    margin-top:0;
     font-size: 1rem;
     width: 100%;
 }

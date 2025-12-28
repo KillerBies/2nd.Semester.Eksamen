@@ -100,5 +100,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
             var _context = await _factory.CreateDbContextAsync();
             return await _context.Products.Select(p => p.Category).ToListAsync();
         }
+        public async Task<IEnumerable<Product?>> GetAllProductsNoMatterTypeAsync()
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Products.ToListAsync();
+        }
     }
 }

@@ -7,15 +7,15 @@
 @rendermode InteractiveServer
 @namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 
-@if(Input != null)
+@if (Input != null)
 {
 	<FloatingPage>
-		<div style="margin: 30px;">
-			<h2>@(IsEdit ? "Rediger Medarbejder" : "Lav Ny Medarbejder")</h2>
-			<EditForm EditContext="_editContext" OnValidSubmit="CreateEmployeeAsync" class="row p-3" FormName="CreateEmployeeForm">
-				<div class="form-inputs">
-					<DataAnnotationsValidator />
-					<ValidationSummary />
+		<EditForm EditContext="_editContext" OnValidSubmit="CreateEmployeeAsync" class="row p-3" FormName="CreateEmployeeForm">
+			<div>
+				<h2>@(IsEdit ? "Rediger Medarbejder" : "Lav Ny Medarbejder")</h2>
+				<DataAnnotationsValidator />
+				<ValidationSummary />
+				<div style="margin: 30px;">
 					<div class="row mb-3">
 						<div class="col-md-6">
 							<label class="form-label">Fornavn:</label>
@@ -108,18 +108,18 @@
 
 
 					<div class="row mb-3">
-							<label class="form-label">Vælg eksisterende specialiteter:</label>
-							<div class="border rounded p-2" style="overflow-y:scroll; height:7.7rem">
-								@foreach (var specialty in specialtyItems.Where(s => !string.IsNullOrWhiteSpace(s.Specialty)))
-								{
-									<div class="form-check">
-										<InputCheckbox class="form-check-input"
-													   @bind-Value="specialty.Status" />
-										<label class="form-check-label ms-2">
-											@specialty.Specialty
-										</label>
-									</div>
-								}
+						<label class="form-label">Vælg eksisterende specialiteter:</label>
+						<div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
+							@foreach (var specialty in specialtyItems.Where(s => !string.IsNullOrWhiteSpace(s.Specialty)))
+							{
+								<div class="form-check">
+									<InputCheckbox class="form-check-input"
+												   @bind-Value="specialty.Status" />
+									<label class="form-check-label ms-2">
+										@specialty.Specialty
+									</label>
+								</div>
+							}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Tilføj ny specialitet:</label>
@@ -134,29 +134,29 @@
 								</button>
 							</div>
 
-						@if (manuallyAddedSpecialties.Any())
-						{
-							<ul class="list-group mb-3">
-								@foreach (var item in manuallyAddedSpecialties.Where(s => !string.IsNullOrWhiteSpace(s)))
-								{
+							@if (manuallyAddedSpecialties.Any())
+							{
+								<ul class="list-group mb-3">
+									@foreach (var item in manuallyAddedSpecialties.Where(s => !string.IsNullOrWhiteSpace(s)))
+									{
 										<li class="list-group-item d-flex justify-content-between align-items-center mt-1" style="padding-left:10px;">
-										@item
-										<button type="button" class="btn btn-sm bg-transparent" style="height:100%; padding:0;margin:0;margin-right:3px; color:darkred;"
-												@onclick="() => RemoveSpecialty(item)">
-											X
-										</button>
-									</li>
-								}
-							</ul>
-						}
+											@item
+											<button type="button" class="btn btn-sm bg-transparent" style="height:100%; padding:0;margin:0;margin-right:3px; color:darkred;"
+													@onclick="() => RemoveSpecialty(item)">
+												X
+											</button>
+										</li>
+									}
+								</ul>
+							}
 
+						</div>
 					</div>
-					</div>
-
-					<button class="btn card-btn" Style="width:100%;" type="submit">@(IsEdit ? "Gem Ændringer" : "Lav ny Medarbejder")</button>
 				</div>
-			</EditForm>
-		</div>
+
+				<button class="btn card-btn" Style="width:100%;" type="submit">@(IsEdit ? "Gem Ændringer" : "Lav ny Medarbejder")</button>
+			</div>
+		</EditForm>
 	</FloatingPage>
 }
 else

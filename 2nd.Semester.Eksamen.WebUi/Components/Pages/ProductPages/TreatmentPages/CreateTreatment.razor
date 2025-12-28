@@ -13,8 +13,8 @@
 
             <DataAnnotationsValidator />
             <ValidationSummary />
-
-            <h2 class="text-center mb-4">@(IsEdit ? "Rediger Behandling" : "Lav Ny Behandling")</h2>
+            <div>
+            <h2 class="mb-4">@(IsEdit ? "Rediger Behandling" : "Lav Ny Behandling")</h2>
 
             <div class="row">
                 <div class="mb-3">
@@ -64,7 +64,7 @@
 
             <div class="row mb-3">
                 <label class="form-label">Vælg eksisterende specialiteter:</label>
-                <div class="border rounded p-2" style="overflow-y:scroll; height:7.7rem">
+                <div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
                     @foreach (var specialty in specialtyItems.Where(s => !string.IsNullOrWhiteSpace(s.Specialty)))
                     {
                         <div class="form-check">
@@ -122,7 +122,7 @@
                     @(IsEdit ? "Gem Ændringer" : "Opret Behandling")
                 </button>
             </div>
-
+            </div>
         </EditForm>
     </div>
 </FloatingPage>

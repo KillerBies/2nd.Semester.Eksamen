@@ -18,5 +18,6 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces
         public Task DeleteAsync(int id);
         Task<List<Product>> GetByIdsAsync(List<int> ids);
         Task<List<string>> GetAllProductCategoriesAsync();
+        public Task<IEnumerable<Product?>> GetAllProductsNoMatterTypeAsync();
     }
 }

@@ -16,7 +16,10 @@ public class DiscountRepository : IDiscountRepository
     public async Task<List<Discount>> GetAllAsync()
     {
         await using var context = await _factory.CreateDbContextAsync();
-        return await context.Discounts.ToListAsync();
+        List<Campaign> campaigns = await context.Campaigns.Include(c=>c.ProductsInCampaign).ToListAsync();
+        List<Discount> discounts = await context.Discounts.Where(d=>!(d is Campaign)).ToListAsync();
+        discounts.AddRange(campaigns);
+        return discounts;
     }
 
     public async Task<IEnumerable<LoyaltyDiscount>> GetLoyaltyDiscountsAsync()

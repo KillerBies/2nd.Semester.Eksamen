@@ -82,10 +82,6 @@
                                     <div class="discount-card-body">
                                         @if (discount.Type == "Kampagne Rabat")
                                         {
-                                            @if (!string.IsNullOrEmpty(discount.Description))
-                                            {
-                                                <p class="description">@discount.Description</p>
-                                            }
                                             <div class="info-row">
                                                 <span class="info-label">Fra</span>
                                                 <span class="info-value">@discount.Start.ToShortDateString()</span>
@@ -94,21 +90,6 @@
                                                 <span class="info-label">Til</span>
                                                 <span class="info-value">@discount.End.ToShortDateString()</span>
                                             </div>
-
-                                            @if (discount.AppliesToProducts?.Any() == true)
-                                            {
-                                                <div class="product-list">
-                                                    @foreach (var product in discount.AppliesToProducts.Take(3))
-                                                    {
-                                                        <span class="product-chip">@product.Name</span>
-                                                    }
-
-                                                    @if (discount.AppliesToProducts.Count > 3)
-                                                    {
-                                                        <span class="more">+@(@discount.AppliesToProducts.Count - 3)</span>
-                                                    }
-                                                </div>
-                                            }
                                         }
                                         else
                                         {
@@ -157,7 +138,7 @@
 
 @if (isVisible)
 {
-    <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+    <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto; height:auto;">
         <CreateDiscount></CreateDiscount>
     </CreateWindow>
 }
@@ -241,13 +222,21 @@
             @if (SelectedDiscount.AppliesToProducts?.Any() == true)
             {
                 <div class="products">
-                    <span class="label">Gælder for produkter</span>
-                    <div class="product-list">
-                        @foreach (var product in SelectedDiscount.AppliesToProducts)
-                        {
-                            <span class="product-chip">@product.Name</span>
-                        }
-                    </div>
+                    <span class="info-label">Gælder for produkter</span>
+                    <span class="info-value d-flex flex-column g-1 ga">
+                        <div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
+                            <table class="table">
+                                <tbody>
+                                    @foreach (var product in SelectedDiscount.AppliesToProducts)
+                                    {
+                                        <tr>
+                                            <td>@product.Name</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </span>
                 </div>
             }
 
