@@ -1,5 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,6 +29,31 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
         [Required]
         public TimeSpan Duration { get; set; } = new();
         public decimal Price => TreatmentBookingDTOs.Select(tb => tb.Price).Sum();
-        public int? BookingId { get; set; }
+        public int BookingId { get; set; } = 0;
+        public BookingStatus Status { get; set; } = BookingStatus.Pending;
+
+        public BookingDTO(Booking booking)
+        {
+            BookingId = booking.Id;
+            CustomerId = booking.CustomerId;
+            if(booking.Customer is PrivateCustomer pc)
+            {
+                Customer = new PrivateCustomerDTO(pc);
+            }
+            else if (booking.Customer is CompanyCustomer cc)
+            {
+                Customer = new CompanyCustomerDTO(cc);
+            }
+            else
+            {
+                Customer = new CustomerDTO(booking.Customer);
+            }
+            Start = booking.Start;
+            End = booking.End;
+            TreatmentBookingDTOs = booking.Treatments.Select(tb => new TreatmentBookingDTO(tb)).ToList();
+            Duration = booking.Duration;
+            Status = booking.Status;
+        }
+        public BookingDTO() { } 
     }
 }

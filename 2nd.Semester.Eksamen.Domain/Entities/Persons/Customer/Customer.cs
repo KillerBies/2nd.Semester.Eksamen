@@ -13,7 +13,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer
         public decimal PointBalance { get; set; }
         public List<PunchCard> PunchCards { get;  set; } = new();
         public string? Notes { get; set; } = string.Empty;
-        public bool SaveAsCustomer { get;  set; }
+        public bool SaveAsCustomer { get; set; } = false;
 
         public Customer() { }
 

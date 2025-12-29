@@ -13,6 +13,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         public string phoneNumber;
         private bool customerNotFound;
         [Parameter] public EventCallback OnClose { get; set; }
+        [Parameter] public EventCallback OnCreateNewCustomer { get; set; }
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -28,8 +29,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 
         private async Task GoToCreateCustomer()
         {
+            await OnCreateNewCustomer.InvokeAsync();
             await OnClose.InvokeAsync();
-            Navi.NavigateTo($"/create-customer");
         }
         private async Task SearchForPhoneNumber()
         {

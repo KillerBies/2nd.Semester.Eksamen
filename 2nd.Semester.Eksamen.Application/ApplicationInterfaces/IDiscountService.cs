@@ -16,5 +16,6 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         Task<Campaign?> GetCampaignByDiscountIdAsync(int discountId);
         Task<LoyaltyDiscount?> GetLoyaltyDiscountForVisitsAsync(int numberOfVisits);
         Task<List<DiscountOverviewDTO>> GetAllDiscountsForOverviewAsync();
+        Task DeleteDiscountById(int id);
     }
 }

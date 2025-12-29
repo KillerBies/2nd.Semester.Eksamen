@@ -1,0 +1,75 @@
+﻿@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+@using Microsoft.AspNetCore.Components;
+@using System.Net.NetworkInformation;
+<div>
+    <div class="treatment-header d-flex align-items-start">
+        <div>
+            <h4 class="fw-semibold mb-1">@selectedTreatment.Name</h4>
+            <span class="text-muted small">Behandling</span>
+        </div>
+
+        <span class="badge badge-category ms-auto">
+            @selectedTreatment.Category
+        </span>
+    </div>
+
+    <div class="treatment-info">
+        <div class="info-row">
+            <span class="info-label">Pris</span>
+            <span class="info-value">@selectedTreatment.BasePrice.ToString("0") kr.</span>
+        </div>
+
+        <div class="info-row">
+            <span class="info-label">Varighed</span>
+            <span class="info-value">@selectedTreatment.Duration.TotalMinutes min</span>
+        </div>
+
+        <div class="info-row align-items-start">
+            <span class="info-label">Specialiteter</span>
+            <div class="specialties">
+                @foreach (var specialty in selectedTreatment.RequiredSpecialties)
+                {
+                    <span class="badge badge-specialty">@specialty.Replace(",", "")</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <p class="treatment-description">
+        @selectedTreatment.Description
+    </p>
+    <div class="card-footer w-100 mt-3 bg-transparent border-0">
+        <div class="btn-group w-100">
+            <button class="btn card-btn w-50" style="background-color:crimson;"
+                    @onclick="Delete">
+                Slet behandling
+            </button>
+            <button class="btn card-btn" @onclick="Edit">
+                Rediger
+            </button>
+        </div>
+    </div>
+</div>
+@code {
+    [Inject] public ITreatmentService _treatmentService { get; set; }
+    [Parameter] public TreatmentDTO selectedTreatment { get; set; }
+    [Parameter] public int TreatmentId { get; set; } = 0;
+
+    [Parameter] public EventCallback OnEdit { get; set; }
+    [Parameter] public EventCallback OnDelete { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    public async Task Close() => await OnClose.InvokeAsync();
+    public async Task Edit() => await OnEdit.InvokeAsync();
+    public async Task Delete() => await OnDelete.InvokeAsync();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (selectedTreatment == null && TreatmentId == 0)
+        {
+            selectedTreatment = await _treatmentService.GetTreatmentDetailsByIdAsync(TreatmentId);
+        }
+    }
+
+}

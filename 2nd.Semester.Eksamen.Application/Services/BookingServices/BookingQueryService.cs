@@ -95,7 +95,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 End = s.End,
                 TreatmentBookingDTOs = s.Items.Select(i => new TreatmentBookingDTO
                 {
-                    Treatment = new TreatmentDTO
+                    Treatment = new TreatmentDTO()
                     {
                         TreatmentId = i.Treatment.Id,
                         Name = i.Treatment.Name,

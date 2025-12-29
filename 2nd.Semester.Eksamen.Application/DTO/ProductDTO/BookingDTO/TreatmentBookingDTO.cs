@@ -1,6 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -26,6 +27,18 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             {
                 Price = Math.Round(Employee.BasePriceMultiplier * Treatment.BasePrice);
             }
+        }
+        public TreatmentBookingDTO(TreatmentBooking tb)
+        {
+            Treatment = new TreatmentDTO(tb.Treatment);
+            Employee = new EmployeeDTO(tb.Employee);
+            Start = tb.Start;
+            End = tb.End;
+            Price = tb.Price;
+        }
+        public TreatmentBookingDTO()
+        {
+
         }
 
     }

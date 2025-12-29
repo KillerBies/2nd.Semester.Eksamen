@@ -8,51 +8,45 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
     {
 
         [Inject] public ITreatmentService _treatmentService { get; set; }
-        [Inject] public NavigationManager Navi {get;set;} 
+        [Inject] public NavigationManager Navi { get; set; }
+
         private List<TreatmentDTO> Treatments = new();
         private TreatmentDTO? selectedTreatment;
-        private bool CreateTreatment { get; set; } = false;
-        private string SearchTermName { get; set; }
-        private bool EditTreatment { get; set; } = false;
-        private List<TreatmentDTO> FilterdTreatments => Treatments.Where(t => (string.IsNullOrWhiteSpace(SearchTermName) || t.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase))).ToList();
 
+        private bool CreateTreatment = false;
+        private bool EditTreatment = false;
         public bool ShowDelete = false;
-        public bool isVisible;
+        public bool isVisible = false;
 
+        private string SearchTermName = "";
+
+        private List<TreatmentDTO> FilterdTreatments =>
+            Treatments
+                .Where(t =>
+                    string.IsNullOrWhiteSpace(SearchTermName) ||
+                    t.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
 
         protected override async Task OnInitializedAsync()
         {
             Treatments = await _treatmentService.GetAllTreatmentsAsDTOAsync();
         }
 
-        //Overlays true or false
         private void ShowOverlay(TreatmentDTO treatment)
         {
             selectedTreatment = treatment;
             isVisible = true;
-
         }
 
         public void Refresh()
         {
             Navi.Refresh(true);
         }
-        private void HideOverlay()
-        {
-            selectedTreatment = null;
-            isVisible = false;
-        }
+
         private async Task DeleteTreatment(int id)
         {
-
-            await _treatmentService.DeleteByIdDbAsync(selectedTreatment.TreatmentId);
+            await _treatmentService.DeleteByIdDbAsync(id);
             Refresh();
-
-        }
-
-        private void NewTreatmentNavigation()
-        {
-            Navi.NavigateTo("/Create-Treatment");
         }
     }
 }

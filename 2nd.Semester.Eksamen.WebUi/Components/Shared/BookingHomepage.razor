@@ -64,8 +64,8 @@
         }
     </div>
     <div class="btn-group">
-        <button class="btn btn-outline-danger m-1" @onclick="() => OnCancelClick.InvokeAsync(booking)">Aflys</button>
-        <button class="btn btn-outline-primary m-1" @onclick="() => OnPaymentClick.InvokeAsync(booking)">Betal</button>
+        <button class="btn card-btn" style="background-color: crimson" @onclick="() => OnCancelClick.InvokeAsync(booking)">Aflys</button>
+        <button class="btn card-btn"  @onclick="() => OnPaymentClick.InvokeAsync(booking)">Betal</button>
     </div>
 </div>
 @code {

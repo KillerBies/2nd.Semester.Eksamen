@@ -89,8 +89,9 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 LastName = PrivateCustomer.LastName,
                 Birthday = PrivateCustomer.BirthDate,
                 Gender = PrivateCustomer.Gender.Value,
-                Notes = PrivateCustomer.Notes
-                
+                Notes = PrivateCustomer.Notes,
+                SaveAsCustomer = PrivateCustomer.SaveAsCustomer
+
             };
         }
         public CompanyCustomerDTO BusinessCustomerToDTO(CompanyCustomer CompanyCustomer)
@@ -108,7 +109,9 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 StreetName = dto.StreetName,
                 HouseNumber = dto.HouseNumber,
                 CVRNumber = CompanyCustomer.CVRNumber,
-                Notes = CompanyCustomer.Notes
+                Notes = CompanyCustomer.Notes,
+                SaveAsCustomer = CompanyCustomer.SaveAsCustomer
+
             };
         }
         public BookingDTO BookingToDTO(Booking booking)
@@ -119,7 +122,9 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 Customer = CustomerToDTO(booking.Customer),
                 Start = booking.Start,
                 End = booking.End,
-                Duration = booking.Duration
+                Duration = booking.Duration,
+                BookingId = booking.Id,
+                CustomerId = booking.CustomerId
             };
         }
         public BookingDTO PartBookingToDTO(Booking booking)

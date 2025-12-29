@@ -106,7 +106,7 @@
                                         {
                                             <div class="info-row">
                                                 <span class="info-label @(discount.IsActiveForTreatments ? "active" : "")">Behandling</span>
-                                                <span class="info-value">@((discount.TreatmentDiscount * 100).ToString("0"))%</span>
+                                                <span class="info-value">@((discount.TreatmentDiscount).ToString("0"))%</span>
                                             </div>
                                         }
 
@@ -114,7 +114,7 @@
                                         {
                                             <div class="info-row">
                                                 <span class="info-label @(discount.IsActiveForProducts ? "active" : "")">Produkt</span>
-                                                <span class="info-value">@((discount.ProductDiscount * 100).ToString("0"))%</span>
+                                                <span class="info-value">@((discount.ProductDiscount).ToString("0"))%</span>
                                             </div>
                                         }
                                     </div>
@@ -200,7 +200,7 @@
                 {
                     <div class="info-row">
                         <span class="info-label @(SelectedDiscount.IsActiveForTreatments ? "active" : "")">Behandling</span>
-                        <span class="info-value"><b>@((SelectedDiscount.TreatmentDiscount * 100).ToString("0"))%</b></span>
+                        <span class="info-value"><b>@((SelectedDiscount.TreatmentDiscount).ToString("0"))%</b></span>
                     </div>
                 }
 
@@ -208,7 +208,7 @@
                 {
                     <div class="info-row">
                         <span class="info-label @(SelectedDiscount.IsActiveForProducts ? "active" : "")">Produkt</span>
-                        <span class="info-value"><b>@((SelectedDiscount.ProductDiscount * 100).ToString("0"))%</b></span>
+                        <span class="info-value"><b>@((SelectedDiscount.ProductDiscount).ToString("0"))%</b></span>
                     </div>
                 }
                 @if (SelectedDiscount.Type == "Kampagne Rabat")
@@ -257,7 +257,7 @@
 {
     <BookingNotification IsVisible=ShowDelete IsVisibleChanged="v => ShowDelete = v">
         <div class="d-flex align-items-center flex-column w-100">
-            <p>Er du sikker på at du vil slette denne behandling?</p>
+            <p>Er du sikker på at du vil slette dette tilbud?</p>
             <button class="btn card-btn w-100" style="background-color:crimson; color:white;" @onclick="ConfirmDelete">Bekræft</button>
         </div>
     </BookingNotification>
@@ -302,9 +302,17 @@
         SelectedDiscount = discount;
         ShowDetails = true;
     }
-    private void ConfirmDelete()
+    private async Task ConfirmDelete()
     {
-
+        try
+        {
+            await discountService.DeleteDiscountById(SelectedDiscount.Id);
+            Refresh();
+        }
+        catch
+        {
+            
+        }
     }
     private void Refresh()
     {

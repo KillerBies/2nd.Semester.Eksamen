@@ -19,5 +19,6 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         public Task UpdateTreatment(TreatmentDTO treatmentDTO);
         public Task<List<TreatmentDTO>> GetAllTreatmentsAsDTOAsync();
         public Task DeleteByIdDbAsync(int id);
+        public Task<TreatmentDTO> GetTreatmentDetailsByIdAsync(int id);
     }
 }

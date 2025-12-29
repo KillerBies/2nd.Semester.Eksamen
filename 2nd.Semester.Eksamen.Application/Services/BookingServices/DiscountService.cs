@@ -50,6 +50,17 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         {
             return (await _repo.GetAllAsync()).Select(d => new DiscountOverviewDTO(d)).ToList();
         }
+        public async Task DeleteDiscountById(int id)
+        {
+            try
+            {
+                await _repo.DeleteByIdAsync(id);
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
     }
 
 }

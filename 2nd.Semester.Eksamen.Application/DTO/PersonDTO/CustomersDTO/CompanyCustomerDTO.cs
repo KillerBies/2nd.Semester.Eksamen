@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using System.ComponentModel.DataAnnotations;
 namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
 {
     public class CompanyCustomerDTO : CustomerDTO
@@ -9,11 +10,11 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
         [MaxLength(200)]
         public string? Notes { get; set; }
 
-        public bool SaveAsCustomer { get; set; }
-
-
-
-
+        public CompanyCustomerDTO(CompanyCustomer customer) : base(customer)
+        {
+            CVRNumber = customer.CVRNumber;
+            Notes = customer.Notes;
+        }
         public CompanyCustomerDTO() { }
     }
 }

@@ -83,72 +83,22 @@
         </div>
     </div>
 </div>
-
-@if (isVisible == true)
+@if (EditTreatment)
+{
+    <CreateWindow StyleParameters="background-color: #F3F2F2; padding:0;width:auto;z-index: 4000;" IsVisible=EditTreatment IsVisibleChanged="@(v => EditTreatment = v)">
+            <CreateTreatment IsEdit=true TreatmentEdit="selectedTreatment" OnClose="Refresh"></CreateTreatment>
+        </CreateWindow>
+}
+@if (isVisible)
 {
     <BookingNotification IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)">
-        <div>
-            <div class="treatment-header d-flex align-items-start">
-                <div>
-                    <h4 class="fw-semibold mb-1">@selectedTreatment.Name</h4>
-                    <span class="text-muted small">Behandling</span>
-                </div>
-
-                <span class="badge badge-category ms-auto">
-                    @selectedTreatment.Category
-                </span>
-            </div>
-
-            <div class="treatment-info">
-                <div class="info-row">
-                    <span class="info-label">Pris</span>
-                    <span class="info-value">@selectedTreatment.BasePrice.ToString("0") kr.</span>
-                </div>
-
-                <div class="info-row">
-                    <span class="info-label">Varighed</span>
-                    <span class="info-value">@selectedTreatment.Duration.TotalMinutes min</span>
-                </div>
-
-                <div class="info-row align-items-start">
-                    <span class="info-label">Specialiteter</span>
-                    <div class="specialties">
-                        @foreach (var specialty in selectedTreatment.RequiredSpecialties)
-                        {
-                            <span class="badge badge-specialty">@specialty.Replace(",", "")</span>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <p class="treatment-description">
-                @selectedTreatment.Description
-            </p>
-            <div class="card-footer w-100 mt-3 bg-transparent border-0">
-                <div class="btn-group w-100">
-                    <button class="btn card-btn w-50" style="background-color:crimson;"
-                            @onclick="() => ShowDelete = true">
-                        Slet behandling
-                    </button>
-                    <button class="btn card-btn" @onclick="() => EditTreatment = true">
-                        Rediger
-                    </button>
-                </div>
-            </div>
-        </div>
+        <TreatmentDetails OnClose="() => isVisible = false" OnDelete="() => ShowDelete = true" OnEdit="() => EditTreatment = true" selectedTreatment="selectedTreatment"></TreatmentDetails>
     </BookingNotification>
 }
-
 @if (CreateTreatment)
 {
     <CreateWindow StyleParameters="background-color: #F3F2F2; padding:0;width:auto;" IsVisible=CreateTreatment IsVisibleChanged="@(v => CreateTreatment = v)">
         <CreateTreatment OnClose="Refresh"></CreateTreatment>
-    </CreateWindow>
-}
-@if(EditTreatment)
-{
-    <CreateWindow StyleParameters="background-color: #F3F2F2; padding:0;width:auto;" IsVisible=EditTreatment IsVisibleChanged="@(v => EditTreatment = v)">
-        <CreateTreatment IsEdit=true TreatmentEdit="selectedTreatment" OnClose="Refresh"></CreateTreatment>
     </CreateWindow>
 }
 @if(ShowDelete)

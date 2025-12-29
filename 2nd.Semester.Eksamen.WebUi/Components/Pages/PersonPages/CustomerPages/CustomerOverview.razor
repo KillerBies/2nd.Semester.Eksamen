@@ -114,16 +114,16 @@
 @if (CreateCustomer)
 {
     <CreateWindow IsVisible=CreateCustomer IsVisibleChanged="v => CreateCustomer = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
-        <CreateCustomer></CreateCustomer>
+        <CreateCustomer IsBooking=false OnClose="Refresh"></CreateCustomer>
     </CreateWindow>
 }
 
 @if (isVisible == true)
 {
-    <CreateWindow IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)" StyleParameters="background-color: #F3F2F2; padding:0;width:28%; height:auto;">
+    <BookingNotification IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)">
         @if (selectedCustomer != null)
         {
-            <div class="card shadow-sm" style="background: #ffffff; padding: 1.5rem;">
+            <div class="card shadow-none p-0 border-0">
                 @if (selectedCustomer is PrivateCustomerDTO p)
                 {
                     <div>
@@ -224,13 +224,13 @@
                         </div>
                     </div>
                 }
-                    <div class="btn-group w-100">
-                        <button class="btn card-btn w-50" style="background-color:crimson;" @onclick="() => DeleteCustomer(selectedCustomer.id)">Slet kunde</button>
-                        <button class="btn card-btn" @onclick="() => EditCustomer = true">Rediger</button>
-                    </div>
+                <div class="btn-group w-100">
+                    <button class="btn card-btn w-50" style="background-color:crimson;" @onclick="() => ShowWarning = true">Slet kunde</button>
+                    <button class="btn card-btn" @onclick="() => EditCustomer = true">Rediger</button>
+                </div>
             </div>
         }
-    </CreateWindow>
+    </BookingNotification>
 }
 
 @if (EditCustomer)
@@ -247,4 +247,15 @@
     </CreateWindow>
 }
 
+@if (ShowWarning)
+{
+    <div style="z-index:9020">
+        <BookingNotification IsVisible=ShowWarning IsVisibleChanged="v => ShowWarning = v">
+            <div class="d-flex align-items-center flex-column w-100">
+                <p>Er du sikker på at du vil slette denne behandling?</p>
+                <button class="btn card-btn w-100" style="background-color:crimson;" @onclick="() => DeleteCustomer(selectedCustomer.id)">Bekræft</button>
+            </div>
+        </BookingNotification>
+    </div>
+}
 

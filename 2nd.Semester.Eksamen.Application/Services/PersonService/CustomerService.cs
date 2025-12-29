@@ -129,8 +129,6 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
                 }
             }
             return dtoList;
-
-
         }
 
 

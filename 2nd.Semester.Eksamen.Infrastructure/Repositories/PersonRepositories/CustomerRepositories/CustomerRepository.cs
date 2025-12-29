@@ -87,6 +87,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                     customerToUpDate.Email = pc.Email;
                     customerToUpDate.Gender = pc.Gender;
                     customerToUpDate.Notes = pc.Notes;
+                    customerToUpDate.SaveAsCustomer = pc.SaveAsCustomer;
                 }
                 else if(Customer is CompanyCustomer cc)
                 {
@@ -95,6 +96,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                     customerToUpDate.Email = cc.Email;
                     customerToUpDate.Notes = cc.Notes;
                     customerToUpDate.TrySetCVRNumber(cc.CVRNumber);
+                    customerToUpDate.SaveAsCustomer = cc.SaveAsCustomer;
                 }
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

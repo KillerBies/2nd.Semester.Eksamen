@@ -11,7 +11,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
     {
         [Inject] private IEmployeeRepository EmployeeRepository { get; set; } = null!;
         [Inject] private NavigationManager Nav { get; set; } = null!;
-
         public List<EmployeeUserCardDTO> Employees { get; set; } = new();
 
         public string SearchTermName { get; set; } = "";

@@ -17,6 +17,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.Bo
         public Task CreateNewBookingAsync(Booking Booking);
         public Task UpdateAsync(Booking Booking);
         public Task CancelBookingAsync(Booking Booking);
+        public Task CancelBookingByIdAsync(int BookingId);
         public Task<IEnumerable<Booking>> GetByCustomerId(int CustomerId);
         public Task<bool> BookingOverlapsAsync(Booking Booking);
     }

@@ -27,6 +27,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
             Customer.Address.UpdatePostalCode(customer.PostalCode);
             Customer.Address.UpdateHouseNumber(customer.HouseNumber);
             Customer.Address.UpdateCity(customer.City);
+            Customer.SaveAsCustomer = customer.SaveAsCustomer;
             if (Customer is PrivateCustomer pc)
             {
                 PrivateCustomerDTO updatedCustomer = (PrivateCustomerDTO)customer;

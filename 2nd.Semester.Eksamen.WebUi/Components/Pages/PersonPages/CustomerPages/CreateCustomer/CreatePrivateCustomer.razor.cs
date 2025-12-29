@@ -36,11 +36,14 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
                 {
                     int id = await createCustomerService.CreatePrivateCustomerAsync(privateCustomerDTO);
                     Navi.NavigateTo($"/BookingForm/{id}");
+                    await OnClose.InvokeAsync();
                 }
                 else
                 {
                     if (IsEdit)
                         await _customerService.UpdateCustomer(privateCustomerDTO);
+                    else
+                        await createCustomerService.CreatePrivateCustomerAsync(privateCustomerDTO);
                     await OnClose.InvokeAsync();
                     Navi.NavigateTo($"/CustomerOverview");
                 }

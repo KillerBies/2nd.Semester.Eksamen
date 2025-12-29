@@ -49,7 +49,10 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             }
         }
 
-
+        public void Refresh()
+        {
+            Navi.Refresh(true);
+        }
         public void GetBookingWarning(BookingDTO booking)
         {
             ShowBookingWarning = true;
@@ -65,7 +68,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             try
             {
                 await _bookingApplicationService.CancelBookingAsync(selectedBooking);
-                bookings.Remove(selectedBooking);
+                ShowBookingWarning = false;
+                Refresh();
             }
             catch
             {

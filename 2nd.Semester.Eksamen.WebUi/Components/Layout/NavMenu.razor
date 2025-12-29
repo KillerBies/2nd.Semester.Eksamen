@@ -125,6 +125,13 @@
         </div>
     </div>
 </nav>
+
+@if (CreateCustomerForBookingIsVisible)
+{
+    <CreateWindow IsVisible=CreateCustomerForBookingIsVisible IsVisibleChanged="v => CreateCustomerForBookingIsVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateCustomer IsBooking=true OnClose="() => CreateCustomerForBookingIsVisible = false"></CreateCustomer>
+    </CreateWindow>
+}
 @if (CreateDiscountIsVisible)
 {
     <CreateWindow IsVisible=CreateDiscountIsVisible IsVisibleChanged="v => CreateDiscountIsVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
@@ -158,6 +165,6 @@
 @if (CreateBookingIsVisible)
 {
     <CreateWindow IsVisible=CreateBookingIsVisible IsVisibleChanged="v => CreateBookingIsVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
-        <CreateBooking OnClose="() => CreateBookingIsVisible = false"></CreateBooking>
+        <CreateBooking OnClose="() => CreateBookingIsVisible = false" OnCreateNewCustomer="() => CreateCustomerForBookingIsVisible = true"></CreateBooking>
     </CreateWindow>
 }

@@ -17,6 +17,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Layout
         private bool CreateEmployeeIsVisible { get; set; } = false;
         private bool CreateCustomerIsVisible { get; set; } = false;
         private bool CreateDiscountIsVisible { get; set; } = false;
+        private bool CreateCustomerForBookingIsVisible { get; set; } = false;
         private void CloseDropdown(DropdownItem item = null)
         {
             Open = false;

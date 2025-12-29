@@ -60,23 +60,74 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                var trackedBooking = await _context.Bookings.Include(b => b.Treatments).FirstOrDefaultAsync(b => b.Id == booking.Id);
-                if (trackedBooking == null)
-                    throw new Exception("Booking not found");
-                foreach (var treatment in trackedBooking.Treatments.ToList())
+                //Load existing booking with treatments
+                var bookingToCancel = await _context.Bookings.Include(b => b.Treatments).FirstOrDefaultAsync(b => b.Id == booking.Id);
+
+                if (bookingToCancel == null)
+                    throw new InvalidOperationException("Booking not found");
+
+                //Cancel old treatments in schedules
+                foreach (var treatmentToCancel in bookingToCancel.Treatments)
                 {
-                    var employee = await _context.Employees.FindAsync(treatment.EmployeeId);
-                    var day = await _context.ScheduleDays.FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date == DateOnly.FromDateTime(treatment.Start));
-                    if (day == null) continue;
-                    day.CancelBooking(treatment);
-                    _context.ScheduleDays.Update(day);
-                    await _context.SaveChangesAsync();
-                    _context.BookedTreatments.Remove(treatment);
-                    await _context.SaveChangesAsync();
+                    var scheduleDay = await _context.ScheduleDays.Include(sd => sd.TimeRanges).FirstOrDefaultAsync(sd =>sd.EmployeeId == treatmentToCancel.EmployeeId &&sd.Date == DateOnly.FromDateTime(treatmentToCancel.Start));
+                    scheduleDay?.CancelBooking(treatmentToCancel);
                 }
-                _context.Bookings.Remove(booking);
+
+                //Remove old treatment bookings
+                _context.BookedTreatments.RemoveRange(bookingToCancel.Treatments);
+
+                //Remove customer if they don't want their data saved and have no other bookings
+                Customer customer = await _context.Customers.FindAsync(booking.CustomerId);
+                bool hasBookings = !(_context.Bookings.Where(b => b.CustomerId == customer.Id && b.Id != booking.Id).ToList().Any());
+                _context.Bookings.Remove(bookingToCancel);
+                if (customer.SaveAsCustomer == false && hasBookings)
+                {
+                    _context.Customers.Remove(customer);
+                }
                 await _context.SaveChangesAsync();
-                _context.Bookings.Remove(trackedBooking);
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+        public async Task CancelBookingByIdAsync(int BookingId)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                //Load existing booking with treatments
+                var bookingToCancel = await _context.Bookings.Include(b => b.Treatments).FirstOrDefaultAsync(b => b.Id == BookingId);
+
+                if (bookingToCancel == null)
+                    throw new InvalidOperationException("Booking not found");
+
+                //Cancel old treatments in schedules
+                foreach (var treatmentToCancel in bookingToCancel.Treatments)
+                {
+                    var scheduleDay = await _context.ScheduleDays.Include(sd => sd.TimeRanges).FirstOrDefaultAsync(sd => sd.EmployeeId == treatmentToCancel.EmployeeId && sd.Date == DateOnly.FromDateTime(treatmentToCancel.Start));
+                    scheduleDay?.CancelBooking(treatmentToCancel);
+                }
+
+                //Remove old treatment bookings
+                _context.BookedTreatments.RemoveRange(bookingToCancel.Treatments);
+
+                //Remove customer if they don't want their data saved and have no other bookings
+                Customer customer = await _context.Customers.FindAsync(bookingToCancel.CustomerId);
+                bool hasBookings = !(_context.Bookings.Where(b => b.CustomerId == customer.Id && b.Id != BookingId).ToList().Any());
+                _context.Bookings.Remove(bookingToCancel);
+                if (customer.SaveAsCustomer == false && hasBookings)
+                {
+                    _context.Customers.Remove(customer);
+                }
+                if(bookingToCancel.Status == BookingStatus.Completed)
+                {
+                    var order = await _context.Orders.FirstOrDefaultAsync(o=>o.BookingId == bookingToCancel.Id);
+                    _context.Orders.Remove(order);
+                }
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -143,7 +194,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
 
             try
             {
-                //Load existing booking WITH treatments
+                //Load existing booking with treatments
                 var existingBooking = await context.Bookings
                     .Include(b => b.Treatments)
                     .FirstOrDefaultAsync(b => b.Id == booking.Id);
@@ -213,7 +264,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 //Update scalar properties of booking
                 context.Entry(existingBooking).CurrentValues.SetValues(booking);
 
-                //Persist everything once
+                //Update and save everything
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

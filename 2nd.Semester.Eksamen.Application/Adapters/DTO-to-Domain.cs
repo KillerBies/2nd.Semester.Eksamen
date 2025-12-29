@@ -107,11 +107,11 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
 
         public LoyaltyDiscount DTOLoyaltyDiscountToDomain(LoyaltyDiscountDTO discount)
         {
-            return new LoyaltyDiscount(discount.MinimumVisits, discount.DiscountType, discount.Name, discount.TreatmentDiscount, discount.ProductDiscount);
+            return new LoyaltyDiscount(discount.MinimumVisits, discount.DiscountType, discount.Name, discount.TreatmentDiscount/100, discount.ProductDiscount/100);
         }
         public Campaign DTOCampaignDiscountToDomain(CampaignDiscountDTO discount)
         {
-            return new Campaign(discount.Name, discount.TreatmentDiscount, discount.ProductDiscount, discount.Start,discount.End);
+            return new Campaign(discount.Name, discount.TreatmentDiscount/100, discount.ProductDiscount/100, discount.Start,discount.End);
         }
 
         public async Task<Employee> DTOEmployeeInputToDomain(EmployeeInputDTO dto)

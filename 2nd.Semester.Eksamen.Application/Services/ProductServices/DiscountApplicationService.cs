@@ -53,7 +53,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
         {
             try
             {
-                var dis = new LoyaltyDiscount(discount.MinimumVisits, discount.DiscountType, discount.Name, discount.TreatmentDiscount, discount.ProductDiscount) { AppliesToProduct = discount.AppliesToProduct, AppliesToTreatment = discount.AppliesToTreatment, Id = discount.Id, IsLoyalty = true };
+                var dis = new LoyaltyDiscount(discount.MinimumVisits, discount.DiscountType, discount.Name, discount.TreatmentDiscount / 100, discount.ProductDiscount / 100) { AppliesToProduct = discount.AppliesToProduct, AppliesToTreatment = discount.AppliesToTreatment, Id = discount.Id, IsLoyalty = true };
                 await _loyaltyDiscountRepository.UpdateAsync(dis);
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
                     var product = await _productRepository.GetByIDAsync(id);
                     products.Add(product);
                 }
-                var dis = new Campaign(discount.Name, discount.TreatmentDiscount, discount.ProductDiscount, discount.Start, discount.End) {AppliesToProduct = discount.AppliesToProduct, AppliesToTreatment = discount.AppliesToTreatment, Id = discount.Id, IsLoyalty = false, ProductsInCampaign = products, Description = discount.Description};
+                var dis = new Campaign(discount.Name, discount.TreatmentDiscount/100, discount.ProductDiscount/100, discount.Start, discount.End) {AppliesToProduct = discount.AppliesToProduct, AppliesToTreatment = discount.AppliesToTreatment, Id = discount.Id, IsLoyalty = false, ProductsInCampaign = products, Description = discount.Description};
                 await _campaignDiscountRepository.UpdateAsync(dis);
             }
             catch (Exception ex)

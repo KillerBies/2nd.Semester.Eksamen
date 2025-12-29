@@ -98,11 +98,14 @@
 			{
 				int id = await createCustomerService.CreateCompanyCustomerAsync(companyCustomerDTO);
 				Navi.NavigateTo($"/BookingForm/{id}");
+				await OnClose.InvokeAsync();
 			}
 			else
 			{
 				if (IsEdit)
 					await _customerService.UpdateCustomer(companyCustomerDTO);
+				else 
+					await createCustomerService.CreateCompanyCustomerAsync(companyCustomerDTO);
 				await OnClose.InvokeAsync();
 				Navi.NavigateTo($"/CustomerOverview");
 			}

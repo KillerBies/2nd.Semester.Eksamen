@@ -69,6 +69,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             await _treatmentRepository.DeleteByIdAsync(id);
         }
 
+        public async Task<TreatmentDTO> GetTreatmentDetailsByIdAsync(int id)
+        {
+            return new TreatmentDTO((await _treatmentRepository.GetByIDAsync(id)));
+        }
+
 
     }
 }

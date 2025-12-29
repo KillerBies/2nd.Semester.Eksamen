@@ -29,8 +29,8 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
         {
             Id = discount.Id;
             Name = discount.Name;
-            TreatmentDiscount = discount.TreatmentDiscount;
-            ProductDiscount = discount.ProductDiscount;
+            TreatmentDiscount = discount.TreatmentDiscount*100;
+            ProductDiscount = discount.ProductDiscount*100;
             NumberOfUses = discount.NumberOfUses;
             IsActiveForProducts = discount.AppliesToProduct;
             IsActiveForTreatments = discount.AppliesToTreatment;

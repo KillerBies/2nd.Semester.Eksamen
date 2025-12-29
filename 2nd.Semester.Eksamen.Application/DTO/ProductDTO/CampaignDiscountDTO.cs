@@ -17,10 +17,10 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
         [StringLength(100, ErrorMessage = "Navn må maks være 100 tegn.")]
         public string Name { get; set; } = string.Empty;
 
-        [Range(0, 1, ErrorMessage = "Rabat på behandling skal være mellem 0 og 1.")]
+        [Range(0, 100, ErrorMessage = "Rabat på behandling skal være mellem 0 og 1.")]
         public decimal TreatmentDiscount { get; set; }
 
-        [Range(0, 1, ErrorMessage = "Rabat på produkter skal være mellem 0 og 1.")]
+        [Range(0, 100, ErrorMessage = "Rabat på produkter skal være mellem 0 og 1.")]
         public decimal ProductDiscount { get; set; }
 
         public bool AppliesToTreatment { get; set; }
@@ -41,8 +41,8 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
         public CampaignDiscountDTO(Campaign camp)
         {
             Name = camp.Name;
-            TreatmentDiscount = camp.TreatmentDiscount;
-            ProductDiscount = camp.ProductDiscount;
+            TreatmentDiscount = camp.TreatmentDiscount*100;
+            ProductDiscount = camp.ProductDiscount*100;
             AppliesToProduct = camp.AppliesToProduct;
             AppliesToTreatment = camp.AppliesToTreatment;
             Start = camp.Start;

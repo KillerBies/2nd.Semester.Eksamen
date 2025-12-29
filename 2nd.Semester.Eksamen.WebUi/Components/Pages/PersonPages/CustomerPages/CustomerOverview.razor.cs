@@ -25,7 +25,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
         private List<CustomerDTO> FilterdCustomers => Customers.Where(c => (string.IsNullOrWhiteSpace(SearchTermName) || c.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && (string.IsNullOrWhiteSpace(SearchTermPhone) || c.PhoneNumber.Contains(SearchTermPhone, StringComparison.OrdinalIgnoreCase))).ToList();
         private CustomerDTO? selectedCustomer;
         public bool isVisible = false;
-
+        public bool ShowWarning = false;
 
         protected override async Task OnInitializedAsync()
         {
@@ -59,10 +59,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
             await _customerService.DeleteByIdAsync(selectedCustomer.id);
 
         }
-
-
-
-
     }
 }
 

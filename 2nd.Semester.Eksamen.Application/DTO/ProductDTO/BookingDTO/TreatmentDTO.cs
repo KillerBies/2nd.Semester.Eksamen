@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -32,5 +33,17 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
         public decimal BasePrice { get; set; } = new();
         [Required]
         public string Description {  get; set; } = string.Empty;
+
+        public TreatmentDTO(Treatment tre)
+        {
+            Category = tre.Category;
+            Name = tre.Name;
+            TreatmentId = tre.Id;
+            RequiredSpecialties = tre.RequiredSpecialties;
+            Duration = tre.Duration;
+            BasePrice = tre.Price;
+            Description = tre.Description;
+        }
+        public TreatmentDTO() { }
     }
 }

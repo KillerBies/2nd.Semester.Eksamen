@@ -33,7 +33,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         [Parameter] public CustomerDTO Customer { get; set; }
         private string CustomerName { get; set; } = "";
         [Inject] private Domain_to_DTO ToDTOAdapter { get; set; }
-        [Parameter] public Booking EditBooking { get; set; }
+        [Parameter] public BookingDTO EditBooking { get; set; }
         public BookingDTO Booking { get; set; } = new();
         [Parameter] public bool IsEdit { get; set; } = false;
         [Parameter]
@@ -64,7 +64,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         {
             _errorMessage = "";
             Booking = IsEdit
-                ? ToDTOAdapter.PartBookingToDTO(EditBooking)
+                ? EditBooking
                 : new BookingDTO();
             EditContext = new EditContext(Booking);
             await GetData();
@@ -111,7 +111,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
                     }
                     else
                     {
-                        Booking.BookingId = EditBooking.Id;
+                        Booking.BookingId = EditBooking.BookingId;
                         await _bookingApplicationService.RescheduleBookingAsync(Booking);
                         Navi.Refresh();
                     }
