@@ -12,7 +12,7 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251214155411_initial")]
+    [Migration("20251229140523_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -607,6 +607,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<int?>("CampaignId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -800,10 +804,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
             modelBuilder.Entity("_2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts.Treatment", b =>
                 {
                     b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.Products.Product");
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");

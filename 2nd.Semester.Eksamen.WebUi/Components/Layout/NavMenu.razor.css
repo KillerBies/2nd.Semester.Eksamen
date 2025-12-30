@@ -1,18 +1,27 @@
 
+
+
 .navbar-brand img { /*Logo image*/
     height: auto; /*Automatically set hight and width based on space (i think)*/
     width: auto;
 }
 
+
+
 .topnav {
     justify-content: space-between;
-    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-end;
 }
 
 .navbar.nav { /*Container of the other nav elements besides logo*/
-    display: flex; /*Makes the container flexible*/
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-end;
     justify-content: space-between; /*Evenly spaces out the elements*/
-
 }
 
 nav { /*The navbar container of all the nav elements*/
@@ -21,12 +30,15 @@ nav { /*The navbar container of all the nav elements*/
 
 .nav-item { /*each item bisides the logo*/
     border-right: 1px solid #ccc; /*Puts a separator on the right side of each item*/
+    display: flex;
+    align-items: flex-end;
 }
 
     .nav-item ::deep a { /*each nav items settings for all <a> elements within the nav-item class*/
         color: #b55054;
         display: flex;
-        align-items: center;
+        align-items: flex-end;
+        font-size: 1rem;
     }
 
         .nav-item ::deep a.active { /*When an <a> element is activated/clicked*/
@@ -40,7 +52,7 @@ nav { /*The navbar container of all the nav elements*/
 .topnav .navbar-nav {
     display: flex;
     flex-wrap: wrap;
-    
+    align-items: flex-end;
 }
 
 .topnav .nav-item {
@@ -49,23 +61,23 @@ nav { /*The navbar container of all the nav elements*/
 }
 
 .topnav .nav-link {
-    white-space: nowrap; 
-    display: inline-block; 
+    white-space: nowrap;
+    display: flex;
+    align-items: flex-end;
 }
 
 .dropdown-menu { /*Overides the dropdown menus settings*/
     border-radius: 0px;
     padding: 0px;
     display: flex;
+    align-items: flex-end;
 }
 
 
-.nav-scrollable {
-    display: none;
-}
 
 .navbar-toggler:checked ~ .nav-scrollable {
-    display: block;
+    display: flex;
+    align-items: flex-end;
 }
 
 @media (min-width: 641px) {

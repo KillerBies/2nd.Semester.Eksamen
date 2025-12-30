@@ -19,61 +19,155 @@
                 <img src="Logo.png" style="height:40px;" />
             </a>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="EmployeeSchedule">
-                <span aria-hidden="true">Medarbejder Skema</span>
+
+
+
+
+        <div class="nav-item px-3 dropdown" style="position:relative; cursor:pointer;" @onclick="() => ShowBookingDropdown = !ShowBookingDropdown" @onmouseleave="() => ShowBookingDropdown = false">
+
+            <!-- Toggle -->
+            <NavLink class="nav-link dropdown-toggle" style="display: flex; flex-direction:row; align-items: flex-end;height: 100%;">
+                Bookinger
             </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" @onclick="() => CreateBookingIsVisible = true" style="cursor:pointer;">
-                <span aria-hidden="true">Lav Booking</span>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="BookingOverview">
-                <span>Booking Oversigt</span>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="employees">
-                <span aria-hidden="true">Medarbejderoversigt</span>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="CustomerOverview">
-                <span aria-hidden="true">Kundeoversigt</span>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="InvoiceOverview">
-                <span aria-hidden="true">Fakturaoversigt</span>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="TreatmentOverview">
-                <span aria-hidden="true">Behandlingsoversigt</span>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="ProductOverviewPage">
-                <span aria-hidden="true">Produkt Oversigt</span>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="DiscountOverviewPage">
-                <span aria-hidden="true">Rabat Oversigt</span>
-            </NavLink>
+            @if (ShowBookingDropdown)
+            {
+                <ul class="dropdown-menu show"
+                    style="display:block; position:absolute; top:100%; left:0; width:max-content;">
+                    <li @onclick:stopPropagation @onclick="() => ShowBookingDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="BookingOverview">
+                                <span>Booking Oversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowBookingDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateBookingIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Booking</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                </ul>
+            }
         </div>
 
+        <div class="nav-item px-3 dropdown" style="position:relative; cursor:pointer;" @onclick="() => ShowCustomerDropdown = !ShowCustomerDropdown" @onmouseleave="() => ShowCustomerDropdown = false">
+
+            <!-- Toggle -->
+            <NavLink class="nav-link dropdown-toggle">
+                Kunder
+            </NavLink>
+            @if (ShowCustomerDropdown)
+            {
+                <ul class="dropdown-menu show"
+                    style="display:block; position:absolute; top:100%; left:0; width:max-content;">
+                    <li @onclick:stopPropagation @onclick="() => ShowCustomerDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="CustomerOverview">
+                                <span aria-hidden="true">Kundeoversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowCustomerDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateCustomerIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Kunde</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                </ul>
+            }
+        </div>
+
+        <div class="nav-item px-3 dropdown" style="position:relative; cursor:pointer;" @onclick="() => ShowEmployeeDropdown = !ShowEmployeeDropdown" @onmouseleave="() => ShowEmployeeDropdown = false">
+
+            <!-- Toggle -->
+            <NavLink class="nav-link dropdown-toggle">
+                Medarbejdere
+            </NavLink>
+            @if (ShowEmployeeDropdown)
+            {
+                <ul class="dropdown-menu show"
+                    style="display:block; position:absolute; top:100%; left:0; width:max-content;">
+                    <li @onclick:stopPropagation @onclick="() => ShowEmployeeDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="employees">
+                                <span aria-hidden="true">Medarbejderoversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowEmployeeDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="EmployeeSchedule">
+                                <span aria-hidden="true">Medarbejder Skema</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowEmployeeDropdown = false">
+
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateEmployeeIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Medarbejder</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                </ul>
+            }
+        </div>
+
+
+
+        <div class="nav-item px-3 dropdown" style="position:relative; cursor:pointer;" @onclick="() => ShowProductsDropdown = !ShowProductsDropdown" @onmouseleave="() => ShowProductsDropdown = false">
+
+            <!-- Toggle -->
+            <NavLink class="nav-link dropdown-toggle">
+                Produkter
+            </NavLink>
+            @if (ShowProductsDropdown)
+            {
+                <ul class="dropdown-menu show"
+                    style="display:block; position:absolute; top:100%; left:0; width:max-content;">
+                    <li @onclick:stopPropagation @onclick="() => ShowProductsDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="TreatmentOverview">
+                                <span aria-hidden="true">Behandlingsoversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowProductsDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="ProductOverviewPage">
+                                <span aria-hidden="true">Produkt Oversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowProductsDropdown = false">
+
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="DiscountOverviewPage">
+                                <span aria-hidden="true">Rabat Oversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowProductsDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="InvoiceOverview">
+                                <span aria-hidden="true">Fakturaoversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                </ul>
+            }
+        </div>
 
         <!--Dropdown for more options-->
         <div class="nav-item px-3 dropdown" style="position:relative; cursor:pointer;" @onmouseleave="() => Open = false">
 
             <!-- Toggle -->
-            <NavLink 
-                    class="nav-link navbar-toggler-icon"
-                    style="font-size:1.5rem;"
-                    @onclick="ToggleDropdown">
+            <NavLink class="nav-link dropdown-toggle"
+                    
+                     @onclick="ToggleDropdown">
+                    Tilføj
             </NavLink>
 
             @if (Open)
@@ -83,8 +177,8 @@
                     <li @onclick:stopPropagation>
 
                         <div class="nav-item px-3">
-                            <NavLink class="nav-link" @onclick="() => CreateProductIsVisible = true" style="cursor:pointer;">
-                                <span aria-hidden="true">Nyt Produkt</span>
+                            <NavLink class="nav-link" @onclick="() => CreateEmployeeIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Medarbejder</span>
                             </NavLink>
                         </div>
                     </li>
@@ -99,8 +193,15 @@
                     <li @onclick:stopPropagation>
 
                         <div class="nav-item px-3">
-                            <NavLink class="nav-link" @onclick="() => CreateEmployeeIsVisible = true" style="cursor:pointer;">
-                                <span aria-hidden="true">Ny Medarbejder</span>
+                            <NavLink class="nav-link" @onclick="() => CreateProductIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Nyt Produkt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateBookingIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Booking</span>
                             </NavLink>
                         </div>
                     </li>
@@ -113,7 +214,6 @@
                         </div>
                     </li>
                     <li @onclick:stopPropagation>
-
                         <div class="nav-item px-3">
                             <NavLink class="nav-link" @onclick="() => CreateDiscountIsVisible = true" style="cursor:pointer;">
                                 <span aria-hidden="true">Nyt Tilbud</span>
@@ -125,6 +225,8 @@
         </div>
     </div>
 </nav>
+
+
 
 @if (CreateCustomerForBookingIsVisible)
 {
