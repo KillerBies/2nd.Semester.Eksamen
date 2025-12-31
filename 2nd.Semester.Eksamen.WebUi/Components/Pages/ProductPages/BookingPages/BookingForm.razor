@@ -70,6 +70,9 @@
                     </div>
                     @if (IsDropdownOpen)
                     {
+                        <div class="pt-1" style="width:100%; text-align:center; justify-content:center;">
+                            <span style="font-weight:600;">@(IsEdit ? $"Gamle Tid {EditBooking.Start.ToString("M")}: {EditBooking.Start.ToString("t")} - {EditBooking.End.ToString("t")}" : "")</span>
+                        </div>
                         <div class="time-grid">
                             @foreach (var spot in Pages[CurrentIndex].Where(t => TimeOnly.FromDateTime(t.End) <= EndTime && TimeOnly.FromDateTime(t.Start) >= StartTime))
                             {

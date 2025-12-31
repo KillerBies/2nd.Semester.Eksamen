@@ -25,15 +25,15 @@
                     <h1>Bookinger</h1>
                     <p class="subtitle">Oversigt over alle bookinger</p>
                 </div>
-                <div class="btn-group ms-auto" style="width:50%; gap:1rem;">
+                <div class="equal-row ms-auto">
                     <div class="input-group">
-                        <input type="text" placeholder="Søg Kunde..." @bind="SearchTermCustomer" @bind:event="oninput" />
+                        <input type="text" class="search-box" placeholder="Søg Kunde..." @bind="SearchTermCustomer" @bind:event="oninput" />
                     </div>
                     <div class="input-group">
-                        <input type="date" title="Fra..." placeholder="Dato..." @bind="SearchTermDateStart" />
+                        <input type="date" class="search-box" title="Fra..." placeholder="Dato fra..." @bind="SearchTermDateStart" @bind:event="oninput" />
                     </div>
                     <div class="input-group">
-                        <input type="date" title="Til..." placeholder="Dato..." @bind="SearchTermDateEnd" />
+                        <input type="date" class="search-box" title="Til..." placeholder="Dato til..." @bind="SearchTermDateEnd" @bind:event="oninput" />
                     </div>
                 </div>
             </div>
@@ -147,7 +147,7 @@
         <SidePage IsVisible="OpenEdit"
                   IsVisibleChanged="@(v => OpenEdit = v)">
             <div style="width:30vw;z-index: 9999;"></div>
-            <BookingForm CustomerId="@SelectedBooking.CustomerId" EditBooking="SelectedBooking" IsEdit="true"></BookingForm>
+            <BookingForm OnClose="Refresh" CustomerId="@SelectedBooking.CustomerId" EditBooking="SelectedBooking" IsEdit="true"></BookingForm>
         </SidePage>
     }
 </div>
@@ -249,6 +249,10 @@
     private async Task ConfirmDeleteBooking()
     {
         await _bookingOverviewService.DeleteBookingAsync(SelectedBooking);
-        Navi.Refresh(true);
+        Refresh();
+    }
+    private void Refresh()
+    {
+        Navi.Refresh(true);        
     }
 }

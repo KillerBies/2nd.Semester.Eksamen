@@ -10,7 +10,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Layout
         [Parameter] public List<DropdownItem> items { get; set; } = new List<DropdownItem>();
 
         //Controlls for the dropdown menu.
-        private bool Open = true;
+        private bool Open = false;
 
         private bool ShowProductsDropdown = false;
         private bool ShowEmployeeDropdown = false;

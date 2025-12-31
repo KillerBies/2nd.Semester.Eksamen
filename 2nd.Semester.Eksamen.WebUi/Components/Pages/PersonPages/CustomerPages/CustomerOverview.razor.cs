@@ -59,6 +59,10 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
             await _customerService.DeleteByIdAsync(selectedCustomer.id);
 
         }
+        private async Task CreateNewBookingForCustomer()
+        {
+            Nav.NavigateTo($"/BookingForm/{selectedCustomer.id}");
+        }
     }
 }
 

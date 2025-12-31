@@ -55,3 +55,20 @@ th{
         font-size: 1.8rem;
         font-weight: bold;
     }
+
+.equal-row {
+    display: flex;
+    width: auto;
+    gap: 1rem;
+    max-height: auto;
+    padding: initial;
+}
+
+    .equal-row > * {
+        flex: 1;
+    }
+
+.search-box {
+    border-radius: 4px;
+    border: 0;
+}

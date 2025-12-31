@@ -15,14 +15,14 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
     {
         IProductRepository _productRepository;
         ISnapshotRepository _snapshotRepository;
-        public ProductOverviewService(IProductRepository productRepository, ISnapshotRepository snapshotRepository) 
+        public ProductOverviewService(IProductRepository productRepository, ISnapshotRepository snapshotRepository)
         {
             _snapshotRepository = snapshotRepository;
             _productRepository = productRepository;
         }
         public async Task<List<ProductOverviewDTO>> GetAllProductOverviewsAsync()
         {
-            return (await _productRepository.GetAllAsync()).Select(p=>new ProductOverviewDTO() { 
+            return (await _productRepository.GetAllAsync()).Select(p => new ProductOverviewDTO() {
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
@@ -42,12 +42,16 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
         {
             try
             {
-               await _productRepository.DeleteAsync(product.Id);
+                await _productRepository.DeleteAsync(product.Id);
             }
             catch
             {
                 throw new Exception();
             }
+        }
+        public async Task<ProductOverviewDTO> GetProductByIdAsync(int id)
+        {
+            return new ProductOverviewDTO((await _productRepository.GetByIDAsync(id)));
         }
     }
 }

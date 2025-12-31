@@ -13,14 +13,10 @@
                     <h1>Behandlinger</h1>
                     <p class="subtitle">Oversigt over alle behandlinger</p>
                 </div>
-                <div class="btn-group ms-auto" style="width:20%; gap:1rem;">
-                    <div class="input-group" style="padding-right:1rem;">
-                        <input type="text" placeholder="Søg Behandlings Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
-                    </div>
+                <div class="equal-row ms-auto">
+                    <input type="text" class="search-box" placeholder="Søg Behandlings Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
+                    <button class="btn btn-primary" @onclick="() => CreateTreatment = true"><i class="bi bi-plus-lg"></i> Tilføj Behandling</button>
                 </div>
-                <button class="btn btn-primary" @onclick="() => CreateTreatment = true">
-                    <i class="bi bi-plus-lg"></i> Tilføj Behandling
-                </button>
             </div>
             <div class="overview-page-content">
                 <div class="stats-grid">

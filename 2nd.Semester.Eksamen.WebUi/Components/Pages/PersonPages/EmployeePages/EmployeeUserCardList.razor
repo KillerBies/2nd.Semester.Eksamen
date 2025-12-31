@@ -19,24 +19,10 @@
                     <h1>Medarbejdere</h1>
                     <p class="subtitle">Oversigt over alle medarbejdere</p>
                 </div>
-                <div class="btn-group ms-auto" style="width:50%; gap:1rem;">
-                    <div class="input-group">
-                        <div class="input-group">
-                            <input type="text"
-                                   placeholder="Søg Navn..."
-                                   @bind="SearchTermName"
-                                   @bind:event="oninput" />
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <input type="text"
-                               placeholder="Søg Tlf. Nummer..."
-                               @bind="SearchTermPhone"
-                               @bind:event="oninput" />
-                    </div>
-                    <button class="add-employee-btn" @onclick="()=>CreateEmployee=true">
-                        <i class="bi bi-plus-lg"></i> Tilføj Medarbejder
-                    </button>
+                <div class="equal-row ms-auto">
+                    <input type="text" class="search-box" placeholder="Søg Navn..." @bind="SearchTermName" @bind:event="oninput" />
+                    <input type="text" class="search-box" placeholder="Søg Tlf. Nummer..." @bind="SearchTermPhone" @bind:event="oninput" />
+                    <button class="btn btn-primary" @onclick="() => CreateEmployee = true"><i class="bi bi-plus-lg"></i> Tilføj Medarbejder</button>
                 </div>
             </div>
             <div class="overview-page-content">

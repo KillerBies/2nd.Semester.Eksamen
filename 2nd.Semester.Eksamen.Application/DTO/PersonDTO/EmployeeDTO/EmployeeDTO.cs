@@ -25,6 +25,14 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO
             BasePriceMultiplier = emp.BasePriceMultiplier;
             Specialties = emp.Specialties;
         }
+        public EmployeeDTO(EmployeeDTO emp)
+        {
+            EmployeeId = emp.EmployeeId;
+            Name = emp.Name;
+            ExperienceLevel = emp.ExperienceLevel;
+            BasePriceMultiplier = emp.BasePriceMultiplier;
+            Specialties = emp.Specialties;
+        }
         public EmployeeDTO() { }
     }
 }

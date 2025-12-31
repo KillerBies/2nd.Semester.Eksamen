@@ -15,6 +15,7 @@ using System.Security.Principal;
 using _2nd.Semester.Eksamen.Application.Adapters;
 using System.Diagnostics.SymbolStore;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 {
@@ -40,6 +41,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         public int CustomerId { get; set; }
         private string ErrorMsg = "";
         private int Interval { get; set; } = 60;
+        [Parameter] public EventCallback OnClose { get; set; }
         private List<TreatmentDTO> AllTreatments = new();
         private List<EmployeeDTO> AllEmployees = new();
         private List<BookingDTO> AvailableBookingSpots = new();
@@ -63,9 +65,15 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         protected override async Task OnInitializedAsync()
         {
             _errorMessage = "";
-            Booking = IsEdit
-                ? EditBooking
-                : new BookingDTO();
+            if(IsEdit)
+            {
+                Booking = new BookingDTO(EditBooking);
+                ResetBookingTimes();
+            }
+            else
+            {
+                Booking = new BookingDTO();
+            }
             EditContext = new EditContext(Booking);
             await GetData();
         }
@@ -107,13 +115,13 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
                     if (!IsEdit)
                     {
                         await _bookingApplicationService.CreateBookingAsync(Booking);
-                        Navi.NavigateTo("/");
+                        Navi.NavigateTo("/BookingOverview");
                     }
                     else
                     {
                         Booking.BookingId = EditBooking.BookingId;
                         await _bookingApplicationService.RescheduleBookingAsync(Booking);
-                        Navi.Refresh();
+                        await OnClose.InvokeAsync();
                     }
                 }
                 catch (Exception ex)
@@ -122,9 +130,21 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
                 }
             }
         }
+
+
+        private void ResetBookingTimes()
+        {
+            Booking.Start = new();
+            Booking.End = new();
+            foreach (var treatment in Booking.TreatmentBookingDTOs)
+            {
+                treatment.Start = new();
+                treatment.End = new();
+            }
+        }
         private void OnCancel()
         {
-            Navi.NavigateTo("/");
+            Navi.NavigateTo("/BookingOverview");
         }
         private async Task FowardPage()
         {
@@ -150,12 +170,26 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
                 if (!AvailableBookingSpots.Any())
                 {
                     startDate = DateOnly.FromDateTime(DateTime.Now);
-                    Pages[0] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval);
+                    if(IsEdit)
+                    {
+                        Pages[0] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval,EditBooking.TreatmentBookingDTOs);
+                    }
+                    else
+                    {
+                        Pages[0] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval);
+                    }
                     AvailableBookingSpots = new List<BookingDTO>(Pages[0]);
                 }
                 else
                 {
-                    Pages[CurrentIndex + 1] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval);
+                    if (IsEdit)
+                    {
+                        Pages[CurrentIndex + 1] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval, EditBooking.TreatmentBookingDTOs);
+                    }
+                    else
+                    {
+                        Pages[CurrentIndex + 1] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval);
+                    }
                     AvailableBookingSpots.AddRange(Pages[CurrentIndex + 1]);
                     CurrentIndex += 1;
                 }
@@ -177,18 +211,14 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         {
             GenReset();
             if (index >= Booking.TreatmentBookingDTOs.Count - 1) return;
-
-            (Booking.TreatmentBookingDTOs[index + 1],
-             Booking.TreatmentBookingDTOs[index]) =
-             (Booking.TreatmentBookingDTOs[index],
-              Booking.TreatmentBookingDTOs[index + 1]);
+            (Booking.TreatmentBookingDTOs[index + 1],Booking.TreatmentBookingDTOs[index]) =(Booking.TreatmentBookingDTOs[index],Booking.TreatmentBookingDTOs[index + 1]);
         }
 
         private void GenReset()
         {
             timeSelected = new();
             AvailableBookingSpots.Clear();
-
+            ResetBookingTimes();
             IsDropdownOpen = false;
         }
         private void HandleValidSubmit()
@@ -240,9 +270,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         {
             return Booking.TreatmentBookingDTOs.Any(tb => tb.Employee.EmployeeId == 0 || tb.Treatment == null || tb.Employee == null || string.IsNullOrEmpty(tb.Treatment.Category) || tb.Treatment.TreatmentId == 0 || tb.Start > tb.End || tb.Start == tb.End);
         }
-
-        private string SelectedDay { get; set; } = "";
-
 
     }
 }

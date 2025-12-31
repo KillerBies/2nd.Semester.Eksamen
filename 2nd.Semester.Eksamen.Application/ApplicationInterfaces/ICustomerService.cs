@@ -22,5 +22,6 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         public Task UpdateBookingAsync(Booking booking);
         public Task UpdateDiscountAsync(Discount discount);
         public Task<List<CustomerDTO?>> GetAllCustomersAsDTO();
+        public Task<CustomerDTO> GetCustomerDTOById(int id);
     }
 }

@@ -17,24 +17,18 @@
                     <h1>Produkter</h1>
                     <p class="subtitle">Oversigt over alle produkter</p>
                 </div>
-                <div class="btn-group ms-auto" style="width:40%; gap:1rem;">
-                    <div class="btn-group" >
-                        <select id="discountType" name="discountType" @bind="SearchTermType" @bind:event="oninput">
-                            <option value="">Alle</option>
-                            @foreach (var category in Categories)
-                            {
-                                <option value="@category">@category</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" placeholder="Søg Produktets Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
-                    </div>
-                    <div style="height:100%">
-                        <button class="btn btn-primary" @onclick="() => isVisible = true">
-                            <i class="bi bi-plus-lg"></i> Tilføj Produkt
-                        </button>
-                    </div>
+                <div class="input-group">
+                <div class="equal-row ms-auto">
+                    <select id="discountType" class="bg-white search-box" name="discountType" @bind="SearchTermType" @bind:event="oninput">
+                        <option value="">Alle</option>
+                        @foreach (var category in Categories)
+                        {
+                            <option value="@category">@category</option>
+                        }
+                    </select>
+                    <input type="text" class="search-box" placeholder="Søg Produktets Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
+                    <button class="btn btn-primary" @onclick="() => isVisible = true"><i class="bi bi-plus-lg"></i> Tilføj Produkt</button>
+                </div>
                 </div>
             </div>
             <div class="overview-page-content">
@@ -56,11 +50,11 @@
                 <div style="margin:30px;">
                     @if (Products == null)
                     {
-                        <p>Indlæser rabatter...</p>
+                        <p>Indlæser produkter...</p>
                     }
                     else if (!Products.Any())
                     {
-                        <p>Ingen rabatter fundet.</p>
+                        <p>Ingen produkter fundet.</p>
                     }
                     else
                     {
@@ -107,77 +101,7 @@
 @if(ShowDetails)
 {
     <BookingNotification IsVisible=ShowDetails IsVisibleChanged="v => ShowDetails = v">
-        <div class="card-header bg-transparent d-flex align-items-center">
-            <div>
-                <h4 class="mb-1 fw-semibold">@SelectedProduct.Name</h4>
-                <small class="small text-muted">Produkt</small>
-            </div>
-
-            <span class="badge badge-category ms-auto">
-                @SelectedProduct.Category
-            </span>
-        </div>
-
-        <div class="card-body">
-            <div class="text-center rounded-3 p-3 mb-4"
-                 style="background:#f9f9f9;"
-                 @onclick="() => EditPriceDetail = true">
-                <small class="text-muted">Pris</small>
-                <div class="fs-1 fw-bold">
-                    @SelectedProduct.Price.ToString("0") kr.
-                </div>
-            </div>
-
-
-            <p class="text-muted mb-4" style="line-height:1.6;">
-                @SelectedProduct.Description
-            </p>
-
-
-            <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto;">
-                @if (SelectedHistory == null || !SelectedHistory.Any())
-                {
-                    <p class="text-muted mb-0 text-center">
-                        Ingen salgs historik fundet for dette produkt.
-                    </p>
-                }
-                else
-                {
-                    <table class="table table-sm mb-0 align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Dato</th>
-                                <th>Kunde</th>
-                                <th>Pris</th>
-                                <th>PDF</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var instance in SelectedHistory)
-                            {
-                                <tr>
-                                    <td>@instance.PaymentDate.ToShortDateString()</td>
-                                    <td>@instance.Name</td>
-                                    <td>@instance.TotalPaid</td>
-                                    <td>@instance.PdfFile</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                }
-            </div>
-        </div>
-
-        <div class="card-footer bg-transparent border-0 mt-4">
-            <div class="btn-group w-100">
-                <button class="btn card-btn w-50" style="background-color:crimson; color:white;" @onclick="() => ShowDelete=true">
-                    Slet
-                </button>
-                <button class="btn btn-treatment w-50" @onclick="() => UpdateProduct = true">
-                    Rediger
-                </button>
-            </div>
-        </div>
+        <ProductDetails OnDelete="() => ShowDelete = true" OnEdit="() => UpdateProduct = true" ProductId="SelectedProduct.Id"></ProductDetails>
     </BookingNotification>
 }
 @if (UpdateProduct)

@@ -36,6 +36,14 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             End = tb.End;
             Price = tb.Price;
         }
+        public TreatmentBookingDTO(TreatmentBookingDTO tb)
+        {
+            Treatment = new TreatmentDTO(tb.Treatment);
+            Employee = new EmployeeDTO(tb.Employee);
+            Start = tb.Start;
+            End = tb.End;
+            Price = tb.Price;
+        }
         public TreatmentBookingDTO()
         {
 

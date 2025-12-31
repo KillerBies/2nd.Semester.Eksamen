@@ -15,17 +15,13 @@
                     <h1>Faktura</h1>
                     <p class="subtitle">Oversigt over alle Faktura</p>
                 </div>
-                <div class="btn-group ms-auto" style="width:60%; gap:1rem;">
-                    <div class="input-group">
+                <div class="input-group">
+                <div class="equal-row ms-auto">
                         <input type="text"
                                placeholder="Søg Navn..."
                                @bind="SearchTermName"
                                @bind:event="oninput" />
-                    </div>
-                    <div class="input-group">
                         <input type="date" title="Fra..." placeholder="Dato..." @bind="SearchTermDateStart" />
-                    </div>
-                    <div class="input-group">
                         <input type="date" title="Til..." placeholder="Dato..." @bind="SearchTermDateEnd" />
                     </div>
                 </div>

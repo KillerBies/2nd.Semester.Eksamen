@@ -15,26 +15,15 @@
                     <h1>Kunder</h1>
                     <p class="subtitle">Oversigt over alle Kunder</p>
                 </div>
-                <div class="btn-group ms-auto" style="width:50%; gap:1rem;">
-                    <div class="input-group">
-                        <div class="input-group">
-                            <input type="text"
-                                   placeholder="Søg Navn..."
-                                   @bind="SearchTermName"
-                                   @bind:event="oninput" />
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <input type="text"
-                               placeholder="Søg Tlf. Nummer..."
-                               @bind="SearchTermPhone"
-                               @bind:event="oninput" />
-                    </div>
-                    <button class="add-employee-btn" @onclick="() => CreateCustomer = true">
-                        <i class="bi bi-plus-lg"></i> Tilføj Kunde
-                    </button>
+                <div class="input-group">
+                <div class="equal-row ms-auto">
+                    <input type="text" class="search-box" placeholder="Søg Navn..."@bind="SearchTermName"@bind:event="oninput" />
+                    <input type="text" class="search-box" placeholder="Søg Tlf. Nummer..."@bind="SearchTermPhone"@bind:event="oninput" />
+                    <button class="btn btn-primary" @onclick="() => CreateCustomer = true"> <i class="bi bi-plus-lg"></i> Tilføj Kunde</button>
+                </div>
                 </div>
             </div>
+
             <div class="overview-page-content">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -121,115 +110,7 @@
 @if (isVisible == true)
 {
     <BookingNotification IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)">
-        @if (selectedCustomer != null)
-        {
-            <div class="card shadow-none p-0 border-0">
-                @if (selectedCustomer is PrivateCustomerDTO p)
-                {
-                    <div>
-                        <div class="card-header customer-header d-flex align-items-start" style="background-color:#034265;">
-                            <div>
-                                <h4 class="fw-semibold mb-1" style="color:white;">@p.Name @p.LastName</h4>
-                                <span class="small" style="color:lightgray;">Kunde</span>
-                            </div>
-                            <span class="badge badge-category ms-auto">
-                                Privatkunde
-                            </span>
-                        </div>
-                        <div class="customer-info">
-                            <div class="info-row">
-                                <span class="info-label">Køn</span>
-                                <span class="info-value">@p.Gender</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Antal Besøg</span>
-                                <span class="info-value">@p.NumberOfVisits</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Telefon</span>
-                                <span class="info-value">@p.PhoneNumber</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Email</span>
-                                <span class="info-value">@p.Email</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">By</span>
-                                <span class="info-value">@p.City</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Adresse</span>
-                                <span class="info-value">@p.StreetName @p.HouseNumber</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Postnummer</span>
-                                <span class="info-value">@p.PostalCode</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Fødselsdato</span>
-                                <span class="info-value">@p.BirthdayWrapper.ToShortDateString()</span>
-                            </div>
-                            <div>
-                                <p class="customer-description">
-                                    @p.Notes
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                }
-                else if (selectedCustomer is CompanyCustomerDTO c)
-                {
-                    <div>
-                        <div class="customer-header d-flex align-items-start" style="background-color:#034265;">
-                            <div>
-                                <h4 class="fw-semibold mb-1" style="color:white;">@c.Name</h4>
-                                <span class=" small" style="color:lightgray;">Kunde</span>
-                                <span class="badge badge-category ms-auto">
-                                    Firmakunde
-                                </span>
-                            </div>
-                        </div>
-                        <div class="customer-info">
-                            <div class="info-row">
-                                <span class="info-label">Antal Besøg</span>
-                                <span class="info-value">@c.NumberOfVisits</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Telefon</span>
-                                <span class="info-value">@c.PhoneNumber</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Email</span>
-                                <span class="info-value">@c.Email</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">By</span>
-                                <span class="info-value">@c.City</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Adresse</span>
-                                <span class="info-value">@c.StreetName @c.HouseNumber</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Postnummer</span>
-                                <span class="info-value">@c.PostalCode</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">CVR-Nummer</span>
-                                <span class="info-value">@c.CVRNumber</span>
-                            </div>
-                            <p class="customer-description">
-                                @c.Notes
-                            </p>
-                        </div>
-                    </div>
-                }
-                <div class="btn-group w-100">
-                    <button class="btn card-btn w-50" style="background-color:crimson;" @onclick="() => ShowWarning = true">Slet kunde</button>
-                    <button class="btn card-btn" @onclick="() => EditCustomer = true">Rediger</button>
-                </div>
-            </div>
-        }
+        <CustomerDetails CustomerId="selectedCustomer.id" OnDelete="() => ShowWarning = true" OnEdit="() => EditCustomer = true" OnAddBookingToCustomer="CreateNewBookingForCustomer"></CustomerDetails>
     </BookingNotification>
 }
 

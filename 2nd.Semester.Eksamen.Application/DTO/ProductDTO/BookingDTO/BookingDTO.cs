@@ -54,6 +54,17 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             Duration = booking.Duration;
             Status = booking.Status;
         }
+        public BookingDTO(BookingDTO booking)
+        {
+            BookingId = booking.BookingId;
+            CustomerId = booking.CustomerId;
+            Customer = booking.Customer;
+            Start = booking.Start;
+            End = booking.End;
+            TreatmentBookingDTOs = booking.TreatmentBookingDTOs.Select(tb => new TreatmentBookingDTO(tb)).ToList();
+            Duration = booking.Duration;
+            Status = booking.Status;
+        }
         public BookingDTO() { } 
     }
 }

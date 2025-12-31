@@ -14,5 +14,6 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         public Task<List<OrderSnapshotDTO>> GetProductSalesHistoryAsync(string ProductName);
         public Task<List<string>> GetAllCategoriesAsync();
         public Task DeleteProductAsync(ProductOverviewDTO product);
+        public Task<ProductOverviewDTO> GetProductByIdAsync(int id);
     }
 }

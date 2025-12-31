@@ -18,10 +18,7 @@
             {
                 <label>Behandlings Kategori:</label>
                 <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.Category" @bind-Value:after="OnCategoryChanged">
-                    @if (!IsEdit)
-                    {
                         <option value="">-- Vælg Behandlings Kategori --</option>   
-                    }
                     @foreach (string category in PossibleTreatments.Select(t => t.Category).Distinct())
                     {
                         <option value="@category">@category</option>
@@ -41,10 +38,7 @@
             {
                 <label>Behandling:</label>
                 <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Treatment.TreatmentId" @bind-Value:after="OnTreatmentChanged">
-                    @if(!IsEdit)
-                    {
                         <option value=0>-- Vælg Behandling --</option>   
-                    }
                     @foreach (var treatment in ( !IsEdit ? SelectableTreatments : PossibleTreatments.Where(s => s.Category == TreatmentBooking.Treatment.Category).ToList()))
                     {
                         <option value="@treatment.TreatmentId">@treatment.Name</option>
@@ -61,10 +55,7 @@
             {
                 <label>Medarbejder:</label>
                 <InputSelect class="form-control w-75" @bind-Value="TreatmentBooking.Employee.EmployeeId" @bind-Value:after="OnEmployeeChanged">
-                    @if(!IsEdit)
-                    {
                         <option value="0">-- Vælg Medarbejder --</option>   
-                    }
                     @foreach (var Employee in (!IsEdit ? SelectableEmployees : PossibleEmployees.Where(e => TreatmentBooking.Treatment.RequiredSpecialties.All(tr => e.Specialties.Contains(tr))).ToList()))
                     {
                         <option value="@Employee.EmployeeId">@Employee.Name</option>

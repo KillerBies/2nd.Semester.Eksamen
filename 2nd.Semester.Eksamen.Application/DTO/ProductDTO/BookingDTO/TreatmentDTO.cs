@@ -44,6 +44,16 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             BasePrice = tre.Price;
             Description = tre.Description;
         }
+        public TreatmentDTO(TreatmentDTO tre)
+        {
+            Category = tre.Category;
+            Name = tre.Name;
+            TreatmentId = tre.TreatmentId;
+            RequiredSpecialties = tre.RequiredSpecialties;
+            Duration = tre.Duration;
+            BasePrice = tre.BasePrice;
+            Description = tre.Description;
+        }
         public TreatmentDTO() { }
     }
 }

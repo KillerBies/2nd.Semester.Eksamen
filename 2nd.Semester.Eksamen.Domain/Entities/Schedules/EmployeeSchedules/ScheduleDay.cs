@@ -120,7 +120,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
                     current.Type == "Freetime" &&
                     last.End == current.Start)
                 {
-                    last.End = current.End; // merge
+                    last.End = current.End; 
                 }
                 else
                 {

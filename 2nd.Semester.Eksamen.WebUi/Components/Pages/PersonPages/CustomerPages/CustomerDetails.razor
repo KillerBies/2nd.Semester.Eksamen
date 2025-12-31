@@ -1,0 +1,151 @@
+﻿@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+@using Microsoft.AspNetCore.Components;
+@using System.Net.NetworkInformation;
+@rendermode InteractiveServer
+@if (Customer != null)
+{
+    <div class="card shadow-none p-0 border-0">
+        @if (Customer is PrivateCustomerDTO p)
+        {
+            <div>
+                <div class="card-header customer-header d-flex align-items-start" style="background-color:#034265;">
+                    <div>
+                        <h4 class="fw-semibold mb-1" style="color:white;">@p.Name @p.LastName</h4>
+                        <span class="small" style="color:lightgray;">Kunde</span>
+                    </div>
+                    <span class="badge badge-category ms-auto">
+                        Privatkunde
+                    </span>
+                </div>
+                <div class="customer-info">
+                    <div class="info-row">
+                        <span class="info-label">Køn</span>
+                        <span class="info-value">@p.Gender</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Antal Besøg</span>
+                        <span class="info-value">@p.NumberOfVisits</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Telefon</span>
+                        <span class="info-value">@p.PhoneNumber</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">@p.Email</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">By</span>
+                        <span class="info-value">@p.City</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Adresse</span>
+                        <span class="info-value">@p.StreetName @p.HouseNumber</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Postnummer</span>
+                        <span class="info-value">@p.PostalCode</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Fødselsdato</span>
+                        <span class="info-value">@p.BirthdayWrapper.ToShortDateString()</span>
+                    </div>
+                    <div>
+                        <p class="customer-description">
+                            @p.Notes
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+        else if (Customer is CompanyCustomerDTO c)
+        {
+            <div>
+                <div class="customer-header d-flex align-items-start" style="background-color:#034265;">
+                    <div>
+                        <h4 class="fw-semibold mb-1" style="color:white;">@c.Name</h4>
+                        <span class=" small" style="color:lightgray;">Kunde</span>
+                        <span class="badge badge-category ms-auto">
+                            Firmakunde
+                        </span>
+                    </div>
+                </div>
+                <div class="customer-info">
+                    <div class="info-row">
+                        <span class="info-label">Antal Besøg</span>
+                        <span class="info-value">@c.NumberOfVisits</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Telefon</span>
+                        <span class="info-value">@c.PhoneNumber</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">@c.Email</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">By</span>
+                        <span class="info-value">@c.City</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Adresse</span>
+                        <span class="info-value">@c.StreetName @c.HouseNumber</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Postnummer</span>
+                        <span class="info-value">@c.PostalCode</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">CVR-Nummer</span>
+                        <span class="info-value">@c.CVRNumber</span>
+                    </div>
+                    <p class="customer-description">
+                        @c.Notes
+                    </p>
+                </div>
+            </div>
+        }
+        <button class="btn btn-outline-secondary m-3" style="margin-top:0;" @onclick="OnAddBookingToCustomer">Forbind Ny Booking</button>
+        <div class="btn-group w-100">
+            <button class="btn card-btn w-50" style="background-color:crimson;" @onclick="OnDelete">Slet kunde</button>
+            <button class="btn card-btn" @onclick="OnEdit">Rediger</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public EventCallback OnEdit { get; set; }
+    [Parameter] public EventCallback OnDelete { get; set; }
+    [Parameter] public EventCallback OnAddBookingToCustomer { get; set; }
+    [Parameter] public CustomerDTO Customer { get; set; } = null;
+    [Parameter] public int CustomerId { get; set; } = 0;
+    [Inject] public ICustomerService _customerService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Customer == null && CustomerId != 0)
+        {
+            Customer = await _customerService.GetCustomerDTOById(CustomerId);
+        }
+    }
+
+    //I each context is loaded in the main stack so no need to return it.
+    //If i click on edit customer it should simply call back to main
+    //here main would connect the callback to an PushCustomerEditContext() method
+    //this method should simply take the currently top context in the stack
+    //make a new editcustomer context with it and push it to the stack
+    //thus the stack will change to an edit customer window
+    //OnClose should always refresh the main page
+    
+    //Likewise if we press delete we should have a delete page for each type
+    //this page is loaded if the delete button is pressed
+
+    //The delete and edit windows can be apart of each contexts switch case !!!!! nice
+    //Selected Context should simply be the top of the stack
+}

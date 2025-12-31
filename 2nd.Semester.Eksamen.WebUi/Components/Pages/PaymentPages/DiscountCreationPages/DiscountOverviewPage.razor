@@ -16,18 +16,14 @@
                     <h1>Rabatter</h1>
                     <p class="subtitle">Oversigt over alle rabatter</p>
                 </div>
-                <div class="btn-group ms-auto" style="width:40%; gap:1rem;">
-                    <div class="btn-group">
-                        <select id="discountType" name="discountType" @bind="SearchTermType" @bind:event="oninput">
+                <div class="input-group">
+                    <div class="equal-row ms-auto">
+                        <select id="discountType" class="bg-white search-box" name="discountType" @bind="SearchTermType" @bind:event="oninput">
                             <option value="">Alle</option>
                             <option value="Kampagne Rabat">Kampagner</option>
                             <option value="Loyalitets Rabat">Loyalitets rabatter</option>
                         </select>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" placeholder="Søg Rabattens Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
-                    </div>
-                    <div style="height:100%">
+                        <input type="text" class="search-box" placeholder="Søg Rabattens Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
                         <button class="btn btn-primary" @onclick="() => isVisible = true">
                             <i class="bi bi-plus-lg"></i> Tilføj Tilbud
                         </button>
@@ -185,7 +181,7 @@
                     </div>
                 }
 
-                @if (SelectedDiscount.MinimumVisits>0)
+                @if (SelectedDiscount.MinimumVisits > 0)
                 {
                     <div class="info-row">
                         <span class="info-label">Minimum besøg</span>
@@ -214,7 +210,7 @@
                 @if (SelectedDiscount.Type == "Kampagne Rabat")
                 {
                     <p class="discount-description">
-                    @SelectedDiscount.Description
+                        @SelectedDiscount.Description
                     </p>
                 }
             </div>
@@ -248,7 +244,7 @@
                     <button class="btn card-btn" @onclick="() => ShowEdit = true">
                         Rediger
                     </button>
-                </div>  
+                </div>
             </div>
         </div>
     </BookingNotification>
@@ -311,7 +307,7 @@
         }
         catch
         {
-            
+
         }
     }
     private void Refresh()

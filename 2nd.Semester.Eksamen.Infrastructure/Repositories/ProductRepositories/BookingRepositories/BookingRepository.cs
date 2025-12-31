@@ -212,6 +212,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                             sd.Date == DateOnly.FromDateTime(oldTreatment.Start));
 
                     scheduleDay?.CancelBooking(oldTreatment);
+                    await context.SaveChangesAsync();
                 }
 
                 //Remove old treatment bookings
@@ -221,10 +222,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 foreach (var treatment in booking.Treatments)
                 {
                     var employee = await context.Employees.FindAsync(treatment.EmployeeId)
-                        ?? throw new InvalidOperationException("Employee not found");
+                        ?? throw new Exception("Employee not found");
 
                     var treatmentEntity = await context.Treatments.FindAsync(treatment.TreatmentId)
-                        ?? throw new InvalidOperationException("Treatment not found");
+                        ?? throw new Exception("Treatment not found");
 
                     var dayDate = DateOnly.FromDateTime(treatment.Start);
 
@@ -242,6 +243,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                         };
 
                         context.ScheduleDays.Add(scheduleDay);
+                        await context.SaveChangesAsync(); 
+                        //Needed and important (if the changes arent saved and the employee has another treatment in this booking then the next treatment will see that no shcedule day exists and make another one (copies))
                     }
 
                     var activityId = Guid.NewGuid();

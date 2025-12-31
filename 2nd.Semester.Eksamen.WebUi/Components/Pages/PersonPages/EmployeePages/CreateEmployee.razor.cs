@@ -17,7 +17,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
     {
         [Inject] private CreateEmployeeCommand Command { get; set; }
         [Inject] public IEmployeeUpdateService _updateService { get; set; }
-
         [Inject] public EmployeeSpecialtyService SpecialtyService { get; set; }
         [Inject] public ITreatmentService _treatmentService { get; set; }
         private EmployeeInputDTO Input { get; set; }

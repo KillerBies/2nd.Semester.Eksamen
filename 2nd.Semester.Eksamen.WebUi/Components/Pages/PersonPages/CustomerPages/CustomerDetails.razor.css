@@ -1,23 +1,23 @@
 ﻿.customer-overview-container {
-padding: 40px;
-background-color: #F3F2F2;
-min-height: 100vh;
+    padding: 40px;
+    background-color: #F3F2F2;
+    min-height: 100vh;
 }
 
-.customer-overview-container h {
-font-size: 32px;
-font-weight: bold;
-color: #034265;
-display: block;
-margin-bottom: 25px;
-}
+    .customer-overview-container h {
+        font-size: 32px;
+        font-weight: bold;
+        color: #034265;
+        display: block;
+        margin-bottom: 25px;
+    }
 
 
 
 .dTO-grid {
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-gap: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
 }
 
 
@@ -38,76 +38,76 @@ gap: 25px;
 
 
 .customer-card-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
-.customer-card-header h3 {
-margin: 0;
-font-size: 20px;
-color: #034265;
-}
+    .customer-card-header h3 {
+        margin: 0;
+        font-size: 20px;
+        color: #034265;
+    }
 
 .customer-type {
-background-color: #034265;
-color: white;
-padding: 4px 10px;
-border-radius: 6px;
-font-size: 12px;
+    background-color: #034265;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
 }
 
 
 .customer-card-body {
-margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
-.customer-card-body p {
-margin: 4px 0;
-font-size: 15px;
-}
+    .customer-card-body p {
+        margin: 4px 0;
+        font-size: 15px;
+    }
 
 .customer-card-footer {
-margin-top: auto;
-display: flex;
-justify-content: center;
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
 }
 
-.customer-card-footer .btn {
-width: 100%;
-background-color: #034265;
-border: none;
-transition: 0.2s ease;
-}
+    .customer-card-footer .btn {
+        width: 100%;
+        background-color: #034265;
+        border: none;
+        transition: 0.2s ease;
+    }
 
-.customer-card-footer .btn:hover {
-transform: scale(1.03);
-}
+        .customer-card-footer .btn:hover {
+            transform: scale(1.03);
+        }
 
 
 .overlay-backdrop {
-position: fixed;
-inset: 0;
-background: rgba(0,0,0,0.25);
-backdrop-filter: blur(2px); 
-z-index: 1200;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: blur(2px);
+    z-index: 1200;
 }
 
 
 .customer-details-overlay {
-position: fixed;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-background: #ffffff;
-width: 450px;
-max-width: 90vw;
-padding: 2rem;
-border-radius: 12px;
-box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-z-index: 1300;
-transition: transform 0.25s ease, opacity 0.25s ease;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    width: 450px;
+    max-width: 90vw;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    z-index: 1300;
+    transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
 .card-btn {
@@ -123,14 +123,14 @@ transition: transform 0.25s ease, opacity 0.25s ease;
     }
 
 .customer-details-overlay h2 {
-margin-bottom: 1rem;
-font-size: 1.6rem;
-color: #034265;
+    margin-bottom: 1rem;
+    font-size: 1.6rem;
+    color: #034265;
 }
 
 .customer-details-overlay p {
-margin-bottom: 0.5rem;
-font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
 }
 
 

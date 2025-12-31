@@ -1,0 +1,102 @@
+﻿@using _2nd.Semester.Eksamen.Application.Services.ProductServices
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.Application.DTO;
+@inject IProductOverviewService productOverviewService
+@rendermode InteractiveServer
+
+@if(Product != null)
+{
+<div class="card-header bg-transparent d-flex align-items-center">
+    <div>
+        <h4 class="mb-1 fw-semibold">@Product.Name</h4>
+        <small class="small text-muted">Produkt</small>
+    </div>
+
+    <span class="badge badge-category ms-auto">
+        @Product.Category
+    </span>
+</div>
+
+<div class="card-body">
+    <div class="text-center rounded-3 p-3 mb-4"
+         style="background:#f9f9f9;">
+        <small class="text-muted">Pris</small>
+        <div class="fs-1 fw-bold">
+            @Product.Price.ToString("0") kr.
+        </div>
+    </div>
+
+
+    <p class="text-muted mb-4" style="line-height:1.6;">
+        @Product.Description
+    </p>
+
+
+    <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto;">
+        @if (Product == null || !History.Any())
+        {
+            <p class="text-muted mb-0 text-center">
+                Ingen salgs historik fundet for dette produkt.
+            </p>
+        }
+        else
+        {
+            <table class="table table-sm mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Dato</th>
+                        <th>Kunde</th>
+                        <th>Pris</th>
+                        <th>PDF</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var instance in History)
+                    {
+                        <tr>
+                            <td>@instance.PaymentDate.ToShortDateString()</td>
+                            <td>@instance.Name</td>
+                            <td>@instance.TotalPaid</td>
+                            <td>@instance.PdfFile</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<div class="card-footer bg-transparent border-0 mt-4">
+    <div class="btn-group w-100">
+        <button class="btn card-btn w-50" style="background-color:crimson; color:white;" @onclick="OnDelete">
+            Slet
+        </button>
+        <button class="btn btn-treatment w-50" @onclick="OnEdit">
+            Rediger
+        </button>
+    </div>
+    </div>
+}
+else
+{
+    <p>Loading....</p>
+}
+@code {
+    [Inject] private NavigationManager Nav { get; set; } = null!;
+    [Parameter] public int ProductId { get; set; } = 0;
+    [Parameter] public ProductOverviewDTO Product { get; set; }
+    [Parameter] public EventCallback OnEdit { get; set; }
+    [Parameter] public EventCallback OnDelete { get; set; }
+    private List<OrderSnapshotDTO> History { get; set; } = new();
+    private bool ShowSalesHistory = false;
+    private bool ShowDelete { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Product = await productOverviewService.GetProductByIdAsync(ProductId);
+        History = await productOverviewService.GetProductSalesHistoryAsync(Product.Name);
+    }
+}

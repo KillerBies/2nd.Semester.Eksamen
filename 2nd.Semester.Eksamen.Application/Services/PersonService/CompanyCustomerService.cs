@@ -100,4 +100,8 @@ public class CompanyCustomerService : ICustomerService, ICompanyCustomerService
     {
         throw new NotImplementedException();
     }
+    public async Task<CustomerDTO> GetCustomerDTOById(int id)
+    {
+        throw new NotImplementedException();
+    }
 }

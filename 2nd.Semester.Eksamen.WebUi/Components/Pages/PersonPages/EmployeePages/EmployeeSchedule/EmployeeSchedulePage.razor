@@ -15,12 +15,7 @@
     </div>
 }
 
-@if (ShowDetailsWindow)
-{
-    <SidePage IsVisible=ShowDetailsWindow IsVisibleChanged="@(v => ShowDetailsWindow = v)">
-        @SelectedScheduleItems.Max().Start - @SelectedScheduleItems.Min().End
-    </SidePage>
-}
+
 
 
 @if (ShowAddWindow)

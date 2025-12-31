@@ -159,3 +159,20 @@
 .info-value {
     font-weight: 500;
 }
+
+
+.equal-row {
+    display: flex;
+    width: auto;
+    gap: 1rem;
+    max-height: auto;
+}
+
+    .equal-row > * {
+        flex: 1;
+    }
+
+.search-box {
+    border-radius: 4px;
+    border: 0;
+}
