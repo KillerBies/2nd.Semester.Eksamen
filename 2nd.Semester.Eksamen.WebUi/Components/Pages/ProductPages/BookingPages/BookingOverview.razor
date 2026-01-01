@@ -138,7 +138,7 @@
         <SidePage IsVisible="ShowPaymentWindow"
                   IsVisibleChanged="@(v => ShowPaymentWindow = v)">
             <div style="width:30vw;z-index: 9999;"></div>
-            <FinalizePayment id="@SelectedBooking.CustomerId"></FinalizePayment>
+            <FinalizePayment id="@SelectedBooking.CustomerId" Booking="SelectedBooking"></FinalizePayment>
         </SidePage>
     }
 

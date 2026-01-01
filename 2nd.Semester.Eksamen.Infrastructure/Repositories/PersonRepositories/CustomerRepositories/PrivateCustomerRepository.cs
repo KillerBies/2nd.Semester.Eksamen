@@ -95,7 +95,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             try
             {
                 //Checks if phonenumber already exists in database. If it doesn't already exist, it continues creating customer.
-                if (await _context.PrivateCustomers.AnyAsync(c => c.PhoneNumber == customer.PhoneNumber)) throw new Exception("Telefonnummer findes allerede!"); ;
+                if (await _context.PrivateCustomers.AnyAsync(c => c.PhoneNumber == customer.PhoneNumber)) throw new Exception("Telefonnummer findes allerede!");
+                customer.Guid = Guid.NewGuid();
                 await _context.PrivateCustomers.AddAsync(customer);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -105,6 +106,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 await transaction.RollbackAsync();
                 throw;
             }
+        }
+        public async Task<PrivateCustomer?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.PrivateCustomers.FirstOrDefaultAsync(c => c.Guid == guid);
         }
 
         public async Task<bool> PhoneAlreadyExistsAsync(string phone)

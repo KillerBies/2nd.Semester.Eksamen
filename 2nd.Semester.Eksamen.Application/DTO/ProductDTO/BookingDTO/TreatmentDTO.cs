@@ -10,6 +10,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
 {
     public class TreatmentDTO
     {
+        public Guid TreatmentGuid { get; set; }
 
         [Required(ErrorMessage = "Kategori er påkrævet")]
         [StringLength(50, ErrorMessage = "Kategori må maks være 50 tegn")]
@@ -43,6 +44,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             Duration = tre.Duration;
             BasePrice = tre.Price;
             Description = tre.Description;
+            TreatmentGuid = tre.Guid;
         }
         public TreatmentDTO(TreatmentDTO tre)
         {

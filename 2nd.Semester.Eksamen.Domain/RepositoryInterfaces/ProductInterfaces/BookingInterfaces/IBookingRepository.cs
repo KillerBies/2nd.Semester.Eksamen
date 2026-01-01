@@ -20,5 +20,10 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.Bo
         public Task CancelBookingByIdAsync(int BookingId);
         public Task<IEnumerable<Booking>> GetByCustomerId(int CustomerId);
         public Task<bool> BookingOverlapsAsync(Booking Booking);
+        public Task<Booking?> GetByGuidAsync(Guid guid);
+        public Task<List<Booking>?> GetByCustomerGuidAsync(Guid guid);
+        public Task<List<Booking>?> GetByEmployeeGuidAsync(Guid guid);
+        public Task<List<Booking>?> GetByTreatmentGuidAsync(Guid guid);
+
     }
 }

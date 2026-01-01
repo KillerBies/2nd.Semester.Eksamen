@@ -9,6 +9,9 @@ using WebUIServices;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using _2nd.Semester.Eksamen.WebUi.Components.Shared;
+using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 {
@@ -16,17 +19,25 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
     {
         [Parameter] public int Id { get; set; }
         [Inject] NavigationManager Nav { get; set; }
+        [Inject] public IHistoryService _historyService { get; set; }
+        [Inject] public IBookingOverviewService _bookingService { get; set; }
         private Employee Employee { get; set; }
         [Inject] private IEmployeeRepository _repo { get; set; }
         [Inject] public IEmployeeService EmployeeService { get; set; }
+        public List<TreatmentHistoryDTO> History { get; set; }
+        public List<TreatmentBookingDTO> Upcomming { get; set; }
         [Parameter] public EventCallback ShowEdit { get; set; }
         private bool ShowConfirmDelete { get; set; } = false;
-        [Inject] IJSRuntime JS { get; set; }
+        [Parameter] public EventCallback<TreatmentHistoryDTO?> OnClickCompleted { get; set; }
+        [Parameter] public EventCallback<TreatmentBookingDTO?> OnClickPending { get; set; }
+        [Parameter] public EventCallback<Guid?> OnClickCustomer { get; set; }
+        [Parameter] public EventCallback<Guid?> OnClickTreatment { get; set; }
         protected override async Task OnInitializedAsync()
         {
             Employee = await _repo.GetByIDAsync(Id);
+            History = await _historyService.GetEmployeeTreatmentHistoryByGuidAsync(Employee.Guid);
+            Upcomming = await _historyService.GetEmployeeUpcommingTreatmentHistoryByGuidAsync(Employee.Guid);
         }
-
         private async Task ShowEditWindow()
         {
             await ShowEdit.InvokeAsync();

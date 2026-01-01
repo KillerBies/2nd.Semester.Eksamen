@@ -18,6 +18,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
         {
             _factory = factory;
         }
+        public async Task<Product?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Products.FirstOrDefaultAsync(p => p.Guid == guid);
+        }
         public async Task<Product?> GetByIDAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
@@ -39,6 +44,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
+                Product.Guid = Guid.NewGuid();
                 await _context.Products.AddAsync(Product);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

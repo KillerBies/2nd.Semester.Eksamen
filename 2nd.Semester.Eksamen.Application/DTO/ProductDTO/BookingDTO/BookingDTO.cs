@@ -13,6 +13,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
 {
     public class BookingDTO
     {
+        public Guid CustomerGuid { get; set; }
         public int CustomerId { get; set; }
         [Required]
         public CustomerDTO Customer { get; set; }

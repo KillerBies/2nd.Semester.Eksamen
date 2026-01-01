@@ -87,8 +87,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             var treatment1 = new Treatment("Deep Tissue Massage", 75.00m, "Intense massage targeting deep muscle layers to relieve tension.", "Massage", TimeSpan.FromMinutes(60));
 
             var treatment2 = new Treatment("Facial Rejuvenation", 50.00m, "Revitalizing facial treatment to cleanse and hydrate skin.", "Skincare", TimeSpan.FromMinutes(45));
-            await _CustomerRepository.CreateNewCustomerAsync(customer1);
-            await _CustomerRepository.CreateNewCustomerAsync(customer2);
+            await _CustomerRepository.CreateNewAsync(customer1);
+            await _CustomerRepository.CreateNewAsync(customer2);
             await _treatmentRepository.CreateNewAsync(treatment1);
             await _treatmentRepository.CreateNewAsync(treatment2);
             await _employeeRepository.CreateNewAsync(employee2);

@@ -19,10 +19,65 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
         {
             _factory = factory;
         }
+
+        public async Task<List<Order>?> GetByCustomerGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Orders
+                .Include(o => o.Booking)
+                .ThenInclude(b => b.Customer)
+                .Include(o => o.Products)
+                .ThenInclude(op => op.LineProduct)
+                .Include(o => o.Booking)
+                .ThenInclude(b => b.Treatments)
+                .Where(o => o.Booking.Customer.Guid == guid).ToListAsync();
+        }
+        public async Task<List<Order>?> GetByEmployeeGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Orders
+                .Include(o => o.Booking)
+                .ThenInclude(b => b.Customer)
+                .Include(o => o.Products)
+                .ThenInclude(op => op.LineProduct)
+                .Include(o => o.Booking)
+                .ThenInclude(b => b.Treatments)
+                .Where(o => o.Booking.Treatments.Any(t=>t.Employee.Guid == guid)).ToListAsync();
+        }
+        public async Task<List<Order>?> GetByTreatmentGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Orders
+                .Include(o => o.Booking)
+                .ThenInclude(b => b.Customer)
+                .Include(o => o.Products)
+                .ThenInclude(op => op.LineProduct)
+                .Include(o => o.Booking)
+                .ThenInclude(b => b.Treatments)
+                .Where(o => o.Booking.Treatments.Any(t => t.Treatment.Guid == guid)).ToListAsync();
+        }
+        public async Task<List<Order>?> GetByProductGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Orders
+                .Include(o => o.Booking)
+                .ThenInclude(b => b.Customer)
+                .Include(o => o.Products)
+                .ThenInclude(op => op.LineProduct)
+                .Include(o => o.Booking)
+                .ThenInclude(b => b.Treatments)
+                .Where(o => o.Products.Any(p=>p.LineProduct.Guid == guid)).ToListAsync();
+        }
+
         public async Task<Order?> GetByIDAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
             return await _context.Orders.FindAsync(id);
+        }
+        public async Task<Order?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Orders.FirstOrDefaultAsync(o => o.Guid == guid);
         }
         public async Task<IEnumerable<Order?>> GetByCustomerIdAsync(int customerId)
         {
@@ -45,6 +100,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
+                Order.Guid = Guid.NewGuid();
                 await _context.Orders.AddAsync(Order);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

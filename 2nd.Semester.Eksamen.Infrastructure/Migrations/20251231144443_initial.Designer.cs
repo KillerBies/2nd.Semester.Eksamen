@@ -12,7 +12,7 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251230170257_initial")]
+    [Migration("20251231144443_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -38,6 +38,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.Property<bool>("AppliesToTreatment")
                         .HasColumnType("bit");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsLoyalty")
                         .HasColumnType("bit");
@@ -77,6 +80,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     b.Property<int>("FreeTreatments")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("PunchNumber")
                         .HasColumnType("int");
@@ -310,6 +316,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("HouseNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -346,6 +355,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -406,6 +418,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -458,6 +473,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasPrecision(0)
                         .HasColumnType("datetime2(0)");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("Start")
                         .HasPrecision(0)
                         .HasColumnType("datetime2(0)");
@@ -489,6 +507,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<DateTime>("End")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -517,6 +538,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("NumberOfProducts")
                         .HasColumnType("int");
@@ -554,6 +578,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("Total")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -577,6 +604,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("NumberOfProducts")
                         .HasColumnType("int");
@@ -624,6 +654,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -657,6 +690,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
@@ -681,6 +717,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<TimeOnly>("End")
                         .HasPrecision(0)
                         .HasColumnType("time(0)");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()

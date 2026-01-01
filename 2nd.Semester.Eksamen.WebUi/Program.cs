@@ -33,6 +33,7 @@ using QuestPDF.Infrastructure;
 using _2nd.Semester.Eksamen.Infrastructure.PDFManagement;
 using _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices;
 using _2nd.Semester.Eksamen.Application.Services.ProductServices;
+using _2nd.Semester.Eksamen.Application.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -86,6 +87,9 @@ builder.Services.AddScoped<IProductOverviewService, ProductOverviewService>();
 builder.Services.AddScoped<ICustomerUpdateService, CustomerUpdateService>();
 builder.Services.AddScoped<IBookingOverviewService, BookingOverviewService>();
 builder.Services.AddScoped<IEmployeeUpdateService, EmployeeUpdateService>();
+builder.Services.AddScoped<IHistoryService, HistoryService>();
+builder.Services.AddScoped<IHistorySnapShotRepository, HistorySnapShotRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 
 

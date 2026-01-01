@@ -23,8 +23,6 @@ namespace _2nd.Semester.Eksamen.Application.DTO
             else { Name = orderSnapshot.BookingSnapshot.CustomerSnapshot.Name; }
             TotalPaid = orderSnapshot.TotalAfterDiscount;
             PdfFile = orderSnapshot.PdfInvoice;
-
-
         }
 
 

@@ -28,6 +28,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             try
             {
                 if (await _context.Bookings.AnyAsync(b => b.CustomerId == booking.CustomerId && b.Start < booking.End && b.End > booking.Start)) throw new Exception("The booking Overlaps");
+                booking.Guid = Guid.NewGuid();
                 await _context.Bookings.AddAsync(booking);
                 await _context.SaveChangesAsync();
                 Guid ActivityId = Guid.NewGuid();
@@ -150,6 +151,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         .Include(b => b.Treatments)
             .ThenInclude(tb => tb.TreatmentBookingProducts)
                 .ThenInclude(tbp => tbp.Product)
+
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.Employee)
 
         .FirstOrDefaultAsync(b => b.Id == id);
         }
@@ -282,6 +286,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             var _context = await _factory.CreateDbContextAsync();
             return await _context.Bookings.Where(b => b.CustomerId == CustomerId).ToListAsync();
         }
+        public async Task<Booking?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings.FirstOrDefaultAsync(b => b.Guid == guid);
+        }
+
         public async Task<bool> BookingOverlapsAsync(Booking Booking)
         {
             var _context = await _factory.CreateDbContextAsync();
@@ -294,5 +304,53 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 .Include(b => b.Customer)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
         }
+
+        public async Task<List<Booking>?> GetByCustomerGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings
+        .Include(b => b.Customer)
+            .ThenInclude(c => c.Address)
+
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.Treatment)
+
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.TreatmentBookingProducts)
+                .ThenInclude(tbp => tbp.Product)
+
+        .Where(b => b.Customer.Guid == guid).ToListAsync();
+        }
+        public async Task<List<Booking>?> GetByEmployeeGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings
+        .Include(b => b.Customer)
+            .ThenInclude(c => c.Address)
+
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.Treatment)
+
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.TreatmentBookingProducts)
+                .ThenInclude(tbp => tbp.Product)
+        .Where(b => b.Treatments.Any(t=>t.Employee.Guid == guid)).ToListAsync();
+        }
+        public async Task<List<Booking>?> GetByTreatmentGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings
+        .Include(b => b.Customer)
+            .ThenInclude(c => c.Address)
+
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.Treatment)
+
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.TreatmentBookingProducts)
+                .ThenInclude(tbp => tbp.Product)
+        .Where(b => b.Treatments.Any(t => t.Treatment.Guid == guid)).ToListAsync();
+        }
+
     }
 }

@@ -36,7 +36,29 @@ public class DiscountRepository : IDiscountRepository
         return await context.Discounts.FirstOrDefaultAsync(d => d.Id == id);
 
     }
+    public async Task<Discount?> GetByGuidAsync(Guid guid)
+    {
+        var _context = await _factory.CreateDbContextAsync();
+        return await _context.Discounts.FirstOrDefaultAsync(d => d.Guid == guid);
+    }
+    public async Task CreateNewAsync(Discount discount)
+    {
+        var _context = await _factory.CreateDbContextAsync();
+        using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+        try
+        {
+            discount.Guid = Guid.NewGuid();
+            await _context.Discounts.AddAsync(discount);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
 
+    }
 
     public async Task<List<Product>> GetByIdsAsync(List<int> ids)
     {

@@ -23,6 +23,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.DiscountRepositories
             var _context = await _factory.CreateDbContextAsync();
             return await _context.LoyaltyDiscounts.FindAsync(id);
         }
+        public async Task<LoyaltyDiscount?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.LoyaltyDiscounts.FirstOrDefaultAsync(d => d.Guid == guid);
+        }
         public async Task<IEnumerable<LoyaltyDiscount?>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
@@ -39,6 +44,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.DiscountRepositories
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
+                LoyaltyDiscount.Guid = Guid.NewGuid();
                 await _context.LoyaltyDiscounts.AddAsync(LoyaltyDiscount);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

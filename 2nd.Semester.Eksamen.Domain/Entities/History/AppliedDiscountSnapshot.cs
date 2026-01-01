@@ -21,6 +21,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             Name = discount.Name;
             ProductDiscount = discount.ProductDiscount; 
             TreatmentDiscount = discount.TreatmentDiscount;
+            Guid = discount.Guid;
         }
     }
 }

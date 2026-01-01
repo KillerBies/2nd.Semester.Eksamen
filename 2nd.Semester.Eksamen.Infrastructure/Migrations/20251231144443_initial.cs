@@ -36,7 +36,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StreetName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HouseNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    HouseNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,7 +71,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     IsLoyalty = table.Column<bool>(type: "bit", nullable: false),
                     AppliesToTreatment = table.Column<bool>(type: "bit", nullable: false),
                     AppliesToProduct = table.Column<bool>(type: "bit", nullable: false),
-                    NumberOfUses = table.Column<int>(type: "int", nullable: false)
+                    NumberOfUses = table.Column<int>(type: "int", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,6 +132,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: true),
                     BirthDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AddressId = table.Column<int>(type: "int", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -160,6 +163,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     WorkEnd = table.Column<TimeOnly>(type: "time", nullable: false),
                     ExperienceLevel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BasePriceMultiplier = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AddressId = table.Column<int>(type: "int", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -243,7 +247,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Start = table.Column<DateTime>(type: "datetime2(0)", precision: 0, nullable: false),
                     End = table.Column<DateTime>(type: "datetime2(0)", precision: 0, nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -262,7 +267,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateOnly>(type: "date", nullable: false)
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -289,7 +295,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     CampaignId = table.Column<int>(type: "int", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     RequiredSpecialties = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Duration = table.Column<TimeSpan>(type: "time", nullable: true)
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: true),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -363,7 +370,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     Total = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     DiscountedTotal = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     AppliedDiscountId = table.Column<int>(type: "int", nullable: false),
-                    VAT = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
+                    VAT = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -387,7 +395,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     BookingId = table.Column<int>(type: "int", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Start = table.Column<TimeOnly>(type: "time(0)", precision: 0, nullable: false),
-                    End = table.Column<TimeOnly>(type: "time(0)", precision: 0, nullable: false)
+                    End = table.Column<TimeOnly>(type: "time(0)", precision: 0, nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -416,7 +425,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     TreatmentId = table.Column<int>(type: "int", nullable: false),
                     Start = table.Column<DateTime>(type: "datetime2", nullable: false),
                     End = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
+                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -448,7 +458,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     PunchNumber = table.Column<int>(type: "int", nullable: false),
                     TreatmentId = table.Column<int>(type: "int", nullable: false),
-                    FreeTreatments = table.Column<int>(type: "int", nullable: false)
+                    FreeTreatments = table.Column<int>(type: "int", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -501,7 +512,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderID = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    NumberOfProducts = table.Column<int>(type: "int", nullable: false)
+                    NumberOfProducts = table.Column<int>(type: "int", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -528,7 +540,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TreatmentBookingID = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    NumberOfProducts = table.Column<int>(type: "int", nullable: false)
+                    NumberOfProducts = table.Column<int>(type: "int", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {

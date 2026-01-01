@@ -23,11 +23,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public BookingSnapshot(Booking booking)
         {
             TreatmentSnapshot = new List<TreatmentSnapshot>();
+            Guid = booking.Guid;
 
-          
             foreach (var t in booking.Treatments)
             {
-                var snapshot = new TreatmentSnapshot(t.Treatment, this);
+                var snapshot = new TreatmentSnapshot(t.Treatment, this,t.Employee.Name,t.Employee.Guid);
                 TreatmentSnapshot.Add(snapshot);
             }
             CustomerSnapshot = CustomerSnapshot.CreateCustomerSnapshot(booking.Customer);

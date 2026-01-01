@@ -30,7 +30,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
             try
             {
                 await _context.OrderSnapshots.AddAsync(orderSnapshot);
-                
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -86,6 +85,91 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
         {
             var _context = await _factory.CreateDbContextAsync();
             return await _context.BookingsSnapshots.Include(b => b.CustomerSnapshot).ThenInclude(c => c.AddressSnapshot).Include(b => b.TreatmentSnapshot).Include(b=>b.OrderSnapshot).ToListAsync();
+        }
+
+        public async Task<IEnumerable<OrderSnapshot>?> GetByProductGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.OrderSnapshots.Where(o => o.OrderLinesSnapshot.Any(p => p.ProductSnapshot.Guid == guid))
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.CustomerSnapshot)
+                        .ThenInclude(c => c.AddressSnapshot)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.TreatmentSnapshot)
+                .Include(o => o.OrderLinesSnapshot)
+                .ThenInclude(ol => ol.ProductSnapshot)
+                .Include(o => o.AppliedDiscountSnapshot)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<OrderSnapshot>?> GetByCustomerGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.OrderSnapshots.Where(o => o.BookingSnapshot.CustomerSnapshot.Guid == guid)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.CustomerSnapshot)
+                        .ThenInclude(c => c.AddressSnapshot)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.TreatmentSnapshot)
+                .Include(o => o.OrderLinesSnapshot)
+                .ThenInclude(ol => ol.ProductSnapshot)
+                .Include(o => o.AppliedDiscountSnapshot)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<OrderSnapshot>?> GetByTreatmentGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.OrderSnapshots.Where(o => o.BookingSnapshot.TreatmentSnapshot.Any(tb => tb.Guid == guid))
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.CustomerSnapshot)
+                        .ThenInclude(c => c.AddressSnapshot)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.TreatmentSnapshot)
+                .Include(o => o.OrderLinesSnapshot)
+                .ThenInclude(ol => ol.ProductSnapshot)
+                .Include(o => o.AppliedDiscountSnapshot)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<OrderSnapshot>?> GetByDiscountGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.OrderSnapshots.Where(o => o.AppliedDiscountSnapshot.Guid == guid)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.CustomerSnapshot)
+                        .ThenInclude(c => c.AddressSnapshot)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.TreatmentSnapshot)
+                .Include(o => o.OrderLinesSnapshot)
+                .ThenInclude(ol => ol.ProductSnapshot)
+                .Include(o => o.AppliedDiscountSnapshot)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<OrderSnapshot>?> GetByEmployeeGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.OrderSnapshots.Where(o => o.BookingSnapshot.TreatmentSnapshot.Any(t=>t.EmployeeGuid == guid))
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.CustomerSnapshot)
+                        .ThenInclude(c => c.AddressSnapshot)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.TreatmentSnapshot)
+                .Include(o => o.OrderLinesSnapshot)
+                .ThenInclude(ol => ol.ProductSnapshot)
+                .Include(o => o.AppliedDiscountSnapshot)
+                .ToListAsync();
+        }
+        public async Task<OrderSnapshot?> GetByBookingGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.OrderSnapshots
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.CustomerSnapshot)
+                        .ThenInclude(c => c.AddressSnapshot)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.TreatmentSnapshot)
+                .Include(o => o.OrderLinesSnapshot)
+                .ThenInclude(ol => ol.ProductSnapshot)
+                .Include(o => o.AppliedDiscountSnapshot)
+                .FirstOrDefaultAsync(o => o.BookingSnapshot.Guid == guid);
         }
     }
 }

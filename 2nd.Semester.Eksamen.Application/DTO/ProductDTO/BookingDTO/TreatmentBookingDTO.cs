@@ -17,6 +17,9 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
         public TreatmentDTO Treatment { get; set; } = new();
         [Required]
         public EmployeeDTO Employee { get; set; } = new();
+        public int? CustomerId {get;set;}
+        public Guid? CustomerGuid { get; set; }
+        public string? CustomerName { get; set; }
         public DateTime Start { get; set; } = new();
         public DateTime End { get; set; } = new();
         [Required]

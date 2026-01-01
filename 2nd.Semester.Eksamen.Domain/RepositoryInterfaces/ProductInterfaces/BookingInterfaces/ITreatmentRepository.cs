@@ -20,6 +20,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.Bo
         public Task<IEnumerable<Treatment>> GetByCategory(string category);
         public Task DeleteByIdAsync(int id);
         public Task<List<string>> GetAllSpecialtiesAsync();
+        public Task<Treatment?> GetByGuidAsync(Guid guid);
 
 
     }

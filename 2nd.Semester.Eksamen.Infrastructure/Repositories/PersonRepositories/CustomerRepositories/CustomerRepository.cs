@@ -24,13 +24,25 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
         }
 
         // ================= CREATE =================
-        public async Task CreateNewCustomerAsync(Customer customer) => await CreateNewAsync(customer);
 
         public async Task CreateNewAsync(Customer customer)
         {
             var _context = await _factory.CreateDbContextAsync();
-            await _context.Customers.AddAsync(customer);
-            await _context.SaveChangesAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                //Checks if phonenumber already exists in database. If it doesn't already exist, it continues creating customer.
+                if (await _context.Customers.AnyAsync(c => c.PhoneNumber == customer.PhoneNumber)) throw new Exception("Telefonnummer findes allerede!");
+                customer.Guid = Guid.NewGuid();
+                await _context.Customers.AddAsync(customer);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         // ================= READ =================
@@ -44,6 +56,17 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 .Include(c => c.PunchCards)
                 .Include(c => c.Address)
                 .FirstOrDefaultAsync(c => c.Id == id);
+        }
+        public async Task<Customer?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Customers
+                .Include(c => c.BookingHistory)
+                    .ThenInclude(b => b.Treatments)
+                        .ThenInclude(tb => tb.Treatment)
+                .Include(c => c.PunchCards)
+                .Include(c => c.Address)
+                .FirstOrDefaultAsync(c => c.Guid == guid);
         }
 
         public async Task<Customer?> GetByPhoneNumberAsync(string phoneNumber) => await GetByPhoneAsync(phoneNumber);

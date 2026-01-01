@@ -83,6 +83,56 @@ else
                         }
                     </div>
                 </div>
+                <div class="info-row">
+                    <span class="info-label">Historik</span>
+                </div>
+                <div class="border m-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                    @if (Employee == null || !(Upcomming.Any() || History.Any()))
+                    {
+                        <p class="text-muted mb-0 text-center">
+                            Ingen salgs historik fundet for dette produkt.
+                        </p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Dato</th>
+                                    <th>Kunde</th>
+                                    <th>Pris</th>
+                                    <th>Behandlings navn</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Upcomming.Any())
+                                {
+                                    @foreach (var instance in Upcomming)
+                                    {
+                                        <tr>
+                                            <td>@instance.Start.ToShortDateString()</td>
+                                            <td>@instance.CustomerName</td>
+                                            <td>@instance.Price</td>
+                                            <td>@instance.Treatment.Name</td>
+                                        </tr>
+                                    }
+                                }
+                                @if (History.Any())
+                                {
+                                    @foreach (var instance in History)
+                                    {
+                                        <tr>
+                                            <td @onclick="() => OnClickCompleted.InvokeAsync(instance)">@instance.Date.ToShortDateString()</td>
+                                            <td @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)">@instance.CustomerName</td>
+                                            <td @onclick="() => OnClickCustomer.InvokeAsync(instance.BookingGuid)">@instance.Price</td>
+                                            <td>@instance.TreatmentName</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
             </div>
         </div>
         <div class="btn-group w-100" style="height:min-content;">

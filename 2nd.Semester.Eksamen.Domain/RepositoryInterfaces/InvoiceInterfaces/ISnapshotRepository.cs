@@ -17,11 +17,11 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces
         public Task<OrderSnapshot?> GetByIdAsync(int id);
         public Task<IEnumerable<OrderSnapshot>> GetByProduct(string ProductName);
         public Task<IEnumerable<BookingSnapshot>> GetAllBookingSnapShotsAsync();
-
-
-
-
-
-
+        public Task<IEnumerable<OrderSnapshot>?> GetByProductGuidAsync(Guid guid);
+        public Task<IEnumerable<OrderSnapshot>?> GetByCustomerGuidAsync(Guid guid);
+        public Task<IEnumerable<OrderSnapshot>?> GetByTreatmentGuidAsync(Guid guid);
+        public Task<IEnumerable<OrderSnapshot>?> GetByDiscountGuidAsync(Guid guid);
+        public Task<IEnumerable<OrderSnapshot>?> GetByEmployeeGuidAsync(Guid guid);
+        public Task<OrderSnapshot?> GetByBookingGuidAsync(Guid guid);
     }
 }

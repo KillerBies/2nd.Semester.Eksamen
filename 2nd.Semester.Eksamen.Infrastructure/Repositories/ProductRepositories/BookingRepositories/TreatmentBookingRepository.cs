@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
 using _2nd.Semester.Eksamen.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 
 namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.BookingRepositories
@@ -21,13 +22,33 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         public TreatmentBookingRepository(IDbContextFactory<AppDbContext> factory)
         {
             _factory = factory;
-        }   
+        }
+        public async Task<TreatmentBooking?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.BookedTreatments.FirstOrDefaultAsync(b => b.Guid == guid);
+        }
+        public async Task<List<TreatmentBooking>?> GetByTreatmentGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.BookedTreatments.Where(b => b.Treatment.Guid == guid).ToListAsync();
+        }
+        public async Task<List<TreatmentBooking>?> GetByEmployeeGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.BookedTreatments
+                .Where(bt => bt.Employee.Guid == guid)
+                .Include(o => o.Treatment)
+                .Include(o => o.Employee)
+                .ToListAsync();
+        }
         public async Task BookTreatmentAsync(TreatmentBooking treatmentBooking)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
+                treatmentBooking.Guid = Guid.NewGuid();
                 if (await TreatmentBookingOverlapsAsync(treatmentBooking)) throw new Exception();
                 await _context.BookedTreatments.AddAsync(treatmentBooking);
                 await _context.SaveChangesAsync();
@@ -100,14 +121,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         {
             throw new NotImplementedException();
         }
-       //public async Task<TreatmentBooking> GetByBooking(Booking booking)
-       // {
-       //     var _context = await _factory.CreateDbContextAsync();
-       //     return await _context.BookedTreatments
-       //     .Include(tb => tb.Booking).ThenInclude( b=> b.Customer)
-            
-       //     .FirstOrDefaultAsync(tb => tb.Booking == booking);
-       // }
 
 
     }

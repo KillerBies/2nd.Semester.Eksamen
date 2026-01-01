@@ -11,6 +11,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO
 {
     public class EmployeeDTO
     {
+        public Guid EmployeeGuid { get; set; }
         public int EmployeeId { get; set; } = 0;
         public string Name { get; set; } = null!;
         public string ExperienceLevel { get; set; } = "";
@@ -24,6 +25,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO
             ExperienceLevel = emp.ExperienceLevel;
             BasePriceMultiplier = emp.BasePriceMultiplier;
             Specialties = emp.Specialties;
+            EmployeeGuid = emp.Guid;
         }
         public EmployeeDTO(EmployeeDTO emp)
         {
