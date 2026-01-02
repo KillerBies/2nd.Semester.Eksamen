@@ -51,7 +51,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
                 Type = "Kampagne Rabat";
                 Start = Discount.Start;
                 End = Discount.End;
-                AppliesToProducts = Discount.ProductsInCampaign == null ? new() : Discount.ProductsInCampaign.Select(p => new ProductDTO() { Name = p.Name, Price = p.Price, ProductId = p.Id }).ToList();
+                AppliesToProducts = Discount.ProductsInCampaign == null ? new() : Discount.ProductsInCampaign.Select(p => new ProductDTO() { Name = p.Name, Price = p.Price, ProductId = p.Id, Guid=p.Guid}).ToList();
                 IsActive = DateTime.Now >= Start && DateTime.Now <= End ?  true : false;
             }
         }

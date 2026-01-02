@@ -33,8 +33,8 @@ namespace _2nd.Semester.Eksamen.Application
     public record ProductSnapShotContext(ProductOverviewDTO Product) : ContextProduct;
 
     public record ContextDiscount : DetailsContext;
-    public record DiscountContext(DiscountOverviewDTO Discount) : ContextEmployee;
-    public record DiscountEditContext(DiscountOverviewDTO Discount) : ContextEmployee;
+    public record DiscountContext(DiscountOverviewDTO Discount) : ContextDiscount;
+    public record DiscountEditContext(DiscountOverviewDTO Discount) : ContextDiscount;
     public record DiscountSnapShotContext(DiscountOverviewDTO Discount) : ContextDiscount;
     
     public record ContextTreatment : DetailsContext;

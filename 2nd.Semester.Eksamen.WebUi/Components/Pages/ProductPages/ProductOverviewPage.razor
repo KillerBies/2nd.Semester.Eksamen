@@ -161,7 +161,6 @@
     private async Task ShowProductDetails(ProductOverviewDTO product)
     {
         SelectedProduct = product;
-        SelectedHistory = await productOverviewService.GetProductSalesHistoryAsync(product.Name);
         ShowDetails = true;
     }
     private void CloseDetail()

@@ -33,7 +33,7 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
 
         public ProductDTO ProductToDTO(Product product)
         {
-            return new ProductDTO() {ProductId=product.Id,Name=product.Name,Price=product.Price};
+            return new ProductDTO() {ProductId=product.Id,Name=product.Name,Price=product.Price,Guid=product.Guid};
         }
         public EmployeeDTO EmployeeToDTO(Employee employee)
         {

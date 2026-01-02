@@ -169,7 +169,7 @@
                 }
             </div>
 
-            <button class="btn btn-outline-secondary m-3" style="margin-top:0;" @onclick="() => OnAddBookingToCustomer.InvokeAsync(Customer.Guid)">Forbind Ny Booking</button>
+            <button class="btn btn-outline-secondary m-3" style="margin-top:0;" @onclick="() => OnAddBookingToCustomer.InvokeAsync(Customer.id)">Forbind Ny Booking</button>
             <div class="btn-group w-100">
                 <button class="btn card-btn w-50" style="background-color:crimson;" @onclick="() => OnDelete.InvokeAsync(Context)">Slet kunde</button>
                 <button class="btn card-btn" @onclick="() => OnEdit.InvokeAsync(Context)">Rediger</button>
@@ -332,7 +332,7 @@
 }
 
 @code {
-    [Parameter] public EventCallback<Guid> OnAddBookingToCustomer { get; set; }
+    [Parameter] public EventCallback<int> OnAddBookingToCustomer { get; set; }
     [Parameter] public CustomerDetailsContext Context { get; set; }
     [Parameter] public CustomerSnapShotDetailsContext SnapshotContext { get; set; }
     public List<OrderHistoryDTO> History { get; set; }

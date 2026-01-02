@@ -9,22 +9,7 @@
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 
 
-@if (ShowConfirmDelete)
-{
-    <BookingNotification IsVisible="ShowConfirmDelete" IsVisibleChanged="@(v => ShowConfirmDelete = v)">
-        <div class="d-flex align-items-center flex-column w-100">
-            <p>Er du sikker på at du vil slette medarbejder?</p>
-            <button class="btn card-btn w-100" style="background-color:crimson;" @onclick="ConfirmDelete">Bekræft</button>
-        </div>
-    </BookingNotification>
-}
 
-@if (!string.IsNullOrEmpty(_errorMessage))
-{
-    <div class="alert alert-danger">
-        @_errorMessage
-    </div>
-}
 @if (Employee == null)
 {
     <div class="text-center my-5">

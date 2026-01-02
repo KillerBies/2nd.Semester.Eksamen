@@ -6,10 +6,15 @@
 
 @if (ShowEmployeeDetails)
 {
-    <CreateWindow IsVisible="ShowEmployeeDetails"
-                  IsVisibleChanged="@(v => ShowEmployeeDetails = v)" StyleParameters="background-color: #F3F2F2; padding:0;width:26%;">
-        <EmployeeDetails Id="SelectedEmployeeId" ShowEdit="() => UpdateEmployee=true" ></EmployeeDetails>
+    <CreateWindow IsVisible="ShowEmployeeDetails" IsVisibleChanged="@(v => ShowEmployeeDetails = v)" StyleParameters="background-color: #F3F2F2; padding:0;width:26%;">
+        <DetailWindow Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
     </CreateWindow>
+}
+@if (ShowDelete)
+{
+    <BookingNotification IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)">
+        <DeleteWindow Refresh="Refresh" context="CurrentContext"></DeleteWindow>
+    </BookingNotification>
 }
 <div style="background-color:#F3F2F2; height:100vh">
     <div class="overview-page">
@@ -58,7 +63,7 @@
                             {
                                 <div class="employee-card">
                                     <div class="employee-card-header">
-                                        <h3> @emp.Name</h3>
+                                        <h3> @(emp.FirstName + " " + emp.LastName)</h3>
                                         <span class="badge ms-auto" style="background: #e0f2ff;  color: #0369a1;">@emp.Type</span>
                                     </div>
                                     <div class="employee-card-body">
@@ -96,11 +101,5 @@
 {
     <CreateWindow IsVisible=CreateEmployee IsVisibleChanged="v => CreateEmployee = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
         <CreateEmployee></CreateEmployee>
-    </CreateWindow>
-}
-@if(UpdateEmployee)
-{
-    <CreateWindow IsVisible=UpdateEmployee IsVisibleChanged="v => UpdateEmployee = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
-        <CreateEmployee IsEdit=true EditEmployeeID="SelectedEmployeeId" OnClose="Refresh"></CreateEmployee>
     </CreateWindow>
 }

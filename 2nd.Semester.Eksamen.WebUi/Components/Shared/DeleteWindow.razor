@@ -1,5 +1,81 @@
-﻿<h3>DeleteWindow</h3>
+﻿@using _2nd.Semester.Eksamen.Application.Services.ProductServices
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+@using Microsoft.AspNetCore.Components;
+@using System.Net.NetworkInformation;
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+@using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
+@using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages;
+@using _2nd.Semester.Eksamen.Domain.Entities.History;
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+@using _2nd.Semester.Eksamen.Application.DTO
+@using _2nd.Semester.Eksamen.Application
+@rendermode InteractiveServer
+
+<div class="d-flex align-items-center flex-column w-100">
+    @if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <div class="alert alert-danger">
+            @_errorMessage
+        </div>
+    }
+    <h3>Er du sikker?</h3>
+    <button class="btn card-btn w-100" style="background-color:crimson;" @onclick="Delete">Bekræft</button>
+</div>
 
 @code {
-
+    private string _errorMessage { get; set; } = "";
+    [Parameter] public DetailsContext context { get; set; }
+    [Parameter] public EventCallback Refresh { get; set; }
+    [Inject] public ICustomerService _customerService { get; set; }
+    [Inject] IBookingOverviewService _bookingOverviewService { get; set; }
+    [Inject] public IEmployeeService EmployeeService { get; set; }
+    [Inject] public IDiscountService discountService { get; set; }
+    [Inject] public ITreatmentService _treatmentService { get; set; }
+    [Inject] public IProductOverviewService productOverviewService { get; set; }
+    private async Task Delete()
+    {
+        try
+        {
+            switch (context)
+            {
+                case CustomerDetailsContext c:
+                    await _customerService.DeleteByIdAsync(c.Customer.id);
+                    await Refresh.InvokeAsync();
+                    break;
+                case EmployeeDetailsContext e:
+                    await EmployeeService.DeleteEmployeeAsync(e.Employee.Id);
+                    await Refresh.InvokeAsync();
+                    break;
+                case BookingDetailsContext b:
+                    _bookingOverviewService.DeleteBookingAsync(b.Booking);
+                    await Refresh.InvokeAsync();
+                    break;
+                case DiscountContext d:
+                    discountService.DeleteDiscountById(d.Discount.Id);
+                    await Refresh.InvokeAsync();
+                    break;
+                case TreatmentContext t:
+                    _treatmentService.DeleteByIdDbAsync(t.Treatment.TreatmentId);
+                    await Refresh.InvokeAsync();
+                    break;
+                case ProductContext p:
+                    productOverviewService.DeleteProductAsync(p.Product);
+                    await Refresh.InvokeAsync();
+                    break;
+            }
+        } 
+        catch
+        {
+            _errorMessage = "Noget gik galt så sletningen blev ikke gennemført";
+            await Refresh.InvokeAsync();
+        }
+    }
 }

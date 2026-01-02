@@ -11,5 +11,6 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
         public int ProductId { get; set; } = new();
         public string Name { get; set; } = null!;
         public decimal Price { get; set; } = new();
+        public Guid Guid { get; set; }
     }
 }

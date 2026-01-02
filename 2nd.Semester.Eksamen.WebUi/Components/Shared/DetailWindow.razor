@@ -1,4 +1,5 @@
-﻿@using _2nd.Semester.Eksamen.Application.DTO
+﻿@using _2nd.Semester.Eksamen.Domain.Entities.Discounts
+@using _2nd.Semester.Eksamen.Application.DTO
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
 @using _2nd.Semester.Eksamen.Application
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
@@ -11,6 +12,7 @@
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages.DiscountCreationPages
 @rendermode InteractiveServer
 
 @switch (CurrentContext)
@@ -172,27 +174,34 @@
         @switch (d)
         {
             case DiscountContext dc:
-                <CustomerDetails Context="cdc"
-                                 OnEdit="() => PushEditContext(cdc)"
-                                 OnDelete="() => OnDelete.InvokeAsync(cdc)"
+                <DiscountDetails Context="dc"
+                                 OnEdit="() => PushEditContext(dc)"
+                                 OnDelete="() => OnDelete.InvokeAsync(dc)"
                                  OnClickCustomer="ClickCustomer"
-                                 OnClickEmployee="ClickEmployee"
-                                 OnClickTreatment="ClickTreatment"
-                                 OnClickBooking="ClickBooking"
-                                 OnAddBookingToCustomer="AddBookingToCustomer"
+                                 OnClickOrder="ClickOrder"
+                                 OnClickProduct="ClickProduct"
                                  IsSnapshot="false" />
                 break;
             case DiscountSnapShotContext dsc:
-                <CustomerDetails SnapshotContext="csd"
+                <DiscountDetails SnapshotContext="dsc"
                                  OnClickCustomer="ClickCustomer"
-                                 OnClickEmployee="ClickEmployee"
-                                 OnClickTreatment="ClickTreatment"
-                                 OnClickBooking="ClickBooking"
+                                 OnClickOrder="ClickOrder"
+                                 OnClickProduct="ClickProduct"
                                  IsSnapshot="true" />
                 break;
             case DiscountEditContext dec:
-                <CreateCustomerDetail Customer="cec.Customer"
-                                      OnClose="()=>Refresh.InvokeAsync()" />
+                @if (dec.Discount.Type == "Kampagne Rabat")
+                {
+                    <CreateCampaignDiscount discountEdit="dec.Discount"
+                                            IsEdit="true"
+                    OnClose="()=>Refresh.InvokeAsync()" />
+                }
+                else
+                {
+                    <CreateLoyaltyDiscount discountEdit="dec.Discount"
+                                            IsEdit="true"
+                                            OnClose="()=>Refresh.InvokeAsync()" />
+                }
                 break;
         }
         break;
@@ -206,7 +215,7 @@
     [Parameter] public Stack<DetailsContext> ContextStack { get; set; } = new();
     [Parameter] public EventCallback<DetailsContext> OnPushContext { get; set; }
     [Parameter] public EventCallback<DetailsContext> OnDelete { get; set; }
-    [Parameter] public EventCallback<Guid> OnAddBookingToCustomer { get; set; }
+    [Parameter] public EventCallback<int> OnAddBookingToCustomer { get; set; }
     [Parameter] public EventCallback Refresh { get; set; }
     private async Task PushEditContext(DetailsContext context)
     {
@@ -232,9 +241,9 @@
                 break;
         }
     }
-    private async Task AddBookingToCustomer(Guid customerGuid)
+    private async Task AddBookingToCustomer(int customerId)
     {
-        await OnAddBookingToCustomer.InvokeAsync(customerGuid);
+        await OnAddBookingToCustomer.InvokeAsync(customerId);
     }
     private void PayBooking (BookingDTO booking)
     {
