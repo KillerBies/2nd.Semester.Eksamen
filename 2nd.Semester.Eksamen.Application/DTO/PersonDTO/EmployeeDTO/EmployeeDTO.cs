@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,11 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO
             ExperienceLevel = emp.ExperienceLevel;
             BasePriceMultiplier = emp.BasePriceMultiplier;
             Specialties = emp.Specialties;
+        }
+        public EmployeeDTO(TreatmentSnapshot ts)
+        {
+            EmployeeGuid = ts.EmployeeGuid;
+            Name = ts.EmployeeName;
         }
         public EmployeeDTO() { }
     }

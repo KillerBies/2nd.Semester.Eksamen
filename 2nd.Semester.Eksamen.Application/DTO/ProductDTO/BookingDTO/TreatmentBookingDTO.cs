@@ -1,5 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using System;
@@ -13,13 +15,14 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
 {
     public class TreatmentBookingDTO
     {
+        public Guid BookingGuid { get; set; }
         [Required]
         public TreatmentDTO Treatment { get; set; } = new();
         [Required]
         public EmployeeDTO Employee { get; set; } = new();
-        public int? CustomerId {get;set;}
-        public Guid? CustomerGuid { get; set; }
-        public string? CustomerName { get; set; }
+        public int CustomerId {get;set;}
+        public Guid CustomerGuid { get; set; }
+        public string CustomerName { get; set; }
         public DateTime Start { get; set; } = new();
         public DateTime End { get; set; } = new();
         [Required]
@@ -31,21 +34,36 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
                 Price = Math.Round(Employee.BasePriceMultiplier * Treatment.BasePrice);
             }
         }
-        public TreatmentBookingDTO(TreatmentBooking tb)
+        public TreatmentBookingDTO(TreatmentBooking tb, Guid bookingGuid = default)
         {
             Treatment = new TreatmentDTO(tb.Treatment);
             Employee = new EmployeeDTO(tb.Employee);
             Start = tb.Start;
             End = tb.End;
             Price = tb.Price;
+            if(bookingGuid != default)
+                BookingGuid = bookingGuid;
         }
-        public TreatmentBookingDTO(TreatmentBookingDTO tb)
+        public TreatmentBookingDTO(TreatmentBookingDTO tb, Guid bookingGuid = default)
         {
             Treatment = new TreatmentDTO(tb.Treatment);
             Employee = new EmployeeDTO(tb.Employee);
             Start = tb.Start;
             End = tb.End;
             Price = tb.Price;
+            BookingGuid = tb.BookingGuid;
+            if (bookingGuid != default)
+                BookingGuid = bookingGuid;
+        }
+        public TreatmentBookingDTO(TreatmentSnapshot tb, Guid bookingGuid = default)
+        {
+            Treatment = new TreatmentDTO(tb);
+            Employee = new EmployeeDTO(tb);
+            Price = tb.PricePerUnit;
+            CustomerId = tb.BookingSnapshot.CustomerSnapshotId;
+            CustomerGuid = tb.BookingSnapshot.CustomerSnapshot.Guid;
+            if (bookingGuid != default)
+                BookingGuid = bookingGuid;
         }
         public TreatmentBookingDTO()
         {

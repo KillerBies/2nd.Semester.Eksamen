@@ -1,0 +1,30 @@
+﻿
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.info-label {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    font-weight: 500;
+}
+
+.details-info {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+}
+
+.clickable{
+        cursor: pointer;
+}
+    .clickable:hover {
+        text-decoration: underline;
+        color: #034265;
+    }

@@ -1,5 +1,6 @@
 ﻿using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.History;
@@ -24,12 +25,15 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         public Task<List<OrderHistoryDTO>> GetDiscountHistoryByGuidAsync(Guid discountGuid);
         public Task<List<TreatmentHistoryDTO>> GetTreatmentHistoryByGuidAsync(Guid treatmentGuid);
         public Task<List<TreatmentBookingDTO>> GetTreatmentUpcommingHistoryByGuidAsync(Guid treatmentGuid);
-        public Task<BookingDTO> GetBookingByGuid(Guid bookingGuid);
-        public Task<OrderHistoryDTO> GetBookingSnapShotByGuid(Guid bookingGuid);
-        public Task<CustomerDTO> GetCustomerByGuid(Guid customerGuid);
-        public Task<CustomerSnapshot> GetCustomerSnapshotByGuid(Guid customerGuid);
-        public Task<TreatmentDTO> GetTreatmentByGuid(Guid treatmentGuid);
-        public Task<DiscountOverviewDTO> GetDiscountByGuid(Guid discountGuid);
-        public Task<OrderSnapshotOverviewDTO> GetOrderSnapshotByGuid(Guid orderSnapShotGuid);
+
+
+        public Task<DetailsContext?> GetBookingByGuid(Guid bookingGuid);
+        public Task<DetailsContext?> GetCustomerByGuid(Guid customerGuid);
+        public Task<DetailsContext?> GetTreatmentByGuid(Guid treatmentGuid);
+        public Task<DetailsContext?> GetDiscountByGuid(Guid discountGuid);
+        public Task<DetailsContext?> GetOrderSnapshotByGuid(Guid orderSnapShotGuid);
+        public Task<DetailsContext?> GetEmployeeByGuid(Guid employeeGuid);
+        public Task<DetailsContext?> GetProductByGuid(Guid productGuid);
+
     }
 }

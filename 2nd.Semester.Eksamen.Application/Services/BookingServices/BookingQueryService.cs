@@ -11,6 +11,7 @@ using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Custome
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
 using System;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -170,7 +171,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
         public async Task<List<BookingDTO>> GetUpcomingBookingsAsync()
         {
-            return (await _bookingRepository.GetAllAsync()).Where(b=>b.End>DateTime.Now).Select(b => ToDTOAdapter.BookingToDTO(b)).OrderBy(b => b.Start).ToList();
+            return (await _bookingRepository.GetAllAsync()).Where(b=>b.End>DateTime.Now && b.Status != BookingStatus.Completed).Select(b => new BookingDTO(b)).OrderBy(b => b.Start).ToList();
         }
     }
 }

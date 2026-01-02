@@ -36,6 +36,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
         [Inject] private ICustomerService _customerService { get; set; } = default!;
         [Inject] private IDiscountCalculator _discountCalculator { get; set; } = default!;
         [Parameter] public BookingDTO Booking { get; set; }
+        [Parameter] public EventCallback OnClose { get; set; }
         public Booking booking { get; set; }
         [Inject] private IInvoiceService _invoiceService { get; set; }
 
@@ -150,6 +151,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
                 isLoading = false;
 
             }
+            await OnClose.InvokeAsync();
         }
 
         private List<(Product product, int quantity)> FlattenBookingItems(Booking booking)

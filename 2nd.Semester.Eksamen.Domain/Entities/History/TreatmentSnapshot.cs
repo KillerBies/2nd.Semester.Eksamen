@@ -11,10 +11,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
     {
         //Snapshot of a treatment that had been booked
         //Snapshot is made at time of payment so no need to change anything here when its made.
-        public string? Category { get; private set; }
-        public int? BookingSnapshotId { get; set; }
-        public Guid? EmployeeGuid { get; set; }
-        public string? EmployeeName { get; set; }
+        public string Category { get; private set; }
+        public int BookingSnapshotId { get; set; }
+        public Guid EmployeeGuid { get; set; }
+        public TimeSpan Duration { get; set; }
+        public string EmployeeName { get; set; }
         public BookingSnapshot? BookingSnapshot { get; set; }
 
         
@@ -33,6 +34,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             Category = treatment.Category;
             BookingSnapshot = bookingSnapshot;
             Guid = treatment.Guid;
+            Duration = treatment.Duration;
         }
 
 

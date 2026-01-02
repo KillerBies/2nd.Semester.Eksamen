@@ -19,5 +19,6 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces
         Task<List<Product>> GetByIdsAsync(List<int> ids);
         Task<List<string>> GetAllProductCategoriesAsync();
         public Task<IEnumerable<Product?>> GetAllProductsNoMatterTypeAsync();
+        public Task<Product?> GetByGuidAsync(Guid guid);
     }
 }

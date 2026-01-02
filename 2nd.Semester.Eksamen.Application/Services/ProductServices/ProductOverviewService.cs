@@ -30,9 +30,9 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
                 Category = p.Category
             }).ToList();
         }
-        public async Task<List<OrderSnapshotDTO>> GetProductSalesHistoryAsync(string ProductName)
+        public async Task<List<OrderHistoryDTO>> GetProductSalesHistoryAsync(string ProductName)
         {
-            return (await _snapshotRepository.GetByProduct(ProductName)).Select(os => new OrderSnapshotDTO(os)).ToList();
+            return (await _snapshotRepository.GetByProduct(ProductName)).Select(os => new OrderHistoryDTO(os)).ToList();
         }
         public async Task<List<string>> GetAllCategoriesAsync()
         {
@@ -52,6 +52,12 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
         public async Task<ProductOverviewDTO> GetProductByIdAsync(int id)
         {
             return new ProductOverviewDTO((await _productRepository.GetByIDAsync(id)));
+        }
+        public async Task<ProductOverviewDTO?> GetProductByGuidAsync(Guid guid)
+        {
+            var product = await _productRepository.GetByGuidAsync(guid);
+            if (product == null) return null;
+            return new ProductOverviewDTO(product);
         }
     }
 }

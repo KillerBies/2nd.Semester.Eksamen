@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using System.ComponentModel.DataAnnotations;
 namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
 {
@@ -14,6 +15,10 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
         {
             CVRNumber = customer.CVRNumber;
             Notes = customer.Notes;
+        }
+        public CompanyCustomerDTO(CompanyCustomerSnapshot customer) : base(customer)
+        {
+            CVRNumber = customer.CVR;
         }
         public CompanyCustomerDTO() { }
     }

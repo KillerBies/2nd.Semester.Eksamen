@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
 {
     public class ProductOverviewDTO
     {
+        public Guid Guid { get; set; }
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public decimal Price { get; set; } = 0;
@@ -25,6 +27,14 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
             Price = product.Price;
             Description = product.Description;
             Category = product.Category;
+            Guid = product.Guid;
+        }
+        public ProductOverviewDTO(ProductSnapshot product)
+        {
+            Id = product.Id;
+            Name = product.Name;
+            Price = product.PricePerUnit;
+            Guid = product.Guid;
         }
     }
 }

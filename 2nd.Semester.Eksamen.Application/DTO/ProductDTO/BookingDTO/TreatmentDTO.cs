@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -55,6 +56,15 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             Duration = tre.Duration;
             BasePrice = tre.BasePrice;
             Description = tre.Description;
+        }
+        public TreatmentDTO(TreatmentSnapshot tre)
+        {
+            Category = tre.Category;
+            Name = tre.Name;
+            TreatmentId = tre.Id;
+            Duration = tre.Duration;
+            BasePrice = tre.PricePerUnit;
+            TreatmentGuid = tre.Guid;
         }
         public TreatmentDTO() { }
     }

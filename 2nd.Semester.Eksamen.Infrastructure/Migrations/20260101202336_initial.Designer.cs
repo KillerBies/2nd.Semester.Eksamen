@@ -12,7 +12,7 @@ using _2nd.Semester.Eksamen.Infrastructure.Data;
 namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251231144443_initial")]
+    [Migration("20260101202336_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -111,6 +111,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("HouseNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -136,6 +139,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -160,14 +166,25 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CustomerSnapshotId")
+                    b.Property<int>("CustomerSnapshotId")
                         .HasColumnType("int");
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("End")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Start")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerSnapshotId")
-                        .IsUnique()
-                        .HasFilter("[CustomerSnapshotId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("BookingsSnapshots");
                 });
@@ -187,6 +204,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(34)
                         .HasColumnType("nvarchar(34)");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -216,6 +236,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("NumberOfProducts")
                         .HasColumnType("int");
@@ -257,6 +280,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("date");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<byte[]>("PdfInvoice")
                         .HasColumnType("varbinary(max)");
 
@@ -288,6 +314,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<decimal?>("DiscountedPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -801,10 +830,21 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 {
                     b.HasBaseType("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot");
 
-                    b.Property<int?>("BookingSnapshotId")
+                    b.Property<int>("BookingSnapshotId")
                         .HasColumnType("int");
 
                     b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time");
+
+                    b.Property<Guid>("EmployeeGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EmployeeName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasIndex("BookingSnapshotId");
@@ -877,7 +917,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.CustomerSnapshot", "CustomerSnapshot")
                         .WithOne("BookingSnapshot")
                         .HasForeignKey("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", "CustomerSnapshotId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("CustomerSnapshot");
                 });
@@ -1094,7 +1135,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.BookingSnapshot", "BookingSnapshot")
                         .WithMany("TreatmentSnapshot")
                         .HasForeignKey("BookingSnapshotId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("_2nd.Semester.Eksamen.Domain.Entities.History.ProductSnapshot", null)
                         .WithOne()

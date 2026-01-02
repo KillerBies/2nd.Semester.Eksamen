@@ -35,9 +35,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 foreach (var treatment in booking.Treatments)
                 {
                     var employee = await _context.Employees.FindAsync(treatment.EmployeeId);
-                    var day = await _context.ScheduleDays.Include(sd=>sd.TimeRanges).FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date== DateOnly.FromDateTime(treatment.Start));
+                    var day = await _context.ScheduleDays.Include(sd => sd.TimeRanges).FirstOrDefaultAsync(es => es.EmployeeId == treatment.EmployeeId && es.Date == DateOnly.FromDateTime(treatment.Start));
                     string treatmentName = (await _context.Treatments.FindAsync(treatment.TreatmentId)).Name;
-                    if(day==null)
+                    if (day == null)
                     {
                         day = new ScheduleDay(DateOnly.FromDateTime(treatment.Start), employee.WorkStart, employee.WorkEnd);
                     }
@@ -70,7 +70,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 //Cancel old treatments in schedules
                 foreach (var treatmentToCancel in bookingToCancel.Treatments)
                 {
-                    var scheduleDay = await _context.ScheduleDays.Include(sd => sd.TimeRanges).FirstOrDefaultAsync(sd =>sd.EmployeeId == treatmentToCancel.EmployeeId &&sd.Date == DateOnly.FromDateTime(treatmentToCancel.Start));
+                    var scheduleDay = await _context.ScheduleDays.Include(sd => sd.TimeRanges).FirstOrDefaultAsync(sd => sd.EmployeeId == treatmentToCancel.EmployeeId && sd.Date == DateOnly.FromDateTime(treatmentToCancel.Start));
                     scheduleDay?.CancelBooking(treatmentToCancel);
                 }
 
@@ -124,9 +124,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 {
                     _context.Customers.Remove(customer);
                 }
-                if(bookingToCancel.Status == BookingStatus.Completed)
+                if (bookingToCancel.Status == BookingStatus.Completed)
                 {
-                    var order = await _context.Orders.FirstOrDefaultAsync(o=>o.BookingId == bookingToCancel.Id);
+                    var order = await _context.Orders.FirstOrDefaultAsync(o => o.BookingId == bookingToCancel.Id);
                     _context.Orders.Remove(order);
                 }
                 await _context.SaveChangesAsync();
@@ -166,7 +166,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         public async Task<IEnumerable<Booking?>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Bookings.Include(b=>b.Customer).ThenInclude(c=>c.Address).Include(b=>b.Treatments).ThenInclude(b=>b.Treatment).Include(b=>b.Treatments).ThenInclude(b=> b.Employee).ThenInclude(e=>e.Address).ToListAsync();
+            return await _context.Bookings.Include(b => b.Customer).ThenInclude(c => c.Address).Include(b => b.Treatments).ThenInclude(b => b.Treatment).Include(b => b.Treatments).ThenInclude(b => b.Employee).ThenInclude(e => e.Address).ToListAsync();
         }
 
 
@@ -176,10 +176,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
 
         public async Task<IEnumerable<Booking?>> GetByFilterAsync(Domain.Filter filter)
         {
-           var _context = await _factory.CreateDbContextAsync();
-           return await _context.Bookings.Where(c => c.Status == filter.Status).OrderBy(c => c.Start).Include(c => c.Customer).Include(c => c.Treatments).ThenInclude(t => t.Treatment).Include(c=>c.Treatments).ThenInclude(t=>t.Employee).ToListAsync();
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Bookings.Where(c => c.Status == filter.Status).OrderBy(c => c.Start).Include(c => c.Customer).Include(c => c.Treatments).ThenInclude(t => t.Treatment).Include(c => c.Treatments).ThenInclude(t => t.Employee).ToListAsync();
         }
-        
+
 
 
 
@@ -247,7 +247,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                         };
 
                         context.ScheduleDays.Add(scheduleDay);
-                        await context.SaveChangesAsync(); 
+                        await context.SaveChangesAsync();
                         //Needed and important (if the changes arent saved and the employee has another treatment in this booking then the next treatment will see that no shcedule day exists and make another one (copies))
                     }
 
@@ -289,13 +289,23 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         public async Task<Booking?> GetByGuidAsync(Guid guid)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Bookings.FirstOrDefaultAsync(b => b.Guid == guid);
+            return await _context.Bookings
+                        .Include(b => b.Customer)
+            .ThenInclude(c => c.Address)
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.Treatment)
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.TreatmentBookingProducts)
+                .ThenInclude(tbp => tbp.Product)
+        .Include(b => b.Treatments)
+            .ThenInclude(tb => tb.Employee)
+        .FirstOrDefaultAsync(b => b.Guid == guid);
         }
 
         public async Task<bool> BookingOverlapsAsync(Booking Booking)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Bookings.AnyAsync(b=>b.CustomerId == Booking.CustomerId && b.Overlaps(Booking.Start, Booking.End));
+            return await _context.Bookings.AnyAsync(b => b.CustomerId == Booking.CustomerId && b.Overlaps(Booking.Start, Booking.End));
         }
         public async Task<Booking> GetByIdAsync(int bookingId)
         {
@@ -334,7 +344,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         .Include(b => b.Treatments)
             .ThenInclude(tb => tb.TreatmentBookingProducts)
                 .ThenInclude(tbp => tbp.Product)
-        .Where(b => b.Treatments.Any(t=>t.Employee.Guid == guid)).ToListAsync();
+        .Where(b => b.Treatments.Any(t => t.Employee.Guid == guid)).ToListAsync();
         }
         public async Task<List<Booking>?> GetByTreatmentGuidAsync(Guid guid)
         {

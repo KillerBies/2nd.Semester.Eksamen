@@ -3,7 +3,9 @@
 @using System.IO;
 @inject IJSRuntime JS
 @using _2nd.Semester.Eksamen.Application.DTO;
+@using _2nd.Semester.Eksamen.Application
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @rendermode InteractiveServer
 @inject IInvoiceService invoiceService
 
@@ -46,7 +48,7 @@
                         <tbody>
                             @foreach (var orderSnapshotDTO in FilterdOrders)
                             {
-                                <tr>
+                                <tr @onclick="() => OpenDetails(orderSnapshotDTO)" style="cursor:pointer;">
                                     <td>@orderSnapshotDTO.Id</td>
                                     <td>@orderSnapshotDTO.Name</td>
                                     <td>@orderSnapshotDTO.TotalPaid</td>
@@ -61,20 +63,34 @@
         </div>
     </div>
 </div>
-
+<CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width: 33%; min-width: max-content; scrollbar-width:none;flex-shrink: 0;">
+    @if (CurrentContext != null)
+    {
+        <OrderDetails OrderContext="(OrderSnapShotContext)CurrentContext"/>
+    }
+</CreateWindow>
 
 
 @code {
     public string SearchTermName { get; set; } = "";
     private DateTime? SearchTermDateStart;
     private DateTime? SearchTermDateEnd;
+    public Stack<DetailsContext> DetailsStack { get; set; } = new Stack<DetailsContext>();
+    public DetailsContext CurrentContext => DetailsStack.Any() ? DetailsStack.Peek() : null;
     private List<OrderSnapshotDTO> FilterdOrders => orderSnapshotDTOs.Where(o => (string.IsNullOrWhiteSpace(SearchTermName) || o.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && (!SearchTermDateStart.HasValue || o.PaymentDate >= DateOnly.FromDateTime(SearchTermDateStart.Value)) && (!SearchTermDateEnd.HasValue || o.PaymentDate <= DateOnly.FromDateTime(SearchTermDateEnd.Value))).ToList();
-
+    private bool isVisible = false;
+    [Inject] public IHistoryService historyService { get; set; }
     private List<OrderSnapshotDTO> orderSnapshotDTOs;
 
     protected override async Task OnInitializedAsync()
     {
         orderSnapshotDTOs = await invoiceService.GetAllSnapshotsAsync();
+    }
+    private async Task OpenDetails(OrderSnapshotDTO snap)
+    {
+        isVisible = true;
+        var detail = await historyService.GetOrderSnapshotByGuid(snap.OrderGuid);
+        DetailsStack.Push(detail);
     }
     private async Task DownloadInvoiceAsync(Byte[] Pdfbytes)
     {

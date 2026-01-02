@@ -20,7 +20,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StreetName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HouseNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    HouseNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,7 +53,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
-                    TreatmentDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true)
+                    TreatmentDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,7 +89,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PricePerUnit = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    DiscountedPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true)
+                    DiscountedPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -105,7 +108,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
                     CVR = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -225,7 +229,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerSnapshotId = table.Column<int>(type: "int", nullable: true)
+                    CustomerSnapshotId = table.Column<int>(type: "int", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Start = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    End = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -319,7 +327,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     DateOfPayment = table.Column<DateOnly>(type: "date", precision: 18, scale: 2, nullable: false),
                     TotalAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     PdfInvoice = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    AppliedSnapshotId = table.Column<int>(type: "int", nullable: true)
+                    AppliedSnapshotId = table.Column<int>(type: "int", nullable: true),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -341,8 +350,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BookingSnapshotId = table.Column<int>(type: "int", nullable: true)
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BookingSnapshotId = table.Column<int>(type: "int", nullable: false),
+                    EmployeeGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
+                    EmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -486,7 +498,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderSnapshotId = table.Column<int>(type: "int", nullable: true),
                     ProductSnapshotId = table.Column<int>(type: "int", nullable: false),
-                    NumberOfProducts = table.Column<int>(type: "int", nullable: false)
+                    NumberOfProducts = table.Column<int>(type: "int", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -582,8 +595,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                 name: "IX_BookingsSnapshots_CustomerSnapshotId",
                 table: "BookingsSnapshots",
                 column: "CustomerSnapshotId",
-                unique: true,
-                filter: "[CustomerSnapshotId] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_AddressId",

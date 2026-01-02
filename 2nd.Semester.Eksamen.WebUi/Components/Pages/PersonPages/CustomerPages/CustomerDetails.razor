@@ -7,131 +7,361 @@
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 @using Microsoft.AspNetCore.Components;
 @using System.Net.NetworkInformation;
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+@using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
+@using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages;
+@using _2nd.Semester.Eksamen.Domain.Entities.History;
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+@using _2nd.Semester.Eksamen.Application.DTO
+@using _2nd.Semester.Eksamen.Application
 @rendermode InteractiveServer
-@if (Customer != null)
+@if (Customer != null || CustomerSnapShot != null)
 {
-    <div class="card shadow-none p-0 border-0">
-        @if (Customer is PrivateCustomerDTO p)
-        {
-            <div>
-                <div class="card-header customer-header d-flex align-items-start" style="background-color:#034265;">
-                    <div>
-                        <h4 class="fw-semibold mb-1" style="color:white;">@p.Name @p.LastName</h4>
-                        <span class="small" style="color:lightgray;">Kunde</span>
+    @if (!IsSnapshot)
+    {
+        <div class="card shadow-none p-0 border-0">
+            @if (Customer is PrivateCustomerDTO p)
+            {
+                <div>
+                    <div class="card-header customer-header d-flex align-items-start" style="background-color:#034265;">
+                        <div>
+                            <h4 class="fw-semibold mb-1" style="color:white;">@p.Name @p.LastName</h4>
+                            <span class="small" style="color:lightgray;">Kunde</span>
+                        </div>
+                        <span class="badge badge-category ms-auto">
+                            Privatkunde
+                        </span>
                     </div>
-                    <span class="badge badge-category ms-auto">
-                        Privatkunde
-                    </span>
+                    <div class="customer-info">
+                        <div class="info-row">
+                            <span class="info-label">Køn</span>
+                            <span class="info-value">@p.Gender</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Antal Besøg</span>
+                            <span class="info-value">@p.NumberOfVisits</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Telefon</span>
+                            <span class="info-value">@p.PhoneNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">@p.Email</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">By</span>
+                            <span class="info-value">@p.City</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse</span>
+                            <span class="info-value">@p.StreetName @p.HouseNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Postnummer</span>
+                            <span class="info-value">@p.PostalCode</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Fødselsdato</span>
+                            <span class="info-value">@p.BirthdayWrapper.ToShortDateString()</span>
+                        </div>
+                        <div>
+                            <p class="customer-description">
+                                @p.Notes
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="customer-info">
-                    <div class="info-row">
-                        <span class="info-label">Køn</span>
-                        <span class="info-value">@p.Gender</span>
+            }
+            else if (Customer is CompanyCustomerDTO c)
+            {
+                <div>
+                    <div class="customer-header d-flex align-items-start" style="background-color:#034265;">
+                        <div>
+                            <h4 class="fw-semibold mb-1" style="color:white;">@c.Name</h4>
+                            <span class=" small" style="color:lightgray;">Kunde</span>
+                            <span class="badge badge-category ms-auto">
+                                Firmakunde
+                            </span>
+                        </div>
                     </div>
-                    <div class="info-row">
-                        <span class="info-label">Antal Besøg</span>
-                        <span class="info-value">@p.NumberOfVisits</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Telefon</span>
-                        <span class="info-value">@p.PhoneNumber</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Email</span>
-                        <span class="info-value">@p.Email</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">By</span>
-                        <span class="info-value">@p.City</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Adresse</span>
-                        <span class="info-value">@p.StreetName @p.HouseNumber</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Postnummer</span>
-                        <span class="info-value">@p.PostalCode</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Fødselsdato</span>
-                        <span class="info-value">@p.BirthdayWrapper.ToShortDateString()</span>
-                    </div>
-                    <div>
+                    <div class="customer-info">
+                        <div class="info-row">
+                            <span class="info-label">Antal Besøg</span>
+                            <span class="info-value">@c.NumberOfVisits</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Telefon</span>
+                            <span class="info-value">@c.PhoneNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">@c.Email</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">By</span>
+                            <span class="info-value">@c.City</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse</span>
+                            <span class="info-value">@c.StreetName @c.HouseNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Postnummer</span>
+                            <span class="info-value">@c.PostalCode</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">CVR-Nummer</span>
+                            <span class="info-value">@c.CVRNumber</span>
+                        </div>
                         <p class="customer-description">
-                            @p.Notes
+                            @c.Notes
                         </p>
                     </div>
                 </div>
+            }
+            <div class="border m-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                @if (!(Upcomming.Any() || History.Any()))
+                {
+                    <p class="text-muted mb-0 text-center">
+                        Ingen salgs historik fundet for dette produkt.
+                    </p>
+                }
+                else
+                {
+                    <table class="table table-sm mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>BookingId</th>
+                                <th>Start</th>
+                                <th>Slut</th>
+                                <th>Pris</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Upcomming.Any())
+                            {
+                                @foreach (var instance in Upcomming)
+                                {
+                                    <tr>
+                                        <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingGuid</td>
+                                        <td>@instance.Start.ToString("d/t")</td>
+                                        <td>@instance.End.ToString("d/t")</td>
+                                        <td>@instance.Price</td>
+                                    </tr>
+                                }
+                            }
+                            @if (History.Any())
+                            {
+                                @foreach (var instance in History)
+                                {
+                                    <tr>
+                                        <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingGuid</td>
+                                        <td>@instance.BookingStart.ToString("d/t")</td>
+                                        <td>@instance.BookingEnd.ToString("d/t")</td>
+                                        <td>@instance.TotalPrice</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
             </div>
-        }
-        else if (Customer is CompanyCustomerDTO c)
-        {
-            <div>
-                <div class="customer-header d-flex align-items-start" style="background-color:#034265;">
-                    <div>
-                        <h4 class="fw-semibold mb-1" style="color:white;">@c.Name</h4>
-                        <span class=" small" style="color:lightgray;">Kunde</span>
+
+            <button class="btn btn-outline-secondary m-3" style="margin-top:0;" @onclick="() => OnAddBookingToCustomer.InvokeAsync(Customer.Guid)">Forbind Ny Booking</button>
+            <div class="btn-group w-100">
+                <button class="btn card-btn w-50" style="background-color:crimson;" @onclick="() => OnDelete.InvokeAsync(Context)">Slet kunde</button>
+                <button class="btn card-btn" @onclick="() => OnEdit.InvokeAsync(Context)">Rediger</button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-none p-0 border-0">
+            @if (CustomerSnapShot is PrivateCustomerDTO p)
+            {
+                <div>
+                    <div class="card-header customer-header d-flex align-items-start" style="background-color:#034265;">
+                        <div>
+                            <h4 class="fw-semibold mb-1" style="color:white;">@p.Name @p.LastName</h4>
+                            <span class="small" style="color:lightgray;">Kunde</span>
+                        </div>
                         <span class="badge badge-category ms-auto">
-                            Firmakunde
+                            Privatkunde
                         </span>
                     </div>
+                    <div class="customer-info">
+                        <div class="info-row">
+                            <span class="info-label">Køn</span>
+                            <span class="info-value">@p.Gender</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Antal Besøg</span>
+                            <span class="info-value">@p.NumberOfVisits</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Telefon</span>
+                            <span class="info-value">@p.PhoneNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">@p.Email</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">By</span>
+                            <span class="info-value">@p.City</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse</span>
+                            <span class="info-value">@p.StreetName @p.HouseNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Postnummer</span>
+                            <span class="info-value">@p.PostalCode</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Fødselsdato</span>
+                            <span class="info-value">@p.BirthdayWrapper.ToShortDateString()</span>
+                        </div>
+                        <div>
+                            <p class="customer-description">
+                                @p.Notes
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="customer-info">
-                    <div class="info-row">
-                        <span class="info-label">Antal Besøg</span>
-                        <span class="info-value">@c.NumberOfVisits</span>
+            }
+            else if (CustomerSnapShot is CompanyCustomerDTO c)
+            {
+                <div>
+                    <div class="customer-header d-flex align-items-start" style="background-color:#034265;">
+                        <div>
+                            <h4 class="fw-semibold mb-1" style="color:white;">@c.Name</h4>
+                            <span class=" small" style="color:lightgray;">Kunde</span>
+                            <span class="badge badge-category ms-auto">
+                                Firmakunde
+                            </span>
+                        </div>
                     </div>
-                    <div class="info-row">
-                        <span class="info-label">Telefon</span>
-                        <span class="info-value">@c.PhoneNumber</span>
+                    <div class="customer-info">
+                        <div class="info-row">
+                            <span class="info-label">Antal Besøg</span>
+                            <span class="info-value">@c.NumberOfVisits</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Telefon</span>
+                            <span class="info-value">@c.PhoneNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">@c.Email</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">By</span>
+                            <span class="info-value">@c.City</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse</span>
+                            <span class="info-value">@c.StreetName @c.HouseNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Postnummer</span>
+                            <span class="info-value">@c.PostalCode</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">CVR-Nummer</span>
+                            <span class="info-value">@c.CVRNumber</span>
+                        </div>
+                        <p class="customer-description">
+                            @c.Notes
+                        </p>
                     </div>
-                    <div class="info-row">
-                        <span class="info-label">Email</span>
-                        <span class="info-value">@c.Email</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">By</span>
-                        <span class="info-value">@c.City</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Adresse</span>
-                        <span class="info-value">@c.StreetName @c.HouseNumber</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Postnummer</span>
-                        <span class="info-value">@c.PostalCode</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">CVR-Nummer</span>
-                        <span class="info-value">@c.CVRNumber</span>
-                    </div>
-                    <p class="customer-description">
-                        @c.Notes
+                </div>
+            }
+            <div class="border m-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                @if (!(Upcomming.Any() || History.Any()))
+                {
+                    <p class="text-muted mb-0 text-center">
+                        Ingen salgs historik fundet for dette produkt.
                     </p>
-                </div>
+                }
+                else
+                {
+                    <table class="table table-sm mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>BookingId</th>
+                                <th>Start</th>
+                                <th>Slut</th>
+                                <th>Pris</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Upcomming.Any())
+                            {
+                                @foreach (var instance in Upcomming)
+                                {
+                                    <tr>
+                                        <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingGuid</td>
+                                        <td>@instance.Start.ToString("d/t")</td>
+                                        <td>@instance.End.ToString("d/t")</td>
+                                        <td>@instance.Price</td>
+                                    </tr>
+                                }
+                            }
+                            @if (History.Any())
+                            {
+                                @foreach (var instance in History)
+                                {
+                                    <tr>
+                                        <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingGuid</td>
+                                        <td>@instance.BookingStart.ToString("d/t")</td>
+                                        <td>@instance.BookingEnd.ToString("d/t")</td>
+                                        <td>@instance.TotalPrice</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
             </div>
-        }
-        <button class="btn btn-outline-secondary m-3" style="margin-top:0;" @onclick="OnAddBookingToCustomer">Forbind Ny Booking</button>
-        <div class="btn-group w-100">
-            <button class="btn card-btn w-50" style="background-color:crimson;" @onclick="OnDelete">Slet kunde</button>
-            <button class="btn card-btn" @onclick="OnEdit">Rediger</button>
         </div>
-    </div>
+    }
+
 }
 
 @code {
-    [Parameter] public EventCallback OnEdit { get; set; }
-    [Parameter] public EventCallback OnDelete { get; set; }
-    [Parameter] public EventCallback OnAddBookingToCustomer { get; set; }
-    [Parameter] public CustomerDTO Customer { get; set; } = null;
-    [Parameter] public int CustomerId { get; set; } = 0;
+    [Parameter] public EventCallback<Guid> OnAddBookingToCustomer { get; set; }
+    [Parameter] public CustomerDetailsContext Context { get; set; }
+    [Parameter] public CustomerSnapShotDetailsContext SnapshotContext { get; set; }
+    public List<OrderHistoryDTO> History { get; set; }
+    [Inject] public IHistoryService _historyService { get; set; }
+    public List<BookingDTO> Upcomming { get; set; }
+    private CustomerDTO Customer { get; set; }
+    private CustomerDTO CustomerSnapShot { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickCustomer { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickEmployee { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickTreatment { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickBooking { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnEdit { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnDelete { get; set; }
+    [Parameter] public bool IsSnapshot { get; set; } = false;
     [Inject] public ICustomerService _customerService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (Customer == null && CustomerId != 0)
+        if(!IsSnapshot)
         {
-            Customer = await _customerService.GetCustomerDTOById(CustomerId);
+            Customer = Context.Customer;
+            History = await _historyService.GetCustomerOrderHistoryByGuidAsync(Context.Customer.Guid);
+            Upcomming = await _historyService.GetCustomerUpcommingHistoryByGuidAsync(Context.Customer.Guid);
+        }
+        else
+        {
+            CustomerSnapShot = SnapshotContext.Customer;
+            History = await _historyService.GetCustomerOrderHistoryByGuidAsync(SnapshotContext.Customer.Guid);
+            Upcomming = await _historyService.GetCustomerUpcommingHistoryByGuidAsync(SnapshotContext.Customer.Guid);
         }
     }
 

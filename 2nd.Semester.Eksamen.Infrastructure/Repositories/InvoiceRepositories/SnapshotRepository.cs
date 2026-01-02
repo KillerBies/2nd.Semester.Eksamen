@@ -67,6 +67,20 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
                 .Include(o => o.AppliedDiscountSnapshot)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
+        public async Task<OrderSnapshot?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.OrderSnapshots
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.CustomerSnapshot)
+                        .ThenInclude(c => c.AddressSnapshot)
+                .Include(o => o.BookingSnapshot)
+                    .ThenInclude(b => b.TreatmentSnapshot)
+                .Include(o => o.OrderLinesSnapshot)
+                    .ThenInclude(ol => ol.ProductSnapshot)
+                .Include(o => o.AppliedDiscountSnapshot)
+                .FirstOrDefaultAsync(o => o.Guid == guid);
+        }
         public async Task<IEnumerable<OrderSnapshot>> GetByProduct(string ProductName)
         {
             var _context = await _factory.CreateDbContextAsync();

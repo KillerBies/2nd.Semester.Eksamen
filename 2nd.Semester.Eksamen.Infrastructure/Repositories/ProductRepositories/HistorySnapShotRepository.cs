@@ -44,5 +44,20 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
             var _context = await _factory.CreateDbContextAsync();
             return await _context.TreatmentSnapshots.FirstOrDefaultAsync(c => c.Guid == guid);
         }
+        public async Task<AppliedDiscountSnapshot?> GetDiscountSnapShotByGuid(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.AppliedDiscountSnapshots.FirstOrDefaultAsync(c => c.Guid == guid);
+        }
+        public async Task<TreatmentSnapshot?> GetEmployeeSnapShotByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.TreatmentSnapshots.FirstOrDefaultAsync(ts => ts.EmployeeGuid == guid);
+        }
+        public async Task<ProductSnapshot?> GetProductSnapshotByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.ProductSnapshots.FirstOrDefaultAsync(ps => ps.Guid == guid);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+using _2nd.Semester.Eksamen.Domain.Entities.History;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
 {
     public class DiscountOverviewDTO
     {
+        public Guid Guid { get; set; }
         public int Id { get; set; } = 0;
         public string Type { get; set; } = "";
         public string LoyaltyDiscountType { get; set; } = "";
@@ -32,6 +34,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
             TreatmentDiscount = discount.TreatmentDiscount*100;
             ProductDiscount = discount.ProductDiscount*100;
             NumberOfUses = discount.NumberOfUses;
+            Guid = discount.Guid;
             IsActiveForProducts = discount.AppliesToProduct;
             IsActiveForTreatments = discount.AppliesToTreatment;
             if (discount.IsLoyalty)
@@ -51,6 +54,13 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO
                 AppliesToProducts = Discount.ProductsInCampaign == null ? new() : Discount.ProductsInCampaign.Select(p => new ProductDTO() { Name = p.Name, Price = p.Price, ProductId = p.Id }).ToList();
                 IsActive = DateTime.Now >= Start && DateTime.Now <= End ?  true : false;
             }
+        }
+        public DiscountOverviewDTO(AppliedDiscountSnapshot discount)
+        {
+            Name = discount.Name;
+            TreatmentDiscount = (discount.TreatmentDiscount != null ? (decimal) discount.TreatmentDiscount : 0);
+            ProductDiscount = (discount.ProductDiscount != null ? (decimal)discount.ProductDiscount : 0);
+            Guid = discount.Guid;
         }
         public DiscountOverviewDTO()
         { }

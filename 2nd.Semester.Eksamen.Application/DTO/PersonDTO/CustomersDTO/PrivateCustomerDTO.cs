@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using System.ComponentModel.DataAnnotations;
 
@@ -29,6 +30,10 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
             Gender = (Gender)customer.Gender;
             Birthday = customer.BirthDate;
             Notes = customer.Notes;
+        }
+        public PrivateCustomerDTO(PrivateCustomerSnapshot customerSnapshot) : base(customerSnapshot)
+        {
+            LastName = customerSnapshot.LastName;
         }
         public PrivateCustomerDTO()
         {

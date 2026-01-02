@@ -10,6 +10,7 @@
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
 @using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
+@using _2nd.Semester.Eksamen.Application
 @using Components.Pages.ProductPages.BookingPages
 @inject IBookingService bookingService
 
@@ -145,6 +146,14 @@ else if (ShowCompletedDetails)
     [Parameter] public EventCallback OnEdit { get; set; }
     [Parameter] public EventCallback OnDelete { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
+
+    [Parameter] public BookingDetailsContext SnapshotContext { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickCustomer { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickOrder { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickEmployee { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickTreatment { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnEditing { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnDeleting { get; set; }
 
     public async Task Close() => await OnClose.InvokeAsync();
     public async Task Edit() => await OnEdit.InvokeAsync();

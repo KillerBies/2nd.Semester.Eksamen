@@ -1,0 +1,332 @@
+﻿@using _2nd.Semester.Eksamen.Application.DTO
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
+@using _2nd.Semester.Eksamen.Application
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.InvoicePages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
+@rendermode InteractiveServer
+
+@switch (CurrentContext)
+{
+    case OrderSnapShotContext o:
+        <OrderDetails OrderContext="o"
+                      OnClickCustomer="ClickCustomer"
+                      OnClickBooking="ClickBooking"
+                      OnClickTreatment="ClickTreatment"
+                      OnClickDiscount="ClickDiscount"
+                      OnClickEmployee="ClickEmployee"
+                      OnClickProduct="ClickProduct"/>
+        break;
+    case ContextProduct p:
+        @switch (p)
+        {
+            case ProductContext pc:
+                <ProductDetails Context="pc"
+                                OnEdit="() => PushEditContext(pc)"
+                                OnDelete="() => OnDelete.InvokeAsync(pc)"
+                                OnClickCustomer="ClickCustomer"
+                                OnClickOrder="ClickOrder"
+                                IsSnapshot="false"/>
+                break;
+            case ProductSnapShotContext psc:
+                <ProductDetails SnapshotContext="psc"
+                                OnEdit="() => PushEditContext(psc)"
+                                OnDelete="() => OnDelete.InvokeAsync(psc)"
+                                IsSnapshot="true"
+                                OnClickCustomer="ClickCustomer"
+                                OnClickOrder="ClickOrder" />
+                break;
+            case ProductEditContext pec:
+                <CreateProduct  EditProduct="pec.Product"
+                                OnClose="()=>Refresh.InvokeAsync()"/>
+                break;
+        }
+        break;
+    case ContextBooking b:
+        @switch (b)
+        {
+            case BookingDetailsContext bdc:
+                <BookingContextDetailsPage Context="bdc"
+                                           OnEdit="() => PushEditContext(bdc)"
+                                           OnDelete="() => OnDelete.InvokeAsync(bdc)"
+                                           OnClickCustomer="ClickCustomer"
+                                           OnClickEmployee="ClickEmployee"
+                                           OnClickTreatment="ClickTreatment"
+                                           IsSnapshot="false" />
+                break;
+            case BookingSnapShotContext bsc:
+                <BookingContextDetailsPage SnapshotContext="bsc"
+                                           OnEdit="() => PushEditContext(bsc)"
+                                           OnDelete="() => OnDelete.InvokeAsync(bsc)"
+                                           OnClickCustomer="ClickCustomer"
+                                           OnClickEmployee="ClickEmployee"
+                                           OnClickTreatment="ClickTreatment"
+                                           OnPay="PayBooking"
+                                           OnOrderClick="ClickOrder"
+                                           IsSnapshot="true" />
+                break;
+            case BookingEditContext bec:
+                <BookingForm IsEdit="true"
+                             EditBooking="bec.Booking"
+                             OnClose="()=>Refresh.InvokeAsync()"/>
+                break;
+            case BookingPayContext bpc:
+                <FinalizePayment Booking="bpc.Booking"
+                                 OnClose="()=>Refresh.InvokeAsync()" />
+                break;
+        }
+        break;
+    case ContextTreatment t:
+        @switch (t)
+        {
+            case TreatmentContext tc:
+                <TreatmentDetails Context="tc"
+                                  OnEdit="() => PushEditContext(tc)"
+                                  OnDelete="() => OnDelete.InvokeAsync(tc)"
+                                  OnClickCustomer="ClickCustomer"
+                                  OnClickEmployee="ClickEmployee"
+                                  OnClickTreatment="ClickTreatment"
+                                  OnClickBooking="ClickBooking"
+                                  IsSnapshot="false" />
+                break;
+            case TreatmentSnapshotContext tsc:
+                <TreatmentDetails SnapshotContext="tsc"
+                                  OnClickCustomer="ClickCustomer"
+                                  OnClickEmployee="ClickEmployee"
+                                  OnClickTreatment="ClickTreatment"
+                                  OnClickBooking="ClickBooking"
+                                  IsSnapshot="true" />
+                break;
+            case TreatmentEditContext tec:
+                <CreateTreatment IsEdit="true"
+                             TreatmentEdit="tec.Treatment"
+                             OnClose="()=>Refresh.InvokeAsync()" />
+                break;
+        }
+        break;
+    case ContextEmployee e:
+        @switch (e)
+        {
+            case EmployeeDetailsContext edc:
+                <EmployeeDetails Context="edc"
+                                 OnEdit="() => PushEditContext(edc)"
+                                 OnDelete="() => OnDelete.InvokeAsync(edc)"
+                                 OnClickCustomer="ClickCustomer"
+                                 OnClickEmployee="ClickEmployee"
+                                 OnClickTreatment="ClickTreatment"
+                                 OnClickBooking="ClickBooking"
+                                 IsSnapshot="false" />
+                break;
+            case EmployeeSnapShotContext esc:
+                <EmployeeDetails SnapshotContext="esc"
+                                 OnClickCustomer="ClickCustomer"
+                                 OnClickEmployee="ClickEmployee"
+                                 OnClickTreatment="ClickTreatment"
+                                 OnClickBooking="ClickBooking"
+                                 IsSnapshot="true" />
+                break;
+            case EmployeeEditContext eec:
+                <CreateEmployee IsEdit="true"
+                                 EditEmployeeID="eec.Employee.Id"
+                                 OnClose="()=>Refresh.InvokeAsync()" />
+                break;
+        }
+        break;
+    case ContextCustomer c:
+        @switch (c)
+        {
+            case CustomerDetailsContext cdc:
+                <CustomerDetails Context="cdc"
+                                 OnEdit="() => PushEditContext(cdc)"
+                                 OnDelete="() => OnDelete.InvokeAsync(cdc)"
+                                 OnClickCustomer="ClickCustomer"
+                                 OnClickEmployee="ClickEmployee"
+                                 OnClickTreatment="ClickTreatment"
+                                 OnClickBooking="ClickBooking"
+                                 OnAddBookingToCustomer="AddBookingToCustomer"
+                                 IsSnapshot="false" />
+                break;
+            case CustomerSnapShotDetailsContext csd:
+                <CustomerDetails SnapshotContext="csd"
+                                 OnClickCustomer="ClickCustomer"
+                                 OnClickEmployee="ClickEmployee"
+                                 OnClickTreatment="ClickTreatment"
+                                 OnClickBooking="ClickBooking"
+                                 IsSnapshot="true" />
+                break;
+            case CustomerEditContext cec:
+                <CreateCustomerDetail 
+                                Customer="cec.Customer"
+                                OnClose="()=>Refresh.InvokeAsync()" />
+                break;
+        }
+        break;
+    case ContextDiscount d:
+        @switch (d)
+        {
+            case DiscountContext dc:
+                <CustomerDetails Context="cdc"
+                                 OnEdit="() => PushEditContext(cdc)"
+                                 OnDelete="() => OnDelete.InvokeAsync(cdc)"
+                                 OnClickCustomer="ClickCustomer"
+                                 OnClickEmployee="ClickEmployee"
+                                 OnClickTreatment="ClickTreatment"
+                                 OnClickBooking="ClickBooking"
+                                 OnAddBookingToCustomer="AddBookingToCustomer"
+                                 IsSnapshot="false" />
+                break;
+            case DiscountSnapShotContext dsc:
+                <CustomerDetails SnapshotContext="csd"
+                                 OnClickCustomer="ClickCustomer"
+                                 OnClickEmployee="ClickEmployee"
+                                 OnClickTreatment="ClickTreatment"
+                                 OnClickBooking="ClickBooking"
+                                 IsSnapshot="true" />
+                break;
+            case DiscountEditContext dec:
+                <CreateCustomerDetail Customer="cec.Customer"
+                                      OnClose="()=>Refresh.InvokeAsync()" />
+                break;
+        }
+        break;
+}
+
+@code {
+    public OrderHistoryDTO Order { get; set; }
+    public string _errorMessage = string.Empty;
+    [Inject] public IHistoryService _historyService { get; set; }
+    public DetailsContext CurrentContext => ContextStack.Peek();
+    [Parameter] public Stack<DetailsContext> ContextStack { get; set; } = new();
+    [Parameter] public EventCallback<DetailsContext> OnPushContext { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnDelete { get; set; }
+    [Parameter] public EventCallback<Guid> OnAddBookingToCustomer { get; set; }
+    [Parameter] public EventCallback Refresh { get; set; }
+    private async Task PushEditContext(DetailsContext context)
+    {
+        switch (context)
+        {
+            case ProductContext pc:
+                ContextStack.Push(new ProductEditContext(pc.Product));
+                break;
+            case CustomerDetailsContext cec:
+                ContextStack.Push(new CustomerEditContext(cec.Customer));
+                break;
+            case TreatmentContext tc:
+                ContextStack.Push(new TreatmentEditContext(tc.Treatment));
+                break;
+            case BookingDetailsContext bdc:
+                ContextStack.Push(new BookingEditContext(bdc.Booking));
+                break;
+            case EmployeeDetailsContext edc:
+                ContextStack.Push(new EmployeeEditContext(edc.Employee));
+                break;
+            case DiscountContext dc:
+                ContextStack.Push(new DiscountEditContext(dc.Discount));
+                break;
+        }
+    }
+    private async Task AddBookingToCustomer(Guid customerGuid)
+    {
+        await OnAddBookingToCustomer.InvokeAsync(customerGuid);
+    }
+    private void PayBooking (BookingDTO booking)
+    {
+        ContextStack.Push(new BookingPayContext(booking));
+    }
+    private async Task PushContext(DetailsContext context)
+    {
+        ContextStack.Push(context);
+    }
+    private async Task ClickCustomer(Guid customerGuid)
+    {
+        try
+        {
+            var customerContext = await _historyService.GetCustomerByGuid(customerGuid);
+            ContextStack.Push(customerContext);
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Kunne ikke hente kunde oplysninger";
+        }
+    }
+    private async Task ClickBooking(Guid bookingGuid)
+    {
+        try
+        {
+            var bookingContext = await _historyService.GetBookingByGuid(bookingGuid);
+            ContextStack.Push(bookingContext);
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Kunne ikke hente booking oplysninger";
+        }
+    }
+    private async Task ClickOrder(Guid orderGuid)
+    {
+        try
+        {
+            var orderContext = await _historyService.GetOrderSnapshotByGuid(orderGuid);
+            ContextStack.Push(orderContext);
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Kunne ikke hente orderens oplysninger";
+        }
+    }
+    private async Task ClickTreatment(Guid treatmentGuid)
+    {
+        try
+        {
+            var treatmentContext = await _historyService.GetTreatmentByGuid(treatmentGuid);
+            ContextStack.Push(treatmentContext);
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Kunne ikke hente behandlings oplysninger";
+        }
+    }
+    private async Task ClickDiscount(Guid discountGuid)
+    {
+        try
+        {
+            var discountContext = await _historyService.GetDiscountByGuid(discountGuid);
+            ContextStack.Push(discountContext);
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Kunne ikke hente yderliger rabat oplysninger";
+        }
+    }
+    private async Task ClickEmployee(Guid employeeGuid)
+    {
+        try
+        {
+            var employeeContext = await _historyService.GetEmployeeByGuid(employeeGuid);
+            ContextStack.Push(employeeContext);
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Kunne ikke hente yderliger rabat oplysninger";
+        }
+    }
+    private async Task ClickProduct(Guid productGuid)
+    {
+        try
+        {
+            var productContext = await _historyService.GetProductByGuid(productGuid);
+            ContextStack.Push(productContext);
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Kunne ikke hente yderliger rabat oplysninger";
+        }
+    }
+
+}

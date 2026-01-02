@@ -11,15 +11,19 @@ namespace _2nd.Semester.Eksamen.Application.DTO
     public class TreatmentHistoryDTO
     {
         public int OrderId { get; set; }
+        public Guid OrderGuid { get; set; }
+        public Guid BookingGuid { get; set; }
         public DateOnly Date { get; set; }
         public Guid TreatmentGuid { get; set; }
         public int TreatmentSnapsohtId { get; set; }
         public string TreatmentName { get; set; }
         public decimal Price { get; set; }
         public string EmployeeName { get; set; }
-        public Guid? EmployeeGuid { get; set; }
+        public string Category { get; set; }
+        public TimeSpan Duration { get; set; }
+        public Guid EmployeeGuid { get; set; }
         public string CustomerName { get; set; }
-        public Guid? CustomerGuid { get; set; }
+        public Guid CustomerGuid { get; set; }
         public TreatmentHistoryDTO(TreatmentSnapshot treatmentSnapshot, OrderSnapshot os)
         {
             TreatmentGuid = treatmentSnapshot.Guid;
@@ -32,6 +36,10 @@ namespace _2nd.Semester.Eksamen.Application.DTO
             CustomerGuid = os.BookingSnapshot.CustomerSnapshot.Guid;
             OrderId = os.Id;
             Date = os.DateOfPayment;
+            OrderGuid = os.Guid;
+            BookingGuid = os.BookingSnapshot.Guid;
+            Duration = treatmentSnapshot.Duration;
+            Category = treatmentSnapshot.Category;
         }
 
     }

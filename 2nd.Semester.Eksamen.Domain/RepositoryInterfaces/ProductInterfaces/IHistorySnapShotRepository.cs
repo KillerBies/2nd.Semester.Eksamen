@@ -14,5 +14,8 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces
         public Task<CustomerSnapshot?> GetCustomerSnapShotByGuidAsync(Guid guid);
         public Task<BookingSnapshot?> GetBookingSnapShotByGuidAsync(Guid guid);
         public Task<TreatmentSnapshot?> GetTreatmentSnapShotByGuidAsync(Guid guid);
+        public Task<AppliedDiscountSnapshot?> GetDiscountSnapShotByGuid(Guid guid);
+        public Task<TreatmentSnapshot?> GetEmployeeSnapShotByGuidAsync(Guid guid);
+        public Task<ProductSnapshot?> GetProductSnapshotByGuidAsync(Guid guid);
     }
 }
