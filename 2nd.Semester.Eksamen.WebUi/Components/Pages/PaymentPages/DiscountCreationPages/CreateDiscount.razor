@@ -94,14 +94,14 @@
 			{
 				await _discountService.CreateNewLoyaltyDiscountAsync(loyaltyDiscountDTO);
 				await OnClose.InvokeAsync();
-				Navi.NavigateTo($"/DiscountOverviewPage");
+				Navi.Refresh(true);
 			}
 			if (IsCampaign)
 			{
 				campaignDiscountDTO.ProductIds.AddRange(allProducts.Where(p => p.Selected == true).Select(p => p.Id).ToList());
 				await _discountService.CreateNewCampaignDiscountAsync(campaignDiscountDTO);
 				await OnClose.InvokeAsync();
-				Navi.NavigateTo($"/DiscountOverviewPage");
+				Navi.Refresh(true);
 			}
 		}
 		catch

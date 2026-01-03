@@ -6,6 +6,7 @@
 @using _2nd.Semester.Eksamen.Application
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @rendermode InteractiveServer
 @inject IInvoiceService invoiceService
 
@@ -48,7 +49,7 @@
                         <tbody>
                             @foreach (var orderSnapshotDTO in FilterdOrders)
                             {
-                                <tr @onclick="() => OpenDetails(orderSnapshotDTO)" style="cursor:pointer;">
+                                <tr @onclick="() => Select(orderSnapshotDTO)" style="cursor:pointer;">
                                     <td>@orderSnapshotDTO.Id</td>
                                     <td>@orderSnapshotDTO.Name</td>
                                     <td>@orderSnapshotDTO.TotalPaid</td>
@@ -63,20 +64,25 @@
         </div>
     </div>
 </div>
-<CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width: 33%; min-width: max-content; scrollbar-width:none;flex-shrink: 0;">
-    @if (CurrentContext != null)
-    {
-        <OrderDetails OrderContext="(OrderSnapShotContext)CurrentContext"/>
-    }
-</CreateWindow>
+@if (ShowDetails)
+{
+    <CreateWindow IsVisible="ShowDetails" IsVisibleChanged="@(v => ShowDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
+        <DetailWindow Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+    </CreateWindow>
+}
+@if (ShowDelete)
+{
+    <CreateWindow IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)" StyleParameters="background-color: #F3F2F2; margin:2rem;width:fit-content; height:fit-content;scrollbar-width:none;z-index:9999;">
+        <DeleteWindow Refresh="Refresh" context="DeleteContext"></DeleteWindow>
+    </CreateWindow>
+}
 
 
 @code {
+    [Inject] private NavigationManager Nav { get; set; } = null!;
     public string SearchTermName { get; set; } = "";
     private DateTime? SearchTermDateStart;
     private DateTime? SearchTermDateEnd;
-    public Stack<DetailsContext> DetailsStack { get; set; } = new Stack<DetailsContext>();
-    public DetailsContext CurrentContext => DetailsStack.Any() ? DetailsStack.Peek() : null;
     private List<OrderSnapshotDTO> FilterdOrders => orderSnapshotDTOs.Where(o => (string.IsNullOrWhiteSpace(SearchTermName) || o.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && (!SearchTermDateStart.HasValue || o.PaymentDate >= DateOnly.FromDateTime(SearchTermDateStart.Value)) && (!SearchTermDateEnd.HasValue || o.PaymentDate <= DateOnly.FromDateTime(SearchTermDateEnd.Value))).ToList();
     private bool isVisible = false;
     [Inject] public IHistoryService historyService { get; set; }
@@ -85,12 +91,6 @@
     protected override async Task OnInitializedAsync()
     {
         orderSnapshotDTOs = await invoiceService.GetAllSnapshotsAsync();
-    }
-    private async Task OpenDetails(OrderSnapshotDTO snap)
-    {
-        isVisible = true;
-        var detail = await historyService.GetOrderSnapshotByGuid(snap.OrderGuid);
-        DetailsStack.Push(detail);
     }
     private async Task DownloadInvoiceAsync(Byte[] Pdfbytes)
     {
@@ -101,4 +101,41 @@
 
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
+
+    private void Refresh()
+    {
+        Nav.Refresh(true);
+    }
+    private bool toggleBookingWarning = false;
+    private bool LoadFailed = false;
+    private bool OpenEdit = false;
+    private bool ShowDelete = false;
+    private bool ShowDetails = false;
+    public DetailsContext DeleteContext { get; set; }
+
+    public Stack<DetailsContext> ContextStack { get; set; } = new Stack<DetailsContext>();
+    public DetailsContext CurrentContext => ContextStack.Peek();
+
+
+
+
+
+    private async Task Select(OrderSnapshotDTO ordersnap)
+    {
+        var orderContext = await historyService.GetOrderSnapshotByGuid(ordersnap.OrderGuid);
+        ContextStack.Push(orderContext);
+        ShowDetails = true;
+    }
+    private void Delete(DetailsContext context)
+    {
+        DeleteContext = context;
+        ShowDelete = true;
+    }
+    private void AddBookingToCustomer(int customerId)
+    {
+        if (customerId <= 0)
+            return;
+        Nav.NavigateTo($"/BookingForm/{customerId}");
+    }
+
 }

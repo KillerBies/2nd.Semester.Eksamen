@@ -24,11 +24,11 @@
 {
     <p>Loading...</p>
 }
-else   
+else
 {
-    @if (IsSnapshot)
-    {   
-            <div class="discount-details-card shadow-sm" style="background: #ffffff; padding: 1.5rem;">
+    <div class="card shadow-sm border-0 p-2 m-0" style="background: #ffffff;">
+        @if (!IsSnapshot)
+        {
             <div class="discount-card-header d-flex flex-row mb-2">
                 <div>
                     <h3>@Discount.Name</h3>
@@ -76,7 +76,7 @@ else
                 }
                 <div class="info-row">
                     <span class="info-label">Antal anvendelser</span>
-                    <span class="info-value"><b>@History.Count()</b></span>
+                    <span class="info-value"><b>@(History != null ? History.Count() : 0)</b></span>
                 </div>
                 @if (Discount.TreatmentDiscount > 0)
                 {
@@ -99,26 +99,135 @@ else
                         @Discount.Description
                     </p>
                 }
+                @if (Discount.AppliesToProducts?.Any() == true)
+                {
+                    <div class="products">
+                        <span class="info-label">Gælder for produkter</span>
+                        <span class="info-value d-flex flex-column g-1 ga">
+                            <div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
+                                <table class="table">
+                                    <tbody>
+                                        @foreach (var product in Discount.AppliesToProducts)
+                                        {
+                                            <tr class="clickable" @onclick="() => OnClickProduct.InvokeAsync(product.Guid)">
+                                                <td>@product.Name</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </span>
+                    </div>
+                }
+                <span class="info-label">Historik</span>
+                <div class="border m-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                    @if (!(History.Any()))
+                    {
+                        <p class="text-muted mb-0 text-center">
+                            Ingen salgs historik fundet for dette produkt.
+                        </p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>OrderId</th>
+                                    <th>Dato</th>
+                                    <th>Kunde</th>
+                                    <th>Pris</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var instance in History)
+                                {
+                                    <tr>
+                                        <td class="clickable" @onclick="() => OnClickOrder.InvokeAsync(instance.Guid)">@instance.Guid</td>
+                                        <td>@instance.BookingStart.ToString("D")</td>
+                                        <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)">@instance.CustomerName</td>
+                                        <td>@instance.TotalPrice</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
             </div>
 
-            @if (Discount.AppliesToProducts?.Any() == true)
-            {
-                <div class="products">
-                    <span class="info-label">Gælder for produkter</span>
-                    <span class="info-value d-flex flex-column g-1 ga">
-                        <div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
-                            <table class="table">
-                                <tbody>
-                                    @foreach (var product in Discount.AppliesToProducts)
-                                    {
-                                        <tr class="clickable" @onclick="()=>OnClickProduct.InvokeAsync(product.Guid)">
-                                            <td>@product.Name</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+            <div class="footer">
+                <div class="btn-group w-100">
+                    <button class="btn card-btn" style="color:white; background-color:crimson" @onclick="() => OnDelete.InvokeAsync(Context)">
+                        Selt
+                    </button>
+                    <button class="btn card-btn" @onclick="() => OnEdit.InvokeAsync(Context)">
+                        Rediger
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="discount-card-header d-flex flex-row mb-2">
+                <div>
+                    <h3>@DiscountSnapshot.Name</h3>
+                    <span class="small status inactive">
+                        Inaktiv
                     </span>
+                </div>
+                <div class="ms-auto">
+                    <span class="badge" style="font-size: .8rem;">
+                        N/A
+                    </span>
+                </div>
+            </div>
+            <div class="d-flex flex-column align-items-center">
+                <span class="badge bg-dark bg-opacity-50 " style="font-size: .8rem">
+                    Sidst brugt @(SnapTimeString == "" ? "N/A" : SnapTimeString)
+                </span>
+            </div>
+            <div class="discount-info">
+                <div class="info-row">
+                    <span class="info-label">Antal anvendelser</span>
+                    <span class="info-value"><b>@(History != null ? History.Count() : 0)</b></span>
+                </div>
+                @if (DiscountSnapshot.TreatmentDiscount > 0)
+                {
+                    <div class="info-row">
+                        <span class="info-label">Behandling</span>
+                        <span class="info-value"><b>@((DiscountSnapshot.TreatmentDiscount).ToString("0"))%</b></span>
+                    </div>
+                }
+                @if (DiscountSnapshot.ProductDiscount > 0)
+                {
+                    <div class="info-row">
+                        <span class="info-label">Produkt</span>
+                        <span class="info-value"><b>@((DiscountSnapshot.ProductDiscount).ToString("0"))%</b></span>
+                    </div>
+                }
+                <div class="info-row">
+                    <span class="info-label">Glate for produkter</span>
+                    @if (History.Any() == true && IsSnapshot)
+                    {
+                        <div class="products">
+                            <span class="info-value d-flex flex-column g-1 ga">
+                                <div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
+                                    <table class="table">
+                                        <tbody>
+                                            @foreach (var product in History.SelectMany(h => h.Products).DistinctBy(p => p.ProductGuid))
+                                            {
+                                                <tr class="clickable" @onclick="() => OnClickProduct.InvokeAsync(product.ProductGuid)">
+                                                    <td>@product.Name</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </span>
+                        </div>
+                    }
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Historik</span>
                 </div>
                 <div class="border m-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
                     @if (!(History.Any()))
@@ -152,118 +261,12 @@ else
                         </table>
                     }
                 </div>
-            }
 
-            <div class="footer">
-                <div class="btn-group w-100">
-                    <button class="btn card-btn" style="color:white; background-color:crimson" @onclick="() => OnDelete.InvokeAsync(Context)">
-                        Selt
-                    </button>
-                    <button class="btn card-btn" @onclick="() => OnEdit.InvokeAsync(Context)">
-                        Rediger
-                    </button>
-                </div>
             </div>
-        </div>
-    }
-    else
-    {
-
-        <div class="discount-details-card shadow-sm" style="background: #ffffff; padding: 1.5rem;">
-            <div class="discount-card-header d-flex flex-row mb-2">
-                <div>
-                    <h3>@DiscountSnapshot.Name</h3>
-                    <span class="small status inactive">
-                        Inaktiv
-                    </span>
-                </div>
-                <div class="ms-auto">
-                    <span class="badge" style="font-size: .8rem;">
-                        N/A
-                    </span>
-                </div>
-            </div>
-            <div class="d-flex flex-column align-items-center">
-                <span class="badge bg-dark bg-opacity-50 " style="font-size: .8rem">
-                   Sidst brugt @(SnapTimeString == "" ? "N/A": SnapTimeString)
-                </span>
-            </div>
-            <div class="discount-info">
-                <div class="info-row">
-                    <span class="info-label">Antal anvendelser</span>
-                    <span class="info-value"><b>@History.Count()</b></span>
-                </div>
-                @if (DiscountSnapshot.TreatmentDiscount > 0)
-                {
-                    <div class="info-row">
-                        <span class="info-label">Behandling</span>
-                        <span class="info-value"><b>@((DiscountSnapshot.TreatmentDiscount).ToString("0"))%</b></span>
-                    </div>
-                }
-                @if (DiscountSnapshot.ProductDiscount > 0)
-                {
-                    <div class="info-row">
-                        <span class="info-label">Produkt</span>
-                        <span class="info-value"><b>@((DiscountSnapshot.ProductDiscount).ToString("0"))%</b></span>
-                    </div>
-                }
-            </div>
-
-            @if (History.Any() == true)
-            {
-                <div class="products">
-                    <span class="info-label">Glate for produkter</span>
-                    <span class="info-value d-flex flex-column g-1 ga">
-                        <div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
-                            <table class="table">
-                                <tbody>
-                                    @foreach (var product in History.SelectMany(h=>h.Products).DistinctBy(p=>p.ProductGuid))
-                                    {
-                                        <tr class="clickable" @onclick="() => OnClickProduct.InvokeAsync(product.ProductGuid)">
-                                            <td>@product.Name</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </span>
-                </div>
-            }
-        </div>
-        <div class="border m-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
-            @if (!(History.Any()))
-            {
-                <p class="text-muted mb-0 text-center">
-                    Ingen salgs historik fundet for dette produkt.
-                </p>
-            }
-            else
-            {
-                <table class="table table-sm mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>OrderId</th>
-                            <th>Dato</th>
-                            <th>Kunde</th>
-                            <th>Pris</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var instance in History)
-                        {
-                            <tr>
-                                <td class="clickable" @onclick="() => OnClickOrder.InvokeAsync(instance.Guid)">@instance.Guid</td>
-                                <td>@instance.BookingStart.ToString("D")</td>
-                                <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)">@instance.CustomerName</td>
-                                <td>@instance.TotalPrice</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-        </div>
-    }
+        }
+    </div>
 }
+
 @code {
     private bool ShowDetails = false;
     private TimeSpan Time => DateTime.Now > Discount.Start ? DateTime.Now - Discount.Start : Discount.Start - DateTime.Now;
@@ -297,10 +300,10 @@ else
         {
             DiscountSnapshot = SnapshotContext.Discount;
             History = await _historyService.GetDiscountHistoryByGuidAsync(DiscountSnapshot.Guid);
-            if(History.Any())
+            if (History.Any())
             {
                 OrderHistoryDTO max = History.OrderBy(o => o.DateOfPayment).Max();
-                if(max != null)
+                if (max != null)
                 {
                     var LatestDateOfUse = max.DateOfPayment.ToDateTime(TimeOnly.MinValue);
                     var SnapTime = DateTime.Now > LatestDateOfUse ? DateTime.Now - LatestDateOfUse : LatestDateOfUse - DateTime.Now;

@@ -4,6 +4,8 @@
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.Application.DTO;
+@using _2nd.Semester.Eksamen.Application
 @inject IDiscountService discountService
 @rendermode InteractiveServer
 
@@ -118,7 +120,7 @@
                                     <div class="discount-card-footer">
 
 
-                                        <button class="btn card-btn w-100" @onclick="() => ShowDiscountDetails(discount)">
+                                        <button class="btn card-btn w-100" @onclick="() => Select(discount)">
                                             Se detaljer
                                         </button>
                                     </div>
@@ -141,137 +143,16 @@
 
 @if (ShowDetails)
 {
-    <BookingNotification IsVisible=ShowDetails IsVisibleChanged="v => ShowDetails = v">
-        <div class="discount-details-card">
-            <div class="discount-card-header d-flex flex-row mb-2">
-                <div>
-                    <h3>@SelectedDiscount.Name</h3>
-                    <span class="small status @(SelectedDiscount.IsActive ? "active" : "inactive")">
-                        @(SelectedDiscount.IsActive ? "Aktiv" : "Inaktiv")
-                    </span>
-                </div>
-                <div class="ms-auto">
-                    <span class="badge @(SelectedDiscount.Type == "Kampagne Rabat" ? "campaign" : "loyalty")" style="font-size: .8rem;">
-                        @SelectedDiscount.Type
-                    </span>
-                </div>
-            </div>
-            <div class="discount-info">
-                @if (SelectedDiscount.Type != "Kampagne Rabat")
-                {
-                    <div class="info-row">
-                        <span class="info-label">Loyalitetstype</span>
-                        <span class="info-value"><b>@SelectedDiscount.LoyaltyDiscountType</b></span>
-                    </div>
-                }
-                @if (SelectedDiscount.Type == "Kampagne Rabat")
-                {
-                    <div class="d-flex flex-column align-items-center">
-                        <span class="badge bg-dark bg-opacity-50 " style="font-size: .8rem">
-                            @TimeString
-                        </span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Start</span>
-                        <span class="info-value"><b>@SelectedDiscount.Start.ToShortDateString()</b></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Slut</span>
-                        <span class="info-value"><b>@SelectedDiscount.End.ToShortDateString()</b></span>
-                    </div>
-                }
-
-                @if (SelectedDiscount.MinimumVisits > 0)
-                {
-                    <div class="info-row">
-                        <span class="info-label">Minimum besøg</span>
-                        <span class="info-value"><b>@SelectedDiscount.MinimumVisits</b></span>
-                    </div>
-                }
-                <div class="info-row">
-                    <span class="info-label">Antal anvendelser</span>
-                    <span class="info-value"><b>@SelectedDiscount.NumberOfUses</b></span>
-                </div>
-                @if (SelectedDiscount.TreatmentDiscount > 0)
-                {
-                    <div class="info-row">
-                        <span class="info-label @(SelectedDiscount.IsActiveForTreatments ? "active" : "")">Behandling</span>
-                        <span class="info-value"><b>@((SelectedDiscount.TreatmentDiscount).ToString("0"))%</b></span>
-                    </div>
-                }
-
-                @if (SelectedDiscount.ProductDiscount > 0)
-                {
-                    <div class="info-row">
-                        <span class="info-label @(SelectedDiscount.IsActiveForProducts ? "active" : "")">Produkt</span>
-                        <span class="info-value"><b>@((SelectedDiscount.ProductDiscount).ToString("0"))%</b></span>
-                    </div>
-                }
-                @if (SelectedDiscount.Type == "Kampagne Rabat")
-                {
-                    <p class="discount-description">
-                        @SelectedDiscount.Description
-                    </p>
-                }
-            </div>
-
-            @if (SelectedDiscount.AppliesToProducts?.Any() == true)
-            {
-                <div class="products">
-                    <span class="info-label">Gælder for produkter</span>
-                    <span class="info-value d-flex flex-column g-1 ga">
-                        <div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
-                            <table class="table">
-                                <tbody>
-                                    @foreach (var product in SelectedDiscount.AppliesToProducts)
-                                    {
-                                        <tr>
-                                            <td>@product.Name</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </span>
-                </div>
-            }
-
-            <div class="footer">
-                <div class="btn-group w-100">
-                    <button class="btn card-btn" style="color:white; background-color:crimson" @onclick="() => ShowDelete = true">
-                        Selt
-                    </button>
-                    <button class="btn card-btn" @onclick="() => ShowEdit = true">
-                        Rediger
-                    </button>
-                </div>
-            </div>
-        </div>
-    </BookingNotification>
+    <CreateWindow IsVisible="ShowDetails" IsVisibleChanged="@(v => ShowDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
+        <DetailWindow Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+    </CreateWindow>
 }
 @if (ShowDelete)
 {
-    <BookingNotification IsVisible=ShowDelete IsVisibleChanged="v => ShowDelete = v">
-        <div class="d-flex align-items-center flex-column w-100">
-            <p>Er du sikker på at du vil slette dette tilbud?</p>
-            <button class="btn card-btn w-100" style="background-color:crimson; color:white;" @onclick="ConfirmDelete">Bekræft</button>
-        </div>
-    </BookingNotification>
-}
-@if (ShowEdit)
-{
-    <CreateWindow IsVisible=ShowEdit IsVisibleChanged="v => ShowEdit = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
-        @if (SelectedDiscount.Type == "Kampagne Rabat")
-        {
-            <CreateCampaignDiscount OnClose="Refresh" IsEdit=true discountEdit="SelectedDiscount"></CreateCampaignDiscount>
-        }
-        else
-        {
-            <CreateLoyaltyDiscount OnClose="Refresh" IsEdit=true discountEdit="SelectedDiscount"></CreateLoyaltyDiscount>
-        }
+    <CreateWindow IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)" StyleParameters="background-color: #F3F2F2; margin:2rem;width:fit-content; height:fit-content;scrollbar-width:none;z-index:9999;">
+        <DeleteWindow Refresh="Refresh" context="DeleteContext"></DeleteWindow>
     </CreateWindow>
 }
-
 
 @code {
     private List<DiscountOverviewDTO> Discounts { get; set; } = new();
@@ -279,14 +160,12 @@
     private string SearchTermType { get; set; } = "";
     private bool isVisible = false;
     private DiscountOverviewDTO SelectedDiscount { get; set; }
-    private bool ShowDetails = false;
     private List<DiscountOverviewDTO> FilterdDiscounts => Discounts.Where(d => (string.IsNullOrWhiteSpace(SearchTermName) || d.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && ((string.IsNullOrWhiteSpace(SearchTermType) || d.Type == SearchTermType))).ToList();
     private int CountLoyalty => Discounts.Where(d => d.Type == "Loyalitets Rabat").Count();
     private int CountCampaign => Discounts.Where(d => d.Type == "Kampagne Rabat").Count();
     private TimeSpan Time => DateTime.Now > SelectedDiscount.Start ? DateTime.Now - SelectedDiscount.Start : SelectedDiscount.Start - DateTime.Now;
     private string TimeString => DateTime.Now < SelectedDiscount.Start ? $"Aktiv igen om {Time.Days} Dage, {Time.Hours} Timer, og {Time.Minutes} Minutter" : $"Aktiveret for {Time.Days} Dage, {Time.Hours} Timer, og {Time.Minutes} Minutter Siden";
     private bool ShowEdit { get; set; } = false;
-    private bool ShowDelete { get; set; } = false;
     [Inject] private NavigationManager Nav { get; set; } = null!;
     protected override async Task OnInitializedAsync()
     {
@@ -310,8 +189,38 @@
 
         }
     }
+    private bool toggleBookingWarning = false;
+    private bool LoadFailed = false;
+    private bool OpenEdit = false;
+    private bool ShowDelete = false;
+    private bool ShowDetails = false;
+    public DetailsContext DeleteContext { get; set; }
+
+    public Stack<DetailsContext> ContextStack { get; set; } = new Stack<DetailsContext>();
+    public DetailsContext CurrentContext => ContextStack.Peek();
+
     private void Refresh()
     {
         Nav.Refresh(true);
+    }
+
+
+
+
+    private async Task Select(DiscountOverviewDTO discount)
+    {
+        ContextStack.Push(new DiscountContext(discount));
+        ShowDetails = true;
+    }
+    private void Delete(DetailsContext context)
+    {
+        DeleteContext = context;
+        ShowDelete = true;
+    }
+    private void AddBookingToCustomer(int customerId)
+    {
+        if (customerId <= 0)
+            return;
+        Nav.NavigateTo($"/BookingForm/{customerId}");
     }
 }

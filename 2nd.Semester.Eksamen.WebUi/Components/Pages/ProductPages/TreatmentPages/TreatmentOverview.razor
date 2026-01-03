@@ -1,6 +1,7 @@
 ﻿@page "/TreatmentOverview"
 @namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @rendermode InteractiveServer
 
 
@@ -66,7 +67,7 @@
                                     </div>
 
                                     <div class="treatment-card-footer">
-                                        <button class="btn btn-primary" @onclick="() => ShowOverlay(treatment)">
+                                        <button class="btn btn-primary" @onclick="() => Select(treatment)">
                                             Se detaljer
                                         </button>
                                     </div>
@@ -79,31 +80,24 @@
         </div>
     </div>
 </div>
-@if (EditTreatment)
-{
-    <CreateWindow StyleParameters="background-color: #F3F2F2; padding:0;width:auto;z-index: 4000;" IsVisible=EditTreatment IsVisibleChanged="@(v => EditTreatment = v)">
-            <CreateTreatment IsEdit=true TreatmentEdit="selectedTreatment" OnClose="Refresh"></CreateTreatment>
-        </CreateWindow>
-}
-@if (isVisible)
-{
-    <BookingNotification IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)">
-        <TreatmentDetails OnClose="() => isVisible = false" OnDelete="() => ShowDelete = true" OnEdit="() => EditTreatment = true" selectedTreatment="selectedTreatment"></TreatmentDetails>
-    </BookingNotification>
-}
+
 @if (CreateTreatment)
 {
     <CreateWindow StyleParameters="background-color: #F3F2F2; padding:0;width:auto;" IsVisible=CreateTreatment IsVisibleChanged="@(v => CreateTreatment = v)">
         <CreateTreatment OnClose="Refresh"></CreateTreatment>
     </CreateWindow>
 }
-@if(ShowDelete)
+@if (ShowDetails)
 {
-    <BookingNotification IsVisible=ShowDelete IsVisibleChanged="v => ShowDelete = v">
-        <div class="d-flex align-items-center flex-column w-100">
-       <p>Er du sikker på at du vil slette denne behandling?</p>
-        <button class="btn card-btn w-100" style="background-color:crimson;" @onclick="() => DeleteTreatment(selectedTreatment.TreatmentId)">Bekræft</button>
-        </div>
-    </BookingNotification>
+    <CreateWindow IsVisible="ShowDetails" IsVisibleChanged="@(v => ShowDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
+        <DetailWindow Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+    </CreateWindow>
 }
+@if (ShowDelete)
+{
+    <CreateWindow IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)" StyleParameters="background-color: #F3F2F2; margin:2rem;width:fit-content; height:fit-content;scrollbar-width:none;z-index:9999;">
+        <DeleteWindow Refresh="Refresh" context="DeleteContext"></DeleteWindow>
+    </CreateWindow>
+}
+
 
