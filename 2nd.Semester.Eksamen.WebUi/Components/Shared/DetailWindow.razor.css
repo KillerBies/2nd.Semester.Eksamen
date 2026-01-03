@@ -24,7 +24,7 @@
 }
 
 .details-window {
-    width: fit-content;
+    width: 33vw;
     height: fit-content;
     animation-duration: 0.3s;
     animation-fill-mode: both;

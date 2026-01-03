@@ -124,9 +124,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 {
                     _context.Customers.Remove(customer);
                 }
-                if (bookingToCancel.Status == BookingStatus.Completed)
+                var order = await _context.Orders.FirstOrDefaultAsync(o => o.BookingId == bookingToCancel.Id);
+                if (order != null)
                 {
-                    var order = await _context.Orders.FirstOrDefaultAsync(o => o.BookingId == bookingToCancel.Id);
                     _context.Orders.Remove(order);
                 }
                 await _context.SaveChangesAsync();
@@ -264,7 +264,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                         treatment.End)
                     {
                         Price = treatment.Price,
-                        BookingID = booking.Id
+                        BookingID = booking.Id,
+                        Guid = Guid.NewGuid()
                     });
                 }
 

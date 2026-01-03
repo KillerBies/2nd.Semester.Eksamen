@@ -1,6 +1,9 @@
-﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+﻿using _2nd.Semester.Eksamen.Application;
+using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.WebUi.Components.Shared;
 using Microsoft.AspNetCore.Components;
@@ -14,8 +17,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
         public string SearchTermName { get; set; } = "";
         private bool EditCustomer { get; set; } = false;
         public string SearchTermPhone { get; set; } = "";
-        private bool LoadFailed = false;
-        private bool OpenEdit = false;
         private bool IsVisible = false;
         private bool CreateCustomer { get; set; } = false;
         [Inject] public ICustomerService _customerService { get; set; }
@@ -26,6 +27,24 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
         private CustomerDTO? selectedCustomer;
         public bool isVisible = false;
         public bool ShowWarning = false;
+        [Inject] NavigationManager Navi { get; set; }
+        [Inject] IBookingOverviewService _bookingOverviewService { get; set; }
+
+        private List<BookingDTO> bookingList = new();
+        private List<BookingDTO> CompletedBookings { get; set; } = new();
+
+        private BookingDTO SelectedBooking { get; set; } = new();
+        private BookingSnapshot SelectedCompletedBooking { get; set; }
+
+        private bool toggleBookingWarning = false;
+        private bool LoadFailed = false;
+        private bool OpenEdit = false;
+        private bool ShowDelete = false;
+        private bool ShowDetails = false;
+        public DetailsContext DeleteContext { get; set; }
+
+        public Stack<DetailsContext> ContextStack { get; set; } = new Stack<DetailsContext>();
+        public DetailsContext CurrentContext => ContextStack.Peek();
 
         protected override async Task OnInitializedAsync()
         {
@@ -37,22 +56,9 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
             Nav.Refresh(true);
         }
 
-        private void GoToCreateCustomer()
-        {
-            Nav.NavigateTo("/create-customer");
-        }
-        //Overlays true or false
-        private void ShowOverlay(CustomerDTO customer)
-        {
-            selectedCustomer = customer;
-            isVisible = true;
 
-        }
-        private void HideOverlay()
-        {
-            selectedCustomer = null;
-            isVisible = false;
-        }
+
+
         private async Task DeleteCustomer(int id)
         {
 
@@ -62,6 +68,22 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
         private async Task CreateNewBookingForCustomer()
         {
             Nav.NavigateTo($"/BookingForm/{selectedCustomer.id}");
+        }
+        private async Task Select(CustomerDTO customer)
+        {
+            ContextStack.Push(new CustomerDetailsContext(customer));
+            ShowDetails = true;
+        }
+        private void Delete(DetailsContext context)
+        {
+            DeleteContext = context;
+            ShowDelete = true;
+        }
+        private void AddBookingToCustomer(int customerId)
+        {
+            if (customerId <= 0)
+                return;
+            Navi.NavigateTo($"/BookingForm/{customerId}");
         }
     }
 }

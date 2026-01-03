@@ -81,7 +81,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         {
             try
             {
-                selectedCustomer = await _bookingQueryService.GetCustomerByIDAsync(CustomerId);
+                selectedCustomer = IsEdit ? await _bookingQueryService.GetCustomerByIDAsync(Booking.CustomerId) : await _bookingQueryService.GetCustomerByIDAsync(CustomerId);
                 AllTreatments = (await _bookingQueryService.GetAllTreatmentsAsync()).ToList();
                 AllEmployees = (await _bookingQueryService.GetAllEmployeesAsync()).ToList();
                 if (selectedCustomer == null)

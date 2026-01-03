@@ -62,8 +62,11 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             var customer = await DTOCustomerToDomain(booking.Customer.id);
             //BEFORE SENT FULL CUSTOMER IN
             var newBooking = new Booking(booking.Customer.id, booking.Start, booking.End, treatments);
-            if (booking.BookingId != null)
+            if (booking.BookingId != 0)
+            {
                 newBooking.Id = (int)booking.BookingId;
+                newBooking.Guid = booking.BookingGuid;
+            }
             return newBooking;
         }
         public async Task<Booking> DTOBookingToDomainEdit(BookingDTO booking)

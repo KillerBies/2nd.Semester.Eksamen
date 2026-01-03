@@ -85,7 +85,7 @@
 
                                     <div class="customer-card-footer">
                                         <button class="btn btn-primary"
-                                                @onclick="() => ShowOverlay(Customer)">
+                                                @onclick="() => Select(Customer)">
                                             Se detaljer
                                         </button>
                                     </div>
@@ -98,7 +98,18 @@
         </div>
     </div>
 </div>
-
+@if (ShowDetails)
+{
+    <CreateWindow IsVisible="ShowDetails" IsVisibleChanged="@(v => ShowDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
+        <DetailWindow Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+    </CreateWindow>
+}
+@if (ShowDelete)
+{
+    <CreateWindow IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)" StyleParameters="background-color: #F3F2F2; margin:2rem;width:fit-content; height:fit-content;scrollbar-width:none;z-index:9999;">
+        <DeleteWindow Refresh="Refresh" context="DeleteContext"></DeleteWindow>
+    </CreateWindow>
+}
 
 @if (CreateCustomer)
 {
@@ -107,36 +118,5 @@
     </CreateWindow>
 }
 
-@if (isVisible == true)
-{
-    <BookingNotification IsVisible=isVisible IsVisibleChanged="@(v => isVisible = v)">
-        <CustomerDetails CustomerId="selectedCustomer.id" OnDelete="() => ShowWarning = true" OnEdit="() => EditCustomer = true" OnAddBookingToCustomer="CreateNewBookingForCustomer"></CustomerDetails>
-    </BookingNotification>
-}
 
-@if (EditCustomer)
-{
-    <CreateWindow IsVisible=EditCustomer IsVisibleChanged="v => EditCustomer = v" StyleParameters="background-color: #F3F2F2; padding:0;width:30%; height:auto; overflow-y:visible">
-        @if (selectedCustomer is CompanyCustomerDTO cc)
-        {
-            <CreateCompanyCustomer OnClose="Refresh" IsEdit=true EditCustomer="cc"></CreateCompanyCustomer>
-        }
-        else if (selectedCustomer is PrivateCustomerDTO pc)
-        {
-            <CreatePrivateCustomer OnClose="Refresh" EditCustomer="pc" IsEdit=true></CreatePrivateCustomer>
-        }
-    </CreateWindow>
-}
-
-@if (ShowWarning)
-{
-    <div style="z-index:9020">
-        <BookingNotification IsVisible=ShowWarning IsVisibleChanged="v => ShowWarning = v">
-            <div class="d-flex align-items-center flex-column w-100">
-                <p>Er du sikker på at du vil slette denne behandling?</p>
-                <button class="btn card-btn w-100" style="background-color:crimson;" @onclick="() => DeleteCustomer(selectedCustomer.id)">Bekræft</button>
-            </div>
-        </BookingNotification>
-    </div>
-}
 

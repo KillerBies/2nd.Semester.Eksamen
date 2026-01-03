@@ -7,7 +7,7 @@
 @inject NavigationManager Navi
 @rendermode InteractiveServer
 
-<div>
+<div style="background-color:#F3F2F2">
 	<EditForm Model="@companyCustomerDTO" OnValidSubmit="@HandleValidSubmit" class="row p-3" FormName="CreateCompanyCustomerForm">
 		<div>
 			<h2>@(IsEdit ? "Rediger Firmakunde" : "Opret Firmakunde")</h2>

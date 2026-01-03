@@ -126,7 +126,7 @@ namespace _2nd.Semester.Eksamen.Application.Services
                 return new BookingDetailsContext(new BookingDTO(booking));
             var bookingSnap = await _snapshotRepository.GetByBookingGuidAsync(bookingGuid);
             if(bookingSnap != null)
-                return new BookingSnapShotContext(new BookingDTO(booking));
+                return new BookingSnapShotContext(new BookingDTO(bookingSnap));
             throw new Exception("Booking not found");
         }
         public async Task<DetailsContext?> GetCustomerByGuid(Guid customerGuid)

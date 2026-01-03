@@ -32,7 +32,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
         public async Task<CustomerSnapshot?> GetCustomerSnapShotByGuidAsync(Guid guid)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.CustomerSnapshots.FirstOrDefaultAsync(c => c.Guid == guid);
+            return await _context.CustomerSnapshots.Include(c=>c.AddressSnapshot).FirstOrDefaultAsync(c => c.Guid == guid);
         }
         public async Task<BookingSnapshot?> GetBookingSnapShotByGuidAsync(Guid guid)
         {

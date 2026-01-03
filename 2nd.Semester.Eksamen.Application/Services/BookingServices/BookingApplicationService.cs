@@ -64,7 +64,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         public async Task RescheduleBookingAsync(BookingDTO booking)
         {
             if (booking.TreatmentBookingDTOs == null || !booking.TreatmentBookingDTOs.Any())
-                throw new ArgumentException("Booking must contain at least one treatment.");
+                throw new Exception("Booking must contain at least one treatment.");
             Booking Booking = await _toDomainAdapter.DTOBookingToDomain(booking);
             try
             {

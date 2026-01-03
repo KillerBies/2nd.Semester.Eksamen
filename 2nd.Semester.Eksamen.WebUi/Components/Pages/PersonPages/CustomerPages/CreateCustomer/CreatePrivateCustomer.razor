@@ -7,7 +7,7 @@
 @inject NavigationManager Navi
 @rendermode InteractiveServer
 
-<div>
+<div class="card p-0 m-0 border-0" style="background-color:#F3F2F2">
 	<EditForm Model="@privateCustomerDTO" OnValidSubmit="@HandleValidSubmit" class="row p-3" formname="CreateCustomerForm">
 		<div>
 			<h2>@(IsEdit ? "Rediger Privatkunde" : "Opret Privatkunde")</h2>

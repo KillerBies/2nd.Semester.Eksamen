@@ -20,7 +20,7 @@
 {
     @if (!IsSnapshot)
     {
-        <div class="card shadow-sm" style="background: #ffffff; padding: 1.5rem;">
+        <div class="card shadow-none p-0 border-0">
             @if (Customer is PrivateCustomerDTO p)
             {
                 <div>
@@ -173,7 +173,7 @@
             </div>
 
             <button class="btn btn-outline-secondary m-3" style="margin-top:0;" @onclick="() => AddBooking(Customer.id)">Forbind Ny Booking</button>
-            <div class="btn-group w-100">
+            <div class="btn-group w-100 p-3">
                 <button class="btn card-btn w-50" style="background-color:crimson;" @onclick="() => OnDelete.InvokeAsync(Context)">Slet kunde</button>
                 <button class="btn card-btn" @onclick="() => OnEdit.InvokeAsync(Context)">Rediger</button>
             </div>
