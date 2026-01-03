@@ -1,18 +1,14 @@
 ﻿@inherits InputBase<TimeSpan>
-@using System.Globalization
 
-<input type="time"
+<input type="number"
        class="@CssClass"
-       value="@CurrentValue.ToString(@"hh\:mm")"
+       value="@FormatValueAsString(CurrentValue)"
        @onchange="OnChange" />
 
 @code {
     private void OnChange(ChangeEventArgs e)
     {
-        if (BindConverter.TryConvertTo<TimeSpan>(
-            e.Value?.ToString(),
-            CultureInfo.InvariantCulture,
-            out var result))
+        if (TryParseValueFromString(e.Value?.ToString(), out var result, out _))
         {
             CurrentValue = result;
         }
@@ -27,13 +23,20 @@
         out TimeSpan result,
         out string validationErrorMessage)
     {
-        if (TimeSpan.TryParse(value, out result))
+        if (double.TryParse(value, out var minutes))
         {
+            result = TimeSpan.FromMinutes(minutes);
             validationErrorMessage = null!;
             return true;
         }
 
-        validationErrorMessage = "Invalid time format";
+        result = default;
+        validationErrorMessage = "Invalid number of minutes";
         return false;
+    }
+
+    protected override string FormatValueAsString(TimeSpan value)
+    {
+        return value.TotalMinutes.ToString("0.##");
     }
 }

@@ -20,17 +20,18 @@
                     <p class="subtitle">Oversigt over alle produkter</p>
                 </div>
                 <div class="input-group">
-                <div class="equal-row ms-auto">
-                    <select id="discountType" class="bg-white search-box" name="discountType" @bind="SearchTermType" @bind:event="oninput">
-                        <option value="">Alle</option>
-                        @foreach (var category in Categories)
-                        {
-                            <option value="@category">@category</option>
-                        }
-                    </select>
-                    <input type="text" class="search-box" placeholder="Søg Produktets Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
-                    <button class="btn btn-primary" @onclick="() => isVisible = true"><i class="bi bi-plus-lg"></i> Tilføj Produkt</button>
-                </div>
+                    <div class="equal-row ms-auto">
+                            <select id="discountType" class="bg-white search-box" name="discountType" @bind="SearchTermType" @bind:event="oninput">
+                                <option value="">Alle</option>
+                                @foreach (var category in Categories)
+                                {
+                                    <option value="@category">@category</option>
+                                }
+                            </select>
+                            <input type="text" class="search-box" placeholder="Søg Produktets Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
+                            <button class="btn btn-primary" @onclick="() => isVisible = true">+ Produkt</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="overview-page-content">
@@ -40,7 +41,7 @@
                         <span>@Products.Count</span>
                     </div>
                     <div class="stat-card">
-                        <h3>Kategorier</h3>  
+                        <h3>Kategorier</h3>
                         <span>@CountCategory</span>
                     </div>
                     <div class="stat-card">
@@ -89,21 +90,20 @@
             </div>
         </div>
     </div>
-</div>
 
-@if(isVisible)
+@if (isVisible)
 {
     <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
-            <div class="shadow-sm">
-                <CreateProduct OnClose="Refresh"></CreateProduct>
-            </div>
+        <div class="shadow-sm">
+            <CreateProduct OnClose="Refresh"></CreateProduct>
+        </div>
     </CreateWindow>
 }
 
 @if (ShowDetails)
 {
     <CreateWindow IsVisible="ShowDetails" IsVisibleChanged="@(v => ShowDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
-        <DetailWindow Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+        <DetailWindow OnEditBooking="OnEditBooking" Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
     </CreateWindow>
 }
 @if (ShowDelete)
@@ -143,10 +143,15 @@
         }
         catch
         {
-            
+
         }
     }
-
+    private void OnEditBooking(BookingEditContext context)
+    {
+        if (context.Booking == null)
+            return;
+        Nav.NavigateTo($"/BookingForm/{context.Booking.CustomerId}/{context.Booking.BookingId}");
+    }
 
     private bool toggleBookingWarning = false;
     private bool LoadFailed = false;

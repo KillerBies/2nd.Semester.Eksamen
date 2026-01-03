@@ -66,7 +66,12 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
         }
 
 
-
+        private void OnEditBooking(BookingEditContext context)
+        {
+            if (context.Booking == null)
+                return;
+            Navi.NavigateTo($"/BookingForm/{context.Booking.CustomerId}/{context.Booking.BookingId}");
+        }
 
         private async Task Select(TreatmentDTO treatment)
         {

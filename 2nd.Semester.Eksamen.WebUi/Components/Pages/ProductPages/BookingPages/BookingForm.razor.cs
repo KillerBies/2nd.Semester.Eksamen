@@ -22,7 +22,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 {
     public partial class BookingForm
     {
-
+        //Add field to put in own booking time start, check and give feedback on whether that time is available.
         //when treatment is added, removed or changed (duration is diffrent) the selected time needs to reset
         //when is edit it also should ideally also give a possible time that is simply an extention of the current one.
 
@@ -52,6 +52,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         private List<BookingDTO> CurrentPage = new();
         private BookingDTO timeSelected = new();
         private EditContext EditContext;
+        [Parameter] public int BookingId { get; set; }
         private CustomerDTO selectedCustomer { get; set; }
         public bool showPopup = false;
 
@@ -64,6 +65,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 
         protected override async Task OnInitializedAsync()
         {
+            if(BookingId != 0)
+            {
+                IsEdit = true;
+                EditBooking = await _bookingFormService.GetBookingById(BookingId);
+            }
             _errorMessage = "";
             if(IsEdit)
             {
@@ -146,6 +152,13 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         {
             Navi.NavigateTo("/BookingOverview");
         }
+
+        private async void OnStartChange(TimeOnly time)
+        {
+            StartTime = time;
+            AvailableBookingSpots.Clear();
+            await refreshAvailableSlots();
+        }
         private async Task FowardPage()
         {
             if (Pages.TryGetValue(CurrentIndex + 1, out _))
@@ -172,11 +185,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
                     startDate = DateOnly.FromDateTime(DateTime.Now);
                     if(IsEdit)
                     {
-                        Pages[0] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval,EditBooking.TreatmentBookingDTOs);
+                        Pages[0] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval, StartTime, EditBooking.TreatmentBookingDTOs);
                     }
                     else
                     {
-                        Pages[0] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval);
+                        Pages[0] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval, StartTime);
                     }
                     AvailableBookingSpots = new List<BookingDTO>(Pages[0]);
                 }
@@ -184,11 +197,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
                 {
                     if (IsEdit)
                     {
-                        Pages[CurrentIndex + 1] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval, EditBooking.TreatmentBookingDTOs);
+                        Pages[CurrentIndex + 1] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval, StartTime, EditBooking.TreatmentBookingDTOs);
                     }
                     else
                     {
-                        Pages[CurrentIndex + 1] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval);
+                        Pages[CurrentIndex + 1] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval, StartTime);
                     }
                     AvailableBookingSpots.AddRange(Pages[CurrentIndex + 1]);
                     CurrentIndex += 1;

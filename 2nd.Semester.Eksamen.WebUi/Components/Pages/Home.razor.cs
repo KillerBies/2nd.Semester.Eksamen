@@ -35,6 +35,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         private bool ShowBookingWarning { get; set; } = false;
         private bool ShowBookingPayment { get; set; } = false;
         private BookingDTO selectedBooking { get; set; } = new();
+        private BookingDTO PayBooking { get; set; }
         private string errorMessage { get; set; } = "";
 
         protected override async Task OnInitializedAsync()
@@ -50,6 +51,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             }
         }
 
+        private async void Pay(BookingDTO booking)
+        {
+            PayBooking = booking;
+            ShowBookingPayment = true;
+        }
         public void Refresh()
         {
             Navi.Refresh(true);
@@ -57,11 +63,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         public void GetBookingWarning(BookingDTO booking)
         {
             ShowBookingWarning = true;
-            selectedBooking = booking;
-        }
-        public void PayBooking(BookingDTO booking)
-        {
-            ShowBookingPayment = true;
             selectedBooking = booking;
         }
         private async Task ConfirmCancelBooking()

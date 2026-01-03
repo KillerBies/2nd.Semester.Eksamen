@@ -45,7 +45,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
         {
             isLoading = true;
             errorMessage = null;
-
+            if (Booking != null)
+                id = Booking.CustomerId;
             try
             {
                 customer = await _customerService.GetByIDAsync(id) as PrivateCustomer;

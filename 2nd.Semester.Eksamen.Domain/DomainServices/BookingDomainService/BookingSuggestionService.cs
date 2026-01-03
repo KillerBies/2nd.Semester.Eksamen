@@ -23,8 +23,10 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
             _dayRepository = scheduleDayRepository;
         }
 
-
-        public async Task<List<BookingSuggestion>> GetBookingSugestions(List<TreatmentBooking> treatments,DateOnly startDate,int numberOfDaysToCheck,int neededSuggestions,int interval,List<TreatmentBooking> treatmentBookingsToEdit = null)
+        //user wants specific time start ergo... 16:45
+        //they give it to the form
+        //when generating suggestions it should go is the given start or end time between first employee start and end. If no throw it out.
+        public async Task<List<BookingSuggestion>> GetBookingSugestions(List<TreatmentBooking> treatments, DateOnly startDate, int numberOfDaysToCheck, int neededSuggestions, int interval, List<TreatmentBooking> treatmentBookingsToEdit = null, TimeOnly Start = default)
         {
             var suggestions = new List<BookingSuggestion>();
             if (!treatments.Any())
@@ -74,6 +76,14 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
                     var slotStart = slot.Start;
                     var slotEnd = slot.End;
 
+                    if(Start != default)
+                    {
+                        if (Start > slotStart && Start < slotEnd)
+                            slotStart = Start;
+                        else
+                            slotStart = new TimeOnly(slotStart.Hour,Start.Minute);
+                    }
+
                     while (slotStart.Add(first.Duration) <= slotEnd)
                     {
                         potentialStarts.Add(slotStart);
@@ -106,7 +116,7 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
 
                         // Check if the time slot is free
                         var slotAvailable = day.TimeRanges.Any(r =>
-                            r.Type == "Freetime" && 
+                            r.Type == "Freetime" &&
                             r.Start <= currentStart && //the free timerange start must be before or at the treatments start
                             currentEnd <= r.End //the free timerange must end after or at the end of the treatment
                         );

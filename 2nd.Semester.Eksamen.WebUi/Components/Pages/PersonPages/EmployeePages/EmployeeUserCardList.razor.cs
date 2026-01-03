@@ -53,6 +53,12 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
                 LoadFailed = true;
             }
         }
+        private void OnEditBooking(BookingEditContext context)
+        {
+            if (context.Booking == null)
+                return;
+            Nav.NavigateTo($"/BookingForm/{context.Booking.CustomerId}/{context.Booking.BookingId}");
+        }
         private async Task EmployeeSelect(EmployeeDetailsDTO employee)
         {
             ContextStack.Push(new EmployeeDetailsContext(employee));

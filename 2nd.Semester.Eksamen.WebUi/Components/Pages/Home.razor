@@ -45,12 +45,10 @@
                     }
                     else
                     {
-                        <div class="grid grid-3">
+                            <div class="dTO-grid">
                             @foreach (var booking in bookings)
                             {
-                                <div class="grid-item">
-                                    <BookingHomepage CurrentTime="CurrentTime" booking="booking" OnCancelClick="GetBookingWarning" OnPaymentClick="() => ShowBookingPayment = true"></BookingHomepage>
-                                </div>
+                                    <BookingHomepage CurrentTime="CurrentTime" booking="booking" OnCancelClick="GetBookingWarning" OnPaymentClick="Pay"></BookingHomepage>
                             }
                         </div>
                     }
@@ -77,8 +75,7 @@
 @if (ShowBookingPayment)
 {
     <SidePage IsVisible="ShowBookingPayment" IsVisibleChanged="@(v => ShowBookingPayment = v)">
-        @selectedBooking.BookingId
         <div style="width:30vw;"></div>
-        <FinalizePayment id="@selectedBooking.CustomerId" Booking="selectedBooking"></FinalizePayment>
+        <FinalizePayment Booking="PayBooking"></FinalizePayment>
     </SidePage>
 }

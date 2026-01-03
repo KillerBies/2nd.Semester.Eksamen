@@ -72,7 +72,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             });
             return treatmentDTOs;
         }
-        public async Task<List<BookingDTO>> GetBookingSuggestionsAsync(List<TreatmentBookingDTO> treatments, DateOnly startdate, int numberOfDaysToCheck, int numberOfSuggestions, int interval, List<TreatmentBookingDTO> treatmentsToEdit = null)
+        public async Task<List<BookingDTO>> GetBookingSuggestionsAsync(List<TreatmentBookingDTO> treatments, DateOnly startdate, int numberOfDaysToCheck, int numberOfSuggestions, int interval, TimeOnly Start = default, List < TreatmentBookingDTO> treatmentsToEdit = null)
         {
             List<TreatmentBooking> EditTreatments = null;
             if(treatmentsToEdit != null)
@@ -97,7 +97,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     }
                 }
             }
-            List<BookingSuggestion> suggestions = await _suggestionService.GetBookingSugestions(TreatmentBookings, startdate, numberOfDaysToCheck, numberOfSuggestions, interval, EditTreatments);
+            List<BookingSuggestion> suggestions = await _suggestionService.GetBookingSugestions(TreatmentBookings, startdate, numberOfDaysToCheck, numberOfSuggestions, interval, EditTreatments, Start);
             List<BookingDTO> bookingDTOs = suggestions.Select(s => new BookingDTO
             {
                 Start = s.Start,

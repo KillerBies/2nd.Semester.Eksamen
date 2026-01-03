@@ -7,7 +7,7 @@
 @if (ShowEmployeeDetails)
 {
     <CreateWindow IsVisible="ShowEmployeeDetails" IsVisibleChanged="@(v => ShowEmployeeDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
-        <DetailWindow Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+        <DetailWindow OnEditBooking="OnEditBooking" Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
     </CreateWindow>
 }
 @if (ShowDelete)

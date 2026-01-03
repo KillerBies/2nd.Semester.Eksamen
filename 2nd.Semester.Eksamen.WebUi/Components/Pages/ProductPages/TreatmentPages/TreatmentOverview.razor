@@ -5,8 +5,8 @@
 @rendermode InteractiveServer
 
 
-
-<div style="background-color:#F3F2F2; height:100vh">
+<div style="background-color:#F3F2F2; min-height:100vh;">
+<div style="background-color:#F3F2F2; height:100%">
     <div class="overview-page">
         <div class="shadow-sm" style="background-color:#F3F2F2;">
             <div class="page-header">
@@ -78,6 +78,7 @@
                 </div>
             </div>
         </div>
+        </div>
     </div>
 </div>
 
@@ -90,7 +91,7 @@
 @if (ShowDetails)
 {
     <CreateWindow IsVisible="ShowDetails" IsVisibleChanged="@(v => ShowDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
-        <DetailWindow Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+        <DetailWindow OnEditBooking="OnEditBooking" Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
     </CreateWindow>
 }
 @if (ShowDelete)

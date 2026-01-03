@@ -72,6 +72,7 @@
                                                 OnClickCustomer="ClickCustomer"
                                                 OnClickEmployee="ClickEmployee"
                                                 OnClickTreatment="ClickTreatment"
+                                                OnPay="PayBooking"
                                                 IsSnapshot="false" />
                                 break;
                             case BookingSnapShotContext bsc:
@@ -82,11 +83,6 @@
                                                 OnPay="PayBooking"
                                                 OnClickOrder="ClickOrder"
                                                 IsSnapshot="true" />
-                                break;
-                            case BookingEditContext bec:
-                                <BookingForm IsEdit="true"
-                                             EditBooking="bec.Booking"
-                                             OnClose="()=>Refresh.InvokeAsync()" />
                                 break;
                             case BookingPayContext bpc:
                                 <FinalizePayment Booking="bpc.Booking"
@@ -232,6 +228,7 @@
     [Parameter] public Stack<DetailsContext> ContextHistory { get; set; } = new();
     [Parameter] public EventCallback<DetailsContext> OnPushContext { get; set; }
     [Parameter] public EventCallback<DetailsContext> OnDelete { get; set; }
+    [Parameter] public EventCallback<BookingEditContext> OnEditBooking { get; set; }
     [Parameter] public EventCallback<int> OnAddBookingToCustomer { get; set; }
     [Parameter] public EventCallback Refresh { get; set; }
     private readonly List<DetailsContext> _history = new();
@@ -252,7 +249,7 @@
                 NavigateForward(new TreatmentEditContext(tc.Treatment));
                 break;
             case BookingDetailsContext bdc:
-                NavigateForward(new BookingEditContext(bdc.Booking));
+                await EditBooking(new BookingEditContext(bdc.Booking));
                 break;
             case EmployeeDetailsContext edc:
                 NavigateForward(new EmployeeEditContext(edc.Employee));
@@ -274,6 +271,10 @@
     private async Task PushContext(DetailsContext context)
     {
         NavigateForward(context);
+    }
+    private async Task EditBooking(BookingEditContext context)
+    {
+        await OnEditBooking.InvokeAsync(context);
     }
     private async Task ClickCustomer(Guid customerGuid)
     {
