@@ -13,6 +13,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         public int OrderId { get; set; }
         public Guid OrderGuid { get; set; }
         public Guid BookingGuid { get; set; }
+        public int BookingId { get; set; }
         public DateOnly Date { get; set; }
         public Guid TreatmentGuid { get; set; }
         public int TreatmentSnapsohtId { get; set; }
@@ -40,7 +41,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
             BookingGuid = os.BookingSnapshot.Guid;
             Duration = treatmentSnapshot.Duration;
             Category = treatmentSnapshot.Category;
+            BookingId = os.BookingSnapshot.Id;
         }
-
     }
 }

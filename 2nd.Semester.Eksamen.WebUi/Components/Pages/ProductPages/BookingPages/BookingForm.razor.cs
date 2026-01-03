@@ -1,21 +1,22 @@
-﻿using _2nd.Semester.Eksamen.Application.DTO;
-using _2nd.Semester.Eksamen.Application.Services;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.WebUi.Components.Shared;
-using _2nd.Semester.Eksamen.Application.Services.BookingServices;
+﻿using _2nd.Semester.Eksamen.Application.Adapters;
+using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
-using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using _2nd.Semester.Eksamen.Application.Services;
+using _2nd.Semester.Eksamen.Application.Services.BookingServices;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using _2nd.Semester.Eksamen.WebUi.Components.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using System.Diagnostics.SymbolStore;
 using System.Globalization;
 using System.Security.Principal;
-using _2nd.Semester.Eksamen.Application.Adapters;
-using System.Diagnostics.SymbolStore;
-using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
-using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 {
@@ -37,8 +38,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         [Parameter] public BookingDTO EditBooking { get; set; }
         public BookingDTO Booking { get; set; } = new();
         [Parameter] public bool IsEdit { get; set; } = false;
-        [Parameter]
-        public int CustomerId { get; set; }
+        [Parameter] public int CustomerId { get; set; }
         private string ErrorMsg = "";
         private int Interval { get; set; } = 60;
         [Parameter] public EventCallback OnClose { get; set; }
@@ -94,7 +94,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
                     CustomerName = Booking.Customer.Name;
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 AllTreatments = new List<TreatmentDTO>();
                 AllEmployees = new List<EmployeeDTO>();

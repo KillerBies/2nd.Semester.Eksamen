@@ -13,6 +13,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
         public int Id { get; set; }
         public Guid Guid { get; set; }
         public DateOnly DateOfPayment { get; set; }
+        public int BookingId { get; set; }
         public List<TreatmentHistoryDTO> Treatments { get; set; }
         public string Discount { get; set; }
         public Guid DiscountGuid { get; set; }
@@ -37,6 +38,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO
             BookingEnd = os.BookingSnapshot.End;
             BookingDuration = os.BookingSnapshot.Duration;
             BookingGuid = os.BookingSnapshot.Guid;
+            BookingId = os.BookingSnapshot.Id;
             if (os.AppliedDiscountSnapshot != null)
             {
                 DiscountGuid = os.AppliedDiscountSnapshot.Guid;

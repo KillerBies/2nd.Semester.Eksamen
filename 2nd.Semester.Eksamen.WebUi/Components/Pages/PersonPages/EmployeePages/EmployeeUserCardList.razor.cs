@@ -46,7 +46,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
             try
             {
                 LoadFailed = false;
-
                 Employees = (await EmployeeRepository.GetAllAsync()).Select(e => new EmployeeDetailsDTO(e)).ToList();
             }
             catch
@@ -59,13 +58,15 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
             ContextStack.Push(new EmployeeDetailsContext(employee));
             ShowEmployeeDetails = true;
         }
-        private async Task Delete(DetailsContext context)
+        private void Delete(DetailsContext context)
         {
             DeleteContext = context;
             ShowDelete = true;
         }
-        private async Task AddBookingToCustomer(int customerId)
+        private void AddBookingToCustomer(int customerId)
         {
+            if (customerId <= 0)
+                return;
             Nav.NavigateTo($"/BookingForm/{customerId}");
         }
 

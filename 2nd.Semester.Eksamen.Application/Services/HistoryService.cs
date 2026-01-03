@@ -16,6 +16,7 @@ using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.Bookin
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,7 +53,7 @@ namespace _2nd.Semester.Eksamen.Application.Services
         }
         public async Task<List<BookingDTO>> GetCustomerUpcommingHistoryByGuidAsync(Guid customerGuid)
         {
-            return (await _bookingRepository.GetByCustomerGuidAsync(customerGuid)).Select(tb => new BookingDTO(tb)).ToList();
+            return (await _bookingRepository.GetByCustomerGuidAsync(customerGuid)).Where(b=>b.Status == BookingStatus.Pending).Select(tb => new BookingDTO(tb)).ToList();
         }
         public async Task<List<TreatmentHistoryDTO>> GetEmployeeTreatmentHistoryByGuidAsync(Guid employeeGuid)
         {
@@ -80,7 +81,7 @@ namespace _2nd.Semester.Eksamen.Application.Services
                 var customer = (await _bookingRepository.GetByIDAsync(treatment.BookingID)).Customer;
                 if (customer is PrivateCustomer pc)
                 {
-                    treatmentDTOs.Add(new TreatmentBookingDTO(treatment) { CustomerGuid = customer.Guid, CustomerId = customer.Id, CustomerName = pc.Name + " " + pc.LastName });
+                    treatmentDTOs.Add(new TreatmentBookingDTO(treatment) { CustomerGuid = customer.Guid, CustomerId = customer.Id, CustomerName = pc.Name + " " + pc.LastName, BookingGuid = treatment.Booking.Guid});
                 }
                 else
                 {
@@ -132,10 +133,24 @@ namespace _2nd.Semester.Eksamen.Application.Services
         {
             var customer = await _customerRepository.GetByGuidAsync(customerGuid);
             if(customer != null)
-                return new CustomerDetailsContext(new CustomerDTO(customer));
+            {
+                CustomerDTO dto = customer switch
+                {
+                    PrivateCustomer pc => new PrivateCustomerDTO(pc),
+                    CompanyCustomer cc => new CompanyCustomerDTO(cc),
+                };
+                return new CustomerDetailsContext(dto);
+            }
             var customerSnap =  await _historyRepo.GetCustomerSnapShotByGuidAsync(customerGuid);
             if(customerSnap != null)
-                return new CustomerSnapShotDetailsContext(new CustomerDTO(customerSnap));
+            {
+                CustomerDTO dto = customerSnap switch
+                {
+                    PrivateCustomerSnapshot pc => new PrivateCustomerDTO(pc),
+                    CompanyCustomerSnapshot cc => new CompanyCustomerDTO(cc),
+                };
+                return new CustomerSnapShotDetailsContext(dto);
+            }
             throw new Exception("Customer not found");
         }
         public async Task<DetailsContext?> GetTreatmentByGuid(Guid treatmentGuid)

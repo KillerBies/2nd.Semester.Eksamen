@@ -165,7 +165,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         }
         public async Task<CustomerDTO?> GetCustomerByIDAsync(int id)
         {
-            return ToDTOAdapter.CustomerToDTO(await _customerRepository.GetByIDAsync(id));
+            return new CustomerDTO((await _customerRepository.GetByIDAsync(id)));
         }
 
 

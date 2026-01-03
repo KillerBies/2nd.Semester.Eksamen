@@ -40,6 +40,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 .Where(bt => bt.Employee.Guid == guid)
                 .Include(o => o.Treatment)
                 .Include(o => o.Employee)
+                .Include(o=>o.Booking)
                 .ToListAsync();
         }
         public async Task BookTreatmentAsync(TreatmentBooking treatmentBooking)

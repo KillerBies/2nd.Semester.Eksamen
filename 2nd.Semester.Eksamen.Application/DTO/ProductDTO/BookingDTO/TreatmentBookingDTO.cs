@@ -15,6 +15,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
 {
     public class TreatmentBookingDTO
     {
+        public int BookingId { get; set; }
         public Guid BookingGuid { get; set; }
         [Required]
         public TreatmentDTO Treatment { get; set; } = new();
@@ -34,17 +35,18 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
                 Price = Math.Round(Employee.BasePriceMultiplier * Treatment.BasePrice);
             }
         }
-        public TreatmentBookingDTO(TreatmentBooking tb, Guid bookingGuid = default)
+        public TreatmentBookingDTO(TreatmentBooking tb, Guid bookingGuid = default, int bookingId = 0)
         {
             Treatment = new TreatmentDTO(tb.Treatment);
             Employee = new EmployeeDTO(tb.Employee);
             Start = tb.Start;
             End = tb.End;
             Price = tb.Price;
-            if(bookingGuid != default)
+            if (bookingGuid != default)
                 BookingGuid = bookingGuid;
+            BookingId = tb.BookingID;
         }
-        public TreatmentBookingDTO(TreatmentBookingDTO tb, Guid bookingGuid = default)
+        public TreatmentBookingDTO(TreatmentBookingDTO tb, Guid bookingGuid = default, int bookingId = 0)
         {
             Treatment = new TreatmentDTO(tb.Treatment);
             Employee = new EmployeeDTO(tb.Employee);
@@ -54,8 +56,9 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             BookingGuid = tb.BookingGuid;
             if (bookingGuid != default)
                 BookingGuid = bookingGuid;
+            BookingId = bookingId;
         }
-        public TreatmentBookingDTO(TreatmentSnapshot tb, Guid bookingGuid = default)
+        public TreatmentBookingDTO(TreatmentSnapshot tb, Guid bookingGuid = default, int bookingId = 0)
         {
             Treatment = new TreatmentDTO(tb);
             Employee = new EmployeeDTO(tb);
@@ -64,6 +67,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             CustomerGuid = tb.BookingSnapshot.CustomerSnapshot.Guid;
             if (bookingGuid != default)
                 BookingGuid = bookingGuid;
+            BookingId = bookingId;
         }
         public TreatmentBookingDTO()
         {

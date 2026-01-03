@@ -13,6 +13,14 @@
 @using Components.Pages.ProductPages.BookingPages
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
 @using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
+@using _2nd.Semester.Eksamen.Application;
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+@using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
+@using Microsoft.AspNetCore.Components;
+@using System.ComponentModel;
+@using _2nd.Semester.Eksamen.Application;
 @inject IBookingService bookingService
 
 
@@ -86,7 +94,7 @@
                                         <strong><p>@booking.Start.ToString("t") til @booking.End.ToString("t")</p></strong>
                                     </div>
                                     <div class="card-footer bg-transparent border-0">
-                                        <button class="btn card-btn" @onclick="() => ShowOverlay(booking)">Se detaljer</button>
+                                        <button class="btn card-btn" @onclick="() => BookingSelect(new BookingDetailsContext(booking))">Se detaljer</button>
                                     </div>
                                 </div>
                             }
@@ -95,13 +103,14 @@
                                 <div class="grid-item  shadow-sm" style="display: flex; flex-direction: column;">
                                     <div class="info">
                                         <div style="display:flex; margin-bottom:20px;">
-                                            <h4 style="color: #034265;">@booking.CustomerSnapshot.Name</h4>
-                                            <span class="badge ms-auto" style="background: #e0f2ff;  color: #0369a1;">Completed</span>
+                                            <h4 style="color: #034265;">@booking.Customer.Name</h4>
+                                            <span class="badge ms-auto" style="background: #ecfdf5;  color: #065f46;">Completed</span>
                                         </div>
-                                        <strong><p>@booking.OrderSnapshot.DateOfPayment.ToString("ddd/d/MMM")</p></strong>
+                                        <strong><p>@booking.Start.ToString("ddd/d/MMM")</p></strong>
+                                        <strong><p>@booking.Start.ToString("t") til @booking.End.ToString("t")</p></strong>
                                     </div>
                                     <div class="card-footer bg-transparent border-0" style="margin-top:auto;">
-                                        <button class="btn card-btn" @onclick="() => ShowOverlayCompleted(booking)">Se detaljer</button>
+                                        <button class="btn card-btn" @onclick="() => BookingSelect(new BookingSnapShotContext(booking))">Se detaljer</button>
                                     </div>
                                 </div>
                             }
@@ -111,44 +120,19 @@
             </div>
         </div>
     </div>
+</div>
+<div>
     @if (ShowDetails)
     {
-        <SidePage IsVisible="ShowDetails" IsVisibleChanged="@(v => ShowDetails = v)">
-            <BookingDetails OnClose="() => ShowDetails = false" OnDelete="DeleteBookingWarning" OnEdit="() => OpenEdit = true" OnPay="() => ShowPaymentWindow = true" SelectedBooking="SelectedBooking" ShowBookingDetails="ShowBookingDetails" ShowCompletedDetails="ShowCompletedDetails" SelectedCompletedBooking="SelectedCompletedBooking"> </BookingDetails>
-        </SidePage>
+        <CreateWindow IsVisible="ShowDetails" IsVisibleChanged="@(v => ShowDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
+            <DetailWindow Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+        </CreateWindow>
     }
-</div>
-<div style="z-index: 9999;">
-
-    @if (toggleBookingWarning)
+    @if (ShowDelete)
     {
-        <BookingNotification IsVisible="toggleBookingWarning" IsVisibleChanged="@(v => toggleBookingWarning = v)">
-            <div class="mt-2">
-                <p>Er du sikker på du vil slette bookingen?</p>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-secondary" @onclick="() => toggleBookingWarning = false">Annuller</button>
-                    <button class="btn btn-danger" @onclick="ConfirmDeleteBooking">Slet booking</button>
-                </div>
-            </div>
-        </BookingNotification>
-    }
-
-    @if (ShowPaymentWindow)
-    {
-        <SidePage IsVisible="ShowPaymentWindow"
-                  IsVisibleChanged="@(v => ShowPaymentWindow = v)">
-            <div style="width:30vw;z-index: 9999;"></div>
-            <FinalizePayment id="@SelectedBooking.CustomerId" Booking="SelectedBooking"></FinalizePayment>
-        </SidePage>
-    }
-
-    @if (OpenEdit)
-    {
-        <SidePage IsVisible="OpenEdit"
-                  IsVisibleChanged="@(v => OpenEdit = v)">
-            <div style="width:30vw;z-index: 9999;"></div>
-            <BookingForm OnClose="Refresh" CustomerId="@SelectedBooking.CustomerId" EditBooking="SelectedBooking" IsEdit="true"></BookingForm>
-        </SidePage>
+        <CreateWindow IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)" StyleParameters="background-color: #F3F2F2; margin:2rem;width:fit-content; height:fit-content;scrollbar-width:none;z-index:9999;">
+            <DeleteWindow Refresh="Refresh" context="DeleteContext"></DeleteWindow>
+        </CreateWindow>
     }
 </div>
 
@@ -157,102 +141,3 @@
 
 
 
-
-
-
-@code {
-    [Inject] NavigationManager Navi { get; set; }
-    [Inject] IBookingOverviewService _bookingOverviewService { get; set; }
-
-    private List<BookingDTO> bookingList = new();
-    private List<BookingSnapshot> CompletedBookings { get; set; } = new();
-
-    private BookingDTO SelectedBooking { get; set; } = new();
-    private BookingSnapshot SelectedCompletedBooking { get; set; }
-
-    private bool toggleBookingWarning = false;
-    private bool LoadFailed = false;
-    private bool OpenEdit = false;
-    private bool ShowDetails = false;
-    private bool ShowBookingDetails = false;
-    private bool ShowCompletedDetails = false;
-    private bool ShowPaymentWindow = false;
-
-    private DateTime CurrentTime => DateTime.Now;
-
-    private string SearchTermCustomer = "";
-    private DateTime? SearchTermDateStart;
-    private DateTime? SearchTermDateEnd;
-
-    private IEnumerable<BookingDTO> FilteredBookings =>
-        bookingList
-            .Where(b =>
-                string.IsNullOrWhiteSpace(SearchTermCustomer) ||
-                b.Customer.Name.Contains(SearchTermCustomer, StringComparison.OrdinalIgnoreCase))
-            .Where(b =>
-                (!SearchTermDateStart.HasValue || b.Start.Date >= SearchTermDateStart.Value.Date) &&
-                (!SearchTermDateEnd.HasValue || b.Start.Date <= SearchTermDateEnd.Value.Date));
-
-    private IEnumerable<BookingSnapshot> FilterdCompletedBookings =>
-        CompletedBookings
-            .Where(b =>
-                string.IsNullOrWhiteSpace(SearchTermCustomer) ||
-                b.CustomerSnapshot.Name.Contains(SearchTermCustomer, StringComparison.OrdinalIgnoreCase))
-            .Where(b =>
-                (!SearchTermDateStart.HasValue || b.OrderSnapshot.DateOfPayment >= DateOnly.FromDateTime(SearchTermDateStart.Value)) &&
-                (!SearchTermDateEnd.HasValue || b.OrderSnapshot.DateOfPayment <= DateOnly.FromDateTime(SearchTermDateEnd.Value)));
-
-    private int TodayCount =>
-        bookingList.Count(b => b.Start.Date == CurrentTime.Date);
-
-    private int PendingCount =>
-        bookingList.Count(b => b.Status == BookingStatus.Pending);
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            bookingList = await _bookingOverviewService.GetAllBookingsAsync();
-
-            CompletedBookings = await _bookingOverviewService.GetAllCompletedBookings();
-
-            if (bookingList.Any())
-                SelectedBooking = bookingList.First();
-        }
-        catch
-        {
-            LoadFailed = true;
-        }
-    }
-
-    void ShowOverlay(BookingDTO booking)
-    {
-        SelectedBooking = booking;
-        ShowBookingDetails = true;
-        ShowCompletedDetails = false;
-        ShowDetails = true;
-    }
-
-    void ShowOverlayCompleted(BookingSnapshot booking)
-    {
-        SelectedCompletedBooking = booking;
-        ShowBookingDetails = false;
-        ShowCompletedDetails = true;
-        ShowDetails = true;
-    }
-
-    void DeleteBookingWarning()
-    {
-        toggleBookingWarning = true;
-    }
-
-    private async Task ConfirmDeleteBooking()
-    {
-        await _bookingOverviewService.DeleteBookingAsync(SelectedBooking);
-        Refresh();
-    }
-    private void Refresh()
-    {
-        Navi.Refresh(true);        
-    }
-}

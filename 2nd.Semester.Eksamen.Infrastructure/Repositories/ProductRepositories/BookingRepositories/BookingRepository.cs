@@ -321,14 +321,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             return await _context.Bookings
         .Include(b => b.Customer)
             .ThenInclude(c => c.Address)
-
         .Include(b => b.Treatments)
             .ThenInclude(tb => tb.Treatment)
-
         .Include(b => b.Treatments)
             .ThenInclude(tb => tb.TreatmentBookingProducts)
                 .ThenInclude(tbp => tbp.Product)
-
+        .Include(b => b.Treatments)
+        .ThenInclude(t => t.Employee)
+        .ThenInclude(e => e.Address)
         .Where(b => b.Customer.Guid == guid).ToListAsync();
         }
         public async Task<List<Booking>?> GetByEmployeeGuidAsync(Guid guid)

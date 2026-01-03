@@ -15,250 +15,272 @@
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages.DiscountCreationPages
 @rendermode InteractiveServer
 
-@switch (CurrentContext)
+@if (CurrentContext is not null)
 {
-    case OrderSnapShotContext o:
-        <OrderDetails OrderContext="o"
-                      OnClickCustomer="ClickCustomer"
-                      OnClickBooking="ClickBooking"
-                      OnClickTreatment="ClickTreatment"
-                      OnClickDiscount="ClickDiscount"
-                      OnClickEmployee="ClickEmployee"
-                      OnClickProduct="ClickProduct"/>
-        break;
-    case ContextProduct p:
-        @switch (p)
-        {
-            case ProductContext pc:
-                <ProductDetails Context="pc"
-                                OnEdit="() => PushEditContext(pc)"
-                                OnDelete="() => OnDelete.InvokeAsync(pc)"
-                                OnClickCustomer="ClickCustomer"
-                                OnClickOrder="ClickOrder"
-                                IsSnapshot="false"/>
-                break;
-            case ProductSnapShotContext psc:
-                <ProductDetails SnapshotContext="psc"
-                                OnEdit="() => PushEditContext(psc)"
-                                OnDelete="() => OnDelete.InvokeAsync(psc)"
-                                IsSnapshot="true"
-                                OnClickCustomer="ClickCustomer"
-                                OnClickOrder="ClickOrder" />
-                break;
-            case ProductEditContext pec:
-                <CreateProduct  EditProduct="pec.Product"
-                                OnClose="()=>Refresh.InvokeAsync()"/>
-                break;
-        }
-        break;
-    case ContextBooking b:
-        @switch (b)
-        {
-            case BookingDetailsContext bdc:
-                <BookingContextDetailsPage Context="bdc"
-                                           OnEdit="() => PushEditContext(bdc)"
-                                           OnDelete="() => OnDelete.InvokeAsync(bdc)"
-                                           OnClickCustomer="ClickCustomer"
-                                           OnClickEmployee="ClickEmployee"
-                                           OnClickTreatment="ClickTreatment"
-                                           IsSnapshot="false" />
-                break;
-            case BookingSnapShotContext bsc:
-                <BookingContextDetailsPage SnapshotContext="bsc"
-                                           OnEdit="() => PushEditContext(bsc)"
-                                           OnDelete="() => OnDelete.InvokeAsync(bsc)"
-                                           OnClickCustomer="ClickCustomer"
-                                           OnClickEmployee="ClickEmployee"
-                                           OnClickTreatment="ClickTreatment"
-                                           OnPay="PayBooking"
-                                           OnOrderClick="ClickOrder"
-                                           IsSnapshot="true" />
-                break;
-            case BookingEditContext bec:
-                <BookingForm IsEdit="true"
-                             EditBooking="bec.Booking"
-                             OnClose="()=>Refresh.InvokeAsync()"/>
-                break;
-            case BookingPayContext bpc:
-                <FinalizePayment Booking="bpc.Booking"
-                                 OnClose="()=>Refresh.InvokeAsync()" />
-                break;
-        }
-        break;
-    case ContextTreatment t:
-        @switch (t)
-        {
-            case TreatmentContext tc:
-                <TreatmentDetails Context="tc"
-                                  OnEdit="() => PushEditContext(tc)"
-                                  OnDelete="() => OnDelete.InvokeAsync(tc)"
-                                  OnClickCustomer="ClickCustomer"
-                                  OnClickEmployee="ClickEmployee"
-                                  OnClickTreatment="ClickTreatment"
-                                  OnClickBooking="ClickBooking"
-                                  IsSnapshot="false" />
-                break;
-            case TreatmentSnapshotContext tsc:
-                <TreatmentDetails SnapshotContext="tsc"
-                                  OnClickCustomer="ClickCustomer"
-                                  OnClickEmployee="ClickEmployee"
-                                  OnClickTreatment="ClickTreatment"
-                                  OnClickBooking="ClickBooking"
-                                  IsSnapshot="true" />
-                break;
-            case TreatmentEditContext tec:
-                <CreateTreatment IsEdit="true"
-                             TreatmentEdit="tec.Treatment"
-                             OnClose="()=>Refresh.InvokeAsync()" />
-                break;
-        }
-        break;
-    case ContextEmployee e:
-        @switch (e)
-        {
-            case EmployeeDetailsContext edc:
-                <EmployeeDetails Context="edc"
-                                 OnEdit="() => PushEditContext(edc)"
-                                 OnDelete="() => OnDelete.InvokeAsync(edc)"
-                                 OnClickCustomer="ClickCustomer"
-                                 OnClickEmployee="ClickEmployee"
-                                 OnClickTreatment="ClickTreatment"
-                                 OnClickBooking="ClickBooking"
-                                 IsSnapshot="false" />
-                break;
-            case EmployeeSnapShotContext esc:
-                <EmployeeDetails SnapshotContext="esc"
-                                 OnClickCustomer="ClickCustomer"
-                                 OnClickEmployee="ClickEmployee"
-                                 OnClickTreatment="ClickTreatment"
-                                 OnClickBooking="ClickBooking"
-                                 IsSnapshot="true" />
-                break;
-            case EmployeeEditContext eec:
-                <CreateEmployee IsEdit="true"
-                                 EditEmployeeID="eec.Employee.Id"
-                                 OnClose="()=>Refresh.InvokeAsync()" />
-                break;
-        }
-        break;
-    case ContextCustomer c:
-        @switch (c)
-        {
-            case CustomerDetailsContext cdc:
-                <CustomerDetails Context="cdc"
-                                 OnEdit="() => PushEditContext(cdc)"
-                                 OnDelete="() => OnDelete.InvokeAsync(cdc)"
-                                 OnClickCustomer="ClickCustomer"
-                                 OnClickEmployee="ClickEmployee"
-                                 OnClickTreatment="ClickTreatment"
-                                 OnClickBooking="ClickBooking"
-                                 OnAddBookingToCustomer="AddBookingToCustomer"
-                                 IsSnapshot="false" />
-                break;
-            case CustomerSnapShotDetailsContext csd:
-                <CustomerDetails SnapshotContext="csd"
-                                 OnClickCustomer="ClickCustomer"
-                                 OnClickEmployee="ClickEmployee"
-                                 OnClickTreatment="ClickTreatment"
-                                 OnClickBooking="ClickBooking"
-                                 IsSnapshot="true" />
-                break;
-            case CustomerEditContext cec:
-                <CreateCustomerDetail 
-                                Customer="cec.Customer"
-                                OnClose="()=>Refresh.InvokeAsync()" />
-                break;
-        }
-        break;
-    case ContextDiscount d:
-        @switch (d)
-        {
-            case DiscountContext dc:
-                <DiscountDetails Context="dc"
-                                 OnEdit="() => PushEditContext(dc)"
-                                 OnDelete="() => OnDelete.InvokeAsync(dc)"
-                                 OnClickCustomer="ClickCustomer"
-                                 OnClickOrder="ClickOrder"
-                                 OnClickProduct="ClickProduct"
-                                 IsSnapshot="false" />
-                break;
-            case DiscountSnapShotContext dsc:
-                <DiscountDetails SnapshotContext="dsc"
-                                 OnClickCustomer="ClickCustomer"
-                                 OnClickOrder="ClickOrder"
-                                 OnClickProduct="ClickProduct"
-                                 IsSnapshot="true" />
-                break;
-            case DiscountEditContext dec:
-                @if (dec.Discount.Type == "Kampagne Rabat")
-                {
-                    <CreateCampaignDiscount discountEdit="dec.Discount"
-                                            IsEdit="true"
-                    OnClose="()=>Refresh.InvokeAsync()" />
-                }
-                else
-                {
-                    <CreateLoyaltyDiscount discountEdit="dec.Discount"
-                                            IsEdit="true"
-                                            OnClose="()=>Refresh.InvokeAsync()" />
-                }
-                break;
-        }
-        break;
-}
+    <div class="details-container">
 
+        <button class="nav-arrow left"
+                disabled="@(ContextStack.Count <= 1)"
+                @onclick="NavigateBack">
+            ‹
+        </button>
+
+        <div class="details-window-wrapper">
+            <div class="details-window @(IsNavigatingBack ? "slide-from-right" : "slide-from-left")" @key="CurrentContext">
+
+                @switch (CurrentContext)
+                {
+                    case OrderSnapShotContext o:
+                        <OrderDetails OrderContext="o"
+                                      OnClickCustomer="ClickCustomer"
+                                      OnClickBooking="ClickBooking"
+                                      OnClickTreatment="ClickTreatment"
+                                      OnClickDiscount="ClickDiscount"
+                                      OnClickEmployee="ClickEmployee"
+                                      OnClickProduct="ClickProduct" />
+                        break;
+                    case ContextProduct p:
+                        @switch (p)
+                        {
+                            case ProductContext pc:
+                                <ProductDetails Context="pc"
+                                                OnEdit="() => PushEditContext(pc)"
+                                                OnDelete="Delete"
+                                                OnClickCustomer="ClickCustomer"
+                                                OnClickOrder="ClickOrder"
+                                                IsSnapshot="false" />
+                                break;
+                            case ProductSnapShotContext psc:
+                                <ProductDetails SnapshotContext="psc"
+                                                IsSnapshot="true"
+                                                OnClickCustomer="ClickCustomer"
+                                                OnClickOrder="ClickOrder" />
+                                break;
+                            case ProductEditContext pec:
+                                <CreateProduct EditProduct="pec.Product"
+                                               OnClose="()=>Refresh.InvokeAsync()" />
+                                break;
+                        }
+                        break;
+                    case ContextBooking b:
+                        @switch (b)
+                        {
+                            case BookingDetailsContext bdc:
+                                <BookingDetails Context="bdc"
+                                                OnEdit="() => PushEditContext(bdc)"
+                                                OnDelete="Delete"
+                                                OnClickCustomer="ClickCustomer"
+                                                OnClickEmployee="ClickEmployee"
+                                                OnClickTreatment="ClickTreatment"
+                                                IsSnapshot="false" />
+                                break;
+                            case BookingSnapShotContext bsc:
+                                <BookingDetails SnapshotContext="bsc"
+                                                OnClickCustomer="ClickCustomer"
+                                                OnClickEmployee="ClickEmployee"
+                                                OnClickTreatment="ClickTreatment"
+                                                OnPay="PayBooking"
+                                                OnClickOrder="ClickOrder"
+                                                IsSnapshot="true" />
+                                break;
+                            case BookingEditContext bec:
+                                <BookingForm IsEdit="true"
+                                             EditBooking="bec.Booking"
+                                             OnClose="()=>Refresh.InvokeAsync()" />
+                                break;
+                            case BookingPayContext bpc:
+                                <FinalizePayment Booking="bpc.Booking"
+                                                 OnClose="()=>Refresh.InvokeAsync()" />
+                                break;
+                        }
+                        break;
+                    case ContextTreatment t:
+                        @switch (t)
+                        {
+                            case TreatmentContext tc:
+                                <TreatmentDetails Context="tc"
+                                                  OnEdit="() => PushEditContext(tc)"
+                                                  OnDelete="Delete"
+                                                  OnClickCustomer="ClickCustomer"
+                                                  OnClickEmployee="ClickEmployee"
+                                                  OnClickTreatment="ClickTreatment"
+                                                  OnClickBooking="ClickBooking"
+                                                  IsSnapshot="false" />
+                                break;
+                            case TreatmentSnapshotContext tsc:
+                                <TreatmentDetails SnapshotContext="tsc"
+                                                  OnClickCustomer="ClickCustomer"
+                                                  OnClickEmployee="ClickEmployee"
+                                                  OnClickTreatment="ClickTreatment"
+                                                  OnClickBooking="ClickBooking"
+                                                  IsSnapshot="true" />
+                                break;
+                            case TreatmentEditContext tec:
+                                <CreateTreatment IsEdit="true"
+                                                 TreatmentEdit="tec.Treatment"
+                                                 OnClose="()=>Refresh.InvokeAsync()" />
+                                break;
+                        }
+                        break;
+                    case ContextEmployee e:
+                        @switch (e)
+                        {
+                            case EmployeeDetailsContext edc:
+                                <EmployeeDetails Context="edc"
+                                                 OnEdit="() => PushEditContext(edc)"
+                                                 OnDelete="Delete"
+                                                 OnClickCustomer="ClickCustomer"
+                                                 OnClickEmployee="ClickEmployee"
+                                                 OnClickTreatment="ClickTreatment"
+                                                 OnClickBooking="ClickBooking"
+                                                 IsSnapshot="false" />
+                                break;
+                            case EmployeeSnapShotContext esc:
+                                <EmployeeDetails SnapshotContext="esc"
+                                                 OnClickCustomer="ClickCustomer"
+                                                 OnClickEmployee="ClickEmployee"
+                                                 OnClickTreatment="ClickTreatment"
+                                                 OnClickBooking="ClickBooking"
+                                                 IsSnapshot="true" />
+                                break;
+                            case EmployeeEditContext eec:
+                                <CreateEmployee IsEdit="true"
+                                                EditEmployeeID="eec.Employee.Id"
+                                                OnClose="()=>Refresh.InvokeAsync()" />
+                                break;
+                        }
+                        break;
+                    case ContextCustomer c:
+                        @switch (c)
+                        {
+                            case CustomerDetailsContext cdc:
+                                <CustomerDetails Context="cdc"
+                                                 OnEdit="() => PushEditContext(cdc)"
+                                                 OnDelete="Delete"
+                                                 OnClickCustomer="ClickCustomer"
+                                                 OnClickEmployee="ClickEmployee"
+                                                 OnClickTreatment="ClickTreatment"
+                                                 OnClickBooking="ClickBooking"
+                                                 OnAddBookingToCustomer="OnAddBookingToCustomer"
+                                                 IsSnapshot="false" />
+                                break;
+                            case CustomerSnapShotDetailsContext csd:
+                                <CustomerDetails SnapshotContext="csd"
+                                                 OnClickCustomer="ClickCustomer"
+                                                 OnClickEmployee="ClickEmployee"
+                                                 OnClickTreatment="ClickTreatment"
+                                                 OnClickBooking="ClickBooking"
+                                                 IsSnapshot="true" />
+                                break;
+                            case CustomerEditContext cec:
+                                <CreateCustomerDetail Customer="cec.Customer"
+                                                      OnClose="()=>Refresh.InvokeAsync()" />
+                                break;
+                        }
+                        break;
+                    case ContextDiscount d:
+                        @switch (d)
+                        {
+                            case DiscountContext dc:
+                                <DiscountDetails Context="dc"
+                                                 OnEdit="() => PushEditContext(dc)"
+                                                 OnDelete="Delete"
+                                                 OnClickCustomer="ClickCustomer"
+                                                 OnClickOrder="ClickOrder"
+                                                 OnClickProduct="ClickProduct"
+                                                 IsSnapshot="false" />
+                                break;
+                            case DiscountSnapShotContext dsc:
+                                <DiscountDetails SnapshotContext="dsc"
+                                                 OnClickCustomer="ClickCustomer"
+                                                 OnClickOrder="ClickOrder"
+                                                 OnClickProduct="ClickProduct"
+                                                 IsSnapshot="true" />
+                                break;
+                            case DiscountEditContext dec:
+                                @if (dec.Discount.Type == "Kampagne Rabat")
+                                {
+                                    <CreateCampaignDiscount discountEdit="dec.Discount"
+                                                            IsEdit="true"
+                                                            OnClose="()=>Refresh.InvokeAsync()" />
+                                }
+                                else
+                                {
+                                    <CreateLoyaltyDiscount discountEdit="dec.Discount"
+                                                           IsEdit="true"
+                                                           OnClose="()=>Refresh.InvokeAsync()" />
+                                }
+                                break;
+                        }
+                        break;
+                }
+            </div>
+        </div>
+
+        <button class="nav-arrow right"
+                disabled="@(ContextHistory.Count < 1)" @onclick="NavigateForwardHistory">
+            ›
+        </button>
+
+    </div>
+}
 @code {
     public OrderHistoryDTO Order { get; set; }
     public string _errorMessage = string.Empty;
     [Inject] public IHistoryService _historyService { get; set; }
-    public DetailsContext CurrentContext => ContextStack.Peek();
-    [Parameter] public Stack<DetailsContext> ContextStack { get; set; } = new();
+    [Parameter] public Stack<DetailsContext> ContextStack { get; set; }
+    [Parameter] public Stack<DetailsContext> ContextHistory { get; set; } = new();
     [Parameter] public EventCallback<DetailsContext> OnPushContext { get; set; }
     [Parameter] public EventCallback<DetailsContext> OnDelete { get; set; }
     [Parameter] public EventCallback<int> OnAddBookingToCustomer { get; set; }
     [Parameter] public EventCallback Refresh { get; set; }
+    private readonly List<DetailsContext> _history = new();
+    private DetailsContext? CurrentContext => ContextStack.Count > 0 ? ContextStack.Peek() : null;
+    private bool IsNavigatingBack = false;
+    private int _index = -1;
     private async Task PushEditContext(DetailsContext context)
     {
         switch (context)
         {
             case ProductContext pc:
-                ContextStack.Push(new ProductEditContext(pc.Product));
+                NavigateForward(new ProductEditContext(pc.Product));
                 break;
             case CustomerDetailsContext cec:
-                ContextStack.Push(new CustomerEditContext(cec.Customer));
+                NavigateForward(new CustomerEditContext(cec.Customer));
                 break;
             case TreatmentContext tc:
-                ContextStack.Push(new TreatmentEditContext(tc.Treatment));
+                NavigateForward(new TreatmentEditContext(tc.Treatment));
                 break;
             case BookingDetailsContext bdc:
-                ContextStack.Push(new BookingEditContext(bdc.Booking));
+                NavigateForward(new BookingEditContext(bdc.Booking));
                 break;
             case EmployeeDetailsContext edc:
-                ContextStack.Push(new EmployeeEditContext(edc.Employee));
+                NavigateForward(new EmployeeEditContext(edc.Employee));
                 break;
             case DiscountContext dc:
-                ContextStack.Push(new DiscountEditContext(dc.Discount));
+                NavigateForward(new DiscountEditContext(dc.Discount));
                 break;
         }
     }
-    private async Task AddBookingToCustomer(int customerId)
+
+    private async Task Delete(DetailsContext context)
     {
-        await OnAddBookingToCustomer.InvokeAsync(customerId);
+        await OnDelete.InvokeAsync(context);
     }
-    private void PayBooking (BookingDTO booking)
+    private void PayBooking(BookingDTO booking)
     {
-        ContextStack.Push(new BookingPayContext(booking));
+        NavigateForward(new BookingPayContext(booking));
     }
     private async Task PushContext(DetailsContext context)
     {
-        ContextStack.Push(context);
+        NavigateForward(context);
     }
     private async Task ClickCustomer(Guid customerGuid)
     {
         try
         {
             var customerContext = await _historyService.GetCustomerByGuid(customerGuid);
-            ContextStack.Push(customerContext);
+            NavigateForward(customerContext);
         }
         catch (Exception)
         {
@@ -270,7 +292,7 @@
         try
         {
             var bookingContext = await _historyService.GetBookingByGuid(bookingGuid);
-            ContextStack.Push(bookingContext);
+            NavigateForward(bookingContext);
         }
         catch (Exception)
         {
@@ -282,7 +304,7 @@
         try
         {
             var orderContext = await _historyService.GetOrderSnapshotByGuid(orderGuid);
-            ContextStack.Push(orderContext);
+            NavigateForward(orderContext);
         }
         catch (Exception)
         {
@@ -294,7 +316,7 @@
         try
         {
             var treatmentContext = await _historyService.GetTreatmentByGuid(treatmentGuid);
-            ContextStack.Push(treatmentContext);
+            NavigateForward(treatmentContext);
         }
         catch (Exception)
         {
@@ -306,7 +328,7 @@
         try
         {
             var discountContext = await _historyService.GetDiscountByGuid(discountGuid);
-            ContextStack.Push(discountContext);
+            NavigateForward(discountContext);
         }
         catch (Exception)
         {
@@ -318,7 +340,7 @@
         try
         {
             var employeeContext = await _historyService.GetEmployeeByGuid(employeeGuid);
-            ContextStack.Push(employeeContext);
+            NavigateForward(employeeContext);
         }
         catch (Exception)
         {
@@ -330,7 +352,7 @@
         try
         {
             var productContext = await _historyService.GetProductByGuid(productGuid);
-            ContextStack.Push(productContext);
+            NavigateForward(productContext);
         }
         catch (Exception)
         {
@@ -338,4 +360,24 @@
         }
     }
 
+    private void NavigateBack()
+    {
+        if (ContextStack.Count <= 1)
+            return;
+
+        IsNavigatingBack = true;
+        ContextHistory.Push(ContextStack.Pop());
+    }
+
+    private void NavigateForward(DetailsContext context)
+    {
+        ContextHistory.Clear();
+        IsNavigatingBack = true;
+        ContextStack.Push(context);
+    }
+    private void NavigateForwardHistory()
+    {
+        IsNavigatingBack = false;
+        ContextStack.Push(ContextHistory.Pop());
+    }
 }

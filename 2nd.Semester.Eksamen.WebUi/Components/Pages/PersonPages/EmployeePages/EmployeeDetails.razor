@@ -102,7 +102,7 @@ else
                                         @foreach (var instance in Upcomming)
                                         {
                                             <tr>
-                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)" >@instance.BookingGuid</td>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
                                                 <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)" >@instance.CustomerName</td>
                                                 <td>@instance.Price</td>
                                                 <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.Treatment.TreatmentGuid)">@instance.Treatment.Name</td>
@@ -114,7 +114,7 @@ else
                                         @foreach (var instance in History)
                                         {
                                             <tr>
-                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingGuid</td>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
                                                 <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)">@instance.CustomerName</td>
                                                 <td>@instance.Price</td>
                                                 <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.TreatmentGuid)">@instance.TreatmentName</td>
@@ -128,7 +128,7 @@ else
                 </div>
             </div>
             <div class="btn-group w-100" style="height:min-content;">
-                <button class="btn card-btn w-50" style="background-color:crimson" @onclick="() => ShowConfirmDelete = true">Slet Medarbejder</button>
+                <button class="btn card-btn w-50" style="background-color:crimson" @onclick="()=> OnDelete.InvokeAsync(Context)">Slet Medarbejder</button>
                 <button class="btn card-btn" @onclick="() => OnEdit.InvokeAsync(Context)">Rediger</button>
             </div>
         </div>
@@ -212,7 +212,7 @@ else
                                         @foreach (var instance in Upcomming)
                                         {
                                             <tr>
-                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingGuid</td>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
                                                 <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)">@instance.CustomerName</td>
                                                 <td>@instance.Price</td>
                                                 <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.Treatment.TreatmentGuid)">@instance.Treatment.Name</td>
@@ -224,7 +224,7 @@ else
                                         @foreach (var instance in History)
                                         {
                                             <tr>
-                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingGuid</td>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
                                                 <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)">@instance.CustomerName</td>
                                                 <td>@instance.Price</td>
                                                 <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.TreatmentGuid)">@instance.TreatmentName</td>

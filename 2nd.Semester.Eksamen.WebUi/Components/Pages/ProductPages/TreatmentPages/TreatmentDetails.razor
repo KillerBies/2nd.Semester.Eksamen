@@ -10,35 +10,110 @@
 @using _2nd.Semester.Eksamen.Application.DTO;
 @using _2nd.Semester.Eksamen.Application
 @rendermode InteractiveServer
-@if(IsSnapshot)
-{
-    <div>
-        <div class="treatment-header d-flex align-items-start">
-            <div>
-                <h4 class="fw-semibold mb-1">@SelectedTreatmentSnapshot.Name</h4>
-                <span class="text-muted small">Behandling</span>
+<div class="card shadow-sm" style="background: #ffffff; padding: 1.5rem;">
+    @if (IsSnapshot)
+    {
+        <div>
+            <div class="treatment-header d-flex align-items-start">
+                <div>
+                    <h4 class="fw-semibold mb-1">@SelectedTreatmentSnapshot.Name</h4>
+                    <span class="text-muted small">Behandling</span>
+                </div>
+
+                <span class="badge badge-category ms-auto">
+                    @SelectedTreatmentSnapshot.Category
+                </span>
             </div>
 
-            <span class="badge badge-category ms-auto">
-                @SelectedTreatmentSnapshot.Category
-            </span>
+            <div class="treatment-info">
+                <div class="info-row">
+                    <span class="info-label">Pris</span>
+                    <span class="info-value">@SelectedTreatmentSnapshot.BasePrice.ToString("0") kr.</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Varighed</span>
+                    <span class="info-value">@SelectedTreatmentSnapshot.Duration.TotalMinutes min</span>
+                </div>
+                <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                    @if (SelectedTreatmentSnapshot == null || !History.Any())
+                    {
+                        <p class="text-muted mb-0 text-center">
+                            Ingen salgs historik fundet for dette produkt.
+                        </p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Kunde</th>
+                                    <th>Medarbejder</th>
+                                    <th>Dato</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var instance in History)
+                                {
+                                    <tr>
+                                        <td @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)" class="clickable">@instance.BookingId</td>
+                                        <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)" class="clickable">@instance.CustomerName</td>
+                                        <td @onclick="() => OnClickEmployee.InvokeAsync(instance.EmployeeGuid)" class="clickable">@instance.EmployeeName</td>
+                                        <td>@instance.Date.ToShortDateString()</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
         </div>
+    }
+    else
+    {
+        <div>
+            <div class="treatment-header d-flex align-items-start">
+                <div>
+                    <h4 class="fw-semibold mb-1">@selectedTreatment.Name</h4>
+                    <span class="text-muted small">Behandling</span>
+                </div>
 
-        <div class="treatment-info">
-            <div class="info-row">
-                <span class="info-label">Pris</span>
-                <span class="info-value">@SelectedTreatmentSnapshot.BasePrice.ToString("0") kr.</span>
+                <span class="badge badge-category ms-auto">
+                    @selectedTreatment.Category
+                </span>
             </div>
 
-            <div class="info-row">
-                <span class="info-label">Varighed</span>
-                <span class="info-value">@SelectedTreatmentSnapshot.Duration.TotalMinutes min</span>
+            <div class="treatment-info">
+                <div class="info-row">
+                    <span class="info-label">Pris</span>
+                    <span class="info-value">@selectedTreatment.BasePrice.ToString("0") kr.</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Varighed</span>
+                    <span class="info-value">@selectedTreatment.Duration.TotalMinutes min</span>
+                </div>
+
+                <div class="info-row align-items-start">
+                    <span class="info-label">Specialiteter</span>
+                    <div class="specialties">
+                        @foreach (var specialty in selectedTreatment.RequiredSpecialties)
+                        {
+                            <span class="badge badge-specialty">@specialty.Replace(",", "")</span>
+                        }
+                    </div>
+                </div>
             </div>
+
+            <p class="treatment-description">
+                @selectedTreatment.Description
+            </p>
             <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
-                @if (SelectedTreatmentSnapshot == null || !History.Any())
+                @if (selectedTreatment == null || !History.Any())
                 {
                     <p class="text-muted mb-0 text-center">
-                        Ingen salgs historik fundet for dette produkt.
+                        Ingen salgs historik fundet for denne behandling.
                     </p>
                 }
                 else
@@ -46,7 +121,7 @@
                     <table class="table table-sm mb-0 align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>Id</th>
+                                <th>BookingId</th>
                                 <th>Kunde</th>
                                 <th>Medarbejder</th>
                                 <th>Dato</th>
@@ -56,7 +131,7 @@
                             @foreach (var instance in History)
                             {
                                 <tr>
-                                    <td @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)" class="clickable">@instance.BookingGuid</td>
+                                    <td @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)" class="clickable">@instance.BookingId</td>
                                     <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)" class="clickable">@instance.CustomerName</td>
                                     <td @onclick="() => OnClickEmployee.InvokeAsync(instance.EmployeeGuid)" class="clickable">@instance.EmployeeName</td>
                                     <td>@instance.Date.ToShortDateString()</td>
@@ -66,93 +141,20 @@
                     </table>
                 }
             </div>
-        </div>
-    </div>
-}
-else
-{
-    <div>
-        <div class="treatment-header d-flex align-items-start">
-            <div>
-                <h4 class="fw-semibold mb-1">@selectedTreatment.Name</h4>
-                <span class="text-muted small">Behandling</span>
-            </div>
-
-            <span class="badge badge-category ms-auto">
-                @selectedTreatment.Category
-            </span>
-        </div>
-
-        <div class="treatment-info">
-            <div class="info-row">
-                <span class="info-label">Pris</span>
-                <span class="info-value">@selectedTreatment.BasePrice.ToString("0") kr.</span>
-            </div>
-
-            <div class="info-row">
-                <span class="info-label">Varighed</span>
-                <span class="info-value">@selectedTreatment.Duration.TotalMinutes min</span>
-            </div>
-
-            <div class="info-row align-items-start">
-                <span class="info-label">Specialiteter</span>
-                <div class="specialties">
-                    @foreach (var specialty in selectedTreatment.RequiredSpecialties)
-                    {
-                        <span class="badge badge-specialty">@specialty.Replace(",", "")</span>
-                    }
+            <div class="card-footer w-100 mt-3 bg-transparent border-0">
+                <div class="btn-group w-100">
+                    <button class="btn card-btn w-50" style="background-color:crimson;"
+                            @onclick="() => OnDelete.InvokeAsync(Context)">
+                        Slet behandling
+                    </button>
+                    <button class="btn card-btn" @onclick="() => OnEdit.InvokeAsync(Context)">
+                        Rediger
+                    </button>
                 </div>
             </div>
         </div>
-
-        <p class="treatment-description">
-            @selectedTreatment.Description
-        </p>
-        <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
-            @if (selectedTreatment == null || !History.Any())
-            {
-                <p class="text-muted mb-0 text-center">
-                    Ingen salgs historik fundet for denne behandling.
-                </p>
-            }
-            else
-            {
-                <table class="table table-sm mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Id</th>
-                            <th>Kunde</th>
-                            <th>Medarbejder</th>
-                            <th>Dato</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var instance in History)
-                        {
-                            <tr>
-                                <td @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)" class="clickable">@instance.BookingGuid</td>
-                                <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)" class="clickable">@instance.CustomerName</td>
-                                <td @onclick="() => OnClickEmployee.InvokeAsync(instance.EmployeeGuid)" class="clickable">@instance.EmployeeName</td>
-                                <td>@instance.Date.ToShortDateString()</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-        </div>
-        <div class="card-footer w-100 mt-3 bg-transparent border-0">
-            <div class="btn-group w-100">
-                <button class="btn card-btn w-50" style="background-color:crimson;"
-                        @onclick="()=>OnDelete.InvokeAsync(Context)">
-                    Slet behandling
-                </button>
-                <button class="btn card-btn" @onclick="() => OnEdit.InvokeAsync(Context)">
-                    Rediger
-                </button>
-            </div>
-        </div>
-    </div>
-}
+    }
+</div>
 @code {
     [Inject] public ITreatmentService _treatmentService { get; set; }
     public TreatmentDTO selectedTreatment { get; set; }
@@ -176,7 +178,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        if(IsSnapshot)
+        if (IsSnapshot)
         {
             SelectedTreatmentSnapshot = SnapshotContext.Treatment;
             History = await _historyService.GetTreatmentHistoryByGuidAsync(SelectedTreatmentSnapshot.TreatmentGuid);

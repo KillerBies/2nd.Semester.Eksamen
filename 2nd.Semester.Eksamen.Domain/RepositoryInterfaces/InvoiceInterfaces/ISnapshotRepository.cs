@@ -17,7 +17,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces
         public Task<OrderSnapshot?> GetByIdAsync(int id);
         public Task<OrderSnapshot?> GetByGuidAsync(Guid guid);
         public Task<IEnumerable<OrderSnapshot>> GetByProduct(string ProductName);
-        public Task<IEnumerable<BookingSnapshot>> GetAllBookingSnapShotsAsync();
+        public Task<IEnumerable<OrderSnapshot?>> GetAllBookingSnapShotsAsync();
         public Task<IEnumerable<OrderSnapshot>?> GetByProductGuidAsync(Guid guid);
         public Task<IEnumerable<OrderSnapshot>?> GetByCustomerGuidAsync(Guid guid);
         public Task<IEnumerable<OrderSnapshot>?> GetByTreatmentGuidAsync(Guid guid);

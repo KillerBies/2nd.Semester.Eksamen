@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+﻿using _2nd.Semester.Eksamen.Application.DTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces;
@@ -13,7 +14,7 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 {
     public interface IBookingOverviewService
     {
-        public Task<List<BookingSnapshot>> GetAllCompletedBookings();
+        public Task<List<BookingDTO?>> GetAllCompletedBookings();
         public Task<BookingDTO> GetBookingByIdAsync(int id);
         public Task<List<BookingDTO>> GetAllBookingsAsync();
         public Task CreateBookingAsync(BookingDTO booking);

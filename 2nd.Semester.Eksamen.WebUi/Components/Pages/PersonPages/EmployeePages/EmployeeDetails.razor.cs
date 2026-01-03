@@ -30,11 +30,12 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
         public string _errorMessage { get; set; } = string.Empty;
         [Inject] private IEmployeeRepository _repo { get; set; }
         [Inject] public IEmployeeService EmployeeService { get; set; }
-        public List<TreatmentHistoryDTO> History { get; set; }
-        public List<TreatmentBookingDTO> Upcomming { get; set; }
         [Parameter] public EventCallback ShowEdit { get; set; }
         private bool ShowConfirmDelete { get; set; } = false;
         [Parameter] public EventCallback<DetailsContext> OnPushContext { get; set; }
+
+        public List<TreatmentHistoryDTO> History { get; set; } = new();
+        public List<TreatmentBookingDTO> Upcomming { get; set; } = new();
 
         [Parameter] public EmployeeDetailsContext Context { get; set; }
         [Parameter] public EmployeeSnapShotContext SnapshotContext { get; set; }
@@ -53,14 +54,16 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
             if (IsSnapshot)
             {
                 EmployeeSnapShot = SnapshotContext.Employee;
-                History = await _historyService.GetTreatmentHistoryByGuidAsync(Employee.Guid);
-                Upcomming = await _historyService.GetEmployeeUpcommingTreatmentHistoryByGuidAsync(Employee.Guid);
+                History = await _historyService.GetEmployeeTreatmentHistoryByGuidAsync(Employee.Guid);
+                var historyGuids = History.Select(t => t.BookingGuid).ToHashSet();
+                Upcomming = (await _historyService.GetEmployeeUpcommingTreatmentHistoryByGuidAsync(Employee.Guid)).Where(t => !historyGuids.Contains(t.BookingGuid)).ToList();
             }
             else
             {
                 Employee = Context.Employee;
-                History = await _historyService.GetTreatmentHistoryByGuidAsync(Employee.Guid);
-                Upcomming = await _historyService.GetEmployeeUpcommingTreatmentHistoryByGuidAsync(Employee.Guid);
+                History = await _historyService.GetEmployeeTreatmentHistoryByGuidAsync(Employee.Guid);
+                var historyGuids = History.Select(t => t.BookingGuid).ToHashSet();
+                Upcomming = (await _historyService.GetEmployeeUpcommingTreatmentHistoryByGuidAsync(Employee.Guid)).Where(t => !historyGuids.Contains(t.BookingGuid)).ToList();
             }
         }
     }

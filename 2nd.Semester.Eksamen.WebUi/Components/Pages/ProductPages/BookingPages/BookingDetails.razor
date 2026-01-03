@@ -14,60 +14,83 @@
 @using Components.Pages.ProductPages.BookingPages
 @inject IBookingService bookingService
 
-@if(ShowBookingDetails)
-{
-    <div class="d-flex flex-column h-100">
 
+<div style="width:33vw">
+@if(!IsSnapShot)
+{
+    <div class="card shadow-sm" style="background: #ffffff; padding: 1rem;">
         @if (!string.IsNullOrEmpty(errorMessage))
         {
             <div class="alert alert-danger m-3">@errorMessage</div>
         }
 
 
-        <div class="card-header text-white rounded-top gap-5 px-3 py-2" style="background-color:#034265; display:flex; flex-direction:row; width:60vw;">
-            <h2 class="mb-0 text-white"> @(SelectedBooking.Customer is PrivateCustomerDTO pc ? $"{SelectedBooking.Customer.Name} {pc.LastName}" : SelectedBooking.Customer.Name)</h2>
-            <button class="btn btn-primary ms-auto" style="width: 15%;" @onclick="Pay"><b>Betal</b></button>
+        <div class="card-header text-white rounded-top gap-5 px-3 py-2" style="background-color:#034265; display:flex; flex-direction:row;">
+            <div>
+                <h2 class="mb-0 text-white clickable" @onclick="() => OnClickCustomer.InvokeAsync(Booking.CustomerGuid)"> @(Booking.Customer is PrivateCustomerDTO pc ? $"{Booking.Customer.Name} {pc.LastName}" : Booking.Customer.Name)</h2>
+                @if (Booking.Status.ToString() == "Pending")
+                {
+                    <span class="badge ms-auto" style="background: #e0f2ff;  color: #0369a1;">@Booking.Status</span>
+                }
+                else
+                {
+                    <span class="badge ms-auto" style="background: #ecfdf5;  color: #065f46;">@Booking.Status</span>
+                }
+            </div>
+            @if(Booking.Status == BookingStatus.Pending)
+            {
+                <button class="btn btn-primary ms-auto m-2" @onclick="() => OnPay.InvokeAsync(Booking)"><b>Betal</b></button>
+            }
         </div>
 
 
         <div class="p-4 flex-grow-1 overflow-auto">
-
             <div class="text-center mb-4 border-bottom border-dashed pb-3">
-                <h3 class="mb-1">@SelectedBooking.Start.ToString("dd/MM/yyyy")</h3>
-                <h5 class="mb-0">@SelectedBooking.Start.ToString("HH:mm") - @SelectedBooking.End.ToString("HH:mm")</h5>
-                <h7><span class="badge bg-dark ms-auto bg-opacity-75"> @(CurrentTime<SelectedBooking.Start? TimeUntil : TimeSinceThen)</span></h7>
+                <h3 class="mb-1">@Booking.Start.ToString("dd/MM/yyyy")</h3>
+                <h5 class="mb-0">@Booking.Start.ToString("HH:mm") - @Booking.End.ToString("HH:mm")</h5>
+                <h7><span class="badge bg-dark ms-auto bg-opacity-75"> @TimeString</span></h7>
             </div>
 
 
-            @if (SelectedBooking.TreatmentBookingDTOs.Any())
+            @if (Booking.TreatmentBookingDTOs.Any())
             {
                 <div class="mb-4">
-                    @foreach (var treatment in SelectedBooking.TreatmentBookingDTOs)
+                    @foreach (var treatment in Booking.TreatmentBookingDTOs)
                     {
                         <div class="mb-3 p-3 border rounded shadow-sm">
-                            <h5 class="fw-bold mb-1">@treatment.Treatment.Name</h5>
-                            <p class="mb-1"><strong>Tid:</strong> @treatment.Start.ToString("HH:mm") - @treatment.End.ToString("HH:mm")</p>
-                            <p class="mb-1"><strong>Pris:</strong> @treatment.Treatment.BasePrice.ToString("C")</p>
-                            <p class="mb-1"><strong>Ansat:</strong> @treatment.Employee.Name</p>
-                            <p class="mb-0"><strong>Erfaring:</strong> @treatment.Employee.ExperienceLevel</p>
+                            <h5 class="fw-bold mb-1 clickable" @onclick="() => OnClickTreatment.InvokeAsync(treatment.Treatment.TreatmentGuid)">@treatment.Treatment.Name</h5>
+                            <div class="info-row">
+                                <span class="info-label">Pris</span>
+                                <span class="info-value">@treatment.Price.ToString("C")</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Fra</span>
+                                <span class="info-value">@treatment.Start.ToString("t")</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Til</span>
+                                <span class="info-value">@treatment.End.ToString("t")</span>
+                            </div>
+                            <div class="info-row clickable" @onclick="() => OnClickEmployee.InvokeAsync(treatment.Employee.EmployeeGuid)">
+                                <span class="info-label">Ansat</span>
+                                <span class="info-value">@treatment.Employee.Name</span>
+                            </div>
                         </div>
                     }
                 </div>
             }
 
 
-            <div class="d-flex flex-column gap-2">
-                <div class="btn-group">
-                    <button class="btn card-btn w-50 " @onclick="Delete" style="background-color:crimson">Slet</button>
-                    <button class="btn card-btn w-50" @onclick="Edit">Rediger</button>
-                </div>
+            <div class="card-footer bg-transparent border-0 d-flex flex-row w-100 btn-group">
+                    <button class="btn card-btn w-50 " @onclick="() => OnDelete.InvokeAsync(Context)" style="background-color:crimson">Slet</button>
+                    <button class="btn card-btn w-50" @onclick="() => OnEdit.InvokeAsync(Context)">Rediger</button>
             </div>
         </div>
     </div>
 }
-else if (ShowCompletedDetails)
+else
 {
-    <div class="d-flex flex-column h-100">
+    <div class="card shadow-sm" style="background: #ffffff; padding: 1rem;">
 
         @if (!string.IsNullOrEmpty(errorMessage))
         {
@@ -75,106 +98,83 @@ else if (ShowCompletedDetails)
         }
 
 
-        <div class="card-header text-white rounded-top gap-5 px-3 py-2" style="background-color:#034265; display:flex; flex-direction:row; width:60vw;">
-            <h2 class="mb-0 text-white">@SelectedCompletedBooking.CustomerSnapshot.Name</h2>
+        <div class="card-header text-white rounded-top gap-5 px-3 py-2" style="background-color:#034265; display:flex; flex-direction:row;">
+            <h2 class="mb-0 text-white clickable" @onclick="()=>OnClickCustomer.InvokeAsync(Booking.CustomerGuid)">@Booking.Customer.Name</h2>
+            <h2 class="mb-0 text-white ms-auto clickable" @onclick="() => OnClickOrder.InvokeAsync(Booking.OrderGuid)">@Booking.OrderGuid</h2>
         </div>
 
         <div class="p-4 flex-grow-1 overflow-auto">
-
             <div class="text-center mb-4 border-bottom border-dashed pb-3">
-                <h5><p>@SelectedCompletedBooking.OrderSnapshot.DateOfPayment.ToString("ddd/d/MMM")</p></h5>
-                <h7><span class="badge bg-dark ms-auto bg-opacity-75">@CompletedTimeSince</span></h7>
+                <span class="badge" style="background: #e0f2ff;  color: #0369a1;">Betalt</span>
+                <h3 class="mb-1">@Booking.Start.ToString("dd/MM/yyyy")</h3>
+                <h5 class="mb-0">@Booking.Start.ToString("HH:mm") - @Booking.End.ToString("HH:mm")</h5>
+                <h7><span class="badge bg-dark ms-auto bg-opacity-75">@TimeString</span></h7>
             </div>
 
 
-            @if (SelectedCompletedBooking.TreatmentSnapshot.Any())
+            @if (Booking.TreatmentBookingDTOs.Any())
             {
                 <div class="mb-4">
-                    @foreach (var treatment in SelectedCompletedBooking.TreatmentSnapshot)
+                    @foreach (var treatment in Booking.TreatmentBookingDTOs)
                     {
                         <div class="mb-3 p-3 border rounded shadow-sm">
-                            <h5 class="fw-bold mb-1">@treatment.Name</h5>
-                            <p class="mb-1"><strong>Pris:</strong> @treatment.PricePerUnit.ToString("C")</p>
-                            <p class="mb-1"><strong>Kategori:</strong> @treatment.Category</p>
+                            <h5 class="fw-bold mb-1 clickable" @onclick="() => OnClickTreatment.InvokeAsync(treatment.Treatment.TreatmentGuid)">@treatment.Treatment.Name</h5>
+                            <div class="info-row">
+                                <span class="info-label">Pris</span>
+                                <span class="info-value">@treatment.Price.ToString("C")</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Kategori</span>
+                                <span class="info-value">@treatment.Treatment.Category</span>
+                            </div>
+                            <div class="info-row clickable" @onclick="()=>OnClickEmployee.InvokeAsync(treatment.Employee.EmployeeGuid)">
+                                <span class="info-label">Ansat</span>
+                                <span class="info-value">@treatment.Employee.Name</span>
+                            </div>
                         </div>
                     }
                 </div>
             }
             <div class="card-footer bg-transparent border-0 d-flex flex-column gap-2">
-                <button class="btn btn-outline-secondary" @onclick="Close">Luk</button>
+                <button class="btn btn-outline-secondary" @onclick="() => OnClose.InvokeAsync()">Luk</button>
             </div>
         </div>
     </div>
 }
+</div>
 
 
 @code {
 
     [Inject] IBookingOverviewService _bookingOverviewService { get; set; }
-    private DateTime CurrentTime => DateTime.Now;
 
-    private TimeSpan TimeTill => SelectedBooking.Start - CurrentTime;
-    private string TimeUntil => $"Om {DaysUntil} {HoursUntil} {MinutesUntil}";
-    private string DaysUntil => TimeTill.Days > 0 ? $"{TimeTill.Days} Dage" : "";
-    private string HoursUntil => TimeTill.Hours > 0 ? $"{TimeTill.Hours} Timer" : "";
-    private string MinutesUntil => TimeTill.Minutes > 0 ? $"{TimeTill.Minutes} Minutter" : "";
+    private string TimeString { get; set; } = "";
 
-    private TimeSpan TimeSince => CurrentTime - SelectedBooking.Start;
-    private string TimeSinceThen => $"For {DaysSinceThen} {HoursSinceThen} {MinutesSinceThen} Siden";
-    private string DaysSinceThen => $"{TimeSince.Days} Dage";
-    private string HoursSinceThen => $"{TimeSince.Hours} Timer";
-    private string MinutesSinceThen => $"{TimeSince.Minutes} Minutter";
-
-    private TimeSpan TimeSinceCompleted =>
-        CurrentTime - SelectedCompletedBooking.OrderSnapshot.DateOfPayment.ToDateTime(TimeOnly.MinValue);
-
-    private string CompletedTimeSince =>
-        $"For {TimeSinceCompleted.Days} Dage, {TimeSinceCompleted.Hours} Timer, og {TimeSinceCompleted.Minutes} Minutter Siden";
-
-    [Parameter] public BookingDTO SelectedBooking { get; set; }
-    [Parameter] public BookingSnapshot SelectedCompletedBooking { get; set; }
-    [Parameter] public int BookingSnapshotId { get; set; }
-    [Parameter] public int BookingId { get; set; } = 0;
-
-
+    public BookingDTO Booking { get; set; }
     [Parameter] public string errorMessage { get; set; }
 
     [Parameter] public bool ShowBookingDetails { get; set; } = false;
     [Parameter] public bool ShowCompletedDetails { get; set; } = false;
 
-    [Parameter] public EventCallback OnPay { get; set; }
-    [Parameter] public EventCallback OnEdit { get; set; }
-    [Parameter] public EventCallback OnDelete { get; set; }
+    [Parameter] public EventCallback<BookingDTO> OnPay { get; set; }    
     [Parameter] public EventCallback OnClose { get; set; }
 
-    [Parameter] public BookingDetailsContext SnapshotContext { get; set; }
+    [Parameter] public BookingDetailsContext Context { get; set; }
+    [Parameter] public BookingSnapShotContext SnapshotContext { get; set; }
+    [Parameter] public bool IsSnapShot { get; set; }
     [Parameter] public EventCallback<Guid> OnClickCustomer { get; set; }
     [Parameter] public EventCallback<Guid> OnClickOrder { get; set; }
     [Parameter] public EventCallback<Guid> OnClickEmployee { get; set; }
     [Parameter] public EventCallback<Guid> OnClickTreatment { get; set; }
-    [Parameter] public EventCallback<DetailsContext> OnEditing { get; set; }
-    [Parameter] public EventCallback<DetailsContext> OnDeleting { get; set; }
-
-    public async Task Close() => await OnClose.InvokeAsync();
-    public async Task Edit() => await OnEdit.InvokeAsync();
-    public async Task Delete() => await OnDelete.InvokeAsync();
-    public async Task Pay() => await OnPay.InvokeAsync();
+    [Parameter] public EventCallback<DetailsContext> OnEdit { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnDelete { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            if (ShowBookingDetails && SelectedBooking == null && BookingId == 0)
-            {
-                SelectedBooking = await _bookingOverviewService.GetBookingByIdAsync(BookingId);
-                if (SelectedBooking != null)
-                    ShowBookingDetails = true;
-                else
-                    errorMessage = "Bookingen Kunne Ikke Findes";
-            }
-        }
-        catch
-        {
-        }
+        IsSnapShot = Context != null ? false : true;
+        Booking = Context != null ? Context.Booking : SnapshotContext.OrderInfo;
+        var CurrentTime = DateTime.Now;
+        var Time = Booking.Start < CurrentTime ? CurrentTime - Booking.Start : Booking.Start - CurrentTime;
+        TimeString = Booking.Start < CurrentTime ? $"For {Time.Days} Dage, {Time.Hours} Timer, og {Time.Minutes} Minutter Siden" : $"Om {Time.Days} Dage, {Time.Hours} Timer, og {Time.Minutes} Minutter";
     }
 }

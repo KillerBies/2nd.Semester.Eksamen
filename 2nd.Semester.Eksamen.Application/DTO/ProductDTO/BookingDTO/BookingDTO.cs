@@ -40,6 +40,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
         {
             BookingId = booking.Id;
             CustomerId = booking.CustomerId;
+            CustomerGuid = booking.Customer.Guid;
             if(booking.Customer is PrivateCustomer pc)
             {
                 Customer = new PrivateCustomerDTO(pc);
@@ -55,7 +56,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             Start = booking.Start;
             End = booking.End;
             BookingGuid = booking.Guid;
-            TreatmentBookingDTOs = booking.Treatments.Select(tb => new TreatmentBookingDTO(tb, BookingGuid)).ToList();
+            TreatmentBookingDTOs = booking.Treatments.Select(tb => new TreatmentBookingDTO(tb, BookingGuid, BookingId)).ToList();
             Duration = booking.Duration;
             Status = booking.Status;
         }
@@ -65,9 +66,10 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             CustomerId = booking.CustomerId;
             Customer = booking.Customer;
             Start = booking.Start;
+            CustomerGuid = booking.CustomerGuid;
             End = booking.End;
             BookingGuid = booking.BookingGuid;
-            TreatmentBookingDTOs = booking.TreatmentBookingDTOs.Select(tb => new TreatmentBookingDTO(tb, BookingGuid)).ToList();
+            TreatmentBookingDTOs = booking.TreatmentBookingDTOs.Select(tb => new TreatmentBookingDTO(tb, BookingGuid, BookingId)).ToList();
             Duration = booking.Duration;
             Status = booking.Status;
         }
@@ -91,10 +93,11 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             End = orderSnapshot.BookingSnapshot.End;
             BookingGuid = orderSnapshot.BookingSnapshot.Guid;
             Duration = orderSnapshot.BookingSnapshot.Duration;
-            TreatmentBookingDTOs = orderSnapshot.BookingSnapshot.TreatmentSnapshot.Select(tb => new TreatmentBookingDTO(tb,BookingGuid)).ToList();
+            TreatmentBookingDTOs = orderSnapshot.BookingSnapshot.TreatmentSnapshot.Select(tb => new TreatmentBookingDTO(tb,BookingGuid, BookingId)).ToList();
             Duration = orderSnapshot.BookingSnapshot.Duration;
             Status = BookingStatus.Completed;
             OrderGuid = orderSnapshot.Guid;
+            CustomerGuid = orderSnapshot.BookingSnapshot.CustomerSnapshot.Guid;
         }
         public BookingDTO() { } 
     }

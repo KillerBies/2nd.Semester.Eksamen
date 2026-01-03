@@ -95,10 +95,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
                 .Include(o => o.AppliedDiscountSnapshot)
                 .ToListAsync();
         }
-        public async Task<IEnumerable<BookingSnapshot>> GetAllBookingSnapShotsAsync()
+        public async Task<IEnumerable<OrderSnapshot?>> GetAllBookingSnapShotsAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.BookingsSnapshots.Include(b => b.CustomerSnapshot).ThenInclude(c => c.AddressSnapshot).Include(b => b.TreatmentSnapshot).Include(b=>b.OrderSnapshot).ToListAsync();
+            return await _context.OrderSnapshots.Include(o=>o.BookingSnapshot).ThenInclude(b => b.CustomerSnapshot).ThenInclude(c => c.AddressSnapshot).Include(o => o.BookingSnapshot).ThenInclude(b => b.TreatmentSnapshot).ToListAsync();
         }
 
         public async Task<IEnumerable<OrderSnapshot>?> GetByProductGuidAsync(Guid guid)

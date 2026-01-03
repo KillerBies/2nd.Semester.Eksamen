@@ -47,7 +47,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         public async Task<Employee?> GetByGuidAsync(Guid guid)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees.FirstOrDefaultAsync(e => e.Guid == guid);
+            return await _context.Employees.Include(e=>e.Address).FirstOrDefaultAsync(e => e.Guid == guid);
         }
         public async Task UpdateAsync(Employee employee)
         {

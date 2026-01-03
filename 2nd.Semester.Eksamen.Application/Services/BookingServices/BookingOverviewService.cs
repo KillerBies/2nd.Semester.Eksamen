@@ -1,14 +1,15 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.InvoiceInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +27,9 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             _snapshotRepository = snapshotRepository;
             _bookingRepository = bookingRepository;
         }
-        public async Task<List<BookingSnapshot>> GetAllCompletedBookings()
+        public async Task<List<BookingDTO?>> GetAllCompletedBookings()
         {
-            return (await _snapshotRepository.GetAllBookingSnapShotsAsync()).ToList();
+            return (await _snapshotRepository.GetAllBookingSnapShotsAsync()).Select(b=>new BookingDTO(b)).ToList();
         }
 
         public async Task<BookingDTO> GetBookingByIdAsync(int id)

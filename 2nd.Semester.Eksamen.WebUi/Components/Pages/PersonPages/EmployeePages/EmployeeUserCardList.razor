@@ -6,17 +6,17 @@
 
 @if (ShowEmployeeDetails)
 {
-    <CreateWindow IsVisible="ShowEmployeeDetails" IsVisibleChanged="@(v => ShowEmployeeDetails = v)" StyleParameters="background-color: #F3F2F2; padding:0;width:26%;">
+    <CreateWindow IsVisible="ShowEmployeeDetails" IsVisibleChanged="@(v => ShowEmployeeDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
         <DetailWindow Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
     </CreateWindow>
 }
 @if (ShowDelete)
 {
-    <BookingNotification IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)">
-        <DeleteWindow Refresh="Refresh" context="CurrentContext"></DeleteWindow>
-    </BookingNotification>
+    <CreateWindow IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)" StyleParameters="background-color: #F3F2F2; margin:2rem;width:fit-content; height:fit-content;scrollbar-width:none;z-index:9999;">
+        <DeleteWindow Refresh="Refresh" context="DeleteContext"></DeleteWindow>
+    </CreateWindow>
 }
-<div style="background-color:#F3F2F2; height:100vh">
+<div style="background-color:#F3F2F2; height:100vh;">
     <div class="overview-page">
         <div class="shadow-sm" style="background-color:#F3F2F2;">
             <div class="page-header">
@@ -83,7 +83,7 @@
 
                                     <div class="customer-card-footer">
                                         <button class="btn btn-primary card-btn w-100"
-                                                @onclick="() => GoToEmployee(emp.Id)">
+                                                @onclick="() => EmployeeSelect(emp)">
                                             Se detaljer
                                         </button>
                                     </div>
@@ -99,7 +99,7 @@
 
 @if(CreateEmployee)
 {
-    <CreateWindow IsVisible=CreateEmployee IsVisibleChanged="v => CreateEmployee = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
-        <CreateEmployee></CreateEmployee>
+    <CreateWindow IsVisible=CreateEmployee IsVisibleChanged="v => CreateEmployee = v" StyleParameters="background-color: #F3F2F2; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;">
+        <CreateEmployee OnClose="Refresh"></CreateEmployee>
     </CreateWindow>
 }

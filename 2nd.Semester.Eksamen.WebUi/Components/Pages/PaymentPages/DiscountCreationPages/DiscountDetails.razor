@@ -24,11 +24,11 @@
 {
     <p>Loading...</p>
 }
-else
+else   
 {
     @if (IsSnapshot)
-    {
-        <div class="discount-details-card">
+    {   
+            <div class="discount-details-card shadow-sm" style="background: #ffffff; padding: 1.5rem;">
             <div class="discount-card-header d-flex flex-row mb-2">
                 <div>
                     <h3>@Discount.Name</h3>
@@ -168,8 +168,8 @@ else
     }
     else
     {
-        
-        <div class="discount-details-card">
+
+        <div class="discount-details-card shadow-sm" style="background: #ffffff; padding: 1.5rem;">
             <div class="discount-card-header d-flex flex-row mb-2">
                 <div>
                     <h3>@DiscountSnapshot.Name</h3>
