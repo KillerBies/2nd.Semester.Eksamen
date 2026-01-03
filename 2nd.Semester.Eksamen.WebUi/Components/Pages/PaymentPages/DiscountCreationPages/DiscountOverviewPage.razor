@@ -165,7 +165,6 @@
     private int CountCampaign => Discounts.Where(d => d.Type == "Kampagne Rabat").Count();
     private TimeSpan Time => DateTime.Now > SelectedDiscount.Start ? DateTime.Now - SelectedDiscount.Start : SelectedDiscount.Start - DateTime.Now;
     private string TimeString => DateTime.Now < SelectedDiscount.Start ? $"Aktiv igen om {Time.Days} Dage, {Time.Hours} Timer, og {Time.Minutes} Minutter" : $"Aktiveret for {Time.Days} Dage, {Time.Hours} Timer, og {Time.Minutes} Minutter Siden";
-    private bool ShowEdit { get; set; } = false;
     [Inject] private NavigationManager Nav { get; set; } = null!;
     protected override async Task OnInitializedAsync()
     {
