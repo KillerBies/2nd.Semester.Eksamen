@@ -60,35 +60,10 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             });
             return treatmentDTOs;
         }
-        //public async Task CreateBookingAsync(BookingDTO bookingDTO)
-        //{
-        //}
-        //public async Task<IEnumerable<TreatmentBokingDTO>> GetAllTreatmentBookingsAsync()
-        //{
-        //    var bookings = await _bookingRepository.GetAllAsync();
-        //    var bookingDTOs = bookings.Select(b => new BookingDTO
-        //    {
-
-        //    });
-        //    return bookingDTOs;
-        //}
-
-
-        // Searches through customers using phonenumber. Returns customer with that phonenumber. If none found, returns null.
-        //public async Task<Customer?> GetCustomerByPhoneNumberAsync(string phoneNumber)
-        //{
-        //    var privateCustomer = await _priCustomerRepository.GetByPhoneAsync(phoneNumber);
-        //    if (privateCustomer != null)
-        //    {
-        //        return privateCustomer;
-        //    }
-        //    var companyCustomer = await _comCustomerRepository.GetByPhoneAsync(phoneNumber);
-        //    if (companyCustomer != null)
-        //    {
-        //        return companyCustomer;
-        //    }
-        //    return null;
-        //}
+        public async Task<BookingDTO> GetBookingById(int id)
+        {
+            return new BookingDTO((await _bookingRepository.GetByIDAsync(id)));
+        }
         public async Task<CustomerDTO?> GetCustomerByIDAsync(int id)
         {
             return ToDtoAdapter.CustomerToDTO(await _customerRepository.GetByIDAsync(id));

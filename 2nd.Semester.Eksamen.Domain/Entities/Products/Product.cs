@@ -11,6 +11,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products
     {
         //Product details
         public string Name { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public string Description { get; set; } = string.Empty;
         public decimal? DiscountedPrice { get; set; }

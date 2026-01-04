@@ -13,6 +13,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces
         Task<List<OrderLine>> GetOrderLinesByOrderIdAsync(int orderId);
         Task UpdateOrderLineAsync(OrderLine orderLine);
         Task DeleteOrderLineAsync(OrderLine orderLine);
+        public Task<OrderLine?> GetByGuidAsync(Guid guid);
     }
 
 }

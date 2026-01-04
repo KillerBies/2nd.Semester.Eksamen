@@ -1,15 +1,19 @@
-﻿using _2nd.Semester.Eksamen.Application.Services;
+﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+using _2nd.Semester.Eksamen.Application.Services;
+using _2nd.Semester.Eksamen.Application.Services.BookingServices;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
-using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+using Microsoft.AspNetCore.Components;
 
 
-namespace Components.Pages.ProductPages.BookingPages
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 {
     public partial class CreateBooking
-{
+    {
         private CustomerDTO? searchedCustomer;
         public string phoneNumber;
         private bool customerNotFound;
+        [Parameter] public EventCallback OnClose { get; set; }
+        [Parameter] public EventCallback OnCreateNewCustomer { get; set; }
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -17,14 +21,16 @@ namespace Components.Pages.ProductPages.BookingPages
             customerNotFound = false;
         }
 
-        private void GoToExistingCustomer()
+        private async Task GoToExistingCustomer()
         {
+            await OnClose.InvokeAsync();
             Navi.NavigateTo($"/BookingForm/{searchedCustomer.id}");
         }
 
-        private void GoToCreateCustomer()
+        private async Task GoToCreateCustomer()
         {
-            Navi.NavigateTo($"/create-customer");
+            await OnCreateNewCustomer.InvokeAsync();
+            await OnClose.InvokeAsync();
         }
         private async Task SearchForPhoneNumber()
         {

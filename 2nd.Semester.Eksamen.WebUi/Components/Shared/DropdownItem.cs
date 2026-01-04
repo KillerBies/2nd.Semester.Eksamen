@@ -3,11 +3,12 @@
     public class DropdownItem
     {
         public string Text { get; set; } = "";
-        public string Link { get; set; } = "";
-        public DropdownItem(string text, string link)
+        public string Menu { get; set; } = "";
+        public bool Open { get; set; } = false;
+        public DropdownItem(string text, string menu)
         {
             Text = text;
-            Link = link;
+            Menu = menu;
         }
     }
 }

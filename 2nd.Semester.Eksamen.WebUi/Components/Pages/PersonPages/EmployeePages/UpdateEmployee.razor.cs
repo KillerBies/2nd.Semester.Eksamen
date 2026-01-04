@@ -12,7 +12,7 @@ using WebUIServices;
 using static _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO.EmployeeUpdateDTO;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace Components.Pages.PersonPages.EmployeePages
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 {
 
 

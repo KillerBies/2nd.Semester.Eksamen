@@ -5,35 +5,41 @@
 @using WebUIServices;
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @rendermode InteractiveServer
-@namespace Components.Pages.PersonPages.EmployeePages
-<div style="width:100%; height:96vh; align-content:center; align-items:center; display:flex; justify-content:center;">
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
+
+@if (Input != null)
+{
 	<FloatingPage>
-		<div style="margin: 30px;">
-			<h2>Lav Ny Medarbejder</h2>
-			<EditForm Model="Input" OnValidSubmit="CreateEmployeeAsync" class="row p-3">
+		<EditForm EditContext="_editContext" OnValidSubmit="CreateEmployeeAsync" class="row p-3" FormName="CreateEmployeeForm">
+			<div>
+				<h2>@(IsEdit ? "Rediger Medarbejder" : "Lav Ny Medarbejder")</h2>
 				<DataAnnotationsValidator />
 				<ValidationSummary />
-				<div class="form-inputs">
-					<!-- Basic Info -->
-					<div class="row">
+				<div style="margin: 30px;">
+					<div class="row mb-3">
 						<div class="col-md-6">
-							<InputText @bind-Value="Input.FirstName" placeholder="Fornavn" class="form-control m-1" />
+							<label class="form-label">Fornavn:</label>
+							<InputText @bind-Value="Input.FirstName" placeholder="Fornavn" class="form-control mt-0" />
 						</div>
 						<div class="col-md-6">
-							<InputText @bind-Value="Input.LastName" placeholder="Efternavn" class="form-control m-1" />
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<InputText @bind-Value="Input.Email" placeholder="Email" class="form-control m-1" />
-						</div>
-						<div class="col-md-6">
-							<InputText @bind-Value="Input.PhoneNumber" placeholder="TelefonNummer" class="form-control m-1" />
+							<label class="form-label">Efternavn:</label>
+							<InputText @bind-Value="Input.LastName" placeholder="Efternavn" class="form-control" />
 						</div>
 					</div>
-					<div class="row">
+					<div class="row mb-3">
 						<div class="col-md-6">
-							<select @bind="Input.Gender" class="form-select m-1">
+							<label class="form-label">Email:</label>
+							<InputText @bind-Value="Input.Email" placeholder="Email" class="form-control" />
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Tlf-Nummer:</label>
+							<InputText @bind-Value="Input.PhoneNumber" placeholder="TelefonNummer" class="form-control" />
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-md-6">
+							<label class="form-label">Køn:</label>
+							<select @bind="Input.Gender" class="form-select">
 								@foreach (var gender in Enum.GetValues(typeof(Gender)).Cast<Gender>())
 								{
 									<option value="@gender">@gender.GetDescription()</option>
@@ -41,7 +47,8 @@
 							</select>
 						</div>
 						<div class="col-md-6">
-							<select @bind="Input.ExperienceLevel" class="form-select m-1">
+							<label class="form-label">Erfarings Niveau:</label>
+							<select @bind="Input.ExperienceLevel" class="form-select">
 								@foreach (var level in Enum.GetValues(typeof(ExperienceLevels)).Cast<ExperienceLevels>())
 								{
 									<option value="@level">@level.GetDescription()</option>
@@ -49,9 +56,10 @@
 							</select>
 						</div>
 					</div>
-					<div class="row">
+					<div class="row mb-3">
 						<div class="col-md-6">
-							<select @bind="Input.Type" class="form-select m-1">
+							<label class="form-label">Medarbejder Type:</label>
+							<select @bind="Input.Type" class="form-select">
 								@foreach (var type in Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>())
 								{
 									<option value="@type">@type.GetDescription()</option>
@@ -59,54 +67,99 @@
 							</select>
 						</div>
 						<div class="col-md-6">
-							<InputNumber @bind-Value="Input.BasePriceMultiplier"
-										 placeholder="Omregningsfaktor"
-										 title="Prisen på en behandling udregnes som 'behandlingens pris' * 'medarbejderens omregningsfaktor' (1 vil være behandlingens normal pris) "
-										 class="form-control m-1" />
+							<label class="form-label">Pris Multiplikator:</label>
+							<InputNumber @bind-Value="Input.BasePriceMultiplier" placeholder="Omregningsfaktor" title="Ganges med behandlingens pris (Behandling-Pris * Pris-Multiplikator) 1 vil svare til normal prisen" class="form-control" />
 						</div>
 					</div>
 
-					<!-- Address -->
-					<div class="row">
+					<div class="row mb-3">
 						<div class="col-md-6">
-							<InputText @bind-Value="Input.Address.City" placeholder="By" class="form-control m-1" />
+							<label class="form-label">By:</label>
+							<InputText @bind-Value="Input.Address.City" placeholder="By" class="form-control" />
 						</div>
 						<div class="col-md-6">
-							<InputText @bind-Value="Input.Address.PostalCode" placeholder="Postkode" class="form-control m-1" />
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-md-6">
-							<InputText @bind-Value="Input.Address.StreetName" placeholder="Gade" class="form-control m-1" />
-						</div>
-						<div class="col-md-6">
-							<InputText @bind-Value="Input.Address.HouseNumber" placeholder="Hus Nummer" class="form-control m-1" />
+							<label class="form-label">Post-Nr.:</label>
+							<InputText @bind-Value="Input.Address.PostalCode" placeholder="Postkode" class="form-control" />
 						</div>
 					</div>
 
+					<div class="row mb-3">
+						<div class="col-md-6">
+							<label class="form-label">Vejnavn:</label>
+							<InputText @bind-Value="Input.Address.StreetName" placeholder="Gade" class="form-control" />
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Husnummer:</label>
+							<InputText @bind-Value="Input.Address.HouseNumber" placeholder="Hus Nummer" class="form-control" />
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-md-6">
+							<label class="form-label">Arbejde Starter Kl:</label>
+							<InputTimeSpan @bind-Value="Input.WorkStart" title="Hvornår starter medarbejderen på arbejde til hverdag?" placeholder="Arbejde Begynder" class="form-control" />
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Arbejde Slutter Kl:</label>
+							<InputTimeSpan @bind-Value="Input.WorkEnd" placeholder="Arbejde Slutter" title="Hvornår slutter medarbejderen på arbejde til hverdag?" class="form-control" />
+						</div>
+					</div>
 
 
 
 
-					<div class="row">
-						<div class="col-md-12">
-							<!-- Specialties -->
-							@for (int i = 0; i < Input.Specialties.Count; i++)
+					<div class="row mb-3">
+						<label class="form-label">Vælg eksisterende specialiteter:</label>
+						<div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
+							@foreach (var specialty in specialtyItems.Where(s => !string.IsNullOrWhiteSpace(s.Specialty)))
 							{
-								var specialty = Input.Specialties[i];
-								<div class="mb-2 d-flex align-items-center" @key="specialty.Id">
-									<InputText @bind-Value="specialty.Value" placeholder="Specialty" class="form-control me-2" />
-									<button type="button" class="btn btn-danger" @onclick="() => RemoveSpecialty(specialty.Id)">X</button>
+								<div class="form-check">
+									<InputCheckbox class="form-check-input"
+												   @bind-Value="specialty.Status" />
+									<label class="form-check-label ms-2">
+										@specialty.Specialty
+									</label>
 								</div>
 							}
-							<button type="button" class="btn btn-success mb-2" @onclick="AddSpecialty">+ Add Specialty</button>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Tilføj ny specialitet:</label>
+							<div class="d-flex gap-2">
+								<InputText @bind-Value="newSpecialty"
+										   class="form-control"
+										   placeholder="Ny specialitet..." />
+								<button type="button"
+										class="btn card-btn w-auto h-100 m-0"
+										@onclick="AddSpecialty">
+									Tilføj
+								</button>
+							</div>
+
+							@if (manuallyAddedSpecialties.Any())
+							{
+								<ul class="list-group mb-3">
+									@foreach (var item in manuallyAddedSpecialties.Where(s => !string.IsNullOrWhiteSpace(s)))
+									{
+										<li class="list-group-item d-flex justify-content-between align-items-center mt-1" style="padding-left:10px;">
+											@item
+											<button type="button" class="btn btn-sm bg-transparent" style="height:100%; padding:0;margin:0;margin-right:3px; color:darkred;"
+													@onclick="() => RemoveSpecialty(item)">
+												X
+											</button>
+										</li>
+									}
+								</ul>
+							}
+
 						</div>
 					</div>
-
-					<button class="btn btn-primary" Style="width:100%;" type="submit">Create</button>
 				</div>
-			</EditForm>
-		</div>
+
+				<button class="btn card-btn" Style="width:100%;" type="submit">@(IsEdit ? "Gem Ændringer" : "Lav ny Medarbejder")</button>
+			</div>
+		</EditForm>
 	</FloatingPage>
-</div>
+}
+else
+{
+	<p>Loading employee…</p>
+}

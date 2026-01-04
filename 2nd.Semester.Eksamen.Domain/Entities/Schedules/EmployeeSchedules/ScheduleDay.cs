@@ -63,7 +63,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
                 .OrderBy(r => r.Start);
         }
 
-        public bool AddBooking(TreatmentBooking treatment, Guid bookingID)
+        public bool AddBooking(TreatmentBooking treatment, Guid bookingID, string treatmentname = null)
         {
             /*
              check if the timeRange overlaps with any existing TimeRanges
@@ -73,10 +73,19 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
             do this by splitting any existing TimeRanges that overlap with the new booking into multiple TimeRanges
             and adjusting the start and end times of the existing TimeRanges accordingly
              */
-            var booking = new TimeRange(TimeOnly.FromDateTime(treatment.Start), TimeOnly.FromDateTime(treatment.End)) { Name = treatment.Treatment.Name, Type = "Booked", ActivityId = bookingID};
+            string treatmentName = "";
+            if(treatmentname != null)
+            {
+                treatmentName = treatmentname;
+            }
+            else if(treatment.Treatment != null)
+            {
+                treatmentName = treatment.Treatment.Name;
+            }
+                var booking = new TimeRange(TimeOnly.FromDateTime(treatment.Start), TimeOnly.FromDateTime(treatment.End)) { Name = treatmentName, Type = "Booked", ActivityId = bookingID };
             var free = TimeRanges.FirstOrDefault(r => r.Type == "Freetime" && r.Start <= booking.Start && r.End >= booking.End);
             if (free == null)
-                return false;
+                throw new Exception();
             // before the booking
             TimeRanges.Remove(free);
 
@@ -111,7 +120,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
                     current.Type == "Freetime" &&
                     last.End == current.Start)
                 {
-                    last.End = current.End; // merge
+                    last.End = current.End; 
                 }
                 else
                 {

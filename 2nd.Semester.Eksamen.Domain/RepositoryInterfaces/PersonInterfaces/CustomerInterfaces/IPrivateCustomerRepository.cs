@@ -18,6 +18,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Cus
         //public Task<IEnumerable<Customer?>> GetAllAsync();
         //public Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(PrivateCustomer Customer);
+        public Task<PrivateCustomer?> GetByGuidAsync(Guid guid);
         public Task<bool> PhoneAlreadyExistsAsync(string PhoneNumber);
         //public Task UpdateAsync(PrivateCustomer Customer);
         public Task DeleteAsync(PrivateCustomer Customer);

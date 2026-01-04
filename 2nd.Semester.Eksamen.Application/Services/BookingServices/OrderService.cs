@@ -93,9 +93,9 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             var order = await _customerService.GetOrderByBookingIdAsync(bookingId);
             if (order == null)
             {
-                order = new Order(bookingId, originalTotal, finalTotal, vat, appliedDiscount?.Id ?? 0);
+                order = new Order(bookingId, originalTotal, finalTotal, vat, appliedDiscount?.Id ?? 0){ Guid = Guid.NewGuid() };
 
-                await _customerService.AddOrderAsync(order);
+                await _customerService.AddOrderAsync(order);    
 
             }       
             else

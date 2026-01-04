@@ -10,5 +10,6 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
     public interface IProductApplicationService
     {
         public Task CreateNewProductAsync(NewProductDTO product);
+        public Task UpdateProductAsync(NewProductDTO product);
     }
 }

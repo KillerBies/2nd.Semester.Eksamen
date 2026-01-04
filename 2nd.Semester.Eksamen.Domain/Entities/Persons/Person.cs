@@ -15,8 +15,8 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         [ForeignKey(nameof(Address))] //FK
         public int AddressId { get; protected set; }
         public Address Address { get; protected set; }
-        public string PhoneNumber { get; protected set; } = null!;
-        public string Email { get; protected set; } = null!;
+        public string PhoneNumber { get;  set; } = null!;
+        public string Email { get;  set; } = null!;
 
 
         public Person() { }

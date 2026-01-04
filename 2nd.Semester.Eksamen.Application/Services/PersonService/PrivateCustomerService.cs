@@ -76,4 +76,8 @@ public class PrivateCustomerService : IPrivateCustomerService, ICustomerService
     {
         throw new NotImplementedException();
     }
+    public async Task<CustomerDTO> GetCustomerDTOById(int id)
+    {
+        throw new NotImplementedException();
+    }
 }

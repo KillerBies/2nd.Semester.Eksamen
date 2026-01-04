@@ -13,6 +13,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Cus
     public interface ICompanyCustomerRepository
     {
         //Repository for Customer. 
+        public Task<CompanyCustomer?> GetByGuidAsync(Guid guid);
         public Task<CompanyCustomer?> GetByIDAsync(int id);
         public Task<CompanyCustomer?> GetByPhoneAsync(string phoneNumber);
         public Task<IEnumerable<Customer?>> GetAllAsync();

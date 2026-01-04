@@ -7,7 +7,7 @@
     height: 100vh;
     justify-content: flex-end;
     background-color: rgba(0,0,0,0.5);
-    z-index: 9999;
+    z-index: 9000;
     display: flex;
     animation: fadeIn 0.3s ease-out;
 }

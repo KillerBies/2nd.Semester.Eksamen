@@ -33,6 +33,7 @@ using QuestPDF.Infrastructure;
 using _2nd.Semester.Eksamen.Infrastructure.PDFManagement;
 using _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices;
 using _2nd.Semester.Eksamen.Application.Services.ProductServices;
+using _2nd.Semester.Eksamen.Application.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -82,18 +83,27 @@ builder.Services.AddScoped<IDiscountApplicationService, DiscountApplicationServi
 builder.Services.AddScoped<ILoyaltyDiscountRepository, LoyaltyDiscountRepository>();
 builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
 builder.Services.AddScoped<IProductApplicationService, ProductApplicationService>();
+builder.Services.AddScoped<IProductOverviewService, ProductOverviewService>();
+builder.Services.AddScoped<ICustomerUpdateService, CustomerUpdateService>();
+builder.Services.AddScoped<IBookingOverviewService, BookingOverviewService>();
+builder.Services.AddScoped<IEmployeeUpdateService, EmployeeUpdateService>();
+builder.Services.AddScoped<IHistoryService, HistoryService>();
+builder.Services.AddScoped<IHistorySnapShotRepository, HistorySnapShotRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+
 builder.Services.AddScoped<IGenerateInvoice, GenerateInvoice>();
 
-// if your repositories and services are separate:
+
 builder.Services.AddScoped<IPrivateCustomerService, PrivateCustomerService>();
 builder.Services.AddScoped<ICompanyCustomerService, CompanyCustomerService>();
 builder.Services.AddScoped<IOrderLineRepository, OrderLineRepository>();
 
-// and register a default ICustomerService (pick one or create a composite)
+
 builder.Services.AddScoped<ICustomerService>(sp => sp.GetRequiredService<PrivateCustomerService>()); // or CustomerService
 
 
-// Then register services
+
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
@@ -110,11 +120,10 @@ QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 
 var app = builder.Build();
-// Configure the HTTP request pipeline.
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

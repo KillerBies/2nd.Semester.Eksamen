@@ -17,5 +17,6 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces
         public Task CreateNewAsync(Address Address);
         public Task UpdateAsync(Address Address);
         public Task DeleteAsync(Address Address);
+        public Task<Address?> GetByGuidAsync(Guid guid);
     }
 }

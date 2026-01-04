@@ -25,6 +25,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             PostalCode = address.PostalCode;
             StreetName = address.StreetName;
             HouseNumber = address.HouseNumber;
+            Guid = address.Guid;
         }
 
     }

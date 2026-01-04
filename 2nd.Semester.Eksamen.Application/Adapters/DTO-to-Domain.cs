@@ -48,9 +48,10 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         }
         public Product DTOProductToNewDomain(NewProductDTO productDTO)
         {
-            var result = new Product(productDTO.Name, productDTO.Price, productDTO.Description);
+            var result = new Product(productDTO.Name, productDTO.Price, productDTO.Description) { Category=productDTO.Category};
             return result;
         }
+
         public async Task<Booking> DTOBookingToDomain(BookingDTO booking)
         {
             List<TreatmentBooking> treatments = new();
@@ -60,20 +61,40 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             }
             var customer = await DTOCustomerToDomain(booking.Customer.id);
             //BEFORE SENT FULL CUSTOMER IN
-            return new Booking(booking.Customer.id, booking.Start, booking.End, treatments);
+            var newBooking = new Booking(booking.Customer.id, booking.Start, booking.End, treatments);
+            if (booking.BookingId != 0)
+            {
+                newBooking.Id = (int)booking.BookingId;
+                newBooking.Guid = booking.BookingGuid;
+            }
+            return newBooking;
+        }
+        public async Task<Booking> DTOBookingToDomainEdit(BookingDTO booking)
+        {
+            List<TreatmentBooking> treatments = new();
+            foreach (var treatment in booking.TreatmentBookingDTOs)
+            {
+                treatments.Add(await DTOTreatmentBookingToDomain(treatment));
+            }
+            var customer = await DTOCustomerToDomain(booking.Customer.id);
+            //BEFORE SENT FULL CUSTOMER IN
+            var newBooking = new Booking(booking.Customer.id, booking.Start, booking.End, treatments);
+            if (booking.BookingId != null)
+                newBooking.Id = (int)booking.BookingId;
+            return newBooking;
         }
         public async Task<TreatmentBooking> DTOTreatmentBookingToDomain(TreatmentBookingDTO treatmentBookingDTO)
         {
             var treatment = await DTOTreatmentToDomain(treatmentBookingDTO.Treatment);
             var employee = await DTOEmployeeToDomain(treatmentBookingDTO.Employee);
-            var result = new TreatmentBooking(treatment, employee, treatmentBookingDTO.Start, treatmentBookingDTO.End);
+            var result = new TreatmentBooking(treatment, employee, treatmentBookingDTO.Start, treatmentBookingDTO.End) { Price = treatmentBookingDTO.Price};
             return result;
         }
         public async Task<TreatmentBooking> DTOTreatmentBookingToDomainToDb(TreatmentBookingDTO treatmentBookingDTO)
         {
             var treatment = await DTOTreatmentToDomain(treatmentBookingDTO.Treatment);
             var employee = await DTOEmployeeToDomain(treatmentBookingDTO.Employee);
-            var result = new TreatmentBooking(treatment.Id, employee.Id, treatmentBookingDTO.Start, treatmentBookingDTO.End);
+            var result = new TreatmentBooking(treatment.Id, employee.Id, treatmentBookingDTO.Start, treatmentBookingDTO.End) { Price = treatmentBookingDTO.Price };
             return result;
         }
 
@@ -89,11 +110,11 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
 
         public LoyaltyDiscount DTOLoyaltyDiscountToDomain(LoyaltyDiscountDTO discount)
         {
-            return new LoyaltyDiscount(discount.MinimumVisits, discount.DiscountType, discount.Name, discount.TreatmentDiscount, discount.ProductDiscount);
+            return new LoyaltyDiscount(discount.MinimumVisits, discount.DiscountType, discount.Name, discount.TreatmentDiscount/100, discount.ProductDiscount / 100) {AppliesToTreatment = discount.AppliesToTreatment, AppliesToProduct=discount.AppliesToProduct};
         }
         public Campaign DTOCampaignDiscountToDomain(CampaignDiscountDTO discount)
         {
-            return new Campaign(discount.Name, discount.TreatmentDiscount, discount.ProductDiscount, discount.Start,discount.End);
+            return new Campaign(discount.Name, discount.TreatmentDiscount/100, discount.ProductDiscount/100, discount.Start,discount.End) { AppliesToTreatment = discount.AppliesToTreatment, AppliesToProduct = discount.AppliesToProduct };
         }
 
         public async Task<Employee> DTOEmployeeInputToDomain(EmployeeInputDTO dto)
@@ -112,8 +133,8 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 email: dto.Email,
                 phoneNumber: dto.PhoneNumber,
                 basePriceMultiplier: dto.BasePriceMultiplier,
-                workEnd: new(08, 0, 0),
-                workStart: new(18, 0, 0)
+                workEnd: dto.WorkEnd != null ? TimeOnly.FromTimeSpan(dto.WorkEnd) : new(08, 0, 0),
+                workStart: dto.WorkStart != null ? TimeOnly.FromTimeSpan(dto.WorkStart) : new(18, 0, 0)
             );
 
             return employee;

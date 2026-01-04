@@ -34,24 +34,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
 
             if (emp == null) return null;
 
-            return new EmployeeDetailsDTO
-            {
-                Id = emp.Id,
-                FirstName = emp.Name,
-                LastName = emp.LastName,
-                Type = emp.Type,
-                Specialty = emp.Specialties,
-                Experience = emp.ExperienceLevel,
-                Gender = emp.Gender,
-                Email = emp.Email,
-                PhoneNumber = emp.PhoneNumber,
-                BasePriceMultiplier = emp.BasePriceMultiplier,
-
-                City = emp.Address?.City,
-                PostalCode = emp.Address?.PostalCode,
-                StreetName = emp.Address?.StreetName,
-                HouseNumber = emp.Address?.HouseNumber
-            };
+            return new EmployeeDetailsDTO(emp);
         }
 
         public async Task UpdateEmployeeAsync(Employee employee)
@@ -87,7 +70,12 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
         {
             await _employeeRepo.CreateNewAsync(employee);
         }
-
+        public async Task<EmployeeDetailsDTO?> GetEmployeeByGuidAsync(Guid guid)
+        {
+            var emp = await _employeeRepo.GetByGuidAsync(guid);
+            if (emp == null) return null;
+            return new EmployeeDetailsDTO(emp);
+        }
         public async Task<IEnumerable<EmployeeUserCardDTO>> GetAllEmployeeUserCardsAsync()
         {
             var employees = await _employeeRepo.GetAllAsync();

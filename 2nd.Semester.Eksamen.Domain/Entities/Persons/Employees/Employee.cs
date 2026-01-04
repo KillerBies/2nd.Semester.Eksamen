@@ -105,16 +105,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
         }
 
 
-        ////method to add to treatment history
-        //public bool TryAddToTreatmentHistory(Booking booking)
-        //{
-        //    if (booking != null || booking.Status == BookingStatus.Completed)
-        //    {
-        //        TreatmentHistory.AddRange(booking.Treatments.Where(t => t.Employee.Id == Id).ToList());
-        //        return true;
-        //    }
-        //    return false;
-        //}
 
         public bool TrySetType(string type)
         {

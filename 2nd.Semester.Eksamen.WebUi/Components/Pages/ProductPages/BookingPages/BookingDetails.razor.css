@@ -1,0 +1,35 @@
+﻿.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.info-label {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    font-weight: 500;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+    .clickable:hover {
+        text-decoration: underline;
+        color: #034265;
+    }
+
+.card-btn {
+    width: 100%;
+    background-color: #034265;
+    border: none;
+    color: white;
+    transition: 0.2s ease;
+}
+
+    .card-btn:hover {
+        transform: scale(1.03);
+    }

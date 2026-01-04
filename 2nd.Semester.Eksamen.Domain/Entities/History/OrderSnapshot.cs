@@ -29,6 +29,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             OrderLinesSnapshot = order.Products.Select(oL => new OrderLineSnapshot(oL)).ToList();
             DateOfPayment = DateOnly.FromDateTime(DateTime.Now);
             AppliedDiscountSnapshot = new AppliedDiscountSnapshot(discount);
+            Guid = order.Guid;
             VAT = order.VAT;
         }
     }

@@ -1,0 +1,42 @@
+﻿@inherits InputBase<TimeSpan>
+
+<input type="number"
+       class="@CssClass"
+       value="@FormatValueAsString(CurrentValue)"
+       @onchange="OnChange" />
+
+@code {
+    private void OnChange(ChangeEventArgs e)
+    {
+        if (TryParseValueFromString(e.Value?.ToString(), out var result, out _))
+        {
+            CurrentValue = result;
+        }
+        else
+        {
+            EditContext?.NotifyFieldChanged(FieldIdentifier);
+        }
+    }
+
+    protected override bool TryParseValueFromString(
+        string? value,
+        out TimeSpan result,
+        out string validationErrorMessage)
+    {
+        if (double.TryParse(value, out var minutes))
+        {
+            result = TimeSpan.FromMinutes(minutes);
+            validationErrorMessage = null!;
+            return true;
+        }
+
+        result = default;
+        validationErrorMessage = "Invalid number of minutes";
+        return false;
+    }
+
+    protected override string FormatValueAsString(TimeSpan value)
+    {
+        return value.TotalMinutes.ToString("0.##");
+    }
+}

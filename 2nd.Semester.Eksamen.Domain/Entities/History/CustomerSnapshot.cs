@@ -17,13 +17,13 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         
         public BookingSnapshot BookingSnapshot { get; set; }
 
-        protected CustomerSnapshot() { }
+        public CustomerSnapshot() { }
         public CustomerSnapshot(Customer customer)
         {
             Name = customer.Name;
             AddressSnapshot = new AddressSnapshot(customer.Address);
             PhoneNumber = customer.PhoneNumber;
-
+            Guid = customer.Guid;
         }
         
         public static CustomerSnapshot CreateCustomerSnapshot(Customer customer)
@@ -49,6 +49,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public CompanyCustomerSnapshot(CompanyCustomer companyCustomer) : base(companyCustomer)
         {
             CVR = companyCustomer.CVRNumber;
+            Guid = companyCustomer.Guid;
         }
     }
 
@@ -60,6 +61,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 
         public PrivateCustomerSnapshot(PrivateCustomer privateCustomer) : base(privateCustomer) 
         {
+            Guid = privateCustomer.Guid;
             LastName = privateCustomer.LastName;
         }
 

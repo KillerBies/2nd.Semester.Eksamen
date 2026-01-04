@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Domain;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
@@ -25,6 +26,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
             var _context = await _factory.CreateDbContextAsync();
             return await _context.ScheduleDays.Include(sd => sd.TimeRanges).FirstOrDefaultAsync(sd=>sd.Id==id);
         }
+        public async Task<ScheduleDay?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.ScheduleDays.FirstOrDefaultAsync(e => e.Guid == guid);
+        }
         public async Task<IEnumerable<ScheduleDay>> GetByEmployeeIDAsync(int employeeid)
         {
             var _context = await _factory.CreateDbContextAsync();
@@ -46,6 +52,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
+                ScheduleDay.Guid = Guid.NewGuid();
                 await _context.ScheduleDays.AddAsync(ScheduleDay);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

@@ -1,86 +1,104 @@
-﻿
-@page "/TreatmentOverview"
-@inject NavigationManager Navi
+﻿@page "/TreatmentOverview"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @rendermode InteractiveServer
 
 
-<div class="treatment-overview-container">
-    <h2>Behandlingsoversigt</h2>
-    <div class="treatment-new">
-    <button class="btn btn-primary" @onclick="NewTreatmentNavigation">Lav ny behandling</button>
-    </div>
-    @if (dTOs == null)
-    {
-        <p>Indlæser behandlinger...</p>
-    }
-    else if (!dTOs.Any())
-    {
-        <p>Ingen behandlinger fundet.</p>
-    }
-    <div class="dTO-grid">
-        @foreach (var dTO in dTOs)
-        {
-        <div class="treatment-card">
-                <div class="treatment-card-header">
-                   
-                <div class="treatment-card-body">
-                    <p>Navn: @dTO.Name</p>
-                    <p>Pris: @dTO.BasePrice</p>
+<div style="background-color:#F3F2F2; min-height:100vh;">
+<div style="background-color:#F3F2F2; height:100%">
+    <div class="overview-page">
+        <div class="shadow-sm" style="background-color:#F3F2F2;">
+            <div class="page-header">
+                <div>
+                    <h1>Behandlinger</h1>
+                    <p class="subtitle">Oversigt over alle behandlinger</p>
+                </div>
+                <div class="equal-row ms-auto">
+                    <input type="text" class="search-box" placeholder="Søg Behandlings Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
+                    <button class="btn btn-primary" @onclick="() => CreateTreatment = true"><i class="bi bi-plus-lg"></i> Tilføj Behandling</button>
+                </div>
+            </div>
+            <div class="overview-page-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total</h3>
+                        <span>@Treatments.Count</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Udførte Behandlinger</h3>
+                        <span>0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending</h3>
+                        <span>0</span>
+                    </div>
                 </div>
 
-                <div class="treatment-card-footer">
-                    <button class="btn btn-primary"
-                            @onclick="() => ShowOverlay(dTO)">
-                        Se detaljer
-                    </button>
+                <div style="margin:30px;">
+                    @if (Treatments == null)
+                    {
+                        <p>Indlæser behandlinger...</p>
+                    }
+                    else if (!Treatments.Any())
+                    {
+                        <p>Ingen behandlinger fundet.</p>
+                    }
+                    else
+                    {
+                        <div class="dTO-grid">
+                            @foreach (var treatment in FilterdTreatments)
+                            {
+                                <div class="treatment-card">
+                                    <div class="treatment-card-header d-flex">
+                                        <h3>@treatment.Name</h3>
+                                        <span class="badge bg-dark bg-opacity-50 ms-auto">@treatment.Category</span>
+                                    </div>
+
+                                    <div class="treatment-card-body">
+                                        <div class="info-row">
+                                            <span class="info-label">Pris</span>
+                                            <span class="info-value">@treatment.BasePrice.ToString("0") Kr.</span>
+                                        </div>
+                                        <div class="info-row">
+                                            <span class="info-label">Varighed</span>
+                                            <span class="info-value">@treatment.Duration.TotalMinutes Minutter</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="treatment-card-footer">
+                                        <button class="btn btn-primary" @onclick="() => Select(treatment)">
+                                            Se detaljer
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
                 </div>
             </div>
         </div>
-        }
-    </div>
-
-    @if (isVisible == true)
-    {
-        <div class="overlay-background" @onclick="HideOverlay"></div>
-        <div class="treatment-details-overlay">
-
-            @if (selectedTreatment != null)
-            {
-                    <h2><b>Navn:</b> @selectedTreatment.Name</h2>
-                    <p><b>Pris:</b> @selectedTreatment.BasePrice</p>
-                    <p><b>Varighed:</b> @selectedTreatment.Duration</p>
-                    <p><b>Kategori:</b> @selectedTreatment.Category</p>
-                    
-                    <p><b>Påkrævede specialiteter:</b></p> 
-                    <ul>
-                        @if(selectedTreatment.RequiredSpecialties != null)
-                        {
-                        @foreach (var s in selectedTreatment.RequiredSpecialties)
-                        {
-                            <li>@s.Replace(",", "")</li>
-                         }
-                        }
-                    </ul>
-                    <p><b>Beskrivelse:</b> @selectedTreatment.Description</p>
-                  
-                <button class="btn btn-outline-primary mt-3" @onclick="HideOverlay">Luk</button>
-                <button class="btn btn-danger mt-3" @onclick="() => DeleteTreatment(selectedTreatment.TreatmentId)">Slet behandling</button>
-            }
         </div>
-    }
-
+    </div>
 </div>
 
-
-
-
-
-
-
-
-
-@code {
-	
-
-
+@if (CreateTreatment)
+{
+    <CreateWindow StyleParameters="background-color: #F3F2F2; padding:0;width:auto;" IsVisible=CreateTreatment IsVisibleChanged="@(v => CreateTreatment = v)">
+        <CreateTreatment OnClose="Refresh"></CreateTreatment>
+    </CreateWindow>
 }
+@if (ShowDetails)
+{
+    <CreateWindow IsVisible="ShowDetails" IsVisibleChanged="@(v => ShowDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
+        <DetailWindow OnEditBooking="OnEditBooking" Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+    </CreateWindow>
+}
+@if (ShowDelete)
+{
+    <CreateWindow IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)" StyleParameters="background-color: #F3F2F2; margin:2rem;width:fit-content; height:fit-content;scrollbar-width:none;z-index:9999;">
+        <DeleteWindow Refresh="Refresh" context="DeleteContext"></DeleteWindow>
+    </CreateWindow>
+}
+
+

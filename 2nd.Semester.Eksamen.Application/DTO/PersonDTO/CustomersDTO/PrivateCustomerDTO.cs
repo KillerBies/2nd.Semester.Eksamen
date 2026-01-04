@@ -1,4 +1,6 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using System.ComponentModel.DataAnnotations;
 
 namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
@@ -22,7 +24,17 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
         }
         [MaxLength(200)]
         public string? Notes { get; set; }
-        public bool SaveAsCustomer { get; set; }
+        public PrivateCustomerDTO(PrivateCustomer customer) : base(customer)
+        {
+            LastName = customer.LastName;
+            Gender = (Gender)customer.Gender;
+            Birthday = customer.BirthDate;
+            Notes = customer.Notes;
+        }
+        public PrivateCustomerDTO(PrivateCustomerSnapshot customerSnapshot) : base(customerSnapshot)
+        {
+            LastName = customerSnapshot.LastName;
+        }
         public PrivateCustomerDTO()
         {
 

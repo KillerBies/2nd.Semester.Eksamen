@@ -154,6 +154,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
                 .HasOne(tb => tb.Employee)
                 .WithMany(e => e.Appointments)
                 .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TreatmentBooking>()
+                .Property(t=>t.Price).HasPrecision(18, 2);
+
             // TreatmentBooking TreatmentBookingProducts
             modelBuilder.Entity<TreatmentBookingProduct>()
                 .HasOne(tbp => tbp.TreatmentBooking)

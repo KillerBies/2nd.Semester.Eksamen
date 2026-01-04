@@ -1,4 +1,10 @@
 ﻿@using _2nd.Semester.Eksamen.WebUi.Components.Shared;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages.DiscountCreationPages
 @rendermode InteractiveServer
 @namespace _2nd.Semester.Eksamen.WebUi.Components.Layout
 <!--Navbar-->
@@ -7,79 +13,260 @@
     <div class="navbar-nav">
         <!----------------------Logo container--------------------------------->
         <div>
-            <!--Container being fluid means it addapts to the screen and navbar size dinamically (Doesn't do much but kept for safety)-->
             <!--Logo anchore container (to attach a link)-->
             <a href="/" class="navbar-brand">
                 <!--Logo image-->
                 <img src="Logo.png" style="height:40px;" />
             </a>
         </div>
-        <!----------------Each item is within a list element container---------------------->
-        <div class="nav-item px-3"> <!-- px-3 give horizontal padding -->
-            <!--Clickable navbar item (leads to home)------------------->
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All"> <!--Match...All to only match a link that is exactly like the href given (that being empty)-->
-                <span></span> Home
+
+
+
+
+        <div class="nav-item px-3 dropdown" style="position:relative; cursor:pointer;" @onclick="() => ShowBookingDropdown = !ShowBookingDropdown" @onmouseleave="() => ShowBookingDropdown = false">
+
+            <!-- Toggle -->
+            <NavLink class="nav-link dropdown-toggle" style="display: flex; flex-direction:row; align-items: flex-end;height: 100%;">
+                Bookinger
             </NavLink>
-        </div>
-        <!--Repeats for the next items-->
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="EmployeeSchedule">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Medarbejder Skema</span>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="createbooking">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Lav Booking</span>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="BookingOverview">
-                <span>Booking Oversigt</span>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="employees">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Medarbejderoversigt</span>
-            </NavLink>
+            @if (ShowBookingDropdown)
+            {
+                <ul class="dropdown-menu show"
+                    style="display:block; position:absolute; top:100%; left:0; width:max-content;">
+                    <li @onclick:stopPropagation @onclick="() => ShowBookingDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="BookingOverview">
+                                <span>Booking Oversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowBookingDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateBookingIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Booking</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                </ul>
+            }
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="CustomerOverview">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Kundeoversigt</span>
+        <div class="nav-item px-3 dropdown" style="position:relative; cursor:pointer;" @onclick="() => ShowCustomerDropdown = !ShowCustomerDropdown" @onmouseleave="() => ShowCustomerDropdown = false">
+
+            <!-- Toggle -->
+            <NavLink class="nav-link dropdown-toggle">
+                Kunder
             </NavLink>
+            @if (ShowCustomerDropdown)
+            {
+                <ul class="dropdown-menu show"
+                    style="display:block; position:absolute; top:100%; left:0; width:max-content;">
+                    <li @onclick:stopPropagation @onclick="() => ShowCustomerDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="CustomerOverview">
+                                <span aria-hidden="true">Kundeoversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowCustomerDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateCustomerIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Kunde</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                </ul>
+            }
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="InvoiceOverview">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Fakturaoversigt</span>
+
+        <div class="nav-item px-3 dropdown" style="position:relative; cursor:pointer;" @onclick="() => ShowEmployeeDropdown = !ShowEmployeeDropdown" @onmouseleave="() => ShowEmployeeDropdown = false">
+
+            <!-- Toggle -->
+            <NavLink class="nav-link dropdown-toggle">
+                Medarbejdere
             </NavLink>
+            @if (ShowEmployeeDropdown)
+            {
+                <ul class="dropdown-menu show"
+                    style="display:block; position:absolute; top:100%; left:0; width:max-content;">
+                    <li @onclick:stopPropagation @onclick="() => ShowEmployeeDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="employees">
+                                <span aria-hidden="true">Medarbejderoversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowEmployeeDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="EmployeeSchedule">
+                                <span aria-hidden="true">Medarbejder Skema</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowEmployeeDropdown = false">
+
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateEmployeeIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Medarbejder</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                </ul>
+            }
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="TreatmentOverview">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true">Behandlingsoversigt</span>
+
+
+
+        <div class="nav-item px-3 dropdown" style="position:relative; cursor:pointer;" @onclick="() => ShowProductsDropdown = !ShowProductsDropdown" @onmouseleave="() => ShowProductsDropdown = false">
+
+            <!-- Toggle -->
+            <NavLink class="nav-link dropdown-toggle">
+                Produkter
             </NavLink>
+            @if (ShowProductsDropdown)
+            {
+                <ul class="dropdown-menu show"
+                    style="display:block; position:absolute; top:100%; left:0; width:max-content;">
+                    <li @onclick:stopPropagation @onclick="() => ShowProductsDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="TreatmentOverview">
+                                <span aria-hidden="true">Behandlingsoversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowProductsDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="ProductOverviewPage">
+                                <span aria-hidden="true">Produkt Oversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowProductsDropdown = false">
+
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="DiscountOverviewPage">
+                                <span aria-hidden="true">Rabat Oversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation @onclick="() => ShowProductsDropdown = false">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="InvoiceOverview">
+                                <span aria-hidden="true">Fakturaoversigt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                </ul>
+            }
         </div>
-        
-       
+
         <!--Dropdown for more options-->
-        <div class="nav-item px-3 dropdown" style="position: relative" @onmouseleave="CloseDropdown">  <!--When mouse moves out of this container close the menu. Element is set as the relativ object (meaning other objects that are absolute do so relative to them)-->
-            <!--Dropdown burger icon-->
-            <NavLink class="nav-link navbar-toggler-icon" style="font-size: 1.5rem;" @onclick="ToggleDropdown" />
-            <!--Drop down menu------------------------>
+        <div class="nav-item px-3 dropdown" style="position:relative; cursor:pointer;" @onmouseleave="() => Open = false">
+
+            <!-- Toggle -->
+            <NavLink class="nav-link dropdown-toggle"
+                    
+                     @onclick="ToggleDropdown">
+                    Tilføj
+            </NavLink>
+
             @if (Open)
             {
-                <!--Container for the menu items------------------------>
-                <ul class="dropdown-menu show" style="display:block; position:absolute; top:100%; left:0;">
-                    @foreach (var item in items)
-                    {
-                        <li>
-                            <!--Each item. If an item is clicked on it redirects to the given link and closes the menu------->
-                            <NavLink class="dropdown-item" href="@item.Link" @onclick="CloseDropdown">
-                                @item.Text
+                <ul class="dropdown-menu show"
+                    style="display:block; position:absolute; top:100%; left:0; width:max-content;">
+                    <li @onclick:stopPropagation>
+
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateEmployeeIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Medarbejder</span>
                             </NavLink>
-                        </li>
-                    }
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation>
+
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateTreatmentIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Behandling</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation>
+
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateProductIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Nyt Produkt</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateBookingIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Booking</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation>
+
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateCustomerIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Ny Kunde</span>
+                            </NavLink>
+                        </div>
+                    </li>
+                    <li @onclick:stopPropagation>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" @onclick="() => CreateDiscountIsVisible = true" style="cursor:pointer;">
+                                <span aria-hidden="true">Nyt Tilbud</span>
+                            </NavLink>
+                        </div>
+                    </li>
                 </ul>
             }
         </div>
     </div>
 </nav>
+
+
+
+@if (CreateCustomerForBookingIsVisible)
+{
+    <CreateWindow IsVisible=CreateCustomerForBookingIsVisible IsVisibleChanged="v => CreateCustomerForBookingIsVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateCustomer IsBooking=true OnClose="() => CreateCustomerForBookingIsVisible = false"></CreateCustomer>
+    </CreateWindow>
+}
+@if (CreateDiscountIsVisible)
+{
+    <CreateWindow IsVisible=CreateDiscountIsVisible IsVisibleChanged="v => CreateDiscountIsVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateDiscount OnClose="() => CreateDiscountIsVisible = false"></CreateDiscount>
+    </CreateWindow>
+}
+@if (CreateCustomerIsVisible)
+{
+    <CreateWindow IsVisible=CreateCustomerIsVisible IsVisibleChanged="v => CreateCustomerIsVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateCustomer IsBooking=false OnClose="() => CreateCustomerIsVisible = false"></CreateCustomer>
+    </CreateWindow>
+}
+@if (CreateEmployeeIsVisible)
+{
+    <CreateWindow IsVisible=CreateEmployeeIsVisible IsVisibleChanged="v => CreateEmployeeIsVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateEmployee OnClose="() => CreateEmployeeIsVisible = false"></CreateEmployee>
+    </CreateWindow>
+}
+@if (CreateTreatmentIsVisible)
+{
+    <CreateWindow IsVisible=CreateTreatmentIsVisible IsVisibleChanged="v => CreateTreatmentIsVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateTreatment OnClose="() => CreateTreatmentIsVisible = false"></CreateTreatment>
+    </CreateWindow>
+}
+@if (CreateProductIsVisible)
+{
+    <CreateWindow IsVisible=CreateProductIsVisible IsVisibleChanged="v => CreateProductIsVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateProduct OnClose="() => CreateBookingIsVisible = false"></CreateProduct>
+    </CreateWindow>
+}
+@if (CreateBookingIsVisible)
+{
+    <CreateWindow IsVisible=CreateBookingIsVisible IsVisibleChanged="v => CreateBookingIsVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <CreateBooking OnClose="() => CreateBookingIsVisible = false" OnCreateNewCustomer="() => CreateCustomerForBookingIsVisible = true"></CreateBooking>
+    </CreateWindow>
+}

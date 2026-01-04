@@ -30,9 +30,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
 
 
             var allSpecialties = await _employeeRepository.GetAllSpecialtiesAsync();
-            return allSpecialties.Where(s => s != null).SelectMany(s => s.Split(',', StringSplitOptions.RemoveEmptyEntries))
-            .Select(s => s.Trim()).Distinct().ToList();
-        
+            allSpecialties.AddRange(await _treatmentRepository.GetAllSpecialtiesAsync());
+            var uniqueSpecialties = allSpecialties.Where(s => !string.IsNullOrEmpty(s)).SelectMany(s => s.Split(',', StringSplitOptions.RemoveEmptyEntries)).Select(s => s.Trim()).Distinct().ToList();
+            return uniqueSpecialties;
+
+
         }
         public async Task CreateNewTreatmentAsync(TreatmentDTO treatmentDTO)
         {
@@ -41,7 +43,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
            
             await _treatmentRepository.CreateNewAsync(treatment);
         }
-
+        public async Task UpdateTreatment(TreatmentDTO treatmentDTO)
+        {
+            Treatment treatment = new Treatment(treatmentDTO.Name, treatmentDTO.BasePrice, treatmentDTO.Description, treatmentDTO.Category, treatmentDTO.Duration, treatmentDTO.RequiredSpecialties) { Id=treatmentDTO.TreatmentId};
+            await _treatmentRepository.UpdateAsync(treatment);
+        }
         public async Task<List<TreatmentDTO>> GetAllTreatmentsAsDTOAsync()
         {
             
@@ -61,6 +67,11 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         public async Task DeleteByIdDbAsync(int id)
         {
             await _treatmentRepository.DeleteByIdAsync(id);
+        }
+
+        public async Task<TreatmentDTO> GetTreatmentDetailsByIdAsync(int id)
+        {
+            return new TreatmentDTO((await _treatmentRepository.GetByIDAsync(id)));
         }
 
 

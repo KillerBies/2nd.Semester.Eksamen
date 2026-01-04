@@ -1,10 +1,81 @@
-﻿@namespace Components.Pages
+﻿@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
+@inject NavigationManager Navi
 @rendermode InteractiveServer
 @page "/"
 
-<div><button @onclick="InjectData"></button></div>
-<div><button @onclick="getalldata"></button></div>
-@foreach (var treatment in treatments)
+<div style="background-color:#F3F2F2;min-height:100vh;">
+    <div style="background-color:#F3F2F2;">
+        <div class="overview-page">
+            <div class="shadow-sm" style="background-color:#F3F2F2;">
+            <div class="page-header">
+                <div>
+                    <h1>Opkommende Bookinger</h1>
+                    <p class="subtitle">Næste Bookinger I Rækkefølgen</p>
+                </div>
+            </div>
+            <div class="overview-page-content">
+                    <div class="grid grid-3">
+                        <div class="stat-card">
+                            <h3>Bookinger Idag</h3>
+                            <span>@BookingsCount</span>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Behandlinger Idag</h3>
+                            <span>@TreatmentCount</span>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Kunder Idag</h3>
+                            <span>@CustomerCount</span>
+                        </div>
+                    </div>
+                <div style="margin:30px;">
+                    @if (!bookings.Any())
+                    {
+                        <div class="alert alert-danger">
+                            Kunne ikke hente bookinger. Prøv igen senere.
+                        </div>
+                    }
+                    else if (bookings == null)
+                    {
+                        <div>Loader...</div>
+                    }
+                    else
+                    {
+                            <div class="dTO-grid">
+                            @foreach (var booking in bookings)
+                            {
+                                    <BookingHomepage CurrentTime="CurrentTime" booking="booking" OnCancelClick="GetBookingWarning" OnPaymentClick="Pay"></BookingHomepage>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+            <button @onclick="InjectData">Inject Data</button>
+        </div>
+    </div>
+</div>
+@if (ShowBookingWarning)
 {
-    @treatment.Price;
+    <BookingNotification IsVisible="ShowBookingWarning" IsVisibleChanged="@(v => ShowBookingWarning = v)">
+        <div class="mt-2">
+            <p>Er du sikker på du vil aflyse bookingen?</p>
+            <div class="d-flex gap-2 btn-group">
+                <button class="btn btn-secondary" @onclick="() => ShowBookingWarning = false">Annuller</button>
+                <button class="btn btn-danger" @onclick="ConfirmCancelBooking">Aflys Booking</button>
+            </div>
+        </div>
+    </BookingNotification>
+}
+
+@if (ShowBookingPayment)
+{
+    <SidePage IsVisible="ShowBookingPayment" IsVisibleChanged="@(v => ShowBookingPayment = v)">
+        <div style="width:30vw;"></div>
+        <FinalizePayment Booking="PayBooking" OnClose="Refresh"></FinalizePayment>
+    </SidePage>
 }

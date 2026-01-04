@@ -21,5 +21,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
         {
             return customer.BookingHistory.Count() >= MinimumVisits;
         }
+
     }
 }

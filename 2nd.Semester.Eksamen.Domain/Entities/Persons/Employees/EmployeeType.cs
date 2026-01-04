@@ -15,6 +15,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
         [Description("Staff")]
         Staff,
         [Description("Apprentice")]
-        Apprentice
+        Apprentice,
     }
 }

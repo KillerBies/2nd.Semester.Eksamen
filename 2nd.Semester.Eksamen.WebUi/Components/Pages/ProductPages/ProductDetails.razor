@@ -1,0 +1,174 @@
+﻿@using _2nd.Semester.Eksamen.Application.Services.ProductServices
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.Application.DTO;
+@using _2nd.Semester.Eksamen.Application
+@inject IProductOverviewService productOverviewService
+@rendermode InteractiveServer
+
+
+<div class="card shadow-sm border-0 p-0 m-0" style="background: #ffffff;">
+    @if (Product != null || SnapshotContext.Product != null)
+    {
+        @if (!IsSnapshot)
+        {
+            <div class="card-header bg-transparent border-0 d-flex align-items-center">
+                <div>
+                    <h2 class="mb-1 fw-semibold">@Product.Name</h2>
+                    <small class="small text-muted">Produkt</small>
+                </div>
+
+                <span class="badge badge-category ms-auto">
+                    @Product.Category
+                </span>
+            </div>
+
+            <div class="card-body">
+                <div class="text-center rounded-3 p-3 mb-4"
+                     style="background:#f9f9f9;">
+                    <small class="text-muted">Pris</small>
+                    <div class="fs-1 fw-bold">
+                        @Product.Price.ToString("0") kr.
+                    </div>
+                </div>
+
+
+                <p class="text-muted mb-4" style="line-height:1.6;">
+                    @Product.Description
+                </p>
+
+
+                <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                    @if (Product == null || !History.Any())
+                    {
+                        <p class="text-muted mb-0 text-center">
+                            Ingen salgs historik fundet for dette produkt.
+                        </p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>OrderId</th>
+                                    <th>Kunde</th>
+                                    <th>Pris</th>
+                                    <th>Dato</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var instance in History)
+                                {
+                                    <tr>
+                                        <td @onclick="() => OnClickOrder.InvokeAsync(instance.Guid)">@instance.Id</td>
+                                        <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)">@instance.CustomerName</td>
+                                        <td>@instance.TotalPrice</td>
+                                        <td>@instance.DateOfPayment.ToShortDateString()</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+
+            <div class="card-footer bg-transparent border-0 mt-4">
+                <div class="btn-group w-100">
+                    <button class="btn card-btn w-50" style="background-color:crimson; color:white;" @onclick="() => OnDelete.InvokeAsync(Context)">
+                        Slet
+                    </button>
+                    <button class="btn btn-treatment w-50" @onclick="() => OnEdit.InvokeAsync(Context)">
+                        Rediger
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card-header bg-transparent border-0 d-flex align-items-center">
+                <div>
+                    <h2 class="mb-1 fw-semibold">@Product.Name</h2>
+                    <small class="small text-muted">Produkt</small>
+                </div>
+
+                <span class="badge badge-category ms-auto">
+                    @Product.Id
+                </span>
+            </div>
+
+            <div class="card-body">
+                <div class="text-center rounded-3 p-3 mb-4"
+                     style="background:#f9f9f9;">
+                    <small class="text-muted">Pris</small>
+                    <div class="fs-1 fw-bold">
+                        @Product.Price.ToString("0") kr.
+                    </div>
+                </div>
+
+                <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                    @if (Product == null || !History.Any())
+                    {
+                        <p class="text-muted mb-0 text-center">
+                            Ingen salgs historik fundet for dette produkt.
+                        </p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>OrderId</th>
+                                    <th>Kunde</th>
+                                    <th>Pris</th>
+                                    <th>Dato</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var instance in History)
+                                {
+                                    <tr>
+                                        <td @onclick="() => OnClickOrder.InvokeAsync(instance.Guid)">@instance.Id</td>
+                                        <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)">@instance.CustomerName</td>
+                                        <td>@instance.TotalPrice</td>
+                                        <td>@instance.DateOfPayment.ToShortDateString()</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Loading....</p>
+    }
+</div>
+@code {
+    private List<OrderHistoryDTO> History { get; set; } = new();
+    [Parameter] public ProductContext Context { get; set; }
+    public ProductOverviewDTO Product { get; set; }
+    public string _errorMessage = string.Empty;
+    [Parameter] public bool IsSnapshot { get; set; } = false;
+    [Parameter] public ProductSnapShotContext SnapshotContext { get; set; }
+    [Inject] public IHistoryService _historyService { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickCustomer { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickOrder { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnEdit { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnDelete { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsSnapshot)
+        {
+            Product = SnapshotContext.Product;
+        }
+        else
+        {
+            Product = Context.Product;
+        }
+        History = await _historyService.GetProductHistoryByGuidAsync(Product.Guid);
+    }
+}

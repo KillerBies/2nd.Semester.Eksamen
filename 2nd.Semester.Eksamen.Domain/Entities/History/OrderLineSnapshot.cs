@@ -19,6 +19,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         private OrderLineSnapshot() { }
         public OrderLineSnapshot(OrderLine orderLine)
         {
+            Guid = orderLine.Guid;
             if (orderLine.LineProduct != null)
             {
             ProductSnapshot = new ProductSnapshot(orderLine.LineProduct);

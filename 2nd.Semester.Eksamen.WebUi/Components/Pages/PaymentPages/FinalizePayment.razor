@@ -1,7 +1,8 @@
 ﻿@page "/finalizepayment/{id:int}"
-@namespace _2nd.Semester.Eksamen.Pages.PaymentPages
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 @rendermode InteractiveServer
 
+<div class="card m-0 border-0 bg-white">
 @if (isLoading)
 {
     <p>Loading…</p>
@@ -13,12 +14,12 @@ else if (!string.IsNullOrEmpty(errorMessage))
 else if (paymentSuccess)
 {
     <div class="alert alert-success">
-        Payment completed! Order created/updated successfully.
+        Betaling Udført! Order lavt.
     </div>
 }
 else
 {
-    <h3 class="mb-3">Products in Your Booking</h3>
+    <h3 class="mb-3">Producter i Din Booking</h3>
 
     <table class="table table-striped table-hover">
         <thead class="table-dark">
@@ -60,3 +61,4 @@ else
 
 
 }
+</div>

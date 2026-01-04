@@ -1,0 +1,76 @@
+﻿.card-btn {
+    width: 50%;
+    background-color: #034265;
+    border: none;
+    color: white;
+    transition: 0.2s ease;
+}
+
+    .card-btn:hover {
+        transform: scale(1.03);
+    }
+
+
+
+body {
+    background-color: #F3F2F2;
+}
+
+
+
+
+.form-group {
+    background-color: #034265;
+}
+
+.whole-form {
+    border-radius: 5px;
+    padding: 100px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    background-color: #F3F2F2;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.form-btn {
+}
+
+.btn {
+    color: white;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: block;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.card-btn {
+    width: 50%;
+    background-color: #034265;
+    border: none;
+    color: white;
+    transition: 0.2s ease;
+}
+
+    .card-btn:hover {
+        transform: scale(1.03);
+    }
+
+
+.form-labels {
+    margin-bottom: 5px;
+}
+
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #cfcfcf;
+    padding: 10px;
+    font-size: 1rem;
+    width: 100%;
+}
