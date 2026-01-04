@@ -75,6 +75,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
 
         private async Task Select(TreatmentDTO treatment)
         {
+            ContextStack.Clear();
             ContextStack.Push(new TreatmentContext(treatment));
             ShowDetails = true;
         }

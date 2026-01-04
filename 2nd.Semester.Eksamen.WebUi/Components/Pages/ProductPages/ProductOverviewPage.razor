@@ -21,16 +21,17 @@
                 </div>
                 <div class="input-group">
                     <div class="equal-row ms-auto">
-                            <select id="discountType" class="bg-white search-box" name="discountType" @bind="SearchTermType" @bind:event="oninput">
-                                <option value="">Alle</option>
-                                @foreach (var category in Categories)
-                                {
-                                    <option value="@category">@category</option>
-                                }
-                            </select>
-                            <input type="text" class="search-box" placeholder="Søg Produktets Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
-                            <button class="btn btn-primary" @onclick="() => isVisible = true">+ Produkt</button>
-                        </div>
+                        <input type="text" class="search-box" placeholder="Søg Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
+                        <select id="discountType" class="bg-white search-box" name="discountType" @bind="SearchTermType" @bind:event="oninput">
+                            <option value="">Alle</option>
+                            @foreach (var category in Categories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        </select>
+                        <button class="btn btn-primary" @onclick="() => isVisible = true">
+                            <i class="bi bi-plus-lg"></i> Tilføj Tilbud
+                        </button>
                     </div>
                 </div>
             </div>
@@ -90,6 +91,7 @@
             </div>
         </div>
     </div>
+</div>
 
 @if (isVisible)
 {
@@ -173,6 +175,7 @@
 
     private async Task Select(ProductOverviewDTO product)
     {
+        ContextStack.Clear();
         ContextStack.Push(new ProductContext(product));
         ShowDetails = true;
     }

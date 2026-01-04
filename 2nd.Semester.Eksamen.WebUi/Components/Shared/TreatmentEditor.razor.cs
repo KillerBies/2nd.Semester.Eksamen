@@ -2,6 +2,7 @@
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using _2nd.Semester.Eksamen.Application.Services.BookingServices;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
@@ -18,7 +19,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
     public partial class TreatmentEditor
     {
 
-
+        //If is edit then initialice the lists for choices on initialization
         //Make page on submit that gives a summary with an ok button
         [Parameter] public EventCallback<TreatmentBookingDTO> OnRemove { get; set; }
         [Parameter] public EventCallback<TreatmentBookingDTO> OnSelectedParameterChange { get; set; }
@@ -40,7 +41,14 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
         private TreatmentDTO selectedTreatment => PossibleTreatments.FirstOrDefault(pt => pt.TreatmentId == TreatmentBooking.Treatment.TreatmentId);
         private EmployeeDTO selectedEmployee => PossibleEmployees.FirstOrDefault(pe => pe.EmployeeId == TreatmentBooking.Employee.EmployeeId);
 
-
+        protected override async Task OnInitializedAsync()
+        {
+            if(IsEdit)
+            {
+                SelectableTreatments = PossibleTreatments.Where(s => s.Category == TreatmentBooking.Treatment.Category).ToList();
+                SelectableEmployees = PossibleEmployees.Where(e => TreatmentBooking.Treatment.RequiredSpecialties.All(tr => e.Specialties.Contains(tr))).ToList();
+            }
+        }
         private void OnCategoryChanged()
         {
 

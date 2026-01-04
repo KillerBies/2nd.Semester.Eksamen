@@ -1,101 +1,41 @@
 ﻿body {
-background-color: #F3F2F2;
+    background-color: #F3F2F2;
 }
-
-
-.whole-form {
-border-radius: 8px;
-padding: 70px;
-box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-background-color: #F3F2F2;
-display: flex;
-flex-direction: column;
-width: 100%;
-max-width: 900px;
-margin: 40px auto;
-}
-
-
-.form-group {
-margin-bottom: 20px;
-padding: 20px;
-background-color: #034265;
-border-radius: 6px;
-box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-
-.form-labels {
-color: white;
-font-weight: bold;
-margin-bottom: 5px;
-display: block;
-font-size: 1.1rem;
-}
-
 
 .form-control {
-border-radius: 5px;
-border: 1px solid #cfcfcf;
-padding: 10px;
-font-size: 1rem;
-width: 100%;
+    border-radius: 5px;
+    border: 1px solid #cfcfcf;
+    padding: 10px;
+    font-size: 1rem;
+    width: 100%;
 }
 
-.form-control:focus {
-outline: none;
-border-color: #034265;
-box-shadow: 0 0 5px rgba(3,66,101,0.6);
-}
+    .form-control:focus {
+        outline: none;
+        border-color: #034265;
+        box-shadow: 0 0 5px rgba(3,66,101,0.6);
+    }
 
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+}
 
 .btn-primary {
-background-color: #034265;
-border: none;
-padding: 10px 20px;
-font-size: 1.1rem;
-border-radius: 5px;
-transition: transform 0.2s ease, box-shadow 0.2s ease;
-display: block;
-margin: 30px auto 0 auto;
+    background-color: #034265;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: block;
+    margin: 30px auto 0 auto;
 }
 
-.btn-primary:hover {
-transform: scale(1.03);
-box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-}
-
-
-
-
-.btn-danger {
-margin-left: 10px;
-}
-
-
-ul, li {
-margin: 0;
-padding: 0;
-list-style: none;
-
-}
-
-li1 {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 8px;
-    color: white;
-}
-
-li2 {
-display: flex;
-align-items: center;
-gap: 10px;
-margin-top: 8px;
-color: black;
-}
-
+    .btn-primary:hover {
+        transform: scale(1.03);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
 
 .card-btn {
     width: 50%;

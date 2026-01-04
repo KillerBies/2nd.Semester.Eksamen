@@ -93,7 +93,8 @@ else
                                         <th>BookingId</th>
                                         <th>Kunde</th>
                                         <th>Pris</th>
-                                        <th>Behandlings navn</th>
+                                        <th>Behandling</th>
+                                        <th>Dato</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,6 +107,7 @@ else
                                                 <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)" >@instance.CustomerName</td>
                                                 <td>@instance.Price</td>
                                                 <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.Treatment.TreatmentGuid)">@instance.Treatment.Name</td>
+                                                <td>@instance.Start.ToString("d")</td>
                                             </tr>
                                         }
                                     }
@@ -118,6 +120,7 @@ else
                                                 <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)">@instance.CustomerName</td>
                                                 <td>@instance.Price</td>
                                                 <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.TreatmentGuid)">@instance.TreatmentName</td>
+                                                <td>@instance.Date</td>
                                             </tr>
                                         }
                                     }
@@ -203,7 +206,8 @@ else
                                         <th>BookingId</th>
                                         <th>Kunde</th>
                                         <th>Pris</th>
-                                        <th>Behandlings navn</th>
+                                        <th>Behandling</th>
+                                        <th>Dato</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -216,6 +220,7 @@ else
                                                 <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)">@instance.CustomerName</td>
                                                 <td>@instance.Price</td>
                                                 <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.Treatment.TreatmentGuid)">@instance.Treatment.Name</td>
+                                                <td>@instance.Start.ToString("d")</td>
                                             </tr>
                                         }
                                     }
@@ -228,6 +233,7 @@ else
                                                 <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)">@instance.CustomerName</td>
                                                 <td>@instance.Price</td>
                                                 <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.TreatmentGuid)">@instance.TreatmentName</td>
+                                                <td>@instance.Date</td>
                                             </tr>
                                         }
                                     }

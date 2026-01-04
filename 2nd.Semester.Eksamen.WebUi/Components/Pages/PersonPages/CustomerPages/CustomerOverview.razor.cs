@@ -77,6 +77,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
         }
         private async Task Select(CustomerDTO customer)
         {
+            ContextStack.Clear();
             ContextStack.Push(new CustomerDetailsContext(customer));
             ShowDetails = true;
         }

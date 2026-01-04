@@ -279,7 +279,7 @@ else
 
     public string _errorMessage { get; set; } = string.Empty;
     [Inject] public IEmployeeService EmployeeService { get; set; }
-    public List<OrderHistoryDTO> History { get; set; }
+    public List<OrderHistoryDTO> History { get; set; } = new();
     private bool ShowConfirmDelete { get; set; } = false;
 
     [Parameter] public DiscountContext Context { get; set; }

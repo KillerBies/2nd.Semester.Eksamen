@@ -61,6 +61,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
         }
         private async Task EmployeeSelect(EmployeeDetailsDTO employee)
         {
+            ContextStack.Clear();
             ContextStack.Push(new EmployeeDetailsContext(employee));
             ShowEmployeeDetails = true;
         }

@@ -57,8 +57,9 @@
                                                 OnClickOrder="ClickOrder" />
                                 break;
                             case ProductEditContext pec:
-                                <CreateProduct EditProduct="pec.Product"
-                                               OnClose="()=>Refresh.InvokeAsync()" />
+                                        <CreateProduct EditProduct="pec.Product"
+                                                       IsEdit="true"
+                                                       OnClose="()=>Refresh.InvokeAsync()" />
                                 break;
                         }
                         break;

@@ -14,55 +14,65 @@
         @_errorMessage
     </div>
 }
-<FloatingPage>
-    <div style="margin: 30px;">
+<div class="card shadow-none m-0" style="background-color:#F3F2F2;aspect-ratio: 4 / 1;">
+    <div style="padding:30px">
         <EditForm Model="@productDTO" OnValidSubmit="@HandleValidSubmit">
+            <h2 class="mb-4">@(IsEdit ? "Rediger Produkt" : "Opret Produkt")</h2>
+            <div style="padding:30px">
             <DataAnnotationsValidator />
             <ValidationSummary />
-
-            <h2 class="text-center mb-4">@(IsEdit ? "Rediger Produkt" : "Opret Produkt")</h2>
-
-            <div class="mb-3">
-                <label class="form-label">Navn:</label>
-                <InputText @bind-Value="productDTO.Name" class="form-control" placeholder="Produktnavn..." />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Pris:</label>
-                <InputNumber @bind-Value="productDTO.Price" class="form-control" placeholder="Pris..." />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Beskrivelse:</label>
-                <InputTextArea @bind-Value="productDTO.Description" class="form-control" placeholder="Beskrivelse..." maxlength="500" />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Kategori:</label>
-                <div class="w-100 h-100">
-                    <select id="discountType" class="w-100 h-100 mb-3" name="discountType" @bind="productDTO.Category" @bind:event="oninput">
-                    <option value="_">Vælg Kategori</option>
-                    @foreach (var category in Categories)
-                    {
-                        <option value="@category">@category</option>
-                    }
-                    <option value="">Ny Kategori</option>
-                </select>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label">Navn</label>
+                        <InputText @bind-Value="@productDTO.Name" class="form-control" placeholder="Produktnavn..." />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label">Pris</label>
+                        <InputNumber @bind-Value="productDTO.Price" class="form-control" placeholder="Pris..." />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label">Kategori</label>
+                        <select class="form-select bg-white" name="discountType" @bind="productDTO.Category" @bind:event="oninput">
+                            <option value="_">Vælg Kategori</option>
+                            @foreach (var category in Categories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                            <option value="">Ny Kategori</option>
+                        </select>
+                    </div>
                 </div>
                 @if (productDTO.Category == "")
                 {
-                    <InputText @bind-Value="productDTO.Category"
-                               class="form-control"
-                               placeholder="Kategori..." />
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <InputText @bind-Value="productDTO.Category"
+                                       class="form-control"
+                                       placeholder="Kategori..." />
+                        </div>
+                    </div>
                 }
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label">Beskrivelse</label>
+                        <InputTextArea @bind-Value="productDTO.Description" class="form-control" placeholder="Beskrivelse..." maxlength="500" />
+                    </div>
+                </div>
+
+
+
             </div>
 
             <div class="text-center mt-4">
-                <button type="submit" class="btn card-btn w-75">@(IsEdit ? "Gem Ændringer" : "Opret Produkt")</button>
+                <button type="submit" class="btn card-btn w-100">@(IsEdit ? "Gem Ændringer" : "Opret Produkt")</button>
             </div>
         </EditForm>
     </div>
-</FloatingPage>
+</div>
 @code {
     private NewProductDTO productDTO { get; set; } = new();
     [Parameter] public ProductOverviewDTO EditProduct { get; set; }
@@ -79,13 +89,13 @@
         if (IsEdit)
         {
             productDTO = new NewProductDTO()
-                {
-                    Id = EditProduct.Id,
-                    Description = EditProduct.Description,
-                    Category = EditProduct.Category,
-                    Price = EditProduct.Price,
-                    Name = EditProduct.Name
-                };
+            {
+                Id = EditProduct.Id,
+                Description = EditProduct.Description,
+                Category = EditProduct.Category,
+                Price = EditProduct.Price,
+                Name = EditProduct.Name
+            };
         }
     }
 
@@ -93,7 +103,7 @@
     {
         try
         {
-            if(IsEdit)
+            if (IsEdit)
             {
                 await productService.UpdateProductAsync(productDTO);
             }

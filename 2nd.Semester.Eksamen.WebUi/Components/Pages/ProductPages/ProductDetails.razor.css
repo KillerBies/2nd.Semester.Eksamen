@@ -1,247 +1,30 @@
-﻿.overview-page {
-    padding-left: 10rem;
-    padding-right: 10rem;
-}
-
-.overview-page-content {
-    padding: 1rem;
-    border-radius: 12px 12px 12px 12px;
-}
-
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
+﻿.card-btn {
+    width: 50%;
     background-color: #034265;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    border-radius: 12px 12px 0 0;
+    border: none;
+    color: white;
+    transition: 0.2s ease;
 }
 
-    .page-header h1 {
-        margin: 0;
-        color: white;
+    .card-btn:hover {
+        transform: scale(1.03);
     }
-
-.subtitle {
-    color: lightgray;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    background: white;
-    border-radius: 12px;
-    padding: 1.25rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-    .stat-card span {
-        font-size: 1.8rem;
-        font-weight: bold;
-    }
-
-.grid {
-    display: grid;
-    gap: 1rem;
-}
-
-.grid-2 {
-    grid-template-columns: repeat(2, 1fr);
-}
-
-.grid-3 {
-    grid-template-columns: repeat(3, 1fr);
-}
-
-.grid-4 {
-    grid-template-columns: repeat(4, 1fr);
-}
-
-.grid-item {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-    .grid-item:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.20);
-    }
-
-
-
-
-
 
 .btn-treatment {
     width: 100%;
     background-color: #034265;
     border: none;
-    transition: 0.2s ease;
     color: white;
+    transition: 0.2s ease;
 }
 
     .btn-treatment:hover {
         transform: scale(1.03);
     }
 
-
-
 .badge-category {
-    background: rgba(0,0,0,0.55);
+    background: rgba(0, 0, 0, 0.55);
     color: white;
     padding: 0.45rem 0.7rem;
     font-size: 0.75rem;
-}
-
-
-
-.discount-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-}
-
-.discount-card {
-    background: white;
-    border-radius: 14px;
-    padding: 1.2rem;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    transition: transform .2s ease, box-shadow .2s ease;
-}
-
-    .discount-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-    }
-
-.discount-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    gap: .5rem;
-}
-
-    .discount-card-header h3 {
-        font-size: 1.1rem;
-        margin: 0;
-    }
-
-.badge {
-    font-size: .75rem;
-    padding: .3rem .6rem;
-    border-radius: 8px;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-    .badge.campaign {
-        background: #e0f2ff;
-        color: #0369a1;
-    }
-
-    .badge.loyalty {
-        background: #ecfdf5;
-        color: #065f46;
-    }
-
-.discount-card-body {
-    margin-top: .8rem;
-    flex: 1;
-}
-
-.description {
-    font-size: .9rem;
-    color: #555;
-}
-
-.date-range {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    font-size: .85rem;
-    margin: .5rem 0;
-    color: #666;
-}
-
-.product-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .4rem;
-    margin-top: .5rem;
-}
-
-.product-chip {
-    background: #f3f4f6;
-    padding: .3rem .6rem;
-    border-radius: 999px;
-    font-size: .75rem;
-}
-
-.more {
-    font-size: .75rem;
-    color: #666;
-}
-
-.discount-values {
-    display: flex;
-    gap: 1rem;
-    margin-top: .8rem;
-}
-
-    .discount-values .label {
-        font-size: .7rem;
-        color: #888;
-    }
-
-    .discount-values .value {
-        font-weight: 600;
-    }
-
-.discount-card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-}
-
-.status.active {
-    color: #16a34a;
-    font-weight: 600;
-}
-
-.status.inactive {
-    color: #dc2626;
-    font-weight: 600;
-}
-
-
-.equal-row {
-    display: flex;
-    width: auto;
-    gap: 1rem;
-    max-height: auto;
-    padding: initial;
-}
-
-    .equal-row > * {
-        flex: 1;
-    }
-
-.search-box {
-    border-radius: 4px;
-    border: 0;
 }

@@ -208,6 +208,7 @@
 
     private async Task Select(DiscountOverviewDTO discount)
     {
+        ContextStack.Clear();
         ContextStack.Push(new DiscountContext(discount));
         ShowDetails = true;
     }

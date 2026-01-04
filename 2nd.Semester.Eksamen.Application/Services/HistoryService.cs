@@ -85,7 +85,7 @@ namespace _2nd.Semester.Eksamen.Application.Services
                 }
                 else
                 {
-                    treatmentDTOs.Add(new TreatmentBookingDTO(treatment) { CustomerGuid = customer.Guid, CustomerId = customer.Id, CustomerName = customer.Name });
+                    treatmentDTOs.Add(new TreatmentBookingDTO(treatment) { CustomerGuid = customer.Guid, CustomerId = customer.Id, CustomerName = customer.Name, BookingGuid = treatment.Booking.Guid});
                 }
             }
             return treatmentDTOs;

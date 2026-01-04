@@ -1,4 +1,5 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using _2nd.Semester.Eksamen.Application.Services.BookingServices;
@@ -20,7 +21,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
         private string? errorMessage;
         private bool paymentSuccess = false;
 
-        private PrivateCustomer? customer;
+        private Customer customer;
         private List<Product> products = new();
         private decimal originalTotal;
         private Discount? appliedDiscount;
@@ -49,7 +50,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
                 id = Booking.CustomerId;
             try
             {
-                customer = await _customerService.GetByIDAsync(id) as PrivateCustomer;
+                customer = await _customerService.GetByIDAsync(id);
                 if (customer == null) throw new Exception("Customer not found");
 
                 booking = await _bookingAppService.GetByIdAsync(Booking.BookingId);

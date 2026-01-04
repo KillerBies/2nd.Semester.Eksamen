@@ -122,6 +122,7 @@
 
     private async Task Select(OrderSnapshotDTO ordersnap)
     {
+        ContextStack.Clear();
         var orderContext = await historyService.GetOrderSnapshotByGuid(ordersnap.OrderGuid);
         ContextStack.Push(orderContext);
         ShowDetails = true;

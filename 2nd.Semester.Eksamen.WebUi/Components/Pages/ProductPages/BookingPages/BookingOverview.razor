@@ -81,6 +81,7 @@
                                     <div class="info">
                                         <div style="display:flex; margin-bottom:20px;">
                                             <h4 style="color: #034265;">@(booking.Customer is PrivateCustomerDTO pc ? $"{booking.Customer.Name} {pc.LastName}" : booking.Customer.Name)</h4>
+                                            <div>
                                             @if (booking.Status.ToString() == "Pending")
                                             {
                                                 <span class="badge ms-auto" style="background: #e0f2ff;  color: #0369a1;">@booking.Status</span>
@@ -89,6 +90,7 @@
                                             {
                                                 <span class="badge ms-auto" style="background: #ecfdf5;  color: #065f46;">@booking.Status</span>
                                             }
+                                            </div>
                                         </div>
                                         <strong><p>@booking.Start.ToString("ddd/d/MMM")</p></strong>
                                         <strong><p>@booking.Start.ToString("t") til @booking.End.ToString("t")</p></strong>

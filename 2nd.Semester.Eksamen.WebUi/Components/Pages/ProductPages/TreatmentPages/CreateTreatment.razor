@@ -29,7 +29,7 @@
                 <label class="form-label">Kategori:</label>
                 <div>
                     <div class="@(treatment.Category == "" ? "h-50 mb-1" : "h-100")">
-                        <select id="discountType" class="w-100 h-100 mb-3" name="discountType" @bind="treatment.Category" @bind:event="oninput">
+                        <select  class="w-100 h-100 mb-3 bg-white border-0 rounded-1" name="discountType" @bind="treatment.Category" @bind:event="oninput">
                             <option value="_">Vælg Kategori</option>
                             @foreach (var category in Categories)
                             {

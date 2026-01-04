@@ -127,7 +127,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
                     {
                         Booking.BookingId = EditBooking.BookingId;
                         await _bookingApplicationService.RescheduleBookingAsync(Booking);
-                        await OnClose.InvokeAsync();
+                        Navi.NavigateTo("/BookingOverview");
                     }
                 }
                 catch (Exception ex)

@@ -76,6 +76,6 @@
 {
     <SidePage IsVisible="ShowBookingPayment" IsVisibleChanged="@(v => ShowBookingPayment = v)">
         <div style="width:30vw;"></div>
-        <FinalizePayment Booking="PayBooking"></FinalizePayment>
+        <FinalizePayment Booking="PayBooking" OnClose="Refresh"></FinalizePayment>
     </SidePage>
 }

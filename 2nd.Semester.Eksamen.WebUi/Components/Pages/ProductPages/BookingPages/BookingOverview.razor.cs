@@ -91,6 +91,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         }
         private async Task BookingSelect(DetailsContext booking)
         {
+            ContextStack.Clear();
             ContextStack.Push(booking);
             ShowDetails = true;
         }
