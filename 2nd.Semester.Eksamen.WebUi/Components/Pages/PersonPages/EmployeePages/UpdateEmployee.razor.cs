@@ -25,7 +25,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
         [Inject] IEmployeeService EmployeeService { get; set; }
 
         [Inject] NavigationManager Nav { get; set; }
-        [Inject] private IEmployeeRepository _repo { get; set; }
 
         [Inject]
         public EmployeeSpecialtyService SpecialtyService { get; set; }
@@ -42,7 +41,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
         protected override async Task OnInitializedAsync()
         {
 
-            var employee = await _repo.GetByIDAsync(Id);
+            //var employee = await _repo.GetByIDAsync(Id);
+            var employee = await EmployeeService.GetByIdAsync(Id);
 
             if (employee == null)
             {
@@ -50,12 +50,12 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
                 Nav.NavigateTo("/employees");
                 return;
             }
-            Input.FirstName = employee.Name;
+            Input.FirstName = employee.FirstName;
             Input.LastName = employee.LastName;
             Input.Email = employee.Email;
             Input.PhoneNumber = employee.PhoneNumber;
 
-            Input.Specialties = employee.Specialties?
+            Input.Specialties = employee.Specialty?
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => new SpecialtyItemBase
                 {
@@ -74,14 +74,14 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
                 .FirstOrDefault(t => t.GetDescription() == employee.Type);
 
             Input.ExperienceLevel = Enum.GetValues<ExperienceLevels>()
-                .FirstOrDefault(e => e.GetDescription() == employee.ExperienceLevel);
+                .FirstOrDefault(e => e.GetDescription() == employee.Experience);
 
-            if (employee.Address != null)
+            if (employee.StreetName != null || employee.HouseNumber != null || employee.City != null || employee.PostalCode != null)
             {
-                Input.Address.StreetName = employee.Address.StreetName;
-                Input.Address.HouseNumber = employee.Address.HouseNumber;
-                Input.Address.City = employee.Address.City;
-                Input.Address.PostalCode = employee.Address.PostalCode;
+                Input.Address.StreetName = employee.StreetName;
+                Input.Address.HouseNumber = employee.HouseNumber;
+                Input.Address.City = employee.City;
+                Input.Address.PostalCode = employee.PostalCode;
             }
             }
         

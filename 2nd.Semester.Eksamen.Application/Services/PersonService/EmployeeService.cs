@@ -78,9 +78,9 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
         }
         public async Task<IEnumerable<EmployeeUserCardDTO>> GetAllEmployeeUserCardsAsync()
         {
-            var employees = await _employeeRepo.GetAllAsync();
+            var emp = await _employeeRepo.GetAllAsync();
 
-            return employees.Select(e => new EmployeeUserCardDTO
+            return emp.Select(e => new EmployeeUserCardDTO
             {
                 Id = e.Id,
                 Name = e.Name,
@@ -90,7 +90,12 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
             }).ToList();
         }
 
+        public async Task<IEnumerable<EmployeeDetailsDTO>> GetAllEmployeeDetailsAsync()
+        {
+            var emp = await _employeeRepo.GetAllAsync();
 
+            return emp.Select(e => new EmployeeDetailsDTO(e));
+        }
     }
 
 
