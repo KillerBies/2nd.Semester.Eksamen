@@ -114,7 +114,10 @@ namespace _2nd.Semester.Eksamen.Application.Services
         }
         public async Task<List<TreatmentBookingDTO>> GetTreatmentUpcommingHistoryByGuidAsync(Guid treatmentGuid)
         {
-            return (await _treatmentBookingRepository.GetByTreatmentGuidAsync(treatmentGuid)).Select(tb => new TreatmentBookingDTO(tb)).ToList();
+            var treats = await _treatmentBookingRepository.GetByTreatmentGuidAsync(treatmentGuid);
+            if (treats == null)
+                return new List<TreatmentBookingDTO>();
+            return treats.Select(tb => new TreatmentBookingDTO(tb)).ToList();
         }
 
 

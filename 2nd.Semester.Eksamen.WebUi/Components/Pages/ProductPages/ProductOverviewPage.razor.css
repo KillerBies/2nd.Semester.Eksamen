@@ -18,7 +18,11 @@
     padding-right: 1rem;
     border-radius: 12px 12px 0 0;
 }
-
+.dTO-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
     .page-header h1 {
         margin: 0;
         color: white;

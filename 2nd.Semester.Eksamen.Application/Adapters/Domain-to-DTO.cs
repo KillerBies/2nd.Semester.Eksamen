@@ -59,60 +59,17 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
         }
         public CustomerDTO CustomerToDTO(Customer customer)
         {
-            return new CustomerDTO
-            {
-                id = customer.Id,
-                NumberOfVisits = customer.NumberOfVisists,
-                Type = customer.GetType().Name,
-                Name = customer.Name,
-                Email = customer.Email,
-                PhoneNumber = customer.PhoneNumber,
-                City = customer.Address.City,
-                PostalCode = customer.Address.PostalCode,
-                StreetName = customer.Address.StreetName,
-                HouseNumber = customer.Address.HouseNumber,
-            };
+            return new CustomerDTO(customer);
         }
         public PrivateCustomerDTO PrivateCustomerToDTO(PrivateCustomer PrivateCustomer)
         {
             var dto = CustomerToDTO(PrivateCustomer);
-            return new PrivateCustomerDTO
-            {   id = dto.id,
-                NumberOfVisits = dto.NumberOfVisits,
-                Name = dto.Name,
-                Email = dto.Email,
-                PhoneNumber = dto.PhoneNumber,
-                City = dto.City,
-                PostalCode = dto.PostalCode,
-                StreetName = dto.StreetName,
-                HouseNumber = dto.HouseNumber,
-                LastName = PrivateCustomer.LastName,
-                Birthday = PrivateCustomer.BirthDate,
-                Gender = PrivateCustomer.Gender.Value,
-                Notes = PrivateCustomer.Notes,
-                SaveAsCustomer = PrivateCustomer.SaveAsCustomer
-
-            };
+            return new PrivateCustomerDTO(PrivateCustomer);
         }
         public CompanyCustomerDTO BusinessCustomerToDTO(CompanyCustomer CompanyCustomer)
         {
             var dto = CustomerToDTO(CompanyCustomer);
-            return new CompanyCustomerDTO
-            {
-                id = dto.id,
-                NumberOfVisits = dto.NumberOfVisits,
-                Name = dto.Name,
-                Email = dto.Email,
-                PhoneNumber = dto.PhoneNumber,
-                City = dto.City,
-                PostalCode = dto.PostalCode,
-                StreetName = dto.StreetName,
-                HouseNumber = dto.HouseNumber,
-                CVRNumber = CompanyCustomer.CVRNumber,
-                Notes = CompanyCustomer.Notes,
-                SaveAsCustomer = CompanyCustomer.SaveAsCustomer
-
-            };
+            return new CompanyCustomerDTO(CompanyCustomer);
         }
         public BookingDTO BookingToDTO(Booking booking)
         {

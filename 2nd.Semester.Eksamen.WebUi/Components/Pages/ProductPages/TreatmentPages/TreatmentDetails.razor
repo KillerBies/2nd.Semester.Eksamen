@@ -36,10 +36,10 @@
                     <span class="info-value">@SelectedTreatmentSnapshot.Duration.TotalMinutes min</span>
                 </div>
                 <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
-                    @if (SelectedTreatmentSnapshot == null || !History.Any())
+                    @if (SelectedTreatmentSnapshot == null || (!History.Any() && !UpComming.Any()))
                     {
                         <p class="text-muted mb-0 text-center">
-                            Ingen salgs historik fundet for dette produkt.
+                            Ingen salgs historik fundet for denne behandling.
                         </p>
                     }
                     else
@@ -54,14 +54,29 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var instance in History)
+                                @if (History.Any())
                                 {
-                                    <tr>
-                                        <td @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)" class="clickable">@instance.BookingId</td>
-                                        <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)" class="clickable">@instance.CustomerName</td>
-                                        <td @onclick="() => OnClickEmployee.InvokeAsync(instance.EmployeeGuid)" class="clickable">@instance.EmployeeName</td>
-                                        <td>@instance.Date.ToShortDateString()</td>
-                                    </tr>
+                                    @foreach (var instance in History)
+                                    {
+                                        <tr>
+                                            <td @onclick="() => BookingClick(instance.BookingGuid)" class="clickable">@instance.BookingId</td>
+                                            <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)" class="clickable">@instance.CustomerName</td>
+                                            <td @onclick="() => OnClickEmployee.InvokeAsync(instance.EmployeeGuid)" class="clickable">@instance.EmployeeName</td>
+                                            <td>@instance.Date.ToShortDateString()</td>
+                                        </tr>
+                                    }
+                                }
+                                @if (UpComming.Any())
+                                {
+                                    @foreach (var instance in UpComming)
+                                    {
+                                        <tr>
+                                            <td @onclick="() => BookingClick(instance.BookingGuid)" class="clickable">@instance.BookingId</td>
+                                            <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)" class="clickable">@instance.CustomerName</td>
+                                            <td @onclick="() => OnClickEmployee.InvokeAsync(instance.Employee.EmployeeGuid)" class="clickable">@instance.Employee.Name</td>
+                                            <td>@instance.Start.ToShortDateString()</td>
+                                        </tr>
+                                    }
                                 }
                             </tbody>
                         </table>
@@ -110,7 +125,7 @@
                 @selectedTreatment.Description
             </p>
             <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
-                @if (selectedTreatment == null || !History.Any())
+                @if (selectedTreatment == null || (!History.Any() && !UpComming.Any()))
                 {
                     <p class="text-muted mb-0 text-center">
                         Ingen salgs historik fundet for denne behandling.
@@ -128,14 +143,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var instance in History)
+                            @if (History.Any())
                             {
-                                <tr>
-                                    <td @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)" class="clickable">@instance.BookingId</td>
-                                    <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)" class="clickable">@instance.CustomerName</td>
-                                    <td @onclick="() => OnClickEmployee.InvokeAsync(instance.EmployeeGuid)" class="clickable">@instance.EmployeeName</td>
-                                    <td>@instance.Date.ToShortDateString()</td>
-                                </tr>
+                                @foreach (var instance in History)
+                                {
+                                    <tr>
+                                        <td @onclick="() => BookingClick(instance.BookingGuid)" class="clickable">@instance.BookingId</td>
+                                        <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)" class="clickable">@instance.CustomerName</td>
+                                        <td @onclick="() => OnClickEmployee.InvokeAsync(instance.EmployeeGuid)" class="clickable">@instance.EmployeeName</td>
+                                        <td>@instance.Date.ToShortDateString()</td>
+                                    </tr>
+                                }
+                            }
+                            @if (UpComming.Any())
+                            {
+                                @foreach (var instance in UpComming)
+                                {
+                                    <tr>
+                                        <td @onclick="() => BookingClick(instance.BookingGuid)" class="clickable">@instance.BookingId</td>
+                                        <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)" class="clickable">@instance.CustomerName</td>
+                                        <td @onclick="() => OnClickEmployee.InvokeAsync(instance.Employee.EmployeeGuid)" class="clickable">@instance.Employee.Name</td>
+                                        <td>@instance.Start.ToShortDateString()</td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>
@@ -163,6 +193,7 @@
 
     [Inject] public IHistoryService _historyService { get; set; }
     private List<TreatmentHistoryDTO> History { get; set; } = new();
+    private List<TreatmentBookingDTO> UpComming { get; set; } = new();
 
 
 
@@ -182,12 +213,18 @@
         {
             SelectedTreatmentSnapshot = SnapshotContext.Treatment;
             History = await _historyService.GetTreatmentHistoryByGuidAsync(SelectedTreatmentSnapshot.TreatmentGuid);
+            UpComming = await _historyService.GetTreatmentUpcommingHistoryByGuidAsync(SelectedTreatmentSnapshot.TreatmentGuid);
         }
         else
         {
             selectedTreatment = Context.Treatment;
             History = await _historyService.GetTreatmentHistoryByGuidAsync(selectedTreatment.TreatmentGuid);
+            UpComming = await _historyService.GetTreatmentUpcommingHistoryByGuidAsync(selectedTreatment.TreatmentGuid);
         }
+    }
+    private async Task BookingClick(Guid guid)
+    {
+        await OnClickBooking.InvokeAsync(guid);
     }
 
 }

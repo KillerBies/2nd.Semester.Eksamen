@@ -45,6 +45,11 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             if (bookingGuid != default)
                 BookingGuid = bookingGuid;
             BookingId = tb.BookingID;
+            if(tb.Booking != null)
+            {
+                BookingGuid = tb.Booking.Guid;
+            }
+            
         }
         public TreatmentBookingDTO(TreatmentBookingDTO tb, Guid bookingGuid = default, int bookingId = 0)
         {

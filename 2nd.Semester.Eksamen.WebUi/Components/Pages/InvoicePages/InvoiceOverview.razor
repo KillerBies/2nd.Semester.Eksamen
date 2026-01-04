@@ -7,6 +7,7 @@
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@inject IInvoiceService invoiceService
 @rendermode InteractiveServer
 @inject IInvoiceService invoiceService
 
@@ -92,7 +93,14 @@
     {
         orderSnapshotDTOs = await invoiceService.GetAllSnapshotsAsync();
     }
-    
+    private async Task DownloadInvoiceAsync(byte[] pdfFile)
+    {
+        if (pdfFile == null || pdfFile.Length == 0)
+            return;
+
+        using var streamRef = new DotNetStreamReference(new MemoryStream(pdfFile));
+        await JS.InvokeVoidAsync("downloadFileFromStream", "invoice.pdf", streamRef);
+    }
 
     private async Task MakeNewInvoice(int id)
     {
