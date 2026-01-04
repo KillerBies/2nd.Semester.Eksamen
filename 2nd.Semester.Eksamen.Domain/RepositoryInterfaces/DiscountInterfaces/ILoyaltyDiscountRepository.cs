@@ -12,6 +12,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces
     {
         //Repository for Loyalty Discounts. 
         public Task<LoyaltyDiscount?> GetByIDAsync(int id);
+        public Task<LoyaltyDiscount?> GetByGuidAsync(Guid guid);
         public Task<IEnumerable<LoyaltyDiscount?>> GetAllAsync();
         public Task<IEnumerable<LoyaltyDiscount?>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(LoyaltyDiscount LoyaltyDiscount);

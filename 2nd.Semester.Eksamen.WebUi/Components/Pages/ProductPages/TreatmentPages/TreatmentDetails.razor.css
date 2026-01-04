@@ -1,0 +1,81 @@
+﻿.treatment-header {
+    margin-bottom: 1.25rem;
+}
+
+.badge-category {
+    background: rgba(0,0,0,0.55);
+    color: white;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.75rem;
+}
+
+.treatment-info {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.info-label {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    font-weight: 500;
+}
+
+.specialties {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.badge-specialty {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.7rem;
+}
+
+.treatment-description {
+    color: #374151;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+    .clickable:hover {
+        text-decoration: underline;
+        color: #034265;
+    }
+
+.card-footer {
+    width: 100%;
+    margin-top: 1rem;
+    background: transparent;
+    border: 0;
+}
+
+.btn, .card-btn {
+    transition: 0.2s ease;
+}
+
+.card-btn {
+    width: 50%;
+    background-color: #034265;
+    border: none;
+    color: white;
+}
+
+    .card-btn:hover, .btn:hover {
+        transform: scale(1.03);
+    }

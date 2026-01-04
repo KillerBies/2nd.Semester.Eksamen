@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+﻿using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
@@ -14,6 +15,7 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         Task<List<Discount>> GetAllDiscountsAsync();
         Task<Campaign?> GetCampaignByDiscountIdAsync(int discountId);
         Task<LoyaltyDiscount?> GetLoyaltyDiscountForVisitsAsync(int numberOfVisits);
-
+        Task<List<DiscountOverviewDTO>> GetAllDiscountsForOverviewAsync();
+        Task DeleteDiscountById(int id);
     }
 }

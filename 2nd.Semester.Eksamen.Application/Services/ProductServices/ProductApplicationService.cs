@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 
 namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
 {
@@ -27,6 +28,18 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
             }catch (Exception ex)
             {
                 throw new Exception("Noget gik galt, produktet blev ikke oprettet");
+            }
+        }
+
+        public async Task UpdateProductAsync(NewProductDTO productDTO)
+        {
+            try
+            {
+                await _productRepository.UpdateAsync(new Product(productDTO.Name, productDTO.Price, productDTO.Description) {Category=productDTO.Category,Id=productDTO.Id});
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Noget gik galt, produktet blev ikke opdateret");
             }
         }
     }

@@ -1,14 +1,20 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System;
 
-namespace Components.Pages.PersonPages.CustomerPages.CreateCustomer
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
 {
     public partial class CreateCustomer
     {
         private bool IsPrivate { get; set; } = true;
         private bool IsCompany { get; set; } = false;
-
+        [Parameter] public EventCallback OnClose { get; set; }
+        [Parameter] public bool IsBooking { get; set; } = true;
+        public async Task Closing()
+        {
+            await OnClose.InvokeAsync();
+        }
         protected override async Task OnInitializedAsync()
         {
             IsPrivate = true;

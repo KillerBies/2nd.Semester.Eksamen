@@ -1,0 +1,193 @@
+﻿@page "/ProductOverviewPage"
+@using _2nd.Semester.Eksamen.Application.Services.ProductServices
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.Application.DTO;
+@using _2nd.Semester.Eksamen.Application
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@inject IProductOverviewService productOverviewService
+@rendermode InteractiveServer
+
+
+<div style="background-color:#F3F2F2; height:100vh">
+    <div class="overview-page">
+        <div class="shadow-sm" style="background-color:#F3F2F2;">
+            <div class="page-header">
+                <div>
+                    <h1>Produkter</h1>
+                    <p class="subtitle">Oversigt over alle produkter</p>
+                </div>
+                <div class="input-group">
+                    <div class="equal-row ms-auto">
+                        <input type="text" class="search-box" placeholder="Søg Navn..." @bind="SearchTermName" @bind:event="oninput"></input>
+                        <select id="discountType" class="bg-white search-box" name="discountType" @bind="SearchTermType" @bind:event="oninput">
+                            <option value="">Alle</option>
+                            @foreach (var category in Categories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        </select>
+                        <button class="btn btn-primary" @onclick="() => isVisible = true">
+                            <i class="bi bi-plus-lg"></i> Tilføj Tilbud
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="overview-page-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total</h3>
+                        <span>@Products.Count</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Kategorier</h3>
+                        <span>@CountCategory</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Solgte Produkter</h3>
+                        <span>@CountSold</span>
+                    </div>
+                </div>
+
+                <div style="margin:30px;">
+                    @if (Products == null)
+                    {
+                        <p>Indlæser produkter...</p>
+                    }
+                    else if (!Products.Any())
+                    {
+                        <p>Ingen produkter fundet.</p>
+                    }
+                    else
+                    {
+                        <div class="dTO-grid">
+                            @foreach (var product in FilterdProducts)
+                            {
+                                <div class="card">
+                                    <div class="card-header bg-transparent border-0" style="display:flex;">
+                                        <h3>@product.Name</h3>
+                                        <span class="badge bg-secondary bg-opacity-50 ms-auto" style="height:fit-content">
+                                            @product.Category
+                                        </span>
+                                    </div>
+
+                                    <div class="card-body">
+                                        <h4>@product.Price.ToString("0") Kr.</h4>
+                                        <p style="margin: 16px 0;color: #555;line-height: 1.5;">@product.Description</p>
+                                    </div>
+
+                                    <div class="card-footer bg-transparent border-0">
+                                        <button class="btn btn-treatment" @onclick="() => Select(product)">
+                                            Se detaljer
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (isVisible)
+{
+    <CreateWindow IsVisible=isVisible IsVisibleChanged="v => isVisible = v" StyleParameters="background-color: #F3F2F2; padding:0;width:auto;">
+        <div class="shadow-sm">
+            <CreateProduct OnClose="Refresh"></CreateProduct>
+        </div>
+    </CreateWindow>
+}
+
+@if (ShowDetails)
+{
+    <CreateWindow IsVisible="ShowDetails" IsVisibleChanged="@(v => ShowDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
+        <DetailWindow OnEditBooking="OnEditBooking" Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+    </CreateWindow>
+}
+@if (ShowDelete)
+{
+    <CreateWindow IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)" StyleParameters="background-color: #F3F2F2; margin:2rem;width:fit-content; height:fit-content;scrollbar-width:none;z-index:9999;">
+        <DeleteWindow Refresh="Refresh" context="DeleteContext"></DeleteWindow>
+    </CreateWindow>
+}
+
+@code {
+    [Inject] private NavigationManager Nav { get; set; } = null!;
+    private List<ProductOverviewDTO> Products { get; set; } = new();
+    private string SearchTermName { get; set; } = "";
+    private string SearchTermType { get; set; } = "";
+    private List<OrderSnapshotDTO> SelectedHistory { get; set; } = new();
+    private bool isVisible = false;
+    private bool ShowSalesHistory = false;
+    private bool UpdateProduct = false;
+    private ProductOverviewDTO SelectedProduct { get; set; }
+    private List<ProductOverviewDTO> FilterdProducts => Products.Where(p => (string.IsNullOrWhiteSpace(SearchTermName) || p.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && ((string.IsNullOrWhiteSpace(SearchTermType) || p.Category == SearchTermType))).ToList();
+    private int CountCategory => Products.Select(p => p.Category).Distinct().Count();
+    private int CountSold = 0;
+    private List<string> Categories { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Products = await productOverviewService.GetAllProductOverviewsAsync();
+        Categories = await productOverviewService.GetAllCategoriesAsync();
+        SelectedProduct = new();
+    }
+    private async Task DeleteProduct()
+    {
+        try
+        {
+            await productOverviewService.DeleteProductAsync(SelectedProduct);
+            Refresh();
+        }
+        catch
+        {
+
+        }
+    }
+    private void OnEditBooking(BookingEditContext context)
+    {
+        if (context.Booking == null)
+            return;
+        Nav.NavigateTo($"/BookingForm/{context.Booking.CustomerId}/{context.Booking.BookingId}");
+    }
+
+    private bool toggleBookingWarning = false;
+    private bool LoadFailed = false;
+    private bool OpenEdit = false;
+    private bool ShowDelete = false;
+    private bool ShowDetails = false;
+    public DetailsContext DeleteContext { get; set; }
+
+    public Stack<DetailsContext> ContextStack { get; set; } = new Stack<DetailsContext>();
+    public DetailsContext CurrentContext => ContextStack.Peek();
+
+    private void Refresh()
+    {
+        Nav.Refresh(true);
+    }
+
+
+
+
+    private async Task Select(ProductOverviewDTO product)
+    {
+        ContextStack.Clear();
+        ContextStack.Push(new ProductContext(product));
+        ShowDetails = true;
+    }
+    private void Delete(DetailsContext context)
+    {
+        DeleteContext = context;
+        ShowDelete = true;
+    }
+    private void AddBookingToCustomer(int customerId)
+    {
+        if (customerId <= 0)
+            return;
+        Nav.NavigateTo($"/BookingForm/{customerId}");
+    }
+}

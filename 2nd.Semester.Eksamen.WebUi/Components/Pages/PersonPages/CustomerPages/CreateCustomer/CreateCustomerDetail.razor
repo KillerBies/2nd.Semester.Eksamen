@@ -1,0 +1,29 @@
+﻿@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+@using Microsoft.AspNetCore.Components;
+@using System.Net.NetworkInformation;
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+@using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
+@using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages;
+@using _2nd.Semester.Eksamen.Domain.Entities.History;
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+@using _2nd.Semester.Eksamen.Application.DTO
+@using _2nd.Semester.Eksamen.Application
+@if (Customer is PrivateCustomerDTO pc)
+{
+	<CreatePrivateCustomer IsEdit=true EditCustomer="pc" IsBooking=false OnClose="() => OnClose.InvokeAsync()" />
+}
+else if (Customer is CompanyCustomerDTO cc)
+{
+	<CreateCompanyCustomer IsEdit=true EditCustomer="cc" IsBooking=false OnClose="() => OnClose.InvokeAsync()" />
+}
+@code {
+	[Parameter] public CustomerDTO Customer { get; set; }
+	[Parameter] public EventCallback OnClose { get; set; }
+}

@@ -1,4 +1,5 @@
 ﻿@page "/create-customer"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
 @rendermode InteractiveServer
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
@@ -7,33 +8,22 @@
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
 @using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
-@using _2nd.Semester.Eksamen.WebUi.Components.Shared
-@using _2nd.Semester.Eksamen.Domain.Entities.Discounts
-@using _2nd.Semester.Eksamen.Application.Services
-@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
-@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
-@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @inject IDiscountApplicationService campaignService
 @inject NavigationManager Navi
-@namespace Components.Pages.PersonPages.CustomerPages.CreateCustomer
-<div style="width:100%; display:flex;flex-direction:column; align-items:center; margin-top:5%;">
-	<FloatingPage PageContentScrollable="false">
-		<div class="page-header" style="padding: 0; align-content:center;">
-			<div class="btn-group" style="width:100%;">
-				<button type="button" class="@GetPrivateCustomerButtonClass()" @onclick="CustomerTypeButtonClicked" style="border-radius: 12px 0 0 0;"><b>Privat</b></button>
-				<button type="button" class="@GetCompanyCustomerButtonClass()" @onclick="CustomerTypeButtonClicked" style="border-radius: 0 12px 0 0;"><b>Firma</b></button>
-			</div>
-		</div>
-		<div style="padding: 30px; display: flex;">
-			@if(IsPrivate)
-			{
-				<CreatePrivateCustomer/>
-			}
-			else if(IsCompany)
-			{
-				<CreateCompanyCustomer/>
-			}
-		</div>
-	</FloatingPage>
-	<div style="margin-top: 24%;"></div>
+
+<div class="page-header" style="padding: 0; align-content:center;flex-shrink:0;">
+	<div class="btn-group" style="width:100%;">
+		<button type="button" class="@GetPrivateCustomerButtonClass()" @onclick="CustomerTypeButtonClicked" style="border-radius: 12px 0 0 0;"><b>Privat</b></button>
+		<button type="button" class="@GetCompanyCustomerButtonClass()" @onclick="CustomerTypeButtonClicked" style="border-radius: 0 12px 0 0;"><b>Firma</b></button>
+	</div>
+</div>
+<div style="padding: 30px; display: flex;">
+	@if (IsPrivate)
+	{
+		<CreatePrivateCustomer IsBooking=IsBooking OnClose="Closing" />
+	}
+	else if (IsCompany)
+	{
+		<CreateCompanyCustomer IsBooking=IsBooking OnClose="Closing" />
+	}
 </div>

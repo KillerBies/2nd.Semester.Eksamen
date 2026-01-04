@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain;
+﻿using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+using _2nd.Semester.Eksamen.Domain;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
@@ -23,13 +24,25 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
         }
 
         // ================= CREATE =================
-        public async Task CreateNewCustomerAsync(Customer customer) => await CreateNewAsync(customer);
 
         public async Task CreateNewAsync(Customer customer)
         {
             var _context = await _factory.CreateDbContextAsync();
-            await _context.Customers.AddAsync(customer);
-            await _context.SaveChangesAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            try
+            {
+                //Checks if phonenumber already exists in database. If it doesn't already exist, it continues creating customer.
+                if (await _context.Customers.AnyAsync(c => c.PhoneNumber == customer.PhoneNumber)) throw new Exception("Telefonnummer findes allerede!");
+                customer.Guid = Guid.NewGuid();
+                await _context.Customers.AddAsync(customer);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         // ================= READ =================
@@ -44,6 +57,17 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 .Include(c => c.Address)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
+        public async Task<Customer?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Customers
+                .Include(c => c.BookingHistory)
+                    .ThenInclude(b => b.Treatments)
+                        .ThenInclude(tb => tb.Treatment)
+                .Include(c => c.PunchCards)
+                .Include(c => c.Address)
+                .FirstOrDefaultAsync(c => c.Guid == guid);
+        }
 
         public async Task<Customer?> GetByPhoneNumberAsync(string phoneNumber) => await GetByPhoneAsync(phoneNumber);
 
@@ -57,7 +81,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
         public async Task<List<Customer?>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Customers.Include(c => c.Address).ToListAsync();
+            return await _context.Customers.Include(c => c.Address).Include(c=>c.BookingHistory).ToListAsync();
         }
 
         public async Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter)
@@ -72,7 +96,31 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.Customers.Update(Customer);
+                var adressToUpdate = await _context.Adresses.FindAsync(Customer.AddressId);
+                adressToUpdate.UpdateStreetName(Customer.Address.StreetName);
+                adressToUpdate.UpdatePostalCode(Customer.Address.PostalCode);
+                adressToUpdate.UpdateHouseNumber(Customer.Address.HouseNumber);
+                adressToUpdate.UpdateCity(Customer.Address.City);
+                if (Customer is PrivateCustomer pc)
+                {
+                    PrivateCustomer customerToUpDate = (PrivateCustomer) await _context.Customers.FindAsync(Customer.Id);
+                    customerToUpDate.TrySetPhoneNumber(pc.PhoneNumber);
+                    customerToUpDate.TrySetLastName(pc.Name, pc.LastName);
+                    customerToUpDate.SetBirthDate(pc.BirthDate,(DateTime.Today.Year - pc.BirthDate.Year));
+                    customerToUpDate.Email = pc.Email;
+                    customerToUpDate.Gender = pc.Gender;
+                    customerToUpDate.Notes = pc.Notes;
+                    customerToUpDate.SaveAsCustomer = pc.SaveAsCustomer;
+                }
+                else if(Customer is CompanyCustomer cc)
+                {
+                    CompanyCustomer customerToUpDate = (CompanyCustomer) await _context.Customers.FindAsync(Customer.Id);
+                    customerToUpDate.TrySetPhoneNumber(cc.PhoneNumber);
+                    customerToUpDate.Email = cc.Email;
+                    customerToUpDate.Notes = cc.Notes;
+                    customerToUpDate.TrySetCVRNumber(cc.CVRNumber);
+                    customerToUpDate.SaveAsCustomer = cc.SaveAsCustomer;
+                }
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

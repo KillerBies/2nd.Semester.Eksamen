@@ -1,5 +1,6 @@
 ﻿using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.BookingSchedules;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
@@ -22,11 +23,10 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
             _dayRepository = scheduleDayRepository;
         }
 
-        //lav en dictionary med dictionaries.
-        //ved starten af functionen load alle employees daage ind
-        //tag GetOrCreat funcktionen med her over
-        //
-        public async Task<List<BookingSuggestion>> GetBookingSugestions(List<TreatmentBooking> treatments,DateOnly startDate,int numberOfDaysToCheck,int neededSuggestions,int interval)
+        //user wants specific time start ergo... 16:45
+        //they give it to the form
+        //when generating suggestions it should go is the given start or end time between first employee start and end. If no throw it out.
+        public async Task<List<BookingSuggestion>> GetBookingSugestions(List<TreatmentBooking> treatments, DateOnly startDate, int numberOfDaysToCheck, int neededSuggestions, int interval, List<TreatmentBooking> treatmentBookingsToEdit = null, TimeOnly Start = default)
         {
             var suggestions = new List<BookingSuggestion>();
             if (!treatments.Any())
@@ -39,8 +39,18 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
                 var scheduleDaysByDate = scheduledDays.ToDictionary(d => d.Date);
                 _days[treatment.EmployeeId] = scheduleDaysByDate;
             }
+            if (treatmentBookingsToEdit != null)
+            {
+                foreach (var treatment in treatmentBookingsToEdit)
+                {
+                    if (_days.TryGetValue(treatment.EmployeeId, out _))
+                    {
+                        var day = _days[treatment.EmployeeId][DateOnly.FromDateTime(treatment.Start)];
+                        day.CancelBooking(treatment);
+                    }
+                }
+            }
 
-            // Build plan items (treatment + employee + duration + schedule)
             var plan = treatments.Select(t => new PlanItem
             {
                 Treatment = t.Treatment,
@@ -65,6 +75,14 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
                 {
                     var slotStart = slot.Start;
                     var slotEnd = slot.End;
+
+                    if(Start != default)
+                    {
+                        if (Start > slotStart && Start < slotEnd)
+                            slotStart = Start;
+                        else
+                            slotStart = new TimeOnly(slotStart.Hour,Start.Minute);
+                    }
 
                     while (slotStart.Add(first.Duration) <= slotEnd)
                     {
@@ -98,7 +116,7 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
 
                         // Check if the time slot is free
                         var slotAvailable = day.TimeRanges.Any(r =>
-                            r.Type == "Freetime" && 
+                            r.Type == "Freetime" &&
                             r.Start <= currentStart && //the free timerange start must be before or at the treatments start
                             currentEnd <= r.End //the free timerange must end after or at the end of the treatment
                         );

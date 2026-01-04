@@ -16,7 +16,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Cus
         public Task<Customer?> GetByPhoneNumberAsync(string PhoneNumber);
         public Task<List<Customer?>> GetAllAsync();
         public Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter);
-        public Task CreateNewCustomerAsync(Customer Customer);
+        public Task<Customer?> GetByGuidAsync(Guid guid);
         public Task UpdateCustomerAsync(Customer Customer);
         public Task DeleteCustomerAsync(Customer Customer);
         public Task DeleteByIdDbAsync(int id);

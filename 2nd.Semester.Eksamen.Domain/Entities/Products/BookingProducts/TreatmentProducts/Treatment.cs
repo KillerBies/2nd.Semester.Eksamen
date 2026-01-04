@@ -13,8 +13,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
     {
         //Elements of a treatment. Its info is stored in the database.
         //Treatment details
-        public List<string>? RequiredSpecialties { get; set; }
-        public string Category { get; private set; } = string.Empty;
+        public List<string>? RequiredSpecialties { get; set; } = new();
         public TimeSpan Duration { get; private set; }
 
         public Treatment(string name, decimal price, string discription, string category, TimeSpan duration) : base(name, price, discription)

@@ -129,8 +129,12 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
                 }
             }
             return dtoList;
-
-
+        }
+        public async Task<CustomerDTO> GetCustomerDTOById(int id)
+        {
+            var customer = await _customerRepository.GetByIDAsync(id);
+            if (customer is PrivateCustomer pc) return new PrivateCustomerDTO(pc);
+            else return new CompanyCustomerDTO((CompanyCustomer)customer);
         }
 
 

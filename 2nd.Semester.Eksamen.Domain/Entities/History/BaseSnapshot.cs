@@ -9,5 +9,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
     public record BaseSnapshot
     {
         public int Id { get; set; }
+        public Guid Guid { get; set; }
     }
 }

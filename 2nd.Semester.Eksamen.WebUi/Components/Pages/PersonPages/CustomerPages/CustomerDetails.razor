@@ -1,0 +1,379 @@
+﻿@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages.CreateCustomer
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO;
+@using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+@using Microsoft.AspNetCore.Components;
+@using System.Net.NetworkInformation;
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+@using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
+@using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages;
+@using _2nd.Semester.Eksamen.Domain.Entities.History;
+@using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+@using _2nd.Semester.Eksamen.Application.DTO
+@using _2nd.Semester.Eksamen.Application
+@rendermode InteractiveServer
+@if (Customer != null || CustomerSnapShot != null)
+{
+    @if (!IsSnapshot)
+    {
+        <div class="card shadow-none p-0 border-0">
+            <div>
+                @if (Customer is PrivateCustomerDTO p)
+                {
+                    <div class="card-header customer-header d-flex align-items-start" style="background-color:#034265;">
+                        <div>
+                            <h4 class="fw-semibold mb-1" style="color:white;">@p.Name @p.LastName</h4>
+                            <span class="small" style="color:lightgray;">Kunde</span>
+                        </div>
+                        <span class="badge badge-category ms-auto">
+                            Privatkunde
+                        </span>
+                    </div>
+                }
+                else if (Customer is CompanyCustomerDTO c)
+                {
+                    <div class="card-header customer-header d-flex align-items-start" style="background-color:#034265;">
+                        <div>
+                            <h4 class="fw-semibold mb-1" style="color:white;">@c.Name</h4>
+                            <span class=" small" style="color:lightgray;">Kunde</span>
+                        </div>
+                        <span class="badge badge-category ms-auto">
+                            Firmakunde
+                        </span>
+                    </div>
+                }
+                <div class="customer-info">
+                    @if (Customer is PrivateCustomerDTO pc)
+                    {
+                        <div class="info-row">
+                            <span class="info-label">Køn</span>
+                            <span class="info-value">@pc.Gender</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Antal Besøg</span>
+                            <span class="info-value">@pc.NumberOfVisits</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Telefon</span>
+                            <span class="info-value">@pc.PhoneNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">@pc.Email</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">By</span>
+                            <span class="info-value">@pc.City</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse</span>
+                            <span class="info-value">@pc.StreetName @pc.HouseNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Postnummer</span>
+                            <span class="info-value">@pc.PostalCode</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Fødselsdato</span>
+                            <span class="info-value">@pc.BirthdayWrapper.ToShortDateString()</span>
+                        </div>
+                            @if (!string.IsNullOrEmpty(pc.Notes))
+                            {
+                                <p class="customer-description">
+                                    @pc.Notes
+                                </p>
+                            }
+                    }
+                    else if (Customer is CompanyCustomerDTO c)
+                    {
+                        <div class="info-row">
+                            <span class="info-label">Antal Besøg</span>
+                            <span class="info-value">@c.NumberOfVisits</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Telefon</span>
+                            <span class="info-value">@c.PhoneNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">@c.Email</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">By</span>
+                            <span class="info-value">@c.City</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse</span>
+                            <span class="info-value">@c.StreetName @c.HouseNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Postnummer</span>
+                            <span class="info-value">@c.PostalCode</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">CVR-Nummer</span>
+                            <span class="info-value">@c.CVRNumber</span>
+                        </div>
+                        @if(!string.IsNullOrEmpty(c.Notes))
+                        {
+                            <p class="customer-description">
+                                @c.Notes
+                            </p>
+                        }
+                    }
+                    <div class="border m-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                        @if (!(Upcomming.Any() || History.Any()))
+                        {
+                            <p class="text-muted mb-0 text-center">
+                                Ingen salgs historik fundet for denne kunde.
+                            </p>
+                        }
+                        else
+                        {
+                            <table class="table table-sm mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>BookingId</th>
+                                        <th>Dato</th>
+                                        <th>Start</th>
+                                        <th>Slut</th>
+                                        <th>Pris</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Upcomming.Any())
+                                    {
+                                        @foreach (var instance in Upcomming)
+                                        {
+                                            <tr>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
+                                                <td>@instance.Start.ToString("d")</td>
+                                                <td>@instance.Start.ToString("t")</td>
+                                                <td>@instance.End.ToString("t")</td>
+                                                <td>@instance.Price</td>
+                                            </tr>
+                                        }
+                                    }
+                                    @if (History.Any())
+                                    {
+                                        @foreach (var instance in History)
+                                        {
+                                            <tr>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
+                                                <td>@instance.BookingStart.ToString("d")</td>
+                                                <td>@instance.BookingStart.ToString("t")</td>
+                                                <td>@instance.BookingEnd.ToString("t")</td>
+                                                <td>@instance.TotalPrice</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-outline-secondary m-3" style="margin-top:0;" @onclick="() => AddBooking(Customer.id)">Forbind Ny Booking</button>
+            <div class="btn-group w-100 p-3">
+                <button class="btn card-btn w-50" style="background-color:crimson;" @onclick="() => OnDelete.InvokeAsync(Context)">Slet kunde</button>
+                <button class="btn card-btn" @onclick="() => OnEdit.InvokeAsync(Context)">Rediger</button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-none p-0 border-0">
+            <div>
+                @if (Customer is PrivateCustomerDTO p)
+                {
+                    <div class="card-header customer-header d-flex align-items-start" style="background-color:#034265;">
+                        <div>
+                            <h4 class="fw-semibold mb-1" style="color:white;">@p.Name @p.LastName</h4>
+                            <span class="small" style="color:lightgray;">Kunde</span>
+                        </div>
+                        <span class="badge badge-category ms-auto">
+                            Privatkunde
+                        </span>
+                    </div>
+                }
+                else if (Customer is CompanyCustomerDTO c)
+                {
+                    <div class="customer-header d-flex align-items-start" style="background-color:#034265;">
+                        <div>
+                            <h4 class="fw-semibold mb-1" style="color:white;">@c.Name</h4>
+                            <span class=" small" style="color:lightgray;">Kunde</span>
+                            <span class="badge badge-category ms-auto">
+                                Firmakunde
+                            </span>
+                        </div>
+                    </div>
+                }
+                <div class="customer-info mb-0">
+                    @if (Customer is PrivateCustomerDTO pc)
+                    {
+                        <div class="info-row">
+                            <span class="info-label">Køn</span>
+                            <span class="info-value">@pc.Gender</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Antal Besøg</span>
+                            <span class="info-value">@pc.NumberOfVisits</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Telefon</span>
+                            <span class="info-value">@pc.PhoneNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">@pc.Email</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">By</span>
+                            <span class="info-value">@pc.City</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse</span>
+                            <span class="info-value">@pc.StreetName @pc.HouseNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Postnummer</span>
+                            <span class="info-value">@pc.PostalCode</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Fødselsdato</span>
+                            <span class="info-value">@pc.BirthdayWrapper.ToShortDateString()</span>
+                        </div>
+                            @if (!string.IsNullOrEmpty(pc.Notes))
+                            {
+                                <p class="customer-description">
+                                    @pc.Notes
+                                </p>
+                            }
+                    }
+                    else if (Customer is CompanyCustomerDTO c)
+                    {
+                        <div class="info-row">
+                            <span class="info-label">Antal Besøg</span>
+                            <span class="info-value">@c.NumberOfVisits</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Telefon</span>
+                            <span class="info-value">@c.PhoneNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">@c.Email</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">By</span>
+                            <span class="info-value">@c.City</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse</span>
+                            <span class="info-value">@c.StreetName @c.HouseNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Postnummer</span>
+                            <span class="info-value">@c.PostalCode</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">CVR-Nummer</span>
+                            <span class="info-value">@c.CVRNumber</span>
+                        </div>
+                            @if (!string.IsNullOrEmpty(c.Notes))
+                            {
+                                <p class="customer-description">
+                                    @c.Notes
+                                </p>
+                            }
+                    }
+                    <div class="info-row">
+                        <span class="info-label">Historik</span>
+                    </div>
+                    <div class="border m-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                        @if (!(Upcomming.Any() || History.Any()))
+                        {
+                            <p class="text-muted mb-0 text-center">
+                                Ingen salgs historik fundet for denne kunde.
+                            </p>
+                        }
+                        else
+                        {
+                            <table class="table table-sm mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>BookingId</th>
+                                        <th>Dato</th>
+                                        <th>Start</th>
+                                        <th>Slut</th>
+                                        <th>Pris</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Upcomming.Any())
+                                    {
+                                        @foreach (var instance in Upcomming)
+                                        {
+                                            <tr>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
+                                                <td>@instance.Start.ToString("d")</td>
+                                                <td>@instance.Start.ToString("t")</td>
+                                                <td>@instance.End.ToString("t")</td>
+                                                <td>@instance.Price</td>
+                                            </tr>
+                                        }
+                                    }
+                                    @if (History.Any())
+                                    {
+                                        @foreach (var instance in History)
+                                        {
+                                            <tr>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
+                                                <td>@instance.BookingStart.ToString("d")</td>
+                                                <td>@instance.BookingStart.ToString("t")</td>
+                                                <td>@instance.BookingEnd.ToString("t")</td>
+                                                <td>@instance.TotalPrice</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+}
+
+@code {
+    [Parameter] public EventCallback<int> OnAddBookingToCustomer { get; set; }
+    [Parameter] public CustomerDetailsContext Context { get; set; }
+    [Parameter] public CustomerSnapShotDetailsContext SnapshotContext { get; set; }
+    public List<OrderHistoryDTO> History { get; set; } = new();
+    [Inject] public IHistoryService _historyService { get; set; }
+    public List<BookingDTO> Upcomming { get; set; } = new();
+    private CustomerDTO Customer { get; set; }
+    private CustomerDTO CustomerSnapShot { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickCustomer { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickEmployee { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickTreatment { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickBooking { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnEdit { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnDelete { get; set; }
+    [Parameter] public bool IsSnapshot { get; set; } = false;
+    [Inject] public ICustomerService _customerService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Customer = IsSnapshot ? SnapshotContext?.Customer : Context?.Customer;
+        History = await _historyService.GetCustomerOrderHistoryByGuidAsync(Customer.Guid);
+        Upcomming = await _historyService.GetCustomerUpcommingHistoryByGuidAsync(Customer.Guid);
+    }
+    private Task AddBooking(int id) => OnAddBookingToCustomer.InvokeAsync(id);
+}

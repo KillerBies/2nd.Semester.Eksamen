@@ -20,6 +20,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         {
             _factory = factory;
         }
+        public async Task<Treatment?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Treatments.FirstOrDefaultAsync(t => t.Guid == guid);
+        }
         public async Task<Treatment> GetByIDAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
@@ -41,6 +46,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
+                treatment.Guid = Guid.NewGuid();
                 await _context.Treatments.AddAsync(treatment);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -57,7 +63,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.Treatments.Update(treatment);
+                var treatmentToUpdate = await _context.Treatments.FindAsync(treatment.Id);
+                treatmentToUpdate.TrySetDuration(treatment.Duration);
+                treatmentToUpdate.TryChangePrice(treatment.Price);
+                treatmentToUpdate.TryChangeName(treatment.Name);
+                treatmentToUpdate.Description = treatment.Description;
+                treatmentToUpdate.RequiredSpecialties = treatment.RequiredSpecialties;
+                treatmentToUpdate.Category = treatment.Category;
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -111,6 +123,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             }
 
 
+        }
+
+        public async Task<List<string>> GetAllSpecialtiesAsync()
+        {
+            await using var _context = await _factory.CreateDbContextAsync();
+            return await _context.Treatments.Select(t => string.Join(',',t.RequiredSpecialties)).ToListAsync();
         }
     }
 }

@@ -6,7 +6,7 @@
 <div class="page">
     <main>
         <!--Navbar. Light theme. Sticks to the top of the screen.------------------------>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white sticky-top">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white sticky-top nav-scroll sticky-top">
             <div class="container-fluid">
                 <NavMenu items="DropdownItems"></NavMenu>
                 <NotificationBell></NotificationBell>
@@ -20,10 +20,13 @@
 
 @code {
     [Parameter] public int Notifications { get; set; } = 0;
-    private List<DropdownItem> DropdownItems { get; set; } = new List<DropdownItem>()
+    public List<DropdownItem> DropdownItems { get; set; } = new List<DropdownItem>()
     {
-    new DropdownItem("Lav Product","/create-product"),
-    new DropdownItem("Development","/services/development"),
-    new DropdownItem("Design","/services/design")
+    new DropdownItem("Ny Product","CreateProduct"),
+    new DropdownItem("Ny Behandling","CreateTreatment"),
+    new DropdownItem("Ny Medarbejder","CreateEmployee"),
+    new DropdownItem("Ny Kunde","CreateCustomer"),
+    new DropdownItem("Nyt Tilbud","CreateDiscount")
     };
 }
+

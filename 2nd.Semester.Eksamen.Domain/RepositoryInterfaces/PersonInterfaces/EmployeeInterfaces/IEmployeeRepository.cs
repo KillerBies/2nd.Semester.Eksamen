@@ -17,6 +17,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Emp
         public Task<IEnumerable<Employee?>> GetByFilterAsync(Filter filter);
         public Task<IEnumerable<Employee?>> GetByTreatmentSpecialtiesAsync(List<string> specialties);
         public Task<List<string>> GetAllSpecialtiesAsync();
+        public Task<Employee?> GetByGuidAsync(Guid guid);
 
         //CUD
         public Task CreateNewAsync(Employee employee);

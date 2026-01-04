@@ -1,0 +1,63 @@
+﻿.details-container {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    height: max-content;
+}
+
+.nav-arrow {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color:white;
+}
+
+    .nav-arrow:disabled {
+        cursor: default;
+        opacity:0.4;
+    }
+
+.details-window-wrapper {
+    overflow: hidden;
+    height: fit-content;
+}
+
+.details-window {
+    width: 33vw;
+    height: fit-content;
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+}
+
+.slide-from-left {
+    animation-name: slideInFromLeft;
+}
+
+.slide-from-right {
+    animation-name: slideInFromRight;
+}
+
+@keyframes slideInFromLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

@@ -15,5 +15,8 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces
         Task<IEnumerable<LoyaltyDiscount>> GetLoyaltyDiscountsAsync();
         Task<Campaign?> GetCampaignByDiscountIdAsync(int discountId);
         public Task<Discount> GetByIdAsync(int id);
+        Task DeleteByIdAsync(int id);
+        public Task<Discount?> GetByGuidAsync(Guid guid);
+        public Task CreateNewAsync(Discount discount);
     }
 }

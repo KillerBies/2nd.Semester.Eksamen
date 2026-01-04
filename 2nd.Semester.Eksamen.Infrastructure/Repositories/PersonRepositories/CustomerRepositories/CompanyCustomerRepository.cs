@@ -31,7 +31,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             return await context.CompanyCustomers
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
-
+        public async Task<CompanyCustomer?> GetByGuidAsync(Guid guid)
+        {
+            using var context = _factory.CreateDbContext();
+            return await context.CompanyCustomers
+                .FirstOrDefaultAsync(c => c.Guid == guid);
+        }
 
         public async Task<CompanyCustomer?> GetCustomerByIdAsync(int id)
         {
@@ -78,6 +83,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             {
                 //Checks if phonenumber already exists in database. If it doesn't already exist, it continues creating customer.
                 if (await _context.CompanyCustomers.AnyAsync(c => c.PhoneNumber == customer.PhoneNumber)) throw new Exception("Telefonnummer findes allerede!");
+                customer.Guid = Guid.NewGuid();
                 await _context.CompanyCustomers.AddAsync(customer);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

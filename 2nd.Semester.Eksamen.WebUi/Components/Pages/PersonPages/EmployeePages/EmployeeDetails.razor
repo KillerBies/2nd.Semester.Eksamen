@@ -1,4 +1,5 @@
 ﻿@page "/employeedetails/{id:int}"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 @rendermode InteractiveServer
 @using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 @using _2nd.Semester.Eksamen.Domain.Helpers;
@@ -6,71 +7,244 @@
 @using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @using WebUIServices;
 @using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
-@namespace Components.Pages.PersonPages.EmployeePages
 
 
-@if(ShowConfirmDelete)
+
+@if (Employee == null)
 {
-    <BookingNotification IsVisible="ShowConfirmDelete">
-        <div style="display:flex;align-content:center;align-items:center; flex-direction:column">
-        <div style="border-bottom:dashed 1px;">
-            <h4>Er du sikker på at du vil slette medarbejder</h4>
+    <div class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
-        <div class="btn btn-group">
-                <button type="button" class="btn btn-primary mt-3" @onclick="() => ShowConfirmDelete = false">Anuller</button>
-                <button type="button" class="btn btn-primary mt-3" @onclick="ConfirmDelete">Bekræft Sletning</button>
-        </div>
-        </div>
-    </BookingNotification>
+    </div>
 }
-<h3>Employee Details</h3>
-
-<div class="container my-4" style="display:flex;">
-
-    @if (Employee == null)
+else
+{
+    if(!IsSnapshot)
     {
-        <div class="text-center my-5">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+        <div class="card shadow-sm m-0 p-0 border-0" style="background: #ffffff;">
+            <div>
+                <div class="card-header emp-header d-flex align-items-start" style="background-color:#034265;">
+                    <div>
+                        <h4 class="fw-semibold mb-1" style="color:white;">@Employee.FirstName @Employee.LastName</h4>
+                        <span class=" small" style="color:lightgray;">@Employee.Experience</span>
+                    </div>
+                    <span class="badge badge-category ms-auto">
+                        @Employee.Type
+                    </span>
+                </div>
+                <div class="emp-info">
+                    <div class="info-row">
+                        <span class="info-label">Køn</span>
+                        <span class="info-value">@Employee.Gender</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Telefon</span>
+                        <span class="info-value">@Employee.PhoneNumber</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">@Employee.Email</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">By</span>
+                        <span class="info-value">@Employee.City</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Adresse</span>
+                        <span class="info-value">@Employee.StreetName @Employee.HouseNumber</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Postnummer</span>
+                        <span class="info-value">@Employee.PostalCode</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Pris-multiplikator</span>
+                        <span class="info-value">@Employee.BasePriceMultiplier</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Arbejdstid</span>
+                        <span class="info-value">@Employee.WorkStart til @Employee.WorkEnd</span>
+                    </div>
+                    <div class="info-row align-items-start">
+                        <span class="info-label">Specialiteter</span>
+                        <div class="specialties">
+                            @foreach (var specialty in Employee.Specialty.Split(','))
+                            {
+                                <span class="badge badge-specialty">@specialty.Trim(' ')</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Historik</span>
+                    </div>
+                    <div class="border m-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                        @if (Employee == null || !(Upcomming.Any() || History.Any()))
+                        {
+                            <p class="text-muted mb-0 text-center">
+                                Ingen salgs historik fundet for denne medarbejder.
+                            </p>
+                        }
+                        else
+                        {
+                            <table class="table table-sm mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>BookingId</th>
+                                        <th>Kunde</th>
+                                        <th>Pris</th>
+                                        <th>Behandling</th>
+                                        <th>Dato</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Upcomming.Any())
+                                    {
+                                        @foreach (var instance in Upcomming)
+                                        {
+                                            <tr>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
+                                                <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)" >@instance.CustomerName</td>
+                                                <td>@instance.Price</td>
+                                                <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.Treatment.TreatmentGuid)">@instance.Treatment.Name</td>
+                                                <td>@instance.Start.ToString("d")</td>
+                                            </tr>
+                                        }
+                                    }
+                                    @if (History.Any())
+                                    {
+                                        @foreach (var instance in History)
+                                        {
+                                            <tr>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
+                                                <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)">@instance.CustomerName</td>
+                                                <td>@instance.Price</td>
+                                                <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.TreatmentGuid)">@instance.TreatmentName</td>
+                                                <td>@instance.Date</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group w-100" style="height:min-content;padding:1rem;">
+                <button class="btn card-btn w-50" style="background-color:crimson" @onclick="()=> OnDelete.InvokeAsync(Context)">Slet Medarbejder</button>
+                <button class="btn card-btn" @onclick="() => OnEdit.InvokeAsync(Context)">Rediger</button>
             </div>
         </div>
     }
     else
     {
-        <div class="card shadow-sm">
-            <div class="card-header" style="background-color:#034265;">
-                <h5 class="mb-0" style="color:white;">@Employee.Name @Employee.LastName</h5>
-            </div>
-            <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <p><strong>Email:</strong> @Employee.Email</p>
-                        <p><strong>Phone:</strong> @Employee.PhoneNumber</p>
-                        <p><strong>Type:</strong> @Employee.Type</p>
-                        <p>
-                            <strong>Specialties:</strong>
-                            @foreach (var Specialty in Employee.Specialties.Split(','))
-                            {
-                                <span class="badge bg-secondary me-1">@Specialty</span>
-                            }
-                        </p>
+        <div class="card shadow-sm" style="background: #ffffff;">
+            <div>
+                <div class="card-header emp-header d-flex align-items-start" style="background-color:#034265;">
+                    <div>
+                        <h4 class="fw-semibold mb-1" style="color:white;">@EmployeeSnapShot.FirstName</h4>
+                        <span class=" small" style="color:lightgray;">N/A</span>
                     </div>
-                    <div class="col-md-6">
-                        <p><strong>Experience Level:</strong> @Employee.ExperienceLevel</p>
-                        <p><strong>Gender:</strong> @Employee.Gender</p>
-                        <p>
-                            <strong>Address:</strong>
-                            @Employee.Address.StreetName @Employee.Address.HouseNumber,<br />
-                            @Employee.Address.City, @Employee.Address.PostalCode
-                        </p>
-                    </div>
+                    <span class="badge badge-category ms-auto">
+                        N/A
+                    </span>
                 </div>
-
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-outline-primary me-2" @onclick="StartEdit">Edit</button>
-                    <button class="btn btn-outline-danger" @onclick="() => ShowConfirmDelete = true">Delete</button>
+                <div class="emp-info" style="padding:1rem;">
+                    <div class="info-row">
+                        <span class="info-label">Køn</span>
+                        <span class="info-value">N/A</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Telefon</span>
+                        <span class="info-value">N/A</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">N/A</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">By</span>
+                        <span class="info-value">N/A</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Adresse</span>
+                        <span class="info-value">N/A</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Postnummer</span>
+                        <span class="info-value"> N /A</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Pris-multiplikator</span>
+                        <span class="info-value">N/A</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Arbejdstid</span>
+                        <span class="info-value">N/A</span>
+                    </div>
+                    <div class="info-row align-items-start">
+                        <span class="info-label">Specialiteter</span>
+                        <div class="specialties">
+                            N/A
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Historik</span>
+                    </div>
+                    <div class="border m-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                        @if (Employee == null || !(Upcomming.Any() || History.Any()))
+                        {
+                            <p class="text-muted mb-0 text-center">
+                                Ingen salgs historik fundet for denne medarbejder.
+                            </p>
+                        }
+                        else
+                        {
+                            <table class="table table-sm mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>BookingId</th>
+                                        <th>Kunde</th>
+                                        <th>Pris</th>
+                                        <th>Behandling</th>
+                                        <th>Dato</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Upcomming.Any())
+                                    {
+                                        @foreach (var instance in Upcomming)
+                                        {
+                                            <tr>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
+                                                <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)">@instance.CustomerName</td>
+                                                <td>@instance.Price</td>
+                                                <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.Treatment.TreatmentGuid)">@instance.Treatment.Name</td>
+                                                <td>@instance.Start.ToString("d")</td>
+                                            </tr>
+                                        }
+                                    }
+                                    @if (History.Any())
+                                    {
+                                        @foreach (var instance in History)
+                                        {
+                                            <tr>
+                                                <td class="clickable" @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)">@instance.BookingId</td>
+                                                <td class="clickable" @onclick="() => OnClickCustomer.InvokeAsync(instance.CustomerGuid)">@instance.CustomerName</td>
+                                                <td>@instance.Price</td>
+                                                <td class="clickable" @onclick="() => OnClickTreatment.InvokeAsync(instance.TreatmentGuid)">@instance.TreatmentName</td>
+                                                <td>@instance.Date</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     }
-</div>
+
+
+}

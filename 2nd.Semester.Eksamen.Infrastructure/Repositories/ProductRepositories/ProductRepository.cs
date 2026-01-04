@@ -18,6 +18,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
         {
             _factory = factory;
         }
+        public async Task<Product?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Products.FirstOrDefaultAsync(p => p.Guid == guid);
+        }
         public async Task<Product?> GetByIDAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
@@ -26,7 +31,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
         public async Task<IEnumerable<Product?>> GetAllAsync()
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.Products.ToListAsync();
+            return await _context.Products.Where(p => p.GetType() == typeof(Product)).ToListAsync();
         }
         public async Task<IEnumerable<Product?>> GetByFilterAsync(Filter filter)
         {
@@ -39,6 +44,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
+                Product.Guid = Guid.NewGuid();
                 await _context.Products.AddAsync(Product);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -55,7 +61,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.Products.Update(Product);
+                var ProductToUpdate = await _context.Products.FindAsync(Product.Id);
+                ProductToUpdate.Name = Product.Name;
+                ProductToUpdate.Price = Product.Price;
+                ProductToUpdate.Description = Product.Description;
+                ProductToUpdate.Category = Product.Category;
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -65,13 +75,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
                 throw;
             }
         }
-        public async Task DeleteAsync(Product Product)
+        public async Task DeleteAsync(int id)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.Products.Remove(Product);
+                var product = await _context.Products.FindAsync(id);
+                _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -90,5 +101,15 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories
                 .ToListAsync();
         }
 
+        public async Task<List<string>> GetAllProductCategoriesAsync()
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Products.Select(p => p.Category).ToListAsync();
+        }
+        public async Task<IEnumerable<Product?>> GetAllProductsNoMatterTypeAsync()
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Products.ToListAsync();
+        }
     }
 }

@@ -49,13 +49,31 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 throw new InvalidOperationException("Something went wrong while creating booking", ex);
             }
         }
-        public async Task CancelBookingAsync()
+        public async Task CancelBookingAsync(BookingDTO booking)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Booking domainBooking = await _bookingRepository.GetByIDAsync((int)booking.BookingId);
+                await _bookingRepository.CancelBookingAsync(domainBooking);
+            }
+            catch
+            {
+                throw new Exception("Something went wrong and the booking could not be deleted.");
+            }
         }
-        public async Task RescheduleBookingAsync()
+        public async Task RescheduleBookingAsync(BookingDTO booking)
         {
-            throw new NotImplementedException();
+            if (booking.TreatmentBookingDTOs == null || !booking.TreatmentBookingDTOs.Any())
+                throw new Exception("Booking must contain at least one treatment.");
+            Booking Booking = await _toDomainAdapter.DTOBookingToDomain(booking);
+            try
+            {
+                await _bookingRepository.UpdateAsync(Booking);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Something went wrong while creating booking", ex);
+            }
         }
     }
 }

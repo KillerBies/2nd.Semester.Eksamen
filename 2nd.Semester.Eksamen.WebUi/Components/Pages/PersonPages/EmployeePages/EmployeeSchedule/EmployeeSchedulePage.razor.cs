@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 using Radzen;
 using Syncfusion.Blazor.Schedule.Internal;
 
-namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
 {
     partial class EmployeeSchedulePage
     {
@@ -60,7 +60,7 @@ namespace Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
         private async Task GetData()
         {
             await GetEmployees();
-            if (Employees == null) _errorMessage = "No Employees could be found";
+            if (Employees == null || !Employees.Any()) _errorMessage = "No Employees could be found";
             else
             {
                 SelectedEmployeeId = Employees.First().EmployeeId;
