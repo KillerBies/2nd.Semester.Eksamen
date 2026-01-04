@@ -16,6 +16,7 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         Task UpdateEmployeeAsync(Employee employee);
         Task<EmployeeDetailsDTO?> GetEmployeeDetailsAsync(int employeeId);
         Task<IEnumerable<EmployeeUserCardDTO>> GetAllEmployeeUserCardsAsync();
+        Task<IEnumerable<EmployeeDetailsDTO>> GetAllEmployeeDetailsAsync();
         public Task<EmployeeDetailsDTO?> GetEmployeeByGuidAsync(Guid guid);
 
 

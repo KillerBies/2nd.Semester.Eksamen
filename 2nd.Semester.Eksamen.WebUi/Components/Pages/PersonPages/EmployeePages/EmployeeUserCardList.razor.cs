@@ -1,5 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Application;
+using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+using _2nd.Semester.Eksamen.Application.Services.PersonService;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
@@ -10,7 +12,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 {
     public partial class EmployeeUserCardList : ComponentBase
     {
-        [Inject] private IEmployeeRepository EmployeeRepository { get; set; } = null!;
+        [Inject] private IEmployeeService EmployeeService { get; set; }
         [Inject] private NavigationManager Nav { get; set; } = null!;
 
         public string SearchTermName { get; set; } = "";
@@ -46,7 +48,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
             try
             {
                 LoadFailed = false;
-                Employees = (await EmployeeRepository.GetAllAsync()).Select(e => new EmployeeDetailsDTO(e)).ToList();
+                Employees = (await EmployeeService.GetAllEmployeeDetailsAsync()).ToList();
             }
             catch
             {
