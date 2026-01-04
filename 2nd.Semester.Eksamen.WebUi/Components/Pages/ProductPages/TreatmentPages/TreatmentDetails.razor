@@ -1,0 +1,193 @@
+﻿@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+@using Microsoft.AspNetCore.Components;
+@using System.Net.NetworkInformation;
+@using _2nd.Semester.Eksamen.Application.Services.ProductServices
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.Application.DTO;
+@using _2nd.Semester.Eksamen.Application
+@rendermode InteractiveServer
+<div class="card shadow-sm" style="background: #ffffff; padding: 1.5rem;">
+    @if (IsSnapshot)
+    {
+        <div>
+            <div class="treatment-header d-flex align-items-start">
+                <div>
+                    <h4 class="fw-semibold mb-1">@SelectedTreatmentSnapshot.Name</h4>
+                    <span class="text-muted small">Behandling</span>
+                </div>
+
+                <span class="badge badge-category ms-auto">
+                    @SelectedTreatmentSnapshot.Category
+                </span>
+            </div>
+
+            <div class="treatment-info">
+                <div class="info-row">
+                    <span class="info-label">Pris</span>
+                    <span class="info-value">@SelectedTreatmentSnapshot.BasePrice.ToString("0") kr.</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Varighed</span>
+                    <span class="info-value">@SelectedTreatmentSnapshot.Duration.TotalMinutes min</span>
+                </div>
+                <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                    @if (SelectedTreatmentSnapshot == null || !History.Any())
+                    {
+                        <p class="text-muted mb-0 text-center">
+                            Ingen salgs historik fundet for dette produkt.
+                        </p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Kunde</th>
+                                    <th>Medarbejder</th>
+                                    <th>Dato</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var instance in History)
+                                {
+                                    <tr>
+                                        <td @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)" class="clickable">@instance.BookingId</td>
+                                        <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)" class="clickable">@instance.CustomerName</td>
+                                        <td @onclick="() => OnClickEmployee.InvokeAsync(instance.EmployeeGuid)" class="clickable">@instance.EmployeeName</td>
+                                        <td>@instance.Date.ToShortDateString()</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div>
+            <div class="treatment-header d-flex align-items-start">
+                <div>
+                    <h4 class="fw-semibold mb-1">@selectedTreatment.Name</h4>
+                    <span class="text-muted small">Behandling</span>
+                </div>
+
+                <span class="badge badge-category ms-auto">
+                    @selectedTreatment.Category
+                </span>
+            </div>
+
+            <div class="treatment-info">
+                <div class="info-row">
+                    <span class="info-label">Pris</span>
+                    <span class="info-value">@selectedTreatment.BasePrice.ToString("0") kr.</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Varighed</span>
+                    <span class="info-value">@selectedTreatment.Duration.TotalMinutes min</span>
+                </div>
+
+                <div class="info-row align-items-start">
+                    <span class="info-label">Specialiteter</span>
+                    <div class="specialties">
+                        @foreach (var specialty in selectedTreatment.RequiredSpecialties)
+                        {
+                            <span class="badge badge-specialty">@specialty.Replace(",", "")</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <p class="treatment-description">
+                @selectedTreatment.Description
+            </p>
+            <div class="border rounded-3 p-2" style="max-height:6rem; overflow-y:auto; scrollbar-width:none;">
+                @if (selectedTreatment == null || !History.Any())
+                {
+                    <p class="text-muted mb-0 text-center">
+                        Ingen salgs historik fundet for denne behandling.
+                    </p>
+                }
+                else
+                {
+                    <table class="table table-sm mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>BookingId</th>
+                                <th>Kunde</th>
+                                <th>Medarbejder</th>
+                                <th>Dato</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var instance in History)
+                            {
+                                <tr>
+                                    <td @onclick="() => OnClickBooking.InvokeAsync(instance.BookingGuid)" class="clickable">@instance.BookingId</td>
+                                    <td @onclick="() => OnClickCustomer.InvokeAsync((Guid)instance.CustomerGuid)" class="clickable">@instance.CustomerName</td>
+                                    <td @onclick="() => OnClickEmployee.InvokeAsync(instance.EmployeeGuid)" class="clickable">@instance.EmployeeName</td>
+                                    <td>@instance.Date.ToShortDateString()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+            <div class="card-footer w-100 mt-3 bg-transparent border-0">
+                <div class="btn-group w-100">
+                    <button class="btn card-btn w-50" style="background-color:crimson;"
+                            @onclick="() => OnDelete.InvokeAsync(Context)">
+                        Slet behandling
+                    </button>
+                    <button class="btn card-btn" @onclick="() => OnEdit.InvokeAsync(Context)">
+                        Rediger
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@code {
+    [Inject] public ITreatmentService _treatmentService { get; set; }
+    public TreatmentDTO selectedTreatment { get; set; }
+    public TreatmentDTO SelectedTreatmentSnapshot { get; set; }
+    [Parameter] public int TreatmentId { get; set; } = 0;
+
+    [Inject] public IHistoryService _historyService { get; set; }
+    private List<TreatmentHistoryDTO> History { get; set; } = new();
+
+
+
+    [Parameter] public TreatmentContext Context { get; set; }
+    [Parameter] public TreatmentSnapshotContext SnapshotContext { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickCustomer { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickEmployee { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickTreatment { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickBooking { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnEdit { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnDelete { get; set; }
+    [Parameter] public bool IsSnapshot { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsSnapshot)
+        {
+            SelectedTreatmentSnapshot = SnapshotContext.Treatment;
+            History = await _historyService.GetTreatmentHistoryByGuidAsync(SelectedTreatmentSnapshot.TreatmentGuid);
+        }
+        else
+        {
+            selectedTreatment = Context.Treatment;
+            History = await _historyService.GetTreatmentHistoryByGuidAsync(selectedTreatment.TreatmentGuid);
+        }
+    }
+
+}

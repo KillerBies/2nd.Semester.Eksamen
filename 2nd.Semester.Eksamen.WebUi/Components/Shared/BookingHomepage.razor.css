@@ -1,0 +1,31 @@
+﻿.booking-status {
+    background-color: #b55054;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.details-btn {
+    background-color: transparent;
+    color: black;
+}
+
+    .details-btn:hover {
+        background-color: aliceblue;
+    }
+.subtitle {
+    color: lightgray;
+    font-size:x-small;
+}
+.card-btn {
+    width: 50%;
+    background-color: #034265;
+    border: none;
+    color: white;
+    transition: 0.2s ease;
+}
+
+    .card-btn:hover {
+        transform: scale(1.03);
+    }

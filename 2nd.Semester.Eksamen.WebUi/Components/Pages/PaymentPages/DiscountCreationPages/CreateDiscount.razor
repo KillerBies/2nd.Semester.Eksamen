@@ -1,4 +1,5 @@
 ﻿@page "/create-discount-page"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages.DiscountCreationPages
 @rendermode InteractiveServer
 @using _2nd.Semester.Eksamen.Domain.Entities.Discounts
 @using _2nd.Semester.Eksamen.Application.Services
@@ -13,60 +14,30 @@
 		@_errorMessage
 	</div>
 }
-<div style="width:100%; display:flex;flex-direction:column; align-items:center; margin-top:15vh; height:100vh;">
-	<div style="width:28%; display:flex;flex-direction:column;">
-		<FloatingPage PageContentScrollable="false">
-			<div class="page-header" style="padding: 0; align-content:center;">
-				<div class="btn-group" style="width:100%;">
-					<button type="button" class="@GetCampaignButtonClass()" @onclick="DiscountTypeButtonClicked" style="border-radius: 12px 0 0 0;" @onclick:stopPropagation><b>Kampagne Rabat</b></button>
-					<button type="button" class="@GetLoyaltyButtonClass()" @onclick="DiscountTypeButtonClicked" style="border-radius: 0 12px 0 0;" @onclick:stopPropagation><b>Loyalitets Rabat</b></button>
-				</div>
-			</div>
-			<div style="padding: 30px; display: flex;">
-				<div style="padding: 30px; display: flex; flex-direction:column;">
-					@if (IsCampaign)
-					{
-						<CreateCampaignDiscount campaignDTO="@campaignDiscountDTO" campaignDTOChanged="@((value) => campaignDiscountDTO = value)" />
-						<div class="col-md-12 text-center">
-							<button type="button"class="btn btn-outline-secondary w-75 " @onclick="() => OpenPopUp = true"> Vælg produkter...</button>
-						</div>
-					}
-					else if (IsLoyalty)
-					{
-						<CreateLoyaltyDiscount discount="@loyaltyDiscountDTO" discountChanged="@((v) => loyaltyDiscountDTO = v)" />
-					}
-					<div class="col-md-12" style="padding-top:30px;">
-						<button type="button" class="btn btn-primary col-md-12" @onclick="() => OpenConfirmation = true">Opret Rabat</button>
-					</div>
-				</div>
-			</div>
-		</FloatingPage>
-		<div style="margin-top: 24%;"></div>
+
+<div>
+	<div class="page-header" style="padding: 0; align-content:center;flex-shrink:0;">
+		<div class="btn-group" style="width:100%;">
+			<button type="button" class="@GetCampaignButtonClass()" @onclick="DiscountTypeButtonClicked" style="border-radius: 12px 0 0 0;" @onclick:stopPropagation><b>Kampagne Rabat</b></button>
+			<button type="button" class="@GetLoyaltyButtonClass()" @onclick="DiscountTypeButtonClicked" style="border-radius: 0 12px 0 0;" @onclick:stopPropagation><b>Loyalitets Rabat</b></button>
+		</div>
+	</div>
+	<div style="padding:30px;">
+		@if (IsCampaign)
+		{
+			<CreateCampaignDiscount campaignDTO="@campaignDiscountDTO" campaignDTOChanged="@((value) => campaignDiscountDTO = value)" />
+		}
+		else if (IsLoyalty)
+		{
+			<CreateLoyaltyDiscount discount="@loyaltyDiscountDTO" discountChanged="@((v) => loyaltyDiscountDTO = v)" />
+		}
+		<button type="button" class="btn btn-primary w-100 m-2 card-btn" @onclick="() => OpenConfirmation = true">Opret Rabat</button>
 	</div>
 </div>
 
-
-
-@if (OpenPopUp)
-{
-	<BookingNotification IsVisible="OpenPopUp">
-		<div>
-			<div style="overflow-y: auto;">
-				@foreach (var product in allProducts)
-				{
-					<div class="card shadow-sm">
-						<label class="form-check-label">@product.Name</label>
-						<input type="checkbox" @bind="product.Selected" />
-					</div>
-				}
-			</div>
-		</div>
-	</BookingNotification>
-}
-
 @if (OpenConfirmation)
 {
-	<BookingNotification IsVisible="OpenConfirmation">
+	<BookingNotification IsVisible="OpenConfirmation" IsVisibleChanged="@(v => OpenConfirmation = v)">
 		<div>
 			<h1>Vil du Oprette denne rabat</h1>
 		</div>
@@ -81,6 +52,7 @@
 @code {
 	[Inject] IDiscountApplicationService _discountService { get; set; }
 	[Inject] NavigationManager Navi { get; set; }
+	[Parameter] public EventCallback OnClose { get; set; }
 	private bool IsCampaign { get; set; }
 	private string _errorMessage = "";
 	private bool IsLoyalty { get; set; }
@@ -121,11 +93,15 @@
 			if (IsLoyalty)
 			{
 				await _discountService.CreateNewLoyaltyDiscountAsync(loyaltyDiscountDTO);
+				await OnClose.InvokeAsync();
+				Navi.Refresh(true);
 			}
 			if (IsCampaign)
 			{
 				campaignDiscountDTO.ProductIds.AddRange(allProducts.Where(p => p.Selected == true).Select(p => p.Id).ToList());
 				await _discountService.CreateNewCampaignDiscountAsync(campaignDiscountDTO);
+				await OnClose.InvokeAsync();
+				Navi.Refresh(true);
 			}
 		}
 		catch

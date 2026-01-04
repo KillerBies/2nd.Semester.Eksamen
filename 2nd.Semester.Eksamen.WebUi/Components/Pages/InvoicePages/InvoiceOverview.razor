@@ -1,45 +1,93 @@
 ﻿@page "/InvoiceOverview"
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.InvoicePages
 @using System.IO;
-@inject IJSRuntime JS;
+@inject IJSRuntime JS
 @using _2nd.Semester.Eksamen.Application.DTO;
+@using _2nd.Semester.Eksamen.Application
 @using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-@inject IInvoiceService invoiceService;
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
 @rendermode InteractiveServer
-<h3>InvoiceOverview</h3>
+@inject IInvoiceService invoiceService
 
-@if (orderSnapshotDTOs == null)
+<div style="background-color:#F3F2F2; height:100vh">
+    <div class="overview-page">
+        <div class="shadow-sm" style="background-color:#F3F2F2;">
+            <div class="page-header">
+                <div>
+                    <h1>Faktura</h1>
+                    <p class="subtitle">Oversigt over alle Faktura</p>
+                </div>
+                <div class="input-group">
+                <div class="equal-row ms-auto">
+                        <input type="text"
+                               placeholder="Søg Navn..."
+                               @bind="SearchTermName"
+                               @bind:event="oninput" />
+                        <input type="date" title="Fra..." placeholder="Dato..." @bind="SearchTermDateStart" />
+                        <input type="date" title="Til..." placeholder="Dato..." @bind="SearchTermDateEnd" />
+                    </div>
+                </div>
+            </div>
+            <div class="overview-page-content">
+                @if (orderSnapshotDTOs == null || !orderSnapshotDTOs.Any())
+                {
+                    <p>Ingen ordrer fundet.</p>
+                }
+                else
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Ordre Id</th>
+                                <th>Kundenavn</th>
+                                <th>Total</th>
+                                <th>Betalingsdato</th>
+                                <th>Download</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var orderSnapshotDTO in FilterdOrders)
+                            {
+                                <tr @onclick="() => Select(orderSnapshotDTO)" style="cursor:pointer;">
+                                    <td>@orderSnapshotDTO.Id</td>
+                                    <td>@orderSnapshotDTO.Name</td>
+                                    <td>@orderSnapshotDTO.TotalPaid</td>
+                                    <td>@orderSnapshotDTO.PaymentDate</td>
+                                    <td>  <button @onclick="() => DownloadInvoiceAsync(orderSnapshotDTO.PdfFile)"> download faktura </button> </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@if (ShowDetails)
 {
-	<p>Ingen ordrer fundet.</p>
+    <CreateWindow IsVisible="ShowDetails" IsVisibleChanged="@(v => ShowDetails = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
+        <DetailWindow OnEditBooking="OnEditBooking" Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+    </CreateWindow>
 }
-else
+@if (ShowDelete)
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Ordre Id</th>
-                <th>Kundenavn</th>
-                <th>Total</th>
-                <th>Betalingsdato</th>
-                <th>Download</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var orderSnapshotDTO in orderSnapshotDTOs)
-            {
-                <tr>
-                    <td>@orderSnapshotDTO.Id</td>
-                    <td>@orderSnapshotDTO.Name</td>
-                    <td>@orderSnapshotDTO.TotalPaid</td>
-                    <td>@orderSnapshotDTO.PaymentDate</td>
-                    <td>  <button @onclick="() => MakeNewInvoice(orderSnapshotDTO.Id)"> download faktura </button> </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <CreateWindow IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)" StyleParameters="background-color: #F3F2F2; margin:2rem;width:fit-content; height:fit-content;scrollbar-width:none;z-index:9999;">
+        <DeleteWindow Refresh="Refresh" context="DeleteContext"></DeleteWindow>
+    </CreateWindow>
 }
+
 
 @code {
-    List<OrderSnapshotDTO> orderSnapshotDTOs;
+    [Inject] private NavigationManager Nav { get; set; } = null!;
+    public string SearchTermName { get; set; } = "";
+    private DateTime? SearchTermDateStart;
+    private DateTime? SearchTermDateEnd;
+    private List<OrderSnapshotDTO> FilterdOrders => orderSnapshotDTOs.Where(o => (string.IsNullOrWhiteSpace(SearchTermName) || o.Name.Contains(SearchTermName, StringComparison.OrdinalIgnoreCase)) && (!SearchTermDateStart.HasValue || o.PaymentDate >= DateOnly.FromDateTime(SearchTermDateStart.Value)) && (!SearchTermDateEnd.HasValue || o.PaymentDate <= DateOnly.FromDateTime(SearchTermDateEnd.Value))).ToList();
+    private bool isVisible = false;
+    [Inject] public IHistoryService historyService { get; set; }
+    private List<OrderSnapshotDTO> orderSnapshotDTOs;
+
     protected override async Task OnInitializedAsync()
     {
         orderSnapshotDTOs = await invoiceService.GetAllSnapshotsAsync();
@@ -50,5 +98,47 @@ else
     {
         await invoiceService.GenerateInvoiceById(id);
     }
-    
+
+    private void Refresh()
+    {
+        Nav.Refresh(true);
+    }
+    private bool toggleBookingWarning = false;
+    private bool LoadFailed = false;
+    private bool OpenEdit = false;
+    private bool ShowDelete = false;
+    private bool ShowDetails = false;
+    public DetailsContext DeleteContext { get; set; }
+
+    public Stack<DetailsContext> ContextStack { get; set; } = new Stack<DetailsContext>();
+    public DetailsContext CurrentContext => ContextStack.Peek();
+
+
+
+
+
+    private async Task Select(OrderSnapshotDTO ordersnap)
+    {
+        ContextStack.Clear();
+        var orderContext = await historyService.GetOrderSnapshotByGuid(ordersnap.OrderGuid);
+        ContextStack.Push(orderContext);
+        ShowDetails = true;
+    }
+    private void Delete(DetailsContext context)
+    {
+        DeleteContext = context;
+        ShowDelete = true;
+    }
+    private void AddBookingToCustomer(int customerId)
+    {
+        if (customerId <= 0)
+            return;
+        Nav.NavigateTo($"/BookingForm/{customerId}");
+    }
+    private void OnEditBooking(BookingEditContext context)
+    {
+        if (context.Booking == null)
+            return;
+        Nav.NavigateTo($"/BookingForm/{context.Booking.CustomerId}/{context.Booking.BookingId}");
+    }
 }

@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Products;
+﻿using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
     public interface IProductService
     {
         Task<List<Product>> GetProductsByIdsAsync(List<int> productIds);
+        Task<List<ChooseProductItemDTO>> GetAllProductItemsAsync();
     }
 }

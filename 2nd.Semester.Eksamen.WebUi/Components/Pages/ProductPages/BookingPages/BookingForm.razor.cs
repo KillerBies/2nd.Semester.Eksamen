@@ -1,24 +1,31 @@
-﻿using _2nd.Semester.Eksamen.Application.DTO;
-using _2nd.Semester.Eksamen.Application.Services;
-using _2nd.Semester.Eksamen.Domain.Entities.Persons;
-using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.WebUi.Components.Shared;
-using _2nd.Semester.Eksamen.Application.Services.BookingServices;
+﻿using _2nd.Semester.Eksamen.Application.Adapters;
+using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
-using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+using _2nd.Semester.Eksamen.Application.Services;
+using _2nd.Semester.Eksamen.Application.Services.BookingServices;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using _2nd.Semester.Eksamen.WebUi.Components.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using System.Diagnostics.SymbolStore;
 using System.Globalization;
 using System.Security.Principal;
-using _2nd.Semester.Eksamen.Application.Adapters;
-using System.Diagnostics.SymbolStore;
 
-namespace Components.Pages.ProductPages.BookingPages
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
 {
     public partial class BookingForm
     {
+        //Add field to put in own booking time start, check and give feedback on whether that time is available.
+        //when treatment is added, removed or changed (duration is diffrent) the selected time needs to reset
+        //when is edit it also should ideally also give a possible time that is simply an extention of the current one.
+
         //replace the inputtext boxes and the like with a button that redirects them to a create employee and so on page.
 
         [Inject] private BookingFormService _bookingFormService { get; set; }
@@ -28,13 +35,13 @@ namespace Components.Pages.ProductPages.BookingPages
         [Parameter] public CustomerDTO Customer { get; set; }
         private string CustomerName { get; set; } = "";
         [Inject] private Domain_to_DTO ToDTOAdapter { get; set; }
-        private BookingDTO Booking = new();
-        // Filtered dates based on selection
-        //Gets the CustomerID passed from url.
-        [Parameter]
-        public int CustomerId { get; set; }
+        [Parameter] public BookingDTO EditBooking { get; set; }
+        public BookingDTO Booking { get; set; } = new();
+        [Parameter] public bool IsEdit { get; set; } = false;
+        [Parameter] public int CustomerId { get; set; }
         private string ErrorMsg = "";
         private int Interval { get; set; } = 60;
+        [Parameter] public EventCallback OnClose { get; set; }
         private List<TreatmentDTO> AllTreatments = new();
         private List<EmployeeDTO> AllEmployees = new();
         private List<BookingDTO> AvailableBookingSpots = new();
@@ -45,6 +52,7 @@ namespace Components.Pages.ProductPages.BookingPages
         private List<BookingDTO> CurrentPage = new();
         private BookingDTO timeSelected = new();
         private EditContext EditContext;
+        [Parameter] public int BookingId { get; set; }
         private CustomerDTO selectedCustomer { get; set; }
         public bool showPopup = false;
 
@@ -54,11 +62,24 @@ namespace Components.Pages.ProductPages.BookingPages
         private TimeOnly EndTime { get; set; } = new TimeOnly(18, 0);
         private bool IsDropdownOpen = false;
 
-        //field for interval, arrow buttons to go back and forth between pages, generate 30 each time.
+
         protected override async Task OnInitializedAsync()
         {
-            DaysOfWeek = Enum.GetNames(typeof(DayOfWeek));
+            if(BookingId != 0)
+            {
+                IsEdit = true;
+                EditBooking = await _bookingFormService.GetBookingById(BookingId);
+            }
             _errorMessage = "";
+            if(IsEdit)
+            {
+                Booking = new BookingDTO(EditBooking);
+                ResetBookingTimes();
+            }
+            else
+            {
+                Booking = new BookingDTO();
+            }
             EditContext = new EditContext(Booking);
             await GetData();
         }
@@ -66,9 +87,9 @@ namespace Components.Pages.ProductPages.BookingPages
         {
             try
             {
+                selectedCustomer = IsEdit ? await _bookingQueryService.GetCustomerByIDAsync(Booking.CustomerId) : await _bookingQueryService.GetCustomerByIDAsync(CustomerId);
                 AllTreatments = (await _bookingQueryService.GetAllTreatmentsAsync()).ToList();
                 AllEmployees = (await _bookingQueryService.GetAllEmployeesAsync()).ToList();
-                selectedCustomer = await _bookingQueryService.GetCustomerByIDAsync(CustomerId);
                 if (selectedCustomer == null)
                 {
                     ErrorMsg = "Kunden kunne ikke findes. Prøv igen.";
@@ -79,9 +100,8 @@ namespace Components.Pages.ProductPages.BookingPages
                     CustomerName = Booking.Customer.Name;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"Database connection failed: {ex.Message}");
                 AllTreatments = new List<TreatmentDTO>();
                 AllEmployees = new List<EmployeeDTO>();
 
@@ -98,8 +118,17 @@ namespace Components.Pages.ProductPages.BookingPages
             {
                 try
                 {
-                    await _bookingApplicationService.CreateBookingAsync(Booking);
-                    Navi.NavigateTo("/");
+                    if (!IsEdit)
+                    {
+                        await _bookingApplicationService.CreateBookingAsync(Booking);
+                        Navi.NavigateTo("/BookingOverview");
+                    }
+                    else
+                    {
+                        Booking.BookingId = EditBooking.BookingId;
+                        await _bookingApplicationService.RescheduleBookingAsync(Booking);
+                        Navi.NavigateTo("/BookingOverview");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -107,9 +136,28 @@ namespace Components.Pages.ProductPages.BookingPages
                 }
             }
         }
+
+
+        private void ResetBookingTimes()
+        {
+            Booking.Start = new();
+            Booking.End = new();
+            foreach (var treatment in Booking.TreatmentBookingDTOs)
+            {
+                treatment.Start = new();
+                treatment.End = new();
+            }
+        }
         private void OnCancel()
         {
-            Navi.NavigateTo("/");
+            Navi.NavigateTo("/BookingOverview");
+        }
+
+        private async void OnStartChange(TimeOnly time)
+        {
+            StartTime = time;
+            AvailableBookingSpots.Clear();
+            await refreshAvailableSlots();
         }
         private async Task FowardPage()
         {
@@ -135,12 +183,26 @@ namespace Components.Pages.ProductPages.BookingPages
                 if (!AvailableBookingSpots.Any())
                 {
                     startDate = DateOnly.FromDateTime(DateTime.Now);
-                    Pages[0] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval);
+                    if(IsEdit)
+                    {
+                        Pages[0] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval, StartTime, EditBooking.TreatmentBookingDTOs);
+                    }
+                    else
+                    {
+                        Pages[0] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval, StartTime);
+                    }
                     AvailableBookingSpots = new List<BookingDTO>(Pages[0]);
                 }
                 else
                 {
-                    Pages[CurrentIndex + 1] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval);
+                    if (IsEdit)
+                    {
+                        Pages[CurrentIndex + 1] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval, StartTime, EditBooking.TreatmentBookingDTOs);
+                    }
+                    else
+                    {
+                        Pages[CurrentIndex + 1] = await _bookingQueryService.GetBookingSuggestionsAsync(Booking.TreatmentBookingDTOs, startDate, 100, 30, Interval, StartTime);
+                    }
                     AvailableBookingSpots.AddRange(Pages[CurrentIndex + 1]);
                     CurrentIndex += 1;
                 }
@@ -156,27 +218,20 @@ namespace Components.Pages.ProductPages.BookingPages
         {
             GenReset();
             if (index == 0) return;
-
-            (Booking.TreatmentBookingDTOs[index - 1],
-             Booking.TreatmentBookingDTOs[index]) =
-             (Booking.TreatmentBookingDTOs[index],
-              Booking.TreatmentBookingDTOs[index - 1]);
+            (Booking.TreatmentBookingDTOs[index - 1],Booking.TreatmentBookingDTOs[index]) = (Booking.TreatmentBookingDTOs[index],Booking.TreatmentBookingDTOs[index - 1]);
         }
         private void MoveDown(int index)
         {
             GenReset();
             if (index >= Booking.TreatmentBookingDTOs.Count - 1) return;
-
-            (Booking.TreatmentBookingDTOs[index + 1],
-             Booking.TreatmentBookingDTOs[index]) =
-             (Booking.TreatmentBookingDTOs[index],
-              Booking.TreatmentBookingDTOs[index + 1]);
+            (Booking.TreatmentBookingDTOs[index + 1],Booking.TreatmentBookingDTOs[index]) =(Booking.TreatmentBookingDTOs[index],Booking.TreatmentBookingDTOs[index + 1]);
         }
 
         private void GenReset()
         {
             timeSelected = new();
             AvailableBookingSpots.Clear();
+            ResetBookingTimes();
             IsDropdownOpen = false;
         }
         private void HandleValidSubmit()
@@ -218,7 +273,6 @@ namespace Components.Pages.ProductPages.BookingPages
         private void UpdateTreatment(TreatmentBookingDTO updated)
         {
             GenReset();
-            StateHasChanged();
         }
 
         private bool checkfields()
@@ -229,24 +283,6 @@ namespace Components.Pages.ProductPages.BookingPages
         {
             return Booking.TreatmentBookingDTOs.Any(tb => tb.Employee.EmployeeId == 0 || tb.Treatment == null || tb.Employee == null || string.IsNullOrEmpty(tb.Treatment.Category) || tb.Treatment.TreatmentId == 0 || tb.Start > tb.End || tb.Start == tb.End);
         }
-
-
-        // Bound to dropdown
-        private string SelectedDay { get; set; } = "";
-
-        //protected override async Task OnParametersSetAsync()
-        //{
-           
-        //   CustomerDTO selectedCustomer = await _bookingFormService.GetCustomerByIDAsync(CustomerId);
-        //    if (selectedCustomer == null)
-        //    {
-        //        ErrorMsg = "Kunden kunne ikke findes. Prøv igen.";
-        //    }
-        //    else
-        //    {
-        //        Booking.Customer = selectedCustomer;
-        //    }
-        //}
 
     }
 }

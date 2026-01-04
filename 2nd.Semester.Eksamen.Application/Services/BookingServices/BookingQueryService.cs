@@ -11,6 +11,7 @@ using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Custome
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
 using System;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -71,9 +72,17 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             });
             return treatmentDTOs;
         }
-        public async Task<List<BookingDTO>> GetBookingSuggestionsAsync(List<TreatmentBookingDTO> treatments, DateOnly startdate, int numberOfDaysToCheck, int numberOfSuggestions, int interval)
+        public async Task<List<BookingDTO>> GetBookingSuggestionsAsync(List<TreatmentBookingDTO> treatments, DateOnly startdate, int numberOfDaysToCheck, int numberOfSuggestions, int interval, TimeOnly Start = default, List < TreatmentBookingDTO> treatmentsToEdit = null)
         {
-
+            List<TreatmentBooking> EditTreatments = null;
+            if(treatmentsToEdit != null)
+            {
+                EditTreatments = new();
+                foreach (var treatment in treatmentsToEdit)
+                {
+                    EditTreatments.Add(await ToDomainAdapter.DTOTreatmentBookingToDomain(treatment));
+                }
+            }
             List<TreatmentBooking> TreatmentBookings = new();
 
             if (treatments != null)
@@ -88,14 +97,14 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     }
                 }
             }
-            List<BookingSuggestion> suggestions = await _suggestionService.GetBookingSugestions(TreatmentBookings, startdate, numberOfDaysToCheck, numberOfSuggestions, interval);
+            List<BookingSuggestion> suggestions = await _suggestionService.GetBookingSugestions(TreatmentBookings, startdate, numberOfDaysToCheck, numberOfSuggestions, interval, EditTreatments, Start);
             List<BookingDTO> bookingDTOs = suggestions.Select(s => new BookingDTO
             {
                 Start = s.Start,
                 End = s.End,
                 TreatmentBookingDTOs = s.Items.Select(i => new TreatmentBookingDTO
                 {
-                    Treatment = new TreatmentDTO
+                    Treatment = new TreatmentDTO()
                     {
                         TreatmentId = i.Treatment.Id,
                         Name = i.Treatment.Name,
@@ -115,7 +124,6 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     End = i.End,
                 }).ToList()
             }).ToList();
-            System.Diagnostics.Debug.WriteLine($"returning result: is null?: {bookingDTOs==null || !bookingDTOs.Any()}");
             return bookingDTOs;
         }
         public async Task<List<TreatmentBookingDTO>> ArangeTreatments(BookingDTO booking)
@@ -157,7 +165,13 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
         }
         public async Task<CustomerDTO?> GetCustomerByIDAsync(int id)
         {
-            return ToDTOAdapter.CustomerToDTO(await _customerRepository.GetByIDAsync(id));
+            return new CustomerDTO((await _customerRepository.GetByIDAsync(id)));
+        }
+
+
+        public async Task<List<BookingDTO>> GetUpcomingBookingsAsync()
+        {
+            return (await _bookingRepository.GetAllAsync()).Where(b=>b.End>DateTime.Now && b.Status != BookingStatus.Completed).Select(b => new BookingDTO(b)).OrderBy(b => b.Start).ToList();
         }
     }
 }

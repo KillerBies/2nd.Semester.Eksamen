@@ -1,0 +1,86 @@
+﻿@namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+
+<div class="card" style="display: flex; flex-direction: column; cursor:default; width:fit-content;">
+    <div class="card-header bg-transparent" style="padding-bottom:10px;">
+        <div class="d-flex flex-row">
+            <h4 class="mb-0" style="color:#034265;">@booking.Start.ToString("M") @booking.Start.ToString("hh:mm") - @booking.End.ToString("hh:mm") &nbsp;</h4>
+            <div style="height:fit-content;">
+                <span class="badge bg-dark ms-auto bg-opacity-50"> @(CurrentTime<booking.Start? TimeUntil : "")</span>
+            </div>
+            <div style="height:fit-content;">
+                @if (booking.End < CurrentTime)
+                {
+                    <span title="Denne booking er over" class="booking-status ms-auto"></span>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Kunde:</strong> @booking.Customer.Name</p>
+                <p>
+                    <strong>Behandlinger:</strong>
+                    @foreach (var treatmentname in booking.TreatmentBookingDTOs.Select(t => t.Treatment.Name).Distinct())
+                    {
+                        <span class="badge bg-secondary me-1">@treatmentname X@(booking.TreatmentBookingDTOs.Count(t => t.Treatment.Name == treatmentname))</span>
+                    }
+                </p>
+                <p><strong>Pris:</strong> @booking.Price.ToString("C")</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Varighed:</strong> @booking.Duration</p>
+                <p>
+                    <strong>Behandlere:</strong>
+                    @foreach (var employeeName in booking.TreatmentBookingDTOs.Select(t => t.Employee.Name).Distinct())
+                    {
+                        <span class="badge bg-secondary me-1">@employeeName</span>
+                    }
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-outline-primary w-100 details-btn dropdown-toggle" @onclick="() => ShowDetails = !ShowDetails">Se Detailjer</button>
+            </div>
+        </div>
+        @if (ShowDetails == true)
+        {
+            <div class="row m-2">
+                @foreach (var treatment in booking.TreatmentBookingDTOs)
+                {
+                    <div class="mb-3 p-3 border rounded shadow-sm">
+                        <div class="btn-group" style="display:flex;">
+                            <h5 class="fw-bold mb-1">@treatment.Treatment.Name</h5>
+                            @if (booking.End < CurrentTime)
+                            {
+                                <span title="Denne behandling er over" class="booking-status ms-auto" style="height:2%;"></span>
+                            }
+                        </div>
+                        <p class="mb-1"><strong>Tid:</strong> @treatment.Start.ToString("HH:mm") - @treatment.End.ToString("HH:mm") </p>
+                        <p class="mb-1"><strong>Pris:</strong> @treatment.Treatment.BasePrice.ToString("C")</p>
+                        <p class="mb-1"><strong>Ansat:</strong> @treatment.Employee.Name </p>
+                        <p class="mb-0"><strong>Erfaring:</strong> @treatment.Employee.ExperienceLevel</p>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="btn-group">
+        <button class="btn card-btn" style="background-color: crimson" @onclick="() => OnCancelClick.InvokeAsync(booking)">Aflys</button>
+        <button class="btn card-btn" @onclick="() => OnPaymentClick.InvokeAsync(booking)">Betal</button>
+    </div>
+</div>
+@code {
+    private bool ShowDetails { get; set; } = false;
+    [Parameter, EditorRequired] public BookingDTO booking { get; set; } = new();
+    [Parameter, EditorRequired] public DateTime CurrentTime { get; set; }
+    [Parameter] public EventCallback<BookingDTO> OnPaymentClick { get; set; }
+    [Parameter] public EventCallback<BookingDTO> OnCancelClick { get; set; }
+    private TimeSpan TimeTill => booking.Start - CurrentTime;
+    private string TimeUntil => $"Om {DaysUntil} {HoursUntil} {MinutesUntil} ";
+    private string DaysUntil => TimeTill.Days > 0 ? TimeTill.Days.ToString() + " Dage" : "";
+    private string HoursUntil => TimeTill.Hours > 0 ? TimeTill.Hours.ToString() + " Timer" : "";
+    private string MinutesUntil => TimeTill.Minutes > 0 ? TimeTill.Minutes.ToString() + " Minutter" : "";
+}

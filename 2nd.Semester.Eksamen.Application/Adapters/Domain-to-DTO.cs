@@ -33,7 +33,7 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
 
         public ProductDTO ProductToDTO(Product product)
         {
-            return new ProductDTO() {ProductId=product.Id,Name=product.Name,Price=product.Price};
+            return new ProductDTO() {ProductId=product.Id,Name=product.Name,Price=product.Price,Guid=product.Guid};
         }
         public EmployeeDTO EmployeeToDTO(Employee employee)
         {
@@ -53,7 +53,8 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 Treatment = TreatmentToDTO(treatmentBooking.Treatment),
                 Employee = EmployeeToDTO(treatmentBooking.Employee),
                 Start = treatmentBooking.Start,
-                End= treatmentBooking.End
+                End = treatmentBooking.End,
+                Price = treatmentBooking.Price
             };
         }
         public CustomerDTO CustomerToDTO(Customer customer)
@@ -87,7 +88,10 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 HouseNumber = dto.HouseNumber,
                 LastName = PrivateCustomer.LastName,
                 Birthday = PrivateCustomer.BirthDate,
-                Gender = PrivateCustomer.Gender.Value
+                Gender = PrivateCustomer.Gender.Value,
+                Notes = PrivateCustomer.Notes,
+                SaveAsCustomer = PrivateCustomer.SaveAsCustomer
+
             };
         }
         public CompanyCustomerDTO BusinessCustomerToDTO(CompanyCustomer CompanyCustomer)
@@ -104,7 +108,10 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
                 PostalCode = dto.PostalCode,
                 StreetName = dto.StreetName,
                 HouseNumber = dto.HouseNumber,
-                CVRNumber = CompanyCustomer.CVRNumber
+                CVRNumber = CompanyCustomer.CVRNumber,
+                Notes = CompanyCustomer.Notes,
+                SaveAsCustomer = CompanyCustomer.SaveAsCustomer
+
             };
         }
         public BookingDTO BookingToDTO(Booking booking)
@@ -113,6 +120,19 @@ namespace _2nd.Semester.Eksamen.Application.Adapters
             {
                 TreatmentBookingDTOs = booking.Treatments.Select(tb => TreatmentBookingToDTO(tb)).ToList(),
                 Customer = CustomerToDTO(booking.Customer),
+                Start = booking.Start,
+                End = booking.End,
+                Duration = booking.Duration,
+                BookingId = booking.Id,
+                CustomerId = booking.CustomerId
+            };
+        }
+        public BookingDTO PartBookingToDTO(Booking booking)
+        {
+            return new BookingDTO
+            {
+                TreatmentBookingDTOs = booking.Treatments.Select(tb => TreatmentBookingToDTO(tb)).ToList(),
+                CustomerId = booking.CustomerId,
                 Start = booking.Start,
                 End = booking.End,
                 Duration = booking.Duration

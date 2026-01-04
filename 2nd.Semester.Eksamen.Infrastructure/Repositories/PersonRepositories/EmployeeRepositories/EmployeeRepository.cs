@@ -1,6 +1,7 @@
 using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Domain;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
@@ -27,6 +28,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
+                employee.Guid = Guid.NewGuid();
                 await _context.Employees.AddAsync(employee);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -42,6 +44,11 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
             var _context = await _factory.CreateDbContextAsync();
             return await _context.Employees.Include(c => c.Address).ToListAsync();
         }
+        public async Task<Employee?> GetByGuidAsync(Guid guid)
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.Employees.Include(e=>e.Address).FirstOrDefaultAsync(e => e.Guid == guid);
+        }
         public async Task UpdateAsync(Employee employee)
         {
             var _context = await _factory.CreateDbContextAsync();
@@ -49,7 +56,18 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                _context.Employees.Update(employee);
+                var employeeToUpdate = await _context.Employees.FirstOrDefaultAsync(e => e.Id == employee.Id);
+                employeeToUpdate.WorkEnd = employee.WorkEnd;
+                employeeToUpdate.WorkStart = employee.WorkStart;
+                employeeToUpdate.Specialties = employee.Specialties;
+                employeeToUpdate.BasePriceMultiplier = employee.BasePriceMultiplier;
+                employeeToUpdate.TrySetName(employee.Name);
+                employeeToUpdate.TrySetLastName(employee.Name, employee.LastName);
+                employeeToUpdate.TrySetGender(employee.Gender);
+                employeeToUpdate.TrySetEmail(employee.Email);
+                employeeToUpdate.TrySetAddress(employee.Address.City, employee.Address.PostalCode, employee.Address.StreetName, employee.Address.HouseNumber);
+                employeeToUpdate.TrySetExperience(employee.ExperienceLevel);
+                employeeToUpdate.PhoneNumber = employee.PhoneNumber;
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

@@ -1,72 +1,131 @@
 ﻿@page "/Create-Treatment"
-
-
+@namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPages
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared
+@using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
+@inject NavigationManager Navi
 @rendermode InteractiveServer
 
-<EditForm Model="@treatment" OnValidSubmit="@HandleValidSubmit" class="col-10 p-0" FormName="CreateTreatment">
-	<DataAnnotationsValidator />
-	<ValidationSummary />
-	<div class="whole-form">
-		<h2> Lav ny behandlingstype </h2>
-		<div class="form-group">
-			<label for="Name" class="form-labels">Navn:</label>
-			<InputText id="Name" @bind-Value="treatment.Name" class="form-control" placeholder="Navn..." />
-		</div>
+<FloatingPage>
+    <div style="margin: 30px;">
+        <EditForm Model="@treatment"
+                  OnValidSubmit="@HandleValidSubmit"
+                  FormName="CreateTreatment">
 
-		<div class="form-group">
-			<label for="Category" class="form-labels">Kategori:</label>
-			<InputText id="Category" @bind-Value="treatment.Category" class="form-control" placeholder="Kategori..." />
-		</div>
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div>
+            <h2 class="mb-4">@(IsEdit ? "Rediger Behandling" : "Lav Ny Behandling")</h2>
 
-		<div class="form-group">
-			<label for="Price" class="form-labels">Pris:</label>
-			<InputNumber id="Price" @bind-Value="treatment.BasePrice" class="form-control" placeholder="Pris..." />
-		</div>
-		
-		<div class="form-group">
-			<label for="Hour" class="form-labels">Timer:</label>
-			<InputNumber id="Hour" @bind-Value="hour" class="form-control" placeholder="Timer..." />
-			<label for="Min" class="form-labels">Minutter:</label>
-			<InputNumber id="Min" @bind-Value="min" class="form-control" placeholder="Minutter..." />
-		</div>
+            <div class="row">
+                <div class="mb-3">
+                    <label class="form-label">Navn:</label>
+                    <InputText @bind-Value="treatment.Name"
+                               class="form-control"
+                               placeholder="Navn..." />
+                </div>
+            </div>
 
-		<div class="form-group">
-			<label for="ExistingSpecialty" class="form-labels">Vælg eksisterende specialitet:</label>
-			<li1>
-				@foreach (var specialty in specialtyItems)
-				{
-			<ul><InputCheckbox @bind-Value="@specialty.Status" />@specialty.Specialty</ul>
-				}
-			</li1>
-		</div>
+            <div class="row mb-3">
+                <label class="form-label">Kategori:</label>
+                <div>
+                    <div class="@(treatment.Category == "" ? "h-50 mb-1" : "h-100")">
+                        <select  class="w-100 h-100 mb-3 bg-white border-0 rounded-1" name="discountType" @bind="treatment.Category" @bind:event="oninput">
+                            <option value="_">Vælg Kategori</option>
+                            @foreach (var category in Categories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                            <option value="">Ny Kategori</option>
+                        </select>
+                    </div>
+                    @if (treatment.Category == "")
+                    {
+                        <div class="h-50">
+                        <InputText @bind-Value="treatment.Category"
+                                   class="form-control"
+                                   placeholder="Kategori..." />
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Pris:</label>
+                    <InputNumber @bind-Value="treatment.BasePrice"
+                                 class="form-control"
+                                 placeholder="Pris..." />
+                </div>
+                <div class="col-md-6 h-auto">
+                    <label class="form-label">Varighed <span class="small">(I Minutter)</span>:</label>
+                    <InputTimeSpan @bind-Value="treatment.Duration"
+                                   class="form-control" />
+                </div>
+            </div>
 
-	<div class=" d-flex gap-2">
-		<InputText @bind-Value="newSpecialty" class="form-control" placeholder="Tilføj ny specialitet..." />
-		<button type="button" class="btn" @onclick="AddSpecialty">Tilføj</button>
-	</div>
+            <div class="row mb-3">
+                <label class="form-label">Vælg eksisterende specialiteter:</label>
+                <div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
+                    @foreach (var specialty in specialtyItems.Where(s => !string.IsNullOrWhiteSpace(s.Specialty)))
+                    {
+                        <div class="form-check">
+                            <InputCheckbox class="form-check-input"
+                                           @bind-Value="specialty.Status" />
+                            <label class="form-check-label ms-2">
+                                @specialty.Specialty
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
 
-	<ul>
-		@foreach (var item in manuallyAddedSpecialties)
-		{
-			<li2>
-				@item
-				<button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveSpecialty(item)">Annuller tilføjelse</button>
-			</li2>
-		}
-	</ul>
+            <div class="row mb-3">
+                <label class="form-label">Tilføj ny specialitet:</label>
+                <div class="d-flex gap-2 flex-row w-100 align-content-center align-items-center justify-content-center ms-0 ps-0 p-0">
+                    <InputText @bind-Value="newSpecialty"
+                               class="form-control"
+                               placeholder="Ny specialitet..." />
+                    <button type="button"
+                                class="btn card-btn w-auto h-100 m-0"
+                            @onclick="AddSpecialty">
+                        Tilføj
+                    </button>
+                </div>
+            </div>
 
-		<div class="form-group">
-			<label for="Description" class="form-labels"> Beskrivelse</label>
-			<InputTextArea id="Notes" @bind-Value="@treatment.Description" maxlength="200" class="form-control" placeholder="Beskrivelse..." />
-		</div>
+            @if (manuallyAddedSpecialties.Any())
+            {
+                <ul class="row list-group mb-3">
+                    @foreach (var item in manuallyAddedSpecialties.Where(s => !string.IsNullOrWhiteSpace(s)))
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center" style="padding-left:10px;">
+                            @item
+                            <button class="btn btn-sm bg-transparent" style="height:100%; padding:0;margin:0;margin-right:4px; color:darkred;"
+                                    @onclick="() => RemoveSpecialty(item)">
+                                X
+                            </button>
+                        </li>
+                    }
+                </ul>
+            }
 
-		<div class="form-btn">
-			<button type="submit" class="btn btn-primary">Opret behandlingstype</button>
-		</div>
+            <div class="row mb-3">
+                <label class="form-label">Beskrivelse:</label>
+                <InputTextArea @bind-Value="treatment.Description"
+                               class="form-control"
+                               placeholder="Beskrivelse..."
+                               maxlength="200" />
+            </div>
 
-	</div>
-</EditForm>
-
+            <div class="text-center mt-4">
+                <button type="submit"
+                        class="btn btn-primary w-75">
+                    @(IsEdit ? "Gem Ændringer" : "Opret Behandling")
+                </button>
+            </div>
+            </div>
+        </EditForm>
+    </div>
+</FloatingPage>
 
 
 

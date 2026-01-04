@@ -15,7 +15,10 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces
         public Task<IEnumerable<Product?>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(Product Product);
         public Task UpdateAsync(Product Product);
-        public Task DeleteAsync(Product Product);
+        public Task DeleteAsync(int id);
         Task<List<Product>> GetByIdsAsync(List<int> ids);
+        Task<List<string>> GetAllProductCategoriesAsync();
+        public Task<IEnumerable<Product?>> GetAllProductsNoMatterTypeAsync();
+        public Task<Product?> GetByGuidAsync(Guid guid);
     }
 }

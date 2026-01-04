@@ -1,14 +1,17 @@
 ﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
+using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using _2nd.Semester.Eksamen.Application.Services.BookingServices;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+using _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages;
 using Microsoft.AspNetCore.Components;
 
-namespace _2nd.Semester.Eksamen.Pages.PaymentPages
+namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 {
     public partial class FinalizePayment : ComponentBase
     {
@@ -18,7 +21,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
         private string? errorMessage;
         private bool paymentSuccess = false;
 
-        private Customer? customer;
+        private Customer customer;
         private List<Product> products = new();
         private decimal originalTotal;
         private Discount? appliedDiscount;
@@ -30,9 +33,12 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
         private List<ProductDiscountInfoDTO> itemDiscounts = new();
 
         [Inject] private IOrderService _orderService { get; set; } = default!;
+        [Inject] private IBookingService _bookingAppService { get; set; } = default!;
         [Inject] private ICustomerService _customerService { get; set; } = default!;
         [Inject] private IDiscountCalculator _discountCalculator { get; set; } = default!;
-
+        [Parameter] public BookingDTO Booking { get; set; }
+        [Parameter] public EventCallback OnClose { get; set; }
+        public Booking booking { get; set; }
         [Inject] private IInvoiceService _invoiceService { get; set; }
 
 
@@ -40,13 +46,14 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
         {
             isLoading = true;
             errorMessage = null;
-
+            if (Booking != null)
+                id = Booking.CustomerId;
             try
             {
                 customer = await _customerService.GetByIDAsync(id);
                 if (customer == null) throw new Exception("Customer not found");
 
-                var booking = await _customerService.GetNextPendingBookingAsync(customer.Id);
+                booking = await _bookingAppService.GetByIdAsync(Booking.BookingId);
                 if (booking == null)
                 {
                     errorMessage = "No pending booking found for this customer.";
@@ -101,7 +108,6 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
 
             try
             {
-                var booking = await _customerService.GetNextPendingBookingAsync(customer.Id);
                 if (booking == null)
                 {
                     errorMessage = "No pending booking found.";
@@ -147,6 +153,7 @@ namespace _2nd.Semester.Eksamen.Pages.PaymentPages
                 isLoading = false;
 
             }
+            await OnClose.InvokeAsync();
         }
 
         private List<(Product product, int quantity)> FlattenBookingItems(Booking booking)

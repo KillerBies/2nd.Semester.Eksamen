@@ -1,4 +1,65 @@
 ﻿
+.overview-page {
+    padding-left: 10rem;
+    padding-right: 10rem;
+}
+.overview-page-content {
+    padding: 1rem;
+    border-radius: 12px 12px 12px 12px;
+}
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    background-color: #034265;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 12px 12px 0 0;
+}
+
+    .page-header h1 {
+        margin: 0;
+        color:white;
+    }
+
+.subtitle {
+    color: lightgray;
+}
+.card-btn {
+    width: 100%;
+    background-color: #034265;
+    border: none;
+    color:white;
+    transition: 0.2s ease;
+}
+
+    .card-btn:hover {
+        transform: scale(1.03);
+    }
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+    .stat-card span {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+
+
+
 .overlay
 {
     position: fixed;
@@ -6,26 +67,66 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5); /*Makes the background greyed out*/
+    background-color: rgba(0,0,0,0.5); 
     display: flex;
-    justify-content: center; /*Centering*/
-    align-items: center; /* Centering*/
-    z-index: 1000; /* Puts overlay on a higher layer than the page */
+    justify-content: center; 
+    align-items: center; 
+    z-index: 1000; 
 }
 
 .overlay-content {
     background-color: white;
     padding: 2rem;
     border-radius: 0.5rem;
-    box-shadow: 0px 0px 15px rgba(0,0,0,0.3); /* Creates a small shadow around the overlay box */
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.3); 
     
 }
 
+.booking-status {
+    background-color: #034265;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
 }
 
+.grid-item {
+background: white;
+border-radius: 12px;
+padding: 20px;
+box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+display: flex;
+flex-direction: column;
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
+    .grid-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.20);
+    }
 
+.equal-row {
+    display: flex;
+    width: auto;
+    gap: 1rem;
+    height:auto;
+    align-items:stretch;
+}
 
+    .equal-row > * {
+        flex: 1;
+    }
+    .equal-row > input {
+        flex: 1 1 0;
+        min-width: 0;
+        height: 100%;
+    }
 
+.search-box {
+    border-radius: 4px;
+    border: 0;
+    height:auto;
+    width:auto;
+}
 
 

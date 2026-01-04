@@ -2,6 +2,7 @@
 using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO.ProductDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+using _2nd.Semester.Eksamen.Domain.Entities.Products;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
 using System;
@@ -52,7 +53,8 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
         {
             try
             {
-                await _loyaltyDiscountRepository.CreateNewAsync(_domainAdapter.DTOLoyaltyDiscountToDomain(discount));
+                var dis = new LoyaltyDiscount(discount.MinimumVisits, discount.DiscountType, discount.Name, discount.TreatmentDiscount / 100, discount.ProductDiscount / 100) { AppliesToProduct = discount.AppliesToProduct, AppliesToTreatment = discount.AppliesToTreatment, Id = discount.Id, IsLoyalty = true };
+                await _loyaltyDiscountRepository.UpdateAsync(dis);
             }
             catch (Exception ex)
             {
@@ -89,7 +91,14 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
         {
             try
             {
-                await _campaignDiscountRepository.CreateNewAsync(_domainAdapter.DTOCampaignDiscountToDomain(discount));
+                List<Product> products = new();
+                foreach(int id in discount.ProductIds)
+                {
+                    var product = await _productRepository.GetByIDAsync(id);
+                    products.Add(product);
+                }
+                var dis = new Campaign(discount.Name, discount.TreatmentDiscount/100, discount.ProductDiscount/100, discount.Start, discount.End) {AppliesToProduct = discount.AppliesToProduct, AppliesToTreatment = discount.AppliesToTreatment, Id = discount.Id, IsLoyalty = false, ProductsInCampaign = products, Description = discount.Description};
+                await _campaignDiscountRepository.UpdateAsync(dis);
             }
             catch (Exception ex)
             {
@@ -100,6 +109,17 @@ namespace _2nd.Semester.Eksamen.Application.Services.ProductServices
         public async Task<List<ProductDTO>> GetAllProductsAsync()
         {
             return (await _productRepository.GetAllAsync()).Select(p => _dtoAdapter.ProductToDTO(p)).ToList();
+        }
+
+        public async Task<CampaignDiscountDTO> GetCampaignDiscountByIdAsync(int id)
+        {
+            var camp = (await _campaignDiscountRepository.GetByIDAsync(id));
+            return new CampaignDiscountDTO(camp);
+        }
+        public async Task<LoyaltyDiscountDTO> GetLoyaltyDiscountByIdAsync(int id)
+        {
+            var loyal = (await _loyaltyDiscountRepository.GetByIDAsync(id));
+            return new LoyaltyDiscountDTO(loyal);
         }
     }
 }

@@ -1,0 +1,181 @@
+﻿@using _2nd.Semester.Eksamen.Application.DTO
+@using _2nd.Semester.Eksamen.Application
+@using _2nd.Semester.Eksamen.Application.ApplicationInterfaces
+@using _2nd.Semester.Eksamen.WebUi.Components.Shared;
+@rendermode InteractiveServer
+<div class="card p-0 border-0  border rounded shadow-sm">
+    @if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <div class="alert alert-danger">
+            @_errorMessage
+        </div>
+    }
+    <div class="card-header bg-transparent border-0">
+        <div class="mb-0 d-flex align-items-start">
+            <div>
+                <h4 class="fw-semibold mb-1">@Order.Guid</h4>
+                <span class="small" style="color:lightgray;">Order</span>
+            </div>
+        </div>
+        <div class="p-3">
+            <div class="info-row clickable" @onclick="() => OnClickCustomer.InvokeAsync((Guid)Order.CustomerGuid)">
+                <span class="info-label">Kunde</span>
+                <span class="info-value">@Order.CustomerName</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Ordre ID</span>
+                <span class="info-value">@Order.Id</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Dato</span>
+                <span class="info-value">@Order.DateOfPayment.ToShortDateString()</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Pris med Rabat</span>
+                <span class="info-value">@Order.TotalPrice</span>
+            </div>
+        </div>
+    </div>
+    <div class="details-info" style="border-top:dashed 1px; border-bottom: dashed 1px;">
+        @if (Order.Products.Any())
+        {
+            <div class="shadow-sm">
+                <h5>Produkter</h5>
+                @foreach (var product in Order.Products)
+                {
+                    <div class="mb-3 p-3 border rounded shadow-sm">
+                        <h5 class="fw-bold mb-1 clickable" @onclick="() => OnClickProduct.InvokeAsync(product.ProductGuid)">@product.Name</h5>
+                        <div class="info-row">
+                            <span class="info-label">Pris</span>
+                            <span class="info-value">@product.Price</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Antal</span>
+                            <span class="info-value">@product.NumberSold</span>
+                        </div>
+                    </div>
+                }
+                <div class="info-row">
+                    <span class="info-label">Total</span>
+                    <span class="info-value">@Order.Products.Sum(p => p.Price) Kr.</span>
+                </div>
+            </div>
+        }
+        @if (Order.Treatments.Any())
+        {
+            <div>
+                <div class="d-flex flex-row clickable" @onclick="() => OnClickBooking.InvokeAsync(Order.BookingGuid)">
+                    <h4>Booking</h4>
+                </div>
+                <div class="p-3">
+                    <div class="info-row">
+                        <span class="info-label">Dato</span>
+                        <span class="info-value">@Order.DateOfPayment</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Varighed</span>
+                        <span class="info-value">@Order.BookingDuration</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Tidsrum</span>
+                        <span class="info-value">@Order.BookingStart.ToString("t") til @Order.BookingEnd.ToString("t")</span>
+                    </div>
+                    <h7>Behandligner</h7>
+                    <div>
+                        @foreach (var treatment in Order.Treatments)
+                        {
+                            <div class="mb-3 p-3 border rounded shadow-sm">
+                                <h5 class="fw-bold mb-1 clickable" @onclick="() => OnClickTreatment.InvokeAsync(treatment.TreatmentGuid)">@treatment.TreatmentName</h5>
+                                <div class="info-row">
+                                    <span class="info-label">Varighed</span>
+                                    <span class="info-value">@treatment.Duration</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Kategori</span>
+                                    <span class="info-value">@treatment.Category</span>
+                                </div>
+                                <div class="info-row clickable" @onclick="() => OnClickEmployee.InvokeAsync(treatment.EmployeeGuid)">
+                                    <span class="info-label">Behandler</span>
+                                    <span class="info-value">@treatment.EmployeeName</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Pris</span>
+                                    <span class="info-value">@treatment.Price</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Total</span>
+                        <span class="info-value">@Order.Treatments.Sum(t => t.Price) kr.</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @if (Order.Discount != null || Order.CustomDiscount != 0)
+    {
+        <div class="details-info">
+            <div style="border-bottom: dashed 1px;">
+                <h4>Rabat</h4>
+                <div class="shadow-sm">
+                    @if (Order.Discount != null)
+                    {
+                        <div class="info-row clickable" @onclick="() => OnClickDiscount.InvokeAsync(Order.DiscountGuid)">
+                            <span class="info-label">@Order.Discount</span>
+                            <span class="info-value">@((Order.Treatments.Sum(t => t.Price) + Order.Products.Sum(p => p.Price)) - Order.TotalPrice) Kr.</span>
+                        </div>
+                    }
+                    @if (Order.CustomDiscount != 0)
+                    {
+                        <div class="info-row">
+                            <span class="info-label">Personligt Tilføjet Rabat</span>
+                            <span class="info-value">@Order.CustomDiscount</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    <div class="details-info">
+        <div>
+            <h4>Oversigt</h4>
+            <div class="p-3">
+                <div class="info-row">
+                    <span class="info-label">Produkter subtotal</span>
+                    <span class="info-value">@Order.Products.Sum(p => p.Price) Kr.</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Booking subtotal</span>
+                    <span class="info-value">@Order.Treatments.Sum(p => p.Price) Kr.</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Subtotal</span>
+                    <span class="info-value">@(Order.Treatments.Sum(p => p.Price) + Order.Products.Sum(p => p.Price)) Kr.</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Rabat</span>
+                    <span class="info-value">-@((Order.Treatments.Sum(t => t.Price) + Order.Products.Sum(p => p.Price)) - Order.TotalPrice) Kr.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter] public OrderSnapShotContext OrderContext { get; set; }
+    public OrderHistoryDTO Order { get; set; }
+    public string _errorMessage = string.Empty;
+    [Inject] public IHistoryService _historyService { get; set; }
+    [Parameter] public EventCallback<DetailsContext> OnPushContext { get; set; }
+
+    [Parameter] public EventCallback<Guid> OnClickCustomer { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickBooking { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickTreatment { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickDiscount { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickEmployee { get; set; }
+    [Parameter] public EventCallback<Guid> OnClickProduct { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Order = OrderContext.OrderSnapshot;
+    }
+}

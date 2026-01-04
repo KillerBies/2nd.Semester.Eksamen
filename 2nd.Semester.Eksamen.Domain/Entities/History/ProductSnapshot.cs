@@ -25,6 +25,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             Name = product.Name;
             PricePerUnit = product.Price;
             DiscountedPrice = product.DiscountedPrice;
+            Guid = product.Guid;
         }
 
     }

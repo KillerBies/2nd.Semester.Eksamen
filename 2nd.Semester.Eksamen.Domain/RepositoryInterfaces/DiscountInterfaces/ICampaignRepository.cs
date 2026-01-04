@@ -12,6 +12,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces
     {
         //Repository for Campaign. 
         public Task<Campaign?> GetByIDAsync(int id);
+        public Task<Campaign?> GetByGuidAsync(Guid guid);
         public Task<IEnumerable<Campaign?>> GetAllAsync();
         public Task<IEnumerable<Campaign?>> GetByFilterAsync(Filter filter);
         public Task CreateNewAsync(Campaign campaign);

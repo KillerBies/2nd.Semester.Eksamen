@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Emp
         public Task<IEnumerable<ScheduleDay>> GetByEmployeeIDAsync(int id);
         public Task<IEnumerable<ScheduleDay>> GetAllAsync();
         public Task<IEnumerable<ScheduleDay>> GetByFilterAsync(Filter filter);
+        public Task<ScheduleDay?> GetByGuidAsync(Guid guid);
         public Task CreateNewAsync(ScheduleDay ScheduleDay);
         public Task UpdateAsync(ScheduleDay ScheduleDay);
         public Task DeleteAsync(ScheduleDay ScheduleDay);
