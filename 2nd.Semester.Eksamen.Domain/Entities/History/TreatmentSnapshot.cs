@@ -24,7 +24,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public EmployeeSnapshot? EmployeeSnapshot { get; set; }
         private TreatmentSnapshot() { }
 
-        public TreatmentSnapshot(Treatment treatment, BookingSnapshot bookingSnapshot, string empName = "", Guid empGuid = default)
+        public TreatmentSnapshot(Treatment treatment, BookingSnapshot bookingSnapshot, decimal customerMultiplier, string empName = "", Guid empGuid = default)
         {
             if(empGuid != default && empName != "")
             {
@@ -38,6 +38,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             BookingSnapshot = bookingSnapshot;
             Guid = treatment.Guid;
             Duration = treatment.Duration;
+            PriceWithMultiplier = customerMultiplier * treatment.Price;
         }
 
 
