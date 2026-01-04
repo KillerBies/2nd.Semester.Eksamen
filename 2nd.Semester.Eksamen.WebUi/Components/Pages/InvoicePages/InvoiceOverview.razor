@@ -55,7 +55,7 @@
                                     <td>@orderSnapshotDTO.Name</td>
                                     <td>@orderSnapshotDTO.TotalPaid</td>
                                     <td>@orderSnapshotDTO.PaymentDate</td>
-                                    <td>  <button @onclick="() => DownloadInvoiceAsync(orderSnapshotDTO.PdfFile)"> download faktura </button> </td>
+                                    <td>  <button @onclick="() => MakeNewInvoice(orderSnapshotDTO.Id)" @onclick:stopPropagation="true"> download faktura </button> </td>
                                 </tr>
                             }
                         </tbody>
