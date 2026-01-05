@@ -52,7 +52,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             var employeeDTOs = Employees.Select(e => new EmployeeDTO
             {
                 EmployeeId = e.Id,
-                Name = e.Name,
+                Name = e.Name + " " + e.LastName,
                 ExperienceLevel = e.ExperienceLevel,
                 BasePriceMultiplier = e.BasePriceMultiplier,
                 Specialties = e.Specialties
@@ -69,6 +69,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                 Category = t.Category,
                 Duration = t.Duration,
                 BasePrice = t.Price,
+                RequiredSpecialties = t.RequiredSpecialties == null ? new() : t.RequiredSpecialties
             });
             return treatmentDTOs;
         }

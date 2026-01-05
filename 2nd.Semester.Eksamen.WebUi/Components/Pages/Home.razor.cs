@@ -60,7 +60,15 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         private string errorMessage { get; set; } = "";
         public bool Loading { get; set; } = false;
 
-
+        private List<Customer> GenerateRandomCustomers(int count)
+        {
+            var random = new Random();
+            int Private = random.Next(0, count + 1);
+            List<Customer> cus = new();
+            cus.AddRange(GenerateRandomPrivateCustomer(Private));
+            cus.AddRange(GenerateRandomCompanyCustomers(count - Private));
+            return cus;
+        }
         protected override async Task OnInitializedAsync()
         {
             //Try get the bookings not yet started. If non make error message no bookings found, Else if exception error message becomes "No connection to database"
@@ -120,13 +128,9 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             {
                 await _employeeRepository.CreateNewAsync(emp);
             }
-            foreach (var comcus in GenerateRandomCompanyCustomers(50))
+            foreach (var comcus in GenerateRandomCustomers(50))
             {
                 await _CustomerRepository.CreateNewAsync(comcus);
-            }
-            foreach (var pricus in GenerateRandomPrivateCustomer(50))
-            {
-                await _CustomerRepository.CreateNewAsync(pricus);
             }
             foreach (var treat in GenerateRandomTreatments(50))
             {
@@ -205,7 +209,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
 
                 var notes = "";
-                var isVip = random.NextDouble() < 0.1; // 10% chance for VIP
+                var isVip = random.NextDouble() < 0.1;
 
 
                 customers.Add(new PrivateCustomer(
@@ -220,8 +224,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
                 isVip
                 ));
             }
-            return customers;
+            return customers.DistinctBy(c => c.Name + c.LastName).ToList();
         }
+
+
+
         private List<Employee> GenerateRandomEmployees(int count)
         {
             var random = new Random();
@@ -248,11 +255,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 };
 
             string[] specialtiesList = {
-    "Haircut", "Beard trim", "Styling", "Coloring", "Massage", "Hair Highlights", "Keratin Treatment",
-    "Scalp Treatment", "Eyelash Extension", "Eyebrow Shaping", "Deep Conditioning", "Hot Stone Massage", "Hair Extensions"
+    "Haircut", "Beard trim", "Styling", "Coloring", "Massage", "Facial",
+    "Manicure", "Pedicure", "Highlights", "Keratin", "Scalp Treatment",
+    "Extensions", "Straightening", "Relaxing", "Perm", "Bridal Styling",
+    "Kids Haircut", "Eyelash Extension", "Eyebrow Shaping", "Hot Stone Massage"
 };
-
-
             var employees = new List<Employee>();
 
 
@@ -300,7 +307,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
                 workEnd
                 ));
             }
-            return employees;
+            return employees.DistinctBy(c => c.Name + c.LastName + c.Type).ToList();
         }
         private List<CompanyCustomer> GenerateRandomCompanyCustomers(int count)
         {
@@ -366,7 +373,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
                 saveAsCustomer
                 ));
             }
-            return companyCustomers;
+            return companyCustomers.DistinctBy(c => c.Name).ToList();
         }
 
         private List<Treatment> GenerateRandomTreatments(int count)
@@ -375,7 +382,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
 
             string[] treatmentNames = {
-    "Haircut", "Beard Trim", "Hair Coloring", "Styling", "Massage", "Facial",
+    "Haircut", "Beard Trim", "Hair Coloring", "Styling", "Facial",
     "Manicure", "Pedicure", "Hair Treatment", "Makeup", "Hair Highlights",
     "Deep Conditioning", "Scalp Treatment", "Keratin Treatment", "Eyebrow Shaping",
     "Eyelash Extension", "Hot Stone Massage", "Hair Extensions", "Hair Straightening",
@@ -417,7 +424,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
                 treatments.Add(new Treatment(name, price, description, category, duration, requiredSpecialties));
             }
-            return treatments;
+            return treatments.DistinctBy(c => c.Name + c.Category).ToList();
         }
 
 
@@ -456,7 +463,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
                 products.Add(new Product(name, price, description) {Category=category});
             }
-            return products;
+            return products.DistinctBy(c => c.Name + c.Category).ToList(); ;
         }
 
         private List<LoyaltyDiscount> GenerateRandomLoyaltyDiscounts(int count)
@@ -468,9 +475,9 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             var discountTypes = Enum.GetValues(typeof(LoyaltyDiscountType));
 
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < discountTypes.Length; i++)
             {
-                var discountType = (LoyaltyDiscountType)discountTypes.GetValue(random.Next(discountTypes.Length));
+                var discountType = (LoyaltyDiscountType)discountTypes.GetValue(i);
                 var minimumVisits = random.Next(5, 51);
                 var treatmentDiscount = (decimal)random.NextDouble();
                 var productDiscount = (decimal)random.NextDouble();

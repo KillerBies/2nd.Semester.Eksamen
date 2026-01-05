@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Mono.TextTemplating;
 using MudBlazor.Interfaces;
+using Nextended.Core.Extensions;
 using System.Text.RegularExpressions;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
@@ -84,8 +85,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Shared
             TreatmentBooking.Treatment.RequiredSpecialties = treatment.RequiredSpecialties;
             TreatmentBooking.Treatment.BasePrice = treatment.BasePrice;
             TreatmentBooking.Treatment.Duration = treatment.Duration;
-            SelectableEmployees = PossibleEmployees.Where(e => TreatmentBooking.Treatment.RequiredSpecialties.All(tr => e.Specialties.Contains(tr))).ToList();
-
+            var required = TreatmentBooking.Treatment.RequiredSpecialties;
+            SelectableEmployees = PossibleEmployees.Where(e=>e.Specialties.Split(',').Select(r=>r.Trim()).ToList().ContainsAll(required)).ToList();
             Change();
         }
 
