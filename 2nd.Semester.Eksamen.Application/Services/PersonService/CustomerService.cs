@@ -77,7 +77,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.PersonService
 
         // --- UPDATE / DELETE ---
         public Task UpdateAsync(Customer customer)
-            => _customerRepository.UpdateAsync(customer);
+            => _customerRepository.UpdateCustomerAsync(customer);
 
         public Task DeleteAsync(Customer customer)
             => _customerRepository.DeleteAsync(customer);

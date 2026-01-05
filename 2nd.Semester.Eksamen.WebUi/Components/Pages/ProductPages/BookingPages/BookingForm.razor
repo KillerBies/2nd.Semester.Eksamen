@@ -55,7 +55,7 @@
                     <div class="possible-times-header" style="border-radius:@(IsDropdownOpen ? "12px 12px 0 0" : "12px 12px 12px 12px");">
                         <div>
                             <span>Start Dato</span>
-                            <input type="date" value="@startDate.ToString("yyyy-MM-dd")" disabled="@(checkfields())" title="Sæt start dato på genereret tider" min="@DateTime.Now" @onchange="@StartTimeSelected" />
+                            <input type="date" @bind="@startDate" disabled="@(checkfields())" title="Sæt start dato på genereret tider" min="@DateTime.Now" />
                         </div>
                         <div class="btn-group">
                             <div>
@@ -65,10 +65,10 @@
                                 <input type="time" @bind="EndTime" class="input-time" title="Sæt slut tid for genereret tiders tidsrum" />
                             </div>
                         </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary time-button" @onclick="PageBackwards" disabled="@(CurrentIndex == 0)" title="Gå Tilbage I Tid">&#9664;</button>
-                            <button type="button" class="btn btn-primary time-button" @onclick="FowardPage" disabled="@(checkfields())" title="Gå Frem I Tid">&#9654;</button>
-                            <button type="button" class="btn btn-success time-button" @onclick="refreshAvailableSlots" disabled="@(checkfields())" title="Generer Mulige Tider"><i class="bi bi-search"></i></button>
+                        <div class="btn-group gap-3" style="margin-right:1rem;">
+                            <button type="button" class="time-button" @onclick="PageBackwards" disabled="@(CurrentIndex == 0)" title="Gå Tilbage I Tid">&#9664;</button>
+                            <button type="button" class="time-button" @onclick="FowardPage" disabled="@(checkfields())" title="Gå Frem I Tid">&#9654;</button>
+                                <button type="button" class="time-button" @onclick="refreshAvailableSlots" disabled="@(checkfields())" title="Generer Mulige Tider"><i class="bi bi-arrow-clockwise"></i></button>
                         </div>
                     </div>
                     @if (IsDropdownOpen)
@@ -89,7 +89,7 @@
                     <button type="button" class="btn btn-primary mt-3" title="Anuller Booking" @onclick="OnCancel">Anuller</button>
                     @if (!IsEdit)
                     {
-                        <button type="submit" class="btn btn-primary mt-3" title="Lav Booking" @onclick="() => showPopup = true" disabled="@(checkfieldsAndTime())">Lav Booking</button>
+                            <button type="submit" class="btn btn-primary mt-3" title="Lav Booking" @onclick="ConfirmBooking" disabled="@(checkfieldsAndTime())">Lav Booking</button>
                     }
                     else
                     {
@@ -102,47 +102,9 @@
 </div>
 
 
-<BookingNotification @bind-IsVisible="showPopup" MaxWidth="600">
-    <div>
-        <div style="border-bottom: dashed 0.1px; border-top: dashed 0.1px;">
-            <h4>Booking</h4>
-            <div style="margin-left: 5%;">
-                <p>    Pris: @Booking.Price .Kr</p>
-                <p>    Dato: @DateOnly.FromDateTime(Booking.Start)</p>
-                <p>    Tidsrum: @TimeOnly.FromDateTime(Booking.Start) - @TimeOnly.FromDateTime(Booking.End)</p>
-            </div>
-        </div>
-        <div style="border-bottom: dashed 0.1px;">
-            <h4>Kunde</h4>
-            <div style="margin-left: 5%;">
-                <p>    Navn: @Booking.Customer.Name</p>
-                <p>    Tlf-Nummer: @Booking.Customer.PhoneNumber</p>
-                <p>    Type: @Booking.Customer.Type.ToString()</p>
-            </div>
-        </div>
-        @foreach (var treatment in Booking.TreatmentBookingDTOs)
-        {
-            <div style="border-bottom: dashed 0.1px; margin-left: 5%;">
-                <h4>Behandling</h4>
-                <div style="margin-left: 5%;">
-                    <p>Navn: @treatment.Treatment.Name</p>
-                    <p>Længde: @treatment.Treatment.Duration</p>
-                    <p>Tidsrum: @TimeOnly.FromDateTime(treatment.Start) - @TimeOnly.FromDateTime(treatment.End)</p>
-                    <p>Pris: @treatment.Price</p>
-                </div>
-                <h4>Medarbejder</h4>
-                <div style="margin-left: 5%;">
-                    <p>Navn: @treatment.Employee.Name</p>
-                    <p>Erfaring: @treatment.Employee.ExperienceLevel</p>
-                </div>
-            </div>
-        }
-    </div>
-    <div class="btn-group">
-        <button type="button" class="btn btn-primary mt-3" @onclick="() => showPopup = false">Anuller</button>
-        <button type="button" class="btn btn-primary mt-3" @onclick="CreateBooking">Bekræft Booking</button>
-    </div>
-</BookingNotification>
+<CreateWindow @bind-IsVisible="showPopup" StyleParameters="background-color: transparent; padding:0;width:33vw; height:fit-content;scrollbar-width:none;z-index:1000;">
+        <BookingDetails Context="confirmContext" IsCreate=true OnClose="CreateBooking"></BookingDetails>
+</CreateWindow>
 }
 else
 {

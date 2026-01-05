@@ -63,6 +63,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO
                 Type = "Company Customer";
             }
             Guid = customer.Guid;
+            SaveAsCustomer = customer.SaveAsCustomer;
         }
         public CustomerDTO(CustomerSnapshot customer)
         {

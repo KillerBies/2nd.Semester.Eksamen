@@ -20,7 +20,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
         private bool CreateTreatment = false;
         private bool EditTreatment = false;
         public bool isVisible = false;
-
+        public int PendingTreatments { get; set; } = 0;
+        public int CompleteTreatments { get; set; } = 0;
         private string SearchTermName = "";
 
         private List<TreatmentDTO> FilterdTreatments =>
@@ -33,6 +34,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.TreatmentPag
         protected override async Task OnInitializedAsync()
         {
             Treatments = await _treatmentService.GetAllTreatmentsAsDTOAsync();
+            CompleteTreatments = await _treatmentService.GetNumberOfCompletedTreatments();
+            PendingTreatments = await _treatmentService.GetNumberOfPendingTreatments();
         }
 
         private void ShowOverlay(TreatmentDTO treatment)

@@ -54,10 +54,12 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
             List<TreatmentDTO> treatmentDTOs = new();
             var treatments = await _treatmentRepository.GetAllAsync();
             if (treatments == null)
-            { return null; }
+            { 
+                return null; 
+            }
             foreach (var treatment in treatments)
             {
-              TreatmentDTO dTO = _domain_To_DTO.TreatmentToDTO(treatment);
+              TreatmentDTO dTO = new TreatmentDTO(treatment);
                 treatmentDTOs.Add(dTO);
             }
             return treatmentDTOs;
@@ -66,14 +68,20 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
     
         public async Task DeleteByIdDbAsync(int id)
         {
-            await _treatmentRepository.DeleteByIdAsync(id);
+                await _treatmentRepository.DeleteByIdAsync(id);
         }
 
         public async Task<TreatmentDTO> GetTreatmentDetailsByIdAsync(int id)
         {
             return new TreatmentDTO((await _treatmentRepository.GetByIDAsync(id)));
         }
-
-
+        public async Task<int> GetNumberOfCompletedTreatments()
+        {
+            return await _treatmentRepository.GetNumberOfComplete();
+        }
+        public async Task<int> GetNumberOfPendingTreatments()
+        {
+            return await _treatmentRepository.GetNumberOfPending();
+        }
     }
 }

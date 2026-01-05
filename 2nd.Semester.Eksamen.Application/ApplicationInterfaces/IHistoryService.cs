@@ -35,5 +35,8 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         public Task<DetailsContext?> GetEmployeeByGuid(Guid employeeGuid);
         public Task<DetailsContext?> GetProductByGuid(Guid productGuid);
 
+
+
+        public Task<BookingDTO> GetBookingScheduleAsync(Guid treatmentGuid);
     }
 }

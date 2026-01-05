@@ -22,6 +22,7 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.Bo
         public Task<List<string>> GetAllSpecialtiesAsync();
         public Task<Treatment?> GetByGuidAsync(Guid guid);
 
-
+        public Task<int> GetNumberOfPending();
+        public Task<int> GetNumberOfComplete();
     }
 }

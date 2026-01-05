@@ -118,7 +118,13 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
         public async Task<IEnumerable<OrderSnapshot>?> GetByCustomerGuidAsync(Guid guid)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.OrderSnapshots.Where(o => o.BookingSnapshot.CustomerSnapshot.Guid == guid)
+            string phonenumber = "";
+            var customer = await _context.CustomerSnapshots.FirstOrDefaultAsync(c => c.Guid == guid);
+            if (customer != null)
+            {
+                phonenumber = customer.PhoneNumber;
+            }
+            return await _context.OrderSnapshots.Where(o => o.BookingSnapshot.CustomerSnapshot.Guid == guid || (phonenumber == "" || o.BookingSnapshot.CustomerSnapshot.PhoneNumber == phonenumber))
                 .Include(o => o.BookingSnapshot)
                     .ThenInclude(b => b.CustomerSnapshot)
                         .ThenInclude(c => c.AddressSnapshot)

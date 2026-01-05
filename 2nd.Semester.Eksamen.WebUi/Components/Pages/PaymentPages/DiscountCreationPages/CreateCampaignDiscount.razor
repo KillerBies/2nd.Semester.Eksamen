@@ -47,18 +47,27 @@
                     </div>
                     <div class="row mb-3">
                         <label class="form-labels">Vælg gældene produkter:</label>
-                        <div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
-                            @foreach (var product in ProductItems.Where(s => !string.IsNullOrWhiteSpace(s.ProductName)))
-                            {
-                                <div class="form-check">
-                                    <InputCheckbox class="form-check-input"
-                                                   @bind-Value="product.Status" />
-                                    <label class="form-check-label ms-2">
-                                        @product.ProductName
-                                    </label>
-                                </div>
-                            }
-                        </div>
+                        @if(ProductItems == null || !ProductItems.Any())
+                        {
+                            <p class="text-muted mb-0 text-center">
+                                Ingen produkter registreret.
+                            </p>
+                        }
+                        else
+                        {
+                            <div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
+                                @foreach (var product in ProductItems.Where(s => !string.IsNullOrWhiteSpace(s.ProductName)))
+                                {
+                                    <div class="form-check">
+                                        <InputCheckbox class="form-check-input"
+                                                       @bind-Value="product.Status" />
+                                        <label class="form-check-label ms-2">
+                                            @product.ProductName
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        }
                     </div>
                     <div class="row">
                         <div class="col-md-12">

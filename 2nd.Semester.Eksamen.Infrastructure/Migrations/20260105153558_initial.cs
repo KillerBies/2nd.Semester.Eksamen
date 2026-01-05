@@ -373,6 +373,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     EmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PriceWithMultiplier = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    TreatmentBookingGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EmployeeSnapshotId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -427,7 +428,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ScheduleDayId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ActivityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ActivityGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     BookingId = table.Column<int>(type: "int", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Start = table.Column<TimeOnly>(type: "time(0)", precision: 0, nullable: false),
