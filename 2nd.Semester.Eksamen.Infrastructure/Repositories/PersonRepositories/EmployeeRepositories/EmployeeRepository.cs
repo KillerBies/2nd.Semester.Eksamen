@@ -83,6 +83,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
+                if (await _context.BookedTreatments.AnyAsync(t => t.EmployeeId == employee.Id))
+                    throw new Exception("Employee Cannot Be Deleted with pending treatments");
                 _context.Employees.Remove(employee);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

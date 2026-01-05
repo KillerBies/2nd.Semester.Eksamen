@@ -1,4 +1,5 @@
-﻿using _2nd.Semester.Eksamen.Application.Adapters;
+﻿using _2nd.Semester.Eksamen.Application;
+using _2nd.Semester.Eksamen.Application.Adapters;
 using _2nd.Semester.Eksamen.Application.DTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.CustomersDTO;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
@@ -52,6 +53,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         private List<BookingDTO> CurrentPage = new();
         private BookingDTO timeSelected = new();
         private EditContext EditContext;
+        private BookingDetailsContext confirmContext { get; set; }
         [Parameter] public int BookingId { get; set; }
         private CustomerDTO selectedCustomer { get; set; }
         public bool showPopup = false;
@@ -108,10 +110,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
                 _errorMessage = "Unable to load data — the server or database is offline.";
             }
         }
-        private async Task StartTimeSelected(ChangeEventArgs e)
-        {
-            await refreshAvailableSlots();
-        }
         private async Task CreateBooking()
         {
             if (EditContext.Validate())
@@ -137,7 +135,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
             }
         }
 
-
+        private void ConfirmBooking()
+        {
+            confirmContext = new BookingDetailsContext(Booking);
+            showPopup = true;
+        }
         private void ResetBookingTimes()
         {
             Booking.Start = new();
@@ -157,6 +159,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.ProductPages.BookingPages
         {
             StartTime = time;
             AvailableBookingSpots.Clear();
+            Pages.Clear();
             await refreshAvailableSlots();
         }
         private async Task FowardPage()

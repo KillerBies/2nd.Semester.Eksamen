@@ -48,33 +48,28 @@
             {
                 case CustomerDetailsContext c:
                     await _customerService.DeleteByIdAsync(c.Customer.id);
-                    await Refresh.InvokeAsync();
                     break;
                 case EmployeeDetailsContext e:
                     await EmployeeService.DeleteEmployeeAsync(e.Employee.Id);
-                    await Refresh.InvokeAsync();
                     break;
                 case BookingDetailsContext b:
-                    _bookingOverviewService.DeleteBookingAsync(b.Booking);
-                    await Refresh.InvokeAsync();
+                    await _bookingOverviewService.DeleteBookingAsync(b.Booking);
                     break;
                 case DiscountContext d:
-                    discountService.DeleteDiscountById(d.Discount.Id);
-                    await Refresh.InvokeAsync();
+                    await discountService.DeleteDiscountById(d.Discount.Id);
                     break;
                 case TreatmentContext t:
-                    _treatmentService.DeleteByIdDbAsync(t.Treatment.TreatmentId);
-                    await Refresh.InvokeAsync();
+                    await _treatmentService.DeleteByIdDbAsync(t.Treatment.TreatmentId);
                     break;
                 case ProductContext p:
-                    productOverviewService.DeleteProductAsync(p.Product);
-                    await Refresh.InvokeAsync();
+                    await productOverviewService.DeleteProductAsync(p.Product);
                     break;
             }
+            await Refresh.InvokeAsync();
         } 
-        catch
+        catch(Exception ex)
         {
-            _errorMessage = "Noget gik galt så sletningen blev ikke gennemført";
+            _errorMessage = $"Noget gik galt så sletningen blev ikke gennemført: {ex.Message}";
         }
     }
 }

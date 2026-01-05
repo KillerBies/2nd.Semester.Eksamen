@@ -56,6 +56,10 @@
             </div>
         </div>
             <button @onclick="InjectData">Inject Data</button>
+            @if (Loading)
+            {
+                <p>Loading...</p>
+            }
         </div>
     </div>
 </div>

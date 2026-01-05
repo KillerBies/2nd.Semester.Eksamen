@@ -78,9 +78,11 @@
                      AppointmentRender="@OnAppintmentRender"
                      AppointmentSelect="@OnAppointmentSelect">
         <Template Context="scheduleItem">
-            <div style="display:flex;">
-                <strong>@scheduleItem.Title</strong>
-                <p class="subtitle ms-auto" style="font-size:x-small;">@TimeOnly.FromDateTime((DateTime)scheduleItem.Start) - @TimeOnly.FromDateTime((DateTime)scheduleItem.End)</p>
+            <div class="w-100 h-100" @onclick="() => TreatmentSelect(scheduleItem.Guid)">
+                <div style="display:flex;">
+                    <strong>@scheduleItem.Title</strong>
+                    <p class="subtitle ms-auto" style="font-size:x-small;">@TimeOnly.FromDateTime((DateTime)scheduleItem.Start) - @TimeOnly.FromDateTime((DateTime)scheduleItem.End)</p>
+                </div>
             </div>
         </Template>
         <ChildContent>
@@ -89,3 +91,16 @@
         </ChildContent>
     </RadzenScheduler>
 </div>
+
+@if (ShowDetailsWindow)
+{
+    <CreateWindow IsVisible="ShowDetailsWindow" IsVisibleChanged="@(v => ShowDetailsWindow = v)" StyleParameters="background-color: transparent; padding:0;width:fit-content; height:fit-content;scrollbar-width:none;z-index:1000;">
+        <DetailWindow OnEditBooking="OnEditBooking" Refresh="Refresh" ContextStack="ContextStack" OnDelete="Delete" OnAddBookingToCustomer="AddBookingToCustomer"></DetailWindow>
+    </CreateWindow>
+}
+@if (ShowDelete)
+{
+    <CreateWindow IsVisible="ShowDelete" IsVisibleChanged="@(v => ShowDelete = v)" StyleParameters="background-color: #F3F2F2; margin:2rem;width:fit-content; height:fit-content;scrollbar-width:none;z-index:9999;">
+        <DeleteWindow Refresh="Refresh" context="DeleteContext"></DeleteWindow>
+    </CreateWindow>
+}

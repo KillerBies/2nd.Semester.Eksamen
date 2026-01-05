@@ -203,5 +203,17 @@ namespace _2nd.Semester.Eksamen.Application.Services
                 return new ProductSnapShotContext(new ProductOverviewDTO(productSnap));
             throw new Exception("Product not found");
         }
+
+
+        public async Task<BookingDTO> GetBookingScheduleAsync(Guid treatmentGuid)
+        {
+            var booking = await _bookingRepository.GetByTreatmentBookingGuidAsync(treatmentGuid);
+            if (booking != null )
+                return new BookingDTO(booking);
+            var orderSnap = await _bookingRepository.GetSnapShotByTreatmentBookingGuidAsync(treatmentGuid);
+            if (orderSnap != null)
+                return new BookingDTO(orderSnap);
+            return new BookingDTO();
+        }
     }
 }

@@ -20,5 +20,7 @@ namespace _2nd.Semester.Eksamen.Application.ApplicationInterfaces
         public Task<List<TreatmentDTO>> GetAllTreatmentsAsDTOAsync();
         public Task DeleteByIdDbAsync(int id);
         public Task<TreatmentDTO> GetTreatmentDetailsByIdAsync(int id);
+        public Task<int> GetNumberOfCompletedTreatments();
+        public Task<int> GetNumberOfPendingTreatments();
     }
 }

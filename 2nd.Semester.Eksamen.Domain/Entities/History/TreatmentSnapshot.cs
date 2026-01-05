@@ -21,10 +21,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public BookingSnapshot? BookingSnapshot { get; set; }
         public decimal? PriceWithMultiplier { get; set; }
         public int EmployeeId { get; set; }
+        public Guid TreatmentBookingGuid { get; set; }
         public EmployeeSnapshot? EmployeeSnapshot { get; set; }
         private TreatmentSnapshot() { }
 
-        public TreatmentSnapshot(Treatment treatment, BookingSnapshot bookingSnapshot, string empName = "", Guid empGuid = default)
+        public TreatmentSnapshot(Treatment treatment, BookingSnapshot bookingSnapshot, Guid tbGuid, string empName = "", Guid empGuid = default)
         {
             if(empGuid != default && empName != "")
             {
@@ -38,6 +39,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
             BookingSnapshot = bookingSnapshot;
             Guid = treatment.Guid;
             Duration = treatment.Duration;
+            TreatmentBookingGuid = tbGuid;
         }
 
 

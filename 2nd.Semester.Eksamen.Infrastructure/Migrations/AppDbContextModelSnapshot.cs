@@ -762,7 +762,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid?>("ActivityId")
+                    b.Property<Guid?>("ActivityGuid")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("BookingId")
@@ -881,6 +881,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Migrations
                     b.Property<decimal?>("PriceWithMultiplier")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("TreatmentBookingGuid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasIndex("BookingSnapshotId");
 

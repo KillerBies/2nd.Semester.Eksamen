@@ -12,7 +12,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
         public int ScheduleDayId { get; set; }
         public ScheduleDay ScheduleDay { get; set; }
         public string Name { get; set; } = "";
-        public Guid? ActivityId { get; set; }
+        public Guid? ActivityGuid { get; set; }
         public Booking? Booking { get; set; }
         public string Type { get; set; }
         public TimeOnly Start { get; set; }

@@ -106,6 +106,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
+                if(await _context.BookedTreatments.AnyAsync(tb=>tb.TreatmentId == id && tb.Booking.Status == Domain.Entities.Products.BookingProducts.BookingStatus.Pending))
+                {
+                    throw new Exception("Cannot delete Treatment connected to pending bookings");
+                }
                 var treatment = await _context.Treatments.FirstOrDefaultAsync(c => c.Id == id);
 
                 if (treatment != null)
@@ -116,10 +120,10 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                throw;
+                throw ex;
             }
 
 
@@ -129,6 +133,17 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         {
             await using var _context = await _factory.CreateDbContextAsync();
             return await _context.Treatments.Select(t => string.Join(',',t.RequiredSpecialties)).ToListAsync();
+        }
+
+        public async Task<int> GetNumberOfPending()
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.BookedTreatments.CountAsync();
+        }
+        public async Task<int> GetNumberOfComplete()
+        {
+            var _context = await _factory.CreateDbContextAsync();
+            return await _context.TreatmentSnapshots.CountAsync();
         }
     }
 }

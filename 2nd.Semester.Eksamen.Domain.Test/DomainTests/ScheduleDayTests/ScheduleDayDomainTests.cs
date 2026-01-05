@@ -264,7 +264,7 @@ namespace _2nd.Semester.Eksamen.Domain.Test.DomainTests.ScheduleDayTests
                 new DateTime(2025, 1, 1, 12, 0, 0)
             );
 
-            // Arrange: Generate ActivityId and add booking to the day
+            // Arrange: Generate ActivityGuid and add booking to the day
             var activityId = Guid.NewGuid();
             day.AddBooking(booking, activityId);
 

@@ -221,15 +221,11 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">Antal Besøg</span>
-                            <span class="info-value">@pc.NumberOfVisits</span>
+                            <span class="info-value">@History.Count()</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Telefon</span>
                             <span class="info-value">@pc.PhoneNumber</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Email</span>
-                            <span class="info-value">@pc.Email</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">By</span>
@@ -243,10 +239,6 @@
                             <span class="info-label">Postnummer</span>
                             <span class="info-value">@pc.PostalCode</span>
                         </div>
-                        <div class="info-row">
-                            <span class="info-label">Fødselsdato</span>
-                            <span class="info-value">@pc.BirthdayWrapper.ToShortDateString()</span>
-                        </div>
                             @if (!string.IsNullOrEmpty(pc.Notes))
                             {
                                 <p class="customer-description">
@@ -258,15 +250,11 @@
                     {
                         <div class="info-row">
                             <span class="info-label">Antal Besøg</span>
-                            <span class="info-value">@c.NumberOfVisits</span>
+                            <span class="info-value">@History.Count()</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Telefon</span>
                             <span class="info-value">@c.PhoneNumber</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Email</span>
-                            <span class="info-value">@c.Email</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">By</span>
@@ -373,7 +361,8 @@
     {
         Customer = IsSnapshot ? SnapshotContext?.Customer : Context?.Customer;
         History = await _historyService.GetCustomerOrderHistoryByGuidAsync(Customer.Guid);
-        Upcomming = await _historyService.GetCustomerUpcommingHistoryByGuidAsync(Customer.Guid);
+        var historyGuids = History.Select(t => t.BookingGuid).ToHashSet();
+        Upcomming = (await _historyService.GetCustomerUpcommingHistoryByGuidAsync(Customer.Guid)).Where(t => !historyGuids.Contains(t.BookingGuid)).ToList(); ;
     }
     private Task AddBooking(int id) => OnAddBookingToCustomer.InvokeAsync(id);
 }

@@ -24,6 +24,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
         public int CustomerId {get;set;}
         public Guid CustomerGuid { get; set; }
         public string CustomerName { get; set; }
+        public Guid TreatmentBookingGuid { get; set; }
         public DateTime Start { get; set; } = new();
         public DateTime End { get; set; } = new();
         [Required]
@@ -39,6 +40,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
         {
             Treatment = new TreatmentDTO(tb.Treatment);
             Employee = new EmployeeDTO(tb.Employee);
+            TreatmentBookingGuid = tb.Guid;
             Start = tb.Start;
             End = tb.End;
             Price = tb.Price;
@@ -48,6 +50,11 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             if(tb.Booking != null)
             {
                 BookingGuid = tb.Booking.Guid;
+                if(tb.Booking.Customer != null)
+                {
+                    CustomerName = tb.Booking.Customer.Name;
+                    CustomerGuid = tb.Booking.Customer.Guid;
+                }
             }
             
         }
@@ -55,6 +62,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
         {
             Treatment = new TreatmentDTO(tb.Treatment);
             Employee = new EmployeeDTO(tb.Employee);
+            TreatmentBookingGuid = tb.TreatmentBookingGuid;
             Start = tb.Start;
             End = tb.End;
             Price = tb.Price;
@@ -68,6 +76,7 @@ namespace _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO
             Treatment = new TreatmentDTO(tb);
             Employee = new EmployeeDTO(tb);
             Price = tb.PricePerUnit;
+            TreatmentBookingGuid = tb.TreatmentBookingGuid;
             CustomerId = tb.BookingSnapshot.CustomerSnapshotId;
             CustomerGuid = tb.BookingSnapshot.CustomerSnapshot.Guid;
             if (bookingGuid != default)
