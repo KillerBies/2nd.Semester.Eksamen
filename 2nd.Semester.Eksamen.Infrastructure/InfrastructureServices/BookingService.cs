@@ -69,7 +69,17 @@ namespace _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices
             //Checks if Customer has chosen to be deleted from database. If false sendes to infrastructure layer and deletes customer.
             await _bookingRepository.CancelBookingAsync(booking);
         }
-
+        public async Task TryDeleteBookingAtPayment(Booking booking)
+        {
+            try
+            {
+                await _bookingRepository.TryDeleteBookingAtPayment(booking);
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public async Task<Booking> CreateBookingAsync(Booking booking)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -127,7 +137,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices
                 Start = TimeOnly.FromDateTime(treatment.Start),
                 End = TimeOnly.FromDateTime(treatment.End),
                 Type = "Booked",
-                ActivityId = bookingId
+                ActivityGuid = bookingId
             };
 
             scheduleDay.TimeRanges.Add(timerange);

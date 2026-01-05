@@ -48,7 +48,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.CustomerPages
 
         protected override async Task OnInitializedAsync()
         {
-            Customers = await _customerService.GetAllCustomersAsDTO();
+            Customers = await _customerService.GetAllCustomersAsDTO()
         }
 
         private void Refresh()

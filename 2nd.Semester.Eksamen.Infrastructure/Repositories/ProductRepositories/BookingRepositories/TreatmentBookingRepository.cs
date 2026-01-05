@@ -31,7 +31,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.ProductRepositories.
         public async Task<List<TreatmentBooking>?> GetByTreatmentGuidAsync(Guid guid)
         {
             var _context = await _factory.CreateDbContextAsync();
-            return await _context.BookedTreatments.Include(b=>b.Employee).ThenInclude(e=>e.Address).Include(b=>b.Booking).Include(b=>b.Treatment).Where(b => b.Treatment.Guid == guid).ToListAsync();
+            return await _context.BookedTreatments.Include(b=>b.Employee).ThenInclude(e=>e.Address).Include(b=>b.Booking).ThenInclude(b=>b.Customer).Include(b=>b.Treatment).Where(b => b.Treatment.Guid == guid).ToListAsync();
         }
         public async Task<List<TreatmentBooking>?> GetByEmployeeGuidAsync(Guid guid)
         {

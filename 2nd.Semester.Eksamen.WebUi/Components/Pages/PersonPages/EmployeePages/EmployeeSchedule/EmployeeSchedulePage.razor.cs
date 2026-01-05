@@ -1,10 +1,13 @@
-﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
+﻿using _2nd.Semester.Eksamen.Application;
+using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
 using _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Syncfusion.Blazor.Schedule.Internal;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+using System.ComponentModel.Design.Serialization;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages.EmployeeSchedule
 {
@@ -39,6 +42,11 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
         {
             await GetData();
         }
+        public bool CreateEmployee { get; set; } = false;
+        public bool UpdateEmployee { get; set; } = false;
+        public bool ShowDelete { get; set; } = false;
+        public DetailsContext DeleteContext { get; set; }
+        [Inject] private NavigationManager Nav { get; set; } = null!;
         private async Task GetEmployeeSchedule(int EmployeeId)
         {
             int i = 0;
@@ -50,6 +58,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
                 Id = i++,
                 Title = tr.Name,
                 Type = tr.Type,
+                Guid = tr.Guid
             })).Where(tr => tr.Type != "Freetime").ToList();
         }
         private async Task GetEmployees()
@@ -71,6 +80,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
         public class ScheduleItem
         {
             public int Id { get; set; }
+            public Guid Guid { get; set; }
             public string? Title { get; set; }
             public DateTime? Start { get; set; }
             public DateTime? End {  get; set; }
@@ -98,7 +108,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
 
             var matchingItems = schedule
                 .SelectMany(s => s.TimeRanges)
-                .Where(tr => tr.ActivityId == selectedItem.ActivityId)
+                .Where(tr => tr.ActivityGuid == selectedItem.ActivityGuid)
                 .ToList();
 
             SelectedScheduleItems.AddRange(matchingItems);
@@ -143,6 +153,50 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PersonPages.EmployeePages
                 _errorMessage = "Ferien er lagt på en dag med eksisterende planer og blev derfor ikke lavt";
                 ShowAddWindow = false;
             }
+        }
+
+
+        [Inject] public IHistoryService _historyService { get; set; }
+
+
+        public bool ScheduleSelect { get; set; } = false;
+        public Stack<DetailsContext> ContextStack { get; set; } = new();
+
+        private void OnEditBooking(BookingEditContext context)
+        {
+            if (context.Booking == null)
+                return;
+            Nav.NavigateTo($"/BookingForm/{context.Booking.CustomerId}/{context.Booking.BookingId}");
+        }
+        private async Task TreatmentSelect(Guid guid)
+        {
+            ContextStack.Clear();
+            var booking = await _historyService.GetBookingScheduleAsync(guid);
+            if(booking.Status != BookingStatus.Pending)
+            {
+                ContextStack.Push(new BookingSnapShotContext(booking));
+            }
+            else
+            {
+                ContextStack.Push(new BookingDetailsContext(booking));
+            }
+            ShowDetailsWindow = true;
+        }
+        private void Delete(DetailsContext context)
+        {
+            DeleteContext = context;
+            ShowDelete = true;
+        }
+        private void AddBookingToCustomer(int customerId)
+        {
+            if (customerId <= 0)
+                return;
+            Nav.NavigateTo($"/BookingForm/{customerId}");
+        }
+
+        private void Refresh()
+        {
+            Nav.Refresh(true);
         }
 
     }

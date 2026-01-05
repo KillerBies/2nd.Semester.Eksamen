@@ -213,13 +213,15 @@
         {
             SelectedTreatmentSnapshot = SnapshotContext.Treatment;
             History = await _historyService.GetTreatmentHistoryByGuidAsync(SelectedTreatmentSnapshot.TreatmentGuid);
-            UpComming = await _historyService.GetTreatmentUpcommingHistoryByGuidAsync(SelectedTreatmentSnapshot.TreatmentGuid);
+            var historyGuids = History.Select(t => t.TreatmentBookingGuid).ToHashSet();
+            UpComming = (await _historyService.GetTreatmentUpcommingHistoryByGuidAsync(SelectedTreatmentSnapshot.TreatmentGuid)).Where(t => !historyGuids.Contains(t.TreatmentBookingGuid)).ToList();
         }
         else
         {
             selectedTreatment = Context.Treatment;
             History = await _historyService.GetTreatmentHistoryByGuidAsync(selectedTreatment.TreatmentGuid);
-            UpComming = await _historyService.GetTreatmentUpcommingHistoryByGuidAsync(selectedTreatment.TreatmentGuid);
+            var historyGuids = History.Select(t => t.TreatmentBookingGuid).ToHashSet();
+            UpComming = (await _historyService.GetTreatmentUpcommingHistoryByGuidAsync(selectedTreatment.TreatmentGuid)).Where(t => !historyGuids.Contains(t.TreatmentBookingGuid)).ToList();
         }
     }
     private async Task BookingClick(Guid guid)

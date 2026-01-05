@@ -30,7 +30,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 
             foreach (var t in booking.Treatments)
             {
-                var snapshot = new TreatmentSnapshot(t.Treatment, this, t.Employee.BasePriceMultiplier, t.Employee.Name,t.Employee.Guid);
+                var snapshot = new TreatmentSnapshot(t.Treatment, this, t.Guid, t.Employee.BasePriceMultiplier, t.Employee.Name,t.Employee.Guid);
                 TreatmentSnapshot.Add(snapshot);
             }
             Duration = booking.Duration;

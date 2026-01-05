@@ -109,18 +109,27 @@
 
 					<div class="row mb-3">
 						<label class="form-label">Vælg eksisterende specialiteter:</label>
-						<div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
-							@foreach (var specialty in specialtyItems.Where(s => !string.IsNullOrWhiteSpace(s.Specialty)))
-							{
-								<div class="form-check">
-									<InputCheckbox class="form-check-input"
-												   @bind-Value="specialty.Status" />
-									<label class="form-check-label ms-2">
-										@specialty.Specialty
-									</label>
-								</div>
-							}
-						</div>
+						@if (specialtyItems == null || !specialtyItems.Any())
+						{
+							<p class="text-muted mb-0 text-center">
+								Ingen specialiteter registrert.
+							</p>
+						}
+						else
+						{
+							<div class="border rounded p-2" style="overflow-y:scroll; max-height:7.7rem">
+								@foreach (var specialty in specialtyItems.Where(s => !string.IsNullOrWhiteSpace(s.Specialty)))
+								{
+									<div class="form-check">
+										<InputCheckbox class="form-check-input"
+													   @bind-Value="specialty.Status" />
+										<label class="form-check-label ms-2">
+											@specialty.Specialty
+										</label>
+									</div>
+								}
+							</div>
+						}
 						<div class="mb-3">
 							<label class="form-label">Tilføj ny specialitet:</label>
 							<div class="d-flex gap-2">

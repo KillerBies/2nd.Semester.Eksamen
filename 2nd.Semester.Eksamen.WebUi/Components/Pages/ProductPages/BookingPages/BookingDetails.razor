@@ -15,10 +15,63 @@
 @inject IBookingService bookingService
 
 
+@if (IsCreate)
+{
+    <div class="card shadow-sm border-0 p-0 m-0" style="background: #ffffff;">
+        <div class="card-header text-white rounded-top gap-5" style="background-color:#034265; display:flex; flex-direction:row;">
+            <div>
+                <h2 class="mb-0 text-white"> @(Booking.Customer is PrivateCustomerDTO pc ? $"{Booking.Customer.Name} {pc.LastName}" : Booking.Customer.Name)</h2>
+            </div>
+        </div>
+        <div style="padding:1rem;">
 
+            <div class="p-4 flex-grow-1 overflow-auto">
+                <div class="text-center mb-4 border-bottom border-dashed pb-3">
+                    <h3 class="mb-1">@Booking.Start.ToString("dd/MM/yyyy")</h3>
+                    <h5 class="mb-0">@Booking.Start.ToString("HH:mm") - @Booking.End.ToString("HH:mm")</h5>
+                    <h7><span class="badge bg-dark ms-auto bg-opacity-75"> @TimeString</span></h7>
+                </div>
+
+
+                @if (Booking.TreatmentBookingDTOs.Any())
+                {
+                    <div class="mb-4">
+                        @foreach (var treatment in Booking.TreatmentBookingDTOs)
+                        {
+                            <div class="mb-3 p-3 border rounded shadow-sm">
+                                <h5 class="fw-bold mb-1">@treatment.Treatment.Name</h5>
+                                <div class="info-row">
+                                    <span class="info-label">Pris</span>
+                                    <span class="info-value">@treatment.Price.ToString("C")</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Fra</span>
+                                    <span class="info-value">@treatment.Start.ToString("t")</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Til</span>
+                                    <span class="info-value">@treatment.End.ToString("t")</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Ansat</span>
+                                    <span class="info-value">@treatment.Employee.Name</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="card-footer bg-transparent border-0 d-flex flex-row w-100 btn-group">
+                        <button class="btn card-btn w-100 " @onclick="() => OnClose.InvokeAsync()">Bekræft</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
     @if (!IsSnapShot)
     {
-    <div class="card shadow-sm border-0 p-0 m-0" style="background: #ffffff;">
+        <div class="card shadow-sm border-0 p-0 m-0" style="background: #ffffff;">
             @if (!string.IsNullOrEmpty(errorMessage))
             {
                 <div class="alert alert-danger m-3">@errorMessage</div>
@@ -79,11 +132,19 @@
                         </div>
                     }
 
-
-                    <div class="card-footer bg-transparent border-0 d-flex flex-row w-100 btn-group">
-                        <button class="btn card-btn w-50 " @onclick="() => OnDelete.InvokeAsync(Context)" style="background-color:crimson">Slet</button>
-                        <button class="btn card-btn w-50" @onclick="() => OnEdit.InvokeAsync(Context)">Rediger</button>
-                    </div>
+                    @if (Context.Booking.Status == BookingStatus.Pending)
+                    {
+                        <div class="card-footer bg-transparent border-0 d-flex flex-row w-100 btn-group">
+                            <button class="btn card-btn w-50 " @onclick="() => OnDelete.InvokeAsync(Context)" style="background-color:crimson">Slet</button>
+                            <button class="btn card-btn w-50" @onclick="() => OnEdit.InvokeAsync(Context)">Rediger</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="card-footer bg-transparent border-0 d-flex flex-row w-100 btn-group">
+                            <button class="btn card-btn w-100 " @onclick="() => OnDelete.InvokeAsync(Context)" style="background-color:crimson">Slet</button>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -98,7 +159,7 @@
             }
 
 
-        <div class="card-header d-flex align-items-start" style="background-color:#034265;">
+            <div class="card-header d-flex align-items-start" style="background-color:#034265;">
                 <h2 class="mb-0 text-white clickable" @onclick="() => OnClickCustomer.InvokeAsync(Booking.CustomerGuid)">@Booking.Customer.Name</h2>
                 <h5 class="mb-0 text-white ms-auto clickable" @onclick="() => OnClickOrder.InvokeAsync(Booking.OrderGuid)">@Booking.OrderGuid</h5>
             </div>
@@ -140,6 +201,8 @@
         </div>
     }
 
+}
+
 
 
 @code {
@@ -157,6 +220,7 @@
     [Parameter] public EventCallback<BookingDTO> OnPay { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
 
+    [Parameter] public bool IsCreate { get; set; } = false;
     [Parameter] public BookingDetailsContext Context { get; set; }
     [Parameter] public BookingSnapShotContext SnapshotContext { get; set; }
     [Parameter] public bool IsSnapShot { get; set; }

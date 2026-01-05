@@ -33,7 +33,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
         {
             if (TimeRanges.Any(tr => tr.Type != "Freetime" && tr.Type != "Unavailable")) return false;
             TimeRanges = new List<TimeRange>();
-            var vacation = new TimeRange(start, end) { Type = "Unavailable", ActivityId = id };
+            var vacation = new TimeRange(start, end) { Type = "Unavailable", ActivityGuid = id };
             TimeRanges.Add(vacation);
             return true;
         }
@@ -82,7 +82,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
             {
                 treatmentName = treatment.Treatment.Name;
             }
-                var booking = new TimeRange(TimeOnly.FromDateTime(treatment.Start), TimeOnly.FromDateTime(treatment.End)) { Name = treatmentName, Type = "Booked", ActivityId = bookingID };
+            var booking = new TimeRange(TimeOnly.FromDateTime(treatment.Start), TimeOnly.FromDateTime(treatment.End)) { Name = treatmentName, Type = "Booked", ActivityGuid = bookingID,Guid = treatment.Guid };
             var free = TimeRanges.FirstOrDefault(r => r.Type == "Freetime" && r.Start <= booking.Start && r.End >= booking.End);
             if (free == null)
                 throw new Exception();
@@ -147,12 +147,14 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
             });
 
             MergeAdjacentFreetime();
-            return true;
+            if(TimeRanges.Any(t=>t.Type != "Freetime"))
+                return true;
+            return false;
         }
         public bool UpdateDaySchedule(TreatmentBooking treatment, Guid bookingId)
         {
-            // Find booked TimeRange by ActivityId only
-            var bookingRange = TimeRanges.FirstOrDefault(r => r.Type == "Booked" && r.ActivityId == bookingId);
+            // Find booked TimeRange by ActivityGuid only
+            var bookingRange = TimeRanges.FirstOrDefault(r => r.Type == "Booked" && r.ActivityGuid == bookingId);
             if (bookingRange == null) return false;
 
             var oldStart = bookingRange.Start;
@@ -173,6 +175,5 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
             MergeAdjacentFreetime();
             return true;
         }
-
     }
 }

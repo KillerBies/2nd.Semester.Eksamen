@@ -137,10 +137,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
                 //ONLY A TEST TO SEE IF CREATING SNAPSHOT WORKS!!!!!!!!
                 await _invoiceService.CreateSnapshotInDBAsync(order);
 
-                if (!customer.SaveAsCustomer)
-                { //TODO: Fix error around cascading delete of customer + booking
-                    //await CustomerService.DeleteAsync(customer);
-                }
+                await _bookingAppService.TryDeleteBookingAtPayment(booking);
 
             }
             catch (Exception ex)

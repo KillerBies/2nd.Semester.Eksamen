@@ -104,6 +104,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 if (Customer is PrivateCustomer pc)
                 {
                     PrivateCustomer customerToUpDate = (PrivateCustomer) await _context.Customers.FindAsync(Customer.Id);
+                    customerToUpDate.NumberOfVisists = Customer.NumberOfVisists;
                     customerToUpDate.TrySetPhoneNumber(pc.PhoneNumber);
                     customerToUpDate.TrySetLastName(pc.Name, pc.LastName);
                     customerToUpDate.SetBirthDate(pc.BirthDate,(DateTime.Today.Year - pc.BirthDate.Year));
@@ -115,6 +116,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 else if(Customer is CompanyCustomer cc)
                 {
                     CompanyCustomer customerToUpDate = (CompanyCustomer) await _context.Customers.FindAsync(Customer.Id);
+                    customerToUpDate.NumberOfVisists = Customer.NumberOfVisists;
                     customerToUpDate.TrySetPhoneNumber(cc.PhoneNumber);
                     customerToUpDate.Email = cc.Email;
                     customerToUpDate.Notes = cc.Notes;
@@ -193,8 +195,24 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
 
                 if (customer != null)
                 {
+                    _context.RemoveRange(await _context.Orders.Where(o => o.Booking.CustomerId == customer.Id).ToListAsync());
+                    var bookings = await _context.Bookings.Include(b=>b.Treatments).Where(b => b.CustomerId == customer.Id).ToListAsync();
+                    var treatments = bookings.SelectMany(b => b.Treatments).ToList();
+                    foreach(var treatment in treatments)
+                    {
+                        var scheduleday = await _context.ScheduleDays.FirstOrDefaultAsync(sd => DateOnly.FromDateTime(treatment.Start) == sd.Date);
+                        if (scheduleday != null)
+                        {
+                            if(scheduleday.CancelBooking(treatment))
+                            {
+                                _context.Remove(scheduleday);
+                            }
+                        }
+
+                    }
+                    _context.RemoveRange(treatments);
+                    _context.RemoveRange(bookings);
                     _context.Customers.Remove(customer);
-                    await _context.SaveChangesAsync();
                 }
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

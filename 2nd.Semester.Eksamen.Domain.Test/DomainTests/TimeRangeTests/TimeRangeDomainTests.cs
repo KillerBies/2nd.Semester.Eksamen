@@ -74,7 +74,6 @@ namespace _2nd.Semester.Eksamen.Domain.Test.DomainTests.TimeRangeTests
             Assert.That(range.End, Is.EqualTo(default(TimeOnly)));
             Assert.That(range.Type, Is.Null.Or.Empty);
             Assert.That(range.Name, Is.EqualTo(""));
-            Assert.That(range.ActivityId, Is.Null);
             Assert.That(range.Booking, Is.Null);
         }
     }

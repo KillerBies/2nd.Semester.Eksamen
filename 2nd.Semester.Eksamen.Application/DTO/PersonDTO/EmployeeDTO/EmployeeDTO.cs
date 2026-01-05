@@ -21,12 +21,15 @@ namespace _2nd.Semester.Eksamen.Application.DTO.PersonDTO.EmployeeDTO
 
         public EmployeeDTO(Employee emp) 
         {
-            EmployeeId = emp.Id;
-            Name = emp.Name;
-            ExperienceLevel = emp.ExperienceLevel;
-            BasePriceMultiplier = emp.BasePriceMultiplier;
-            Specialties = emp.Specialties;
-            EmployeeGuid = emp.Guid;
+            if(emp != null)
+            {
+                EmployeeId = emp.Id;
+                Name = emp.Name;
+                ExperienceLevel = emp.ExperienceLevel;
+                BasePriceMultiplier = emp.BasePriceMultiplier;
+                Specialties = emp.Specialties;
+                EmployeeGuid = emp.Guid;
+            }
         }
         public EmployeeDTO(EmployeeDTO emp)
         {
