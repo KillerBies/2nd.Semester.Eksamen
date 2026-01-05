@@ -61,7 +61,7 @@ namespace _2nd.Semester.Eksamen.Application.Services.BookingServices
                     {
                         Id = tb.Treatment.Id,
                         Name = tb.Treatment.Name,
-                        Price = tb.Treatment.Price * tb.Employee.BasePriceMultiplier
+                        Price = tb.Price,
                     });
                 }
 

@@ -124,7 +124,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.InvoiceRepositories
             {
                 phonenumber = customer.PhoneNumber;
             }
-            return await _context.OrderSnapshots.Where(o => o.BookingSnapshot.CustomerSnapshot.Guid == guid || (phonenumber == "" || o.BookingSnapshot.CustomerSnapshot.PhoneNumber == phonenumber))
+            return await _context.OrderSnapshots.Where(o => o.BookingSnapshot.CustomerSnapshot.Guid == guid ||  o.BookingSnapshot.CustomerSnapshot.PhoneNumber == phonenumber)
                 .Include(o => o.BookingSnapshot)
                     .ThenInclude(b => b.CustomerSnapshot)
                         .ThenInclude(c => c.AddressSnapshot)

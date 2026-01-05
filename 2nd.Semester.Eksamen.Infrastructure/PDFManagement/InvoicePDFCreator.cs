@@ -104,7 +104,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 column.Item().Text("");
                 column.Item().Text("");
                 string percentage = "%";
-                if (InvoiceOrder.AppliedDiscountSnapshot != null)
+                if (InvoiceOrder.AppliedDiscountSnapshot != null && !string.IsNullOrEmpty(InvoiceOrder.AppliedDiscountSnapshot.Name))
                 {
                     column.Item().AlignRight().Text($"Rabat: {InvoiceOrder.AppliedDiscountSnapshot.Name}");
                     
@@ -158,7 +158,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.PDFManagement
                 {
                     table.Cell().Element(CellStyling).Text($"{item.Name}");
                     table.Cell().Element(CellStyling).AlignRight().Text("1");
-                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.PriceWithMultiplier} DKK");
+                    table.Cell().Element(CellStyling).AlignRight().Text($"{item.PricePerUnit} DKK");
                    
 
                     static IContainer CellStyling(IContainer container)

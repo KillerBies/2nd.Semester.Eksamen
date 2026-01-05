@@ -296,9 +296,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Data
             modelBuilder.Entity<EmployeeSnapshot>()
                 .Property(es => es.BasePriceMultiplier)
                 .HasPrecision(18, 2);
-            modelBuilder.Entity<TreatmentSnapshot>()
-                .Property(ts => ts.PriceWithMultiplier)
-                .HasPrecision(18, 2);
 
 
 
