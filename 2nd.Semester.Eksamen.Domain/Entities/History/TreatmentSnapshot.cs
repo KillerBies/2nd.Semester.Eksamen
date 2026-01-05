@@ -19,28 +19,26 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
         public TimeSpan Duration { get; set; }
         public string EmployeeName { get; set; }
         public BookingSnapshot? BookingSnapshot { get; set; }
-        public decimal? PriceWithMultiplier { get; set; }
         public int EmployeeId { get; set; }
         public Guid TreatmentBookingGuid { get; set; }
         public EmployeeSnapshot? EmployeeSnapshot { get; set; }
         private TreatmentSnapshot() { }
 
-        public TreatmentSnapshot(Treatment treatment, BookingSnapshot bookingSnapshot, Guid tbGuid, decimal customerMultiplier, string empName = "", Guid empGuid = default)
+        public TreatmentSnapshot(TreatmentBooking treatment, BookingSnapshot bookingSnapshot, Guid tbGuid, string empName = "", Guid empGuid = default)
         {
             if(empGuid != default && empName != "")
             {
                 EmployeeGuid = empGuid;
                 EmployeeName = empName;
             }
-            Name = treatment.Name;
+            Name = treatment.Treatment.Name;
             PricePerUnit = treatment.Price;
-            DiscountedPrice = treatment.DiscountedPrice;
-            Category = treatment.Category;
+            DiscountedPrice = treatment.Treatment.DiscountedPrice;
+            Category = treatment.Treatment.Category;
             BookingSnapshot = bookingSnapshot;
             Guid = treatment.Guid;
-            Duration = treatment.Duration;
+            Duration = treatment.Treatment.Duration;
             TreatmentBookingGuid = tbGuid;
-            PriceWithMultiplier = customerMultiplier * treatment.Price;
         }
 
 

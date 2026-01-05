@@ -60,20 +60,19 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
                     return;
                 }
 
+
                 // Flatten booking items, formatting it so it gives a list of product and quantity
                 var allItems = FlattenBookingItems(booking);
-                products = allItems.Select(x => x.product).Distinct().ToList();
+                products = allItems.Select(x => x.product).ToList();
 
                 if (!products.Any())
                 {
                     errorMessage = "No treatments or products found for this booking.";
                     return;
                 }
-
-                // Get totals & discounts
+                                // Get totals & discounts
                 (originalTotal, bestDiscount, loyaltyDiscount, finalTotal, itemDiscounts) =
                     await _discountCalculator.CalculateAsync(customer.Id, products);
-
 
                 // compare best discount using actual discount amounts
                 decimal bestDiscountAmount = bestDiscount != null
@@ -136,9 +135,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
 
                 //ONLY A TEST TO SEE IF CREATING SNAPSHOT WORKS!!!!!!!!
                 await _invoiceService.CreateSnapshotInDBAsync(order);
-
                 await _bookingAppService.TryDeleteBookingAtPayment(booking);
-
             }
             catch (Exception ex)
             {
@@ -148,7 +145,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
             finally
             {
                 isLoading = false;
-
             }
             await OnClose.InvokeAsync();
         }
@@ -161,7 +157,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
             {
                 foreach (var tb in booking.Treatments)
                 {
-                    // Apply employee multiplier only to the treatment itself
+                    // Apply treatmentbooking price multiplier only to the treatment itself
                     if (tb.Treatment != null && tb.Employee != null)
                     {
 
@@ -170,8 +166,8 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
                         {
                             Id = tb.Treatment.Id,
                             Name = tb.Treatment.Name,
-                            Price = tb.Treatment.Price * tb.Employee.BasePriceMultiplier,
-                            DiscountedPrice = tb.Treatment.DiscountedPrice * tb.Employee.BasePriceMultiplier
+                            Price = tb.Price,
+                            DiscountedPrice = tb.Price
                         };
 
                         allItems.Add((treatmentWithMultiplier, 1));

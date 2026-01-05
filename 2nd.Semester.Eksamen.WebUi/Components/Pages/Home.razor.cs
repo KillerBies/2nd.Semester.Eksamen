@@ -123,8 +123,9 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         public async Task InjectData()
         {
             Loading = true;
-
-            foreach (var emp in GenerateRandomEmployees(50))
+            var employees = GenerateRandomEmployees(50);
+            var employeespec = employees.SelectMany(e => e.Specialties.Split(',').Select(s => s.Trim())).ToList();
+            foreach (var emp in employees)
             {
                 await _employeeRepository.CreateNewAsync(emp);
             }
@@ -134,7 +135,32 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             }
             foreach (var treat in GenerateRandomTreatments(50))
             {
-                await _treatmentRepository.CreateNewAsync(treat);
+                var requiredSpecialties = treat.RequiredSpecialties;
+
+                bool hasQualifiedEmployee = false;
+
+                foreach (var employee in employees)
+                {
+                    bool employeeQualified = true;
+
+                    foreach (var required in requiredSpecialties)
+                    {
+                        if (!employee.Specialties.Equals(
+                            required,
+                            StringComparison.OrdinalIgnoreCase))
+                        {
+                            employeeQualified = false;
+                            break;
+                        }
+                    }
+
+                    if (employeeQualified)
+                    {
+                        await _treatmentRepository.CreateNewAsync(treat);
+                        hasQualifiedEmployee = true;
+                        break;
+                    }
+                }
             }
             foreach (var prod in GenerateRandomProducts(50))
             {
