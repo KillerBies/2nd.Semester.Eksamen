@@ -1,23 +1,17 @@
-﻿using _2nd.Semester.Eksamen.Application.ApplicationInterfaces;
-using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
+﻿using _2nd.Semester.Eksamen.Application.DTO.ProductDTO.BookingDTO;
 using _2nd.Semester.Eksamen.Application.Services.BookingServices;
-using _2nd.Semester.Eksamen.Domain.DomainInterfaces.BookingInterfaces;
 using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
 using _2nd.Semester.Eksamen.Domain.Entities.Products;
-using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.DiscountInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.EmployeeInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces;
 using _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.BookingInterfaces;
-using _2nd.Semester.Eksamen.Infrastructure.InfrastructureServices;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using System.Net;
 
 namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 {
@@ -116,20 +110,104 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
         {
             // Loyalty discounts
             var loyaltyDiscounts = new List<LoyaltyDiscount>
-    {
-        new LoyaltyDiscount { Name = "Bronze Loyalty", DiscountType = "Bronze", MinimumVisits = 5 },
-        new LoyaltyDiscount { Name = "Silver Loyalty", DiscountType = "Silver", MinimumVisits = 10 },
-        new LoyaltyDiscount { Name = "Gold Loyalty", DiscountType = "Gold", MinimumVisits = 20 }
-    };
+            {
+                new LoyaltyDiscount(
+                    minimumVisits: 5,
+                    discountType: "Bronze",
+                    name: "Bronze Loyalty",
+                    treatmentDiscount: 0.05m,   // 5% discount on treatments
+                    productDiscount: 0.03m      // 3% discount on products
+                ),
+                new LoyaltyDiscount(
+                    minimumVisits: 10,
+                    discountType: "Silver",
+                    name: "Silver Loyalty",
+                    treatmentDiscount: 0.10m,   // 10% discount on treatments
+                    productDiscount: 0.05m      // 5% discount on products
+                ),
+                new LoyaltyDiscount(
+                    minimumVisits: 20,
+                    discountType: "Gold",
+                    name: "Gold Loyalty",
+                    treatmentDiscount: 0.15m,   // 15% discount on treatments
+                    productDiscount: 0.10m      // 10% discount on products
+                )
+            };
 
             // Campaigns
             var campaigns = new List<Campaign>
-    {
-        new Campaign { Name = "Winter Campaign", Start = new DateTime(2025,12,1), End = new DateTime(2026,2,28), Description = "Winter Campaign" },
-        new Campaign { Name = "Spring Campaign", Start = new DateTime(2026,3,1), End = new DateTime(2026,5,31), Description = "Spring Campaign" },
-        new Campaign { Name = "Summer Campaign", Start = new DateTime(2026,6,1), End = new DateTime(2026,8,31), Description = "Summer Campaign" },
-        new Campaign { Name = "Autumn Campaign", Start = new DateTime(2026,9,1), End = new DateTime(2026,11,30), Description = "Autumn Campaign" }
-    };
+{
+    new Campaign(
+        name: "Winter Campaign",
+        treatmentDiscount: 0.05m,
+        productDiscount: 0.05m,
+        start: new DateTime(2025, 12, 1),
+        end: new DateTime(2026, 2, 28)
+    ),
+    new Campaign(
+        name: "Spring Campaign",
+        treatmentDiscount: 0.08m,
+        productDiscount: 0.05m,
+        start: new DateTime(2026, 3, 1),
+        end: new DateTime(2026, 5, 31)
+    ),
+    new Campaign(
+        name: "Summer Campaign",
+        treatmentDiscount: 0.10m,
+        productDiscount: 0.07m,
+        start: new DateTime(2026, 6, 1),
+        end: new DateTime(2026, 8, 31)
+    ),
+    new Campaign(
+        name: "Autumn Campaign",
+        treatmentDiscount: 0.07m,
+        productDiscount: 0.05m,
+        start: new DateTime(2026, 9, 1),
+        end: new DateTime(2026, 11, 30)
+    ),
+    new Campaign(
+        name: "Holiday Special",
+        treatmentDiscount: 0.12m,
+        productDiscount: 0.10m,
+        start: new DateTime(2026, 12, 15),
+        end: new DateTime(2026, 12, 31)
+    ),
+    new Campaign(
+        name: "New Year Promo",
+        treatmentDiscount: 0.10m,
+        productDiscount: 0.08m,
+        start: new DateTime(2027, 1, 1),
+        end: new DateTime(2027, 1, 15)
+    ),
+    new Campaign(
+        name: "Valentine's Special",
+        treatmentDiscount: 0.08m,
+        productDiscount: 0.05m,
+        start: new DateTime(2027, 2, 1),
+        end: new DateTime(2027, 2, 14)
+    ),
+    new Campaign(
+        name: "Spring Refresh",
+        treatmentDiscount: 0.09m,
+        productDiscount: 0.07m,
+        start: new DateTime(2027, 3, 15),
+        end: new DateTime(2027, 4, 30)
+    ),
+    new Campaign(
+        name: "Summer Shine",
+        treatmentDiscount: 0.11m,
+        productDiscount: 0.09m,
+        start: new DateTime(2027, 6, 1),
+        end: new DateTime(2027, 8, 31)
+    ),
+    new Campaign(
+        name: "Autumn Glow",
+        treatmentDiscount: 0.10m,
+        productDiscount: 0.08m,
+        start: new DateTime(2027, 9, 1),
+        end: new DateTime(2027, 11, 30)
+    )
+};
 
             // Private customers
             var privateCustomers = new List<PrivateCustomer>
@@ -139,7 +217,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
         new ("Larsen", Gender.Female, new DateOnly(1990, 7, 5), "Marie",
             new Address("Aarhus", "8000", "Banegårdsgade", "11"),
-            "33445566", "marie.larsen@example.com", "Prefers morning appointments", true),
+            "33445567", "marie.larsen@example.com", "Prefers morning appointments", true),
 
         new ("Nielsen", Gender.Male, new DateOnly(1978, 11, 23), "Peter",
             new Address("Odense", "5000", "Vestergade", "7"),
@@ -294,7 +372,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             "Scalp Treatment", "Male",
             new TimeOnly(8, 0), new TimeOnly(16, 0)),
 
-        new("Amalie", "Knudsen", "amalie.knudsen@firma.dk", "33445566",
+        new("Amalie", "Knudsen", "amalie.knudsen@firma.dk", "33475566",
             new Address("Kolding", "6000", "Slotsgade", "4"),
             1.35m, "Mid", "Therapist",
             "Facial, Relaxing", "Female",
@@ -352,7 +430,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
 
         new("Odense Logistics", "45678901",
             new Address("Odense", "5000", "Vestergade", "18"),
-            "33445566", "contact@odenselogistics.dk", "", true),
+            "37445566", "contact@odenselogistics.dk", "", true),
 
         new("Aalborg Industries", "56789012",
             new Address("Aalborg", "9000", "Algade", "7"),
@@ -382,7 +460,7 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
             new Address("Odense", "5000", "Strøget", "1"),
             "34223344", "info@odensehairco.dk", "Salon partner", true),
 
-        new("Copenhagen Beauty Ltd.", "33445566",
+        new("Copenhagen Beauty Ltd.", "33445576",
             new Address("København", "1050", "Gammel Kongevej", "31"),
             "34334455", "sales@cphbeauty.dk", "", true),
 
@@ -465,31 +543,31 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages
     };
 
             Loading = true;
-            foreach(var cus in privateCustomers)
+            foreach (var cus in privateCustomers)
             {
                 await _CustomerRepository.CreateNewAsync(cus);
             }
-            foreach(var cus in companyCustomers)
+            foreach (var cus in companyCustomers)
             {
                 await _CustomerRepository.CreateNewAsync(cus);
             }
-            foreach(var pro in products)
+            foreach (var pro in products)
             {
                 await productRepository.CreateNewAsync(pro);
             }
-            foreach(var treat in treatments)
+            foreach (var treat in treatments)
             {
                 await _treatmentRepository.CreateNewAsync(treat);
             }
-            foreach(var emp in employees)
+            foreach (var emp in employees)
             {
                 await _employeeRepository.CreateNewAsync(emp);
             }
-            foreach(var discount in campaigns)
+            foreach (var discount in campaigns)
             {
                 await discountRepository.CreateNewAsync(discount);
             }
-            foreach(var discount in loyaltyDiscounts)
+            foreach (var discount in loyaltyDiscounts)
             {
                 await discountRepository.CreateNewAsync(discount);
             }
