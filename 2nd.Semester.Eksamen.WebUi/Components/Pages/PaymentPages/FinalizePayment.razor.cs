@@ -16,11 +16,12 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
     public partial class FinalizePayment : ComponentBase
     {
         [Parameter] public int id { get; set; }
+        [Parameter] public BookingDTO Booking { get; set; }
+        [Parameter] public EventCallback OnClose { get; set; }
 
         private bool isLoading = true;
         private string? errorMessage;
         private bool paymentSuccess = false;
-
         private Customer customer;
         private List<Product> products = new();
         private decimal originalTotal;
@@ -36,8 +37,6 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
         [Inject] private IBookingService _bookingAppService { get; set; } = default!;
         [Inject] private ICustomerService _customerService { get; set; } = default!;
         [Inject] private IDiscountCalculator _discountCalculator { get; set; } = default!;
-        [Parameter] public BookingDTO Booking { get; set; }
-        [Parameter] public EventCallback OnClose { get; set; }
         public Booking booking { get; set; }
         [Inject] private IInvoiceService _invoiceService { get; set; }
 
@@ -97,6 +96,10 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
             }
         }
 
+
+
+
+
         private async Task FinalizePaymentAsync()
         {
             if (customer == null) return;
@@ -148,6 +151,10 @@ namespace _2nd.Semester.Eksamen.WebUi.Components.Pages.PaymentPages
             }
             await OnClose.InvokeAsync();
         }
+
+
+
+
 
         private List<(Product product, int quantity)> FlattenBookingItems(Booking booking)
         {
