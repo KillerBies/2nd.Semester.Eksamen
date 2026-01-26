@@ -2,9 +2,12 @@
 {
     public class BaseEntity
     {
-        public int Id { get; set; }
-        public Guid Guid { get; set; }
-
+        public int Id { get; protected set; }
+        public Guid RefrenceId { get; protected set; }
+        public BaseEntity() 
+        {
+            RefrenceId = Guid.NewGuid(); 
+        }
     }
 }
 

@@ -11,17 +11,9 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.Emp
 {
     public interface IEmployeeRepository
     {
-        //Read
-        public Task<Employee?> GetByIDAsync(int id);
-        public Task<IEnumerable<Employee>> GetAllAsync();
-        public Task<IEnumerable<Employee?>> GetByFilterAsync(Filter filter);
-        public Task<IEnumerable<Employee?>> GetByTreatmentSpecialtiesAsync(List<string> specialties);
-        public Task<List<string>> GetAllSpecialtiesAsync();
-        public Task<Employee?> GetByGuidAsync(Guid guid);
-
         //CUD
-        public Task CreateNewAsync(Employee employee);
-        public Task UpdateAsync(Employee Employee);
-        public Task DeleteAsync(Employee Employee);
+        public Task CreateNewEmployeeAsync(Employee employee);
+        public Task UpdateEmployeeAsync(Employee Employee);
+        public Task DeleteEmployeeAsync(Employee Employee);
     }
 }

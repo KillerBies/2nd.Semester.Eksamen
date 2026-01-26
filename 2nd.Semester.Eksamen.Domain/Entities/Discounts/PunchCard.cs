@@ -23,9 +23,6 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
         }
         public PunchCard() { }
 
-
-
-
         //method to add a punch mark and check for free treatments 
         public void AddPunch()
         {

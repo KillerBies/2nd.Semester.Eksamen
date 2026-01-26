@@ -10,26 +10,25 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record OrderSnapshot : BaseSnapshot
     {
-       public int? BookingSnapshotId { get; set; }
-        public BookingSnapshot BookingSnapshot { get; private set; }
+       public int BookingSnapshotId { get; protected set; }
+        public BookingSnapshot BookingSnapshot { get; protected set; }
 
-        public decimal? CustomDiscount { get; private set; }
-        public DateOnly DateOfPayment { get; private set; }
-        public decimal? TotalAfterDiscount { get; private set; }
-        public byte[]? PdfInvoice { get; set; }
-        public decimal VAT {  get; set; }
-        public List<OrderLineSnapshot>? OrderLinesSnapshot { get; private set; } = new();
-        public int? AppliedSnapshotId { get; set; }
-        public AppliedDiscountSnapshot? AppliedDiscountSnapshot { get; private set; }
+        public decimal? CustomDiscount { get; protected set; }
+        public DateOnly DateOfPayment { get; protected set; }
+        public decimal? TotalAfterDiscount { get; protected set; }
+        public byte[]? PdfInvoice { get; protected set; }
+        public decimal VAT {  get; protected set; }
+        public List<OrderLineSnapshot>? OrderLinesSnapshot { get; protected set; } = new();
+        public int? AppliedSnapshotId { get; protected set; }
+        public AppliedDiscountSnapshot? AppliedDiscountSnapshot { get; protected set; }
         private OrderSnapshot() { }
-        public OrderSnapshot(Order order, Discount discount, Booking booking)
+        public OrderSnapshot(Order order, Discount discount, Booking booking) : base(order.RefrenceId)
         {
             BookingSnapshot = new BookingSnapshot(booking);
             TotalAfterDiscount = order.DiscountedTotal;
             OrderLinesSnapshot = order.Products.Select(oL => new OrderLineSnapshot(oL)).ToList();
             DateOfPayment = DateOnly.FromDateTime(DateTime.Now);
             AppliedDiscountSnapshot = new AppliedDiscountSnapshot(discount);
-            Guid = order.Guid;
             VAT = order.VAT;
         }
     }

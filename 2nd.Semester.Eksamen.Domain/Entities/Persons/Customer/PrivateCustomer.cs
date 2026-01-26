@@ -4,9 +4,9 @@
     {
         //Customer who is a private person
         public string LastName { get; private set; } = null!;
-        public Gender? Gender { get; set; }
+        public Gender? Gender { get; protected set; }
         public int Age { get { return GetAge(); } }
-        public DateOnly BirthDate { get; set; }
+        public DateOnly BirthDate { get; protected set; }
 
 
 
@@ -16,7 +16,6 @@
             TrySetLastName(name, lastname);
             Gender = gender;
             BirthDate = birthday;
-            // SetBirthDate(birthday, age);
         }
         public PrivateCustomer()
         {

@@ -11,23 +11,10 @@ namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.ProductInterfaces.Bo
 {
     public interface IBookingRepository
     {
-        //Repository for Bookings. 
-        public Task<Booking?> GetByIDAsync(int id);
-        public Task<IEnumerable<Booking?>> GetAllAsync();
-        public Task<IEnumerable<Booking?>> GetByFilterAsync(Filter filter);
+        //Repository for Bookings C.U.D. Operations. 
         public Task CreateNewBookingAsync(Booking Booking);
         public Task UpdateAsync(Booking Booking);
-        public Task CancelBookingAsync(Booking Booking);
-        public Task CancelBookingByIdAsync(int BookingId);
-        public Task<IEnumerable<Booking>> GetByCustomerId(int CustomerId);
-        public Task<bool> BookingOverlapsAsync(Booking Booking);
-        public Task<Booking?> GetByGuidAsync(Guid guid);
-        public Task<List<Booking>?> GetByCustomerGuidAsync(Guid guid);
-        public Task<List<Booking>?> GetByEmployeeGuidAsync(Guid guid);
-        public Task<List<Booking>?> GetByTreatmentGuidAsync(Guid guid);
-
-        public Task<Booking?> GetByTreatmentBookingGuidAsync(Guid guid);
-        public Task<OrderSnapshot?> GetSnapShotByTreatmentBookingGuidAsync(Guid guid);
+        public Task CancelBookingAsync(Guid BookingId);
         public Task TryDeleteBookingAtPayment(Booking booking);
 
     }

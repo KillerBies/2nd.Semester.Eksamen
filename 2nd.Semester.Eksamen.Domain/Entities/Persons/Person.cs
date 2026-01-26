@@ -14,16 +14,15 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons
         public string Name { get; protected set; } = null!;
         [ForeignKey(nameof(Address))] //FK
         public int AddressId { get; protected set; }
-        public Address Address { get; protected set; }
-        public string PhoneNumber { get;  set; } = null!;
-        public string Email { get;  set; } = null!;
+        public Address Address { get; protected set; } = null!;
+        public string PhoneNumber { get; protected set; } = null!;
+        public string Email { get; protected set; } = null!;
 
 
         public Person() { }
         public Person(string name, Address address, string phoneNumber, string email)
         {
             Name = name;
-          //  TrySetName(name);
             Address = address;
             TrySetPhoneNumber(phoneNumber);
             TrySetEmail(email);

@@ -13,13 +13,13 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
         public List<Product> ProductsInCampaign { get; set; } = new List<Product>();
 
         public Campaign() { }
-
-        public Campaign(string name, decimal treatmentDiscount, decimal productDiscount, DateTime start, DateTime end): base(name, treatmentDiscount, productDiscount)
+        public Campaign(string name, string discription, List<Product> products, decimal treatmentDiscount, decimal productDiscount, DateTime start, DateTime end, bool AppliesToProducts, bool AppliesToTreatments) : base(name, treatmentDiscount, productDiscount,AppliesToTreatments, AppliesToProducts)
         {
             Start = start;
             End = end;
+            Description = discription;
+            ProductsInCampaign = products;
         }
-
 
         public bool TryAddProductToCampaign(Product product)
         {

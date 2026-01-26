@@ -1,5 +1,6 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,38 +12,41 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
     public class TreatmentBooking : BaseEntity
     {
         //This is a booking of a treatment it contians info about the planned date and time of the treatment
-        public int BookingID { get; set; }
-        public Booking Booking { get; set; } = null!;
+        public int BookingID { get; protected set; }
+        public Booking Booking { get; protected set; } = null!;
 
         //Employee details
-        public int EmployeeId { get; set; }
-        public Employee Employee { get; private set; }
+        public int EmployeeId { get; protected set; }
+        public Employee Employee { get; protected private set; }
 
         //Treatment info
-        public int TreatmentId { get; set; }
-        public Treatment Treatment { get; private set; } = null!;
+        public int TreatmentId { get; protected set; }
+        public Treatment Treatment { get; protected set; } = null!;
         public List<TreatmentBookingProduct> TreatmentBookingProducts { get; private set; } = new List<TreatmentBookingProduct>();
 
 
         //Treatment booking details
-        public DateTime Start { get; private set; }
-        public DateTime End { get; private set; }
-        public decimal Price { get; set; }
+        public DateTime Start { get; protected set; }
+        public DateTime End { get; protected set; }
+        public decimal Price { get; protected set; }
 
 
         public TreatmentBooking() { }
-        public TreatmentBooking(Treatment treatment, Employee employee, DateTime start, DateTime end)
+        public TreatmentBooking(Treatment treatment, Employee employee, DateTime start, DateTime end, decimal price)
         {
             TrySetTimeRange(start, end);
+            Price = price;
             Employee = employee;
             EmployeeId = employee.Id;
             Treatment = treatment;
+            TreatmentId = treatment.Id;
         }
-        public TreatmentBooking(int treatmentId, int employeeId, DateTime start, DateTime end)
+        public TreatmentBooking(int treatmentId, int employeeId, DateTime start, DateTime end, decimal price)
         {
             TrySetTimeRange(start, end);
             EmployeeId = employeeId;
             TreatmentId = treatmentId;
+            Price = price;
         }
         public TreatmentBooking(Treatment treatment, int employeeId, DateTime start, DateTime end)
         {
@@ -82,7 +86,9 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
         {
             return Start < end && start < End;
         }
-
-
+        public void AddToBooking(int Bookingid)
+        {
+            BookingID = Bookingid;
+        }
     }
 }

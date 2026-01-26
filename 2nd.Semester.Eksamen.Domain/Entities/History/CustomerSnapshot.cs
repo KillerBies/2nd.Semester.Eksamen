@@ -10,20 +10,23 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record CustomerSnapshot : BaseSnapshot
     {
-        public string Name { get; private set; }
-        public int? AddressSnapshotId { get; private set; }
-        public AddressSnapshot AddressSnapshot { get; private set; }
-        public string PhoneNumber { get; private set; }
+        //Customer Info
+        public string Name { get; protected set; }
+        public string PhoneNumber { get; protected set; }
+        public int AddressSnapshotId { get; protected set; }
+        public AddressSnapshot AddressSnapshot { get; protected set; }
         
-        public BookingSnapshot BookingSnapshot { get; set; }
+
+        //Connected Booking
+        public Guid? BookingSnapShotId { get; protected set; }
+        public BookingSnapshot BookingSnapshot { get; protected set; }
 
         public CustomerSnapshot() { }
-        public CustomerSnapshot(Customer customer)
+        public CustomerSnapshot(Customer customer) : base(customer.RefrenceId)
         {
             Name = customer.Name;
             AddressSnapshot = new AddressSnapshot(customer.Address);
             PhoneNumber = customer.PhoneNumber;
-            Guid = customer.Guid;
         }
         
         public static CustomerSnapshot CreateCustomerSnapshot(Customer customer)
@@ -43,25 +46,23 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
     public record CompanyCustomerSnapshot : CustomerSnapshot
     {
 
-        public string? CVR { get; set; }
+        public string? CVR { get; protected set; }
 
         protected CompanyCustomerSnapshot() { }
         public CompanyCustomerSnapshot(CompanyCustomer companyCustomer) : base(companyCustomer)
         {
             CVR = companyCustomer.CVRNumber;
-            Guid = companyCustomer.Guid;
         }
     }
 
     public record PrivateCustomerSnapshot : CustomerSnapshot
     {
         protected PrivateCustomerSnapshot() { }
-        public string LastName { get; set; }
+        public string LastName { get; protected set; }
 
 
         public PrivateCustomerSnapshot(PrivateCustomer privateCustomer) : base(privateCustomer) 
         {
-            Guid = privateCustomer.Guid;
             LastName = privateCustomer.LastName;
         }
 

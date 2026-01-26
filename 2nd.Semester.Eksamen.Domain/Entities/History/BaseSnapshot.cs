@@ -8,7 +8,12 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record BaseSnapshot
     {
-        public int Id { get; set; }
-        public Guid Guid { get; set; }
+        public int Id { get; protected set; }
+        public Guid RefrenceId { get; protected set; }
+        public BaseSnapshot(Guid refrenceId)
+        {
+            RefrenceId = refrenceId;
+        }
+        public BaseSnapshot() { }
     }
 }

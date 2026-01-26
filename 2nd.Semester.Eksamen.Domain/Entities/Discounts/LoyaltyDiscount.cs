@@ -9,7 +9,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
         public string DiscountType { get; set; } = string.Empty;
         public int MinimumVisits { get; set; }
 
-        public LoyaltyDiscount(int minimumVisits, string discountType, string name, decimal treatmentDiscount, decimal productDiscount): base(name, treatmentDiscount, productDiscount)
+        public LoyaltyDiscount(int minimumVisits, string discountType, string name, decimal treatmentDiscount, decimal productDiscount, bool AppliesToProducts, bool AppliesToTreatments): base(name, treatmentDiscount, productDiscount,AppliesToTreatments,AppliesToProducts)
         {
             MinimumVisits = minimumVisits;
             DiscountType = discountType;

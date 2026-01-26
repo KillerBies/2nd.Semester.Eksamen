@@ -90,6 +90,7 @@ builder.Services.AddScoped<IEmployeeUpdateService, EmployeeUpdateService>();
 builder.Services.AddScoped<IHistoryService, HistoryService>();
 builder.Services.AddScoped<IHistorySnapShotRepository, HistorySnapShotRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IBookingFactoryService, BookingFactoryService>();
 
 
 builder.Services.AddScoped<IGenerateInvoice, GenerateInvoice>();

@@ -9,37 +9,32 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record BookingSnapshot : BaseSnapshot
     {
-        public List<TreatmentSnapshot> TreatmentSnapshot { get;  set; }
-        public int CustomerSnapshotId { get; set; }
-        public TimeSpan Duration { get; set; }
-        public DateTime Start { get; set; }
-        public DateTime End { get; set; }
+        public List<TreatmentSnapshot> TreatmentSnapshot { get; protected set; }
+        public int CustomerSnapshotId { get; protected set; }
+        public TimeSpan Duration { get; protected set; }
+        public decimal Price { get; protected set; }
+        public DateTime Start { get; protected set; }
+        public DateTime End { get; protected set; }
 
-        public CustomerSnapshot CustomerSnapshot { get;  set; }
+        public CustomerSnapshot CustomerSnapshot { get; protected set; }
        
-        public OrderSnapshot OrderSnapshot { get; set; }
+        public OrderSnapshot OrderSnapshot { get; protected set; }
         
 
 
         private BookingSnapshot() { }
 
-        public BookingSnapshot(Booking booking)
+        public BookingSnapshot(Booking booking) : base(booking.RefrenceId)
         {
-            TreatmentSnapshot = new List<TreatmentSnapshot>();
-            Guid = booking.Guid;
-
-            foreach (var t in booking.Treatments)
-            {
-                var snapshot = new TreatmentSnapshot(t, this, t.Guid, t.Employee.Name,t.Employee.Guid);
-                TreatmentSnapshot.Add(snapshot);
-            }
             Duration = booking.Duration;
             Start = booking.Start;
             End = booking.End;
             CustomerSnapshot = CustomerSnapshot.CreateCustomerSnapshot(booking.Customer);
-
-            
-            CustomerSnapshot.BookingSnapshot = this;
+            TreatmentSnapshot = new List<TreatmentSnapshot>();
+            foreach (var treatmentBooking in booking.Treatments)
+            {
+                TreatmentSnapshot.Add(new TreatmentSnapshot(treatmentBooking, this));
+            }
         }
 
     }

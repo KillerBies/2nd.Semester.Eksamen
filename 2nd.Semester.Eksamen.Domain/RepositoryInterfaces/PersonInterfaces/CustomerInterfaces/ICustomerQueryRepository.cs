@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace _2nd.Semester.Eksamen.Domain.RepositoryInterfaces.PersonInterfaces.CustomerInterfaces
 {
-    public interface ICustomerRepository
+    public interface ICustomerQueryRepository
     {
-        public Task UpdateCustomerAsync(Customer Customer);
-        public Task DeleteCustomerByIdDbAsync(Guid id);
-        public Task AddNewCustomerAsync(Customer customer);
+        public Task<Customer?> GetByPhoneNumberAsync(string PhoneNumber);
+        public Task<Customer?> GetByIDAsync(Guid id);
+        public Task<IEnumerable<Customer>?> GetAllCustomersAsync();
     }
 }

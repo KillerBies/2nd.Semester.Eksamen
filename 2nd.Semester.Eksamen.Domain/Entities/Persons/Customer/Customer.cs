@@ -1,6 +1,8 @@
-﻿using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
+﻿using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
-using _2nd.Semester.Eksamen.Domain.Entities.Discounts;
+using _2nd.Semester.Eksamen.Domain.Exceptions;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer
@@ -8,23 +10,19 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer
     public class Customer : Person
     {
         // Base class for customers
-        public List<Booking> BookingHistory { get;  set; } = new();
-        public int NumberOfVisists { get; set; }
-        public decimal PointBalance { get; set; }
-        public List<PunchCard> PunchCards { get;  set; } = new();
-        public string? Notes { get; set; } = string.Empty;
-        public bool SaveAsCustomer { get; set; } = false;
+        public List<Booking> BookingHistory { get; protected set; } = new();
+        public int NumberOfVisists { get; protected set; }
+        public decimal PointBalance { get; protected set; }
+        public List<PunchCard> PunchCards { get; protected set; } = new();
+        public string? Notes { get; protected set; } = string.Empty;
+        public bool SaveAsCustomer { get; protected set; } = false;
 
         public Customer() { }
 
         public Customer(
-            string name,
-            Address address,
-            string phoneNumber,
-            string email,
-            string notes,
-            bool saveAsCustomer
-        ) : base(name, address, phoneNumber, email)
+            string name,Address address,string phoneNumber,
+            string email,string notes,bool saveAsCustomer)
+        : base(name, address, phoneNumber, email)
         {
             BookingHistory = new List<Booking>();
             PointBalance = 0;
@@ -83,6 +81,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Customer
             // TODO: add check to see if payment went through
             NumberOfVisists++;
             return true;
+        }
+        public void Delete()
+        {
+            if (!(BookingHistory.Any(b => b.Start >= DateTime.UtcNow || b.Status == BookingStatus.Pending)))
+                throw new DomainException("Kunder med planlagte behandlinger kan ikke slettes");
         }
     }
 }

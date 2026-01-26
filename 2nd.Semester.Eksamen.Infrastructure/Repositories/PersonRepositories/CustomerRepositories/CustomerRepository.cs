@@ -24,16 +24,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
         }
 
         // ================= CREATE =================
-
-        public async Task CreateNewAsync(Customer customer)
+        async Task ICustomerRepository.AddNewCustomerAsync(Customer customer)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                //Checks if phonenumber already exists in database. If it doesn't already exist, it continues creating customer.
-                if (await _context.Customers.AnyAsync(c => c.PhoneNumber == customer.PhoneNumber)) throw new Exception("Telefonnummer findes allerede!");
-                customer.Guid = Guid.NewGuid();
                 await _context.Customers.AddAsync(customer);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -41,87 +37,51 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             catch (Exception)
             {
                 await transaction.RollbackAsync();
-                throw;
+                throw new Exception("Noget gik galt og kunden kunne ikke oprettes");
             }
         }
-
-        // ================= READ =================
-        public async Task<Customer?> GetByIDAsync(int id)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.Customers
-                .Include(c => c.BookingHistory)
-                    .ThenInclude(b => b.Treatments)
-                        .ThenInclude(tb => tb.Treatment)
-                .Include(c => c.PunchCards)
-                .Include(c => c.Address)
-                .FirstOrDefaultAsync(c => c.Id == id);
-        }
-        public async Task<Customer?> GetByGuidAsync(Guid guid)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.Customers
-                .Include(c => c.BookingHistory)
-                    .ThenInclude(b => b.Treatments)
-                        .ThenInclude(tb => tb.Treatment)
-                .Include(c => c.PunchCards)
-                .Include(c => c.Address)
-                .FirstOrDefaultAsync(c => c.Guid == guid);
-        }
-
-        public async Task<Customer?> GetByPhoneNumberAsync(string phoneNumber) => await GetByPhoneAsync(phoneNumber);
-
-        public async Task<Customer?> GetByPhoneAsync(string phoneNumber)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.Customers.Include(c => c.Address)
-                                           .FirstOrDefaultAsync(c => c.PhoneNumber == phoneNumber);
-        }
-
-        public async Task<List<Customer?>> GetAllAsync()
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.Customers.Include(c => c.Address).Include(c=>c.BookingHistory).ToListAsync();
-        }
-
-        public async Task<IEnumerable<Customer?>> GetByFilterAsync(Filter filter)
-        {
-            throw new NotImplementedException(); // You can implement filtering later
-        }
-
         // ================= UPDATE =================
-        public async Task UpdateCustomerAsync(Customer Customer)
+        async Task ICustomerRepository.UpdateCustomerAsync(Customer Customer)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
                 var adressToUpdate = await _context.Adresses.FindAsync(Customer.AddressId);
-                adressToUpdate.UpdateStreetName(Customer.Address.StreetName);
-                adressToUpdate.UpdatePostalCode(Customer.Address.PostalCode);
-                adressToUpdate.UpdateHouseNumber(Customer.Address.HouseNumber);
-                adressToUpdate.UpdateCity(Customer.Address.City);
+                if (adressToUpdate != null)
+                {
+                    adressToUpdate.UpdateStreetName(Customer.Address.StreetName);
+                    adressToUpdate.UpdatePostalCode(Customer.Address.PostalCode);
+                    adressToUpdate.UpdateHouseNumber(Customer.Address.HouseNumber);
+                    adressToUpdate.UpdateCity(Customer.Address.City);
+                }
                 if (Customer is PrivateCustomer pc)
                 {
-                    PrivateCustomer customerToUpDate = (PrivateCustomer) await _context.Customers.FindAsync(Customer.Id);
-                    customerToUpDate.NumberOfVisists = Customer.NumberOfVisists;
-                    customerToUpDate.TrySetPhoneNumber(pc.PhoneNumber);
-                    customerToUpDate.TrySetLastName(pc.Name, pc.LastName);
-                    customerToUpDate.SetBirthDate(pc.BirthDate,(DateTime.Today.Year - pc.BirthDate.Year));
-                    customerToUpDate.Email = pc.Email;
-                    customerToUpDate.Gender = pc.Gender;
-                    customerToUpDate.Notes = pc.Notes;
-                    customerToUpDate.SaveAsCustomer = pc.SaveAsCustomer;
+                    var customerToUpDate = await _context.PrivateCustomers.FirstOrDefaultAsync(c => c.Id == Customer.Id);
+                    if (customerToUpDate != null)
+                    {
+                        customerToUpDate.NumberOfVisists = Customer.NumberOfVisists;
+                        customerToUpDate.TrySetPhoneNumber(pc.PhoneNumber);
+                        customerToUpDate.TrySetLastName(pc.Name, pc.LastName);
+                        customerToUpDate.SetBirthDate(pc.BirthDate, (DateTime.Today.Year - pc.BirthDate.Year));
+                        customerToUpDate.Email = pc.Email;
+                        customerToUpDate.Gender = pc.Gender;
+                        customerToUpDate.Notes = pc.Notes;
+                        customerToUpDate.SaveAsCustomer = pc.SaveAsCustomer;
+                    }
                 }
-                else if(Customer is CompanyCustomer cc)
+                else if (Customer is CompanyCustomer cc)
                 {
-                    CompanyCustomer customerToUpDate = (CompanyCustomer) await _context.Customers.FindAsync(Customer.Id);
-                    customerToUpDate.NumberOfVisists = Customer.NumberOfVisists;
-                    customerToUpDate.TrySetPhoneNumber(cc.PhoneNumber);
-                    customerToUpDate.Email = cc.Email;
-                    customerToUpDate.Notes = cc.Notes;
-                    customerToUpDate.TrySetCVRNumber(cc.CVRNumber);
-                    customerToUpDate.SaveAsCustomer = cc.SaveAsCustomer;
+                    var customerToUpDate = await _context.CompanyCustomers.FirstOrDefaultAsync(c => c.Id == Customer.Id);
+                    if (customerToUpDate != null)
+                    {
+                        customerToUpDate.NumberOfVisists = Customer.NumberOfVisists;
+                        customerToUpDate.TrySetPhoneNumber(cc.PhoneNumber);
+                        customerToUpDate.Email = cc.Email;
+                        customerToUpDate.Notes = cc.Notes;
+                        customerToUpDate.TrySetCVRNumber(cc.CVRNumber);
+                        customerToUpDate.SaveAsCustomer = cc.SaveAsCustomer;
+                    }
                 }
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -132,60 +92,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 throw;
             }
         }
-
-        public async Task UpdateAsync(Customer customer)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            _context.Customers.Update(customer);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateBookingAsync(Booking booking)
-        {
-            if (booking == null) throw new ArgumentNullException(nameof(booking));
-
-            var _context = await _factory.CreateDbContextAsync();
-
-            // Attach the entity to the new context and mark Status as modified
-            _context.Bookings.Attach(booking);
-            _context.Entry(booking).Property(b => b.Status).IsModified = true;
-
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateDiscountAsync(Discount discount)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            _context.Discounts.Update(discount);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateOrderAsync(Order order)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            _context.Orders.Update(order);
-            await _context.SaveChangesAsync();
-        }
-
         // ================= DELETE =================
-        public async Task DeleteCustomerAsync(Customer Customer)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
-            try
-            {
-                Customer trackedcustomer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == Customer.Id);
-                _context.Customers.Remove(trackedcustomer);
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-            }
-            catch (Exception)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
-        public async Task DeleteByIdDbAsync(int id)
+        async Task ICustomerRepository.DeleteCustomerByIdDbAsync(Guid id)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
@@ -193,27 +101,9 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
             {
                 var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
 
-                if (customer != null)
-                {
-                    _context.RemoveRange(await _context.Orders.Where(o => o.Booking.CustomerId == customer.Id).ToListAsync());
-                    var bookings = await _context.Bookings.Include(b=>b.Treatments).Where(b => b.CustomerId == customer.Id).ToListAsync();
-                    var treatments = bookings.SelectMany(b => b.Treatments).ToList();
-                    foreach(var treatment in treatments)
-                    {
-                        var scheduleday = await _context.ScheduleDays.FirstOrDefaultAsync(sd => DateOnly.FromDateTime(treatment.Start) == sd.Date);
-                        if (scheduleday != null)
-                        {
-                            if(scheduleday.CancelBooking(treatment))
-                            {
-                                _context.Remove(scheduleday);
-                            }
-                        }
-
-                    }
-                    _context.RemoveRange(treatments);
-                    _context.RemoveRange(bookings);
-                    _context.Customers.Remove(customer);
-                }
+                if (customer == null)
+                    throw new ArgumentNullException("Denne Kunde kunne ikke findes");
+                _context.Customers.Remove(customer);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -222,81 +112,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.C
                 await transaction.RollbackAsync();
                 throw;
             }
-
-
-
-
         }
-        public async Task DeleteAsync(Customer customer)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-        }
-        public async Task<Order?> GetOrderByBookingIdAsync(int bookingId)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.Orders.Include(o => o.Booking).FirstOrDefaultAsync(o => o.BookingId == bookingId);
-        }
-
-        // ================= BOOKINGS =================
-        public async Task<Booking?> GetBookingWithTreatmentsAndProductsAsync(int bookingId)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-
-            var booking = await _context.Bookings
-                .Include(b => b.Treatments)
-                    .ThenInclude(tb => tb.Treatment)
-                .Include(b => b.Treatments)
-                    .ThenInclude(tb => tb.Employee)
-                .Include(b => b.Treatments)
-                    .ThenInclude(tb => tb.TreatmentBookingProducts)
-                        .ThenInclude(tbp => tbp.Product)
-                .FirstOrDefaultAsync(b => b.Id == bookingId);
-
-            return booking;
-        }
-
-
-
-
-        public async Task<Booking?> GetNextPendingBookingAsync(int customerId)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.Bookings
-                .Include(b => b.Treatments)
-                    .ThenInclude(tb => tb.Treatment)
-                .Include(b => b.Treatments)
-                    .ThenInclude(tb => tb.Employee)
-                .Include(b => b.Treatments)
-                    .ThenInclude(tb => tb.TreatmentBookingProducts)
-                        .ThenInclude(tbp => tbp.Product)
-                .Include(b => b.Customer)
-                .Where(b => b.Customer.Id == customerId && b.Status == BookingStatus.Pending)
-                .OrderBy(b => b.Start)
-                .FirstOrDefaultAsync();
-        }
-
-
-
-
-        public async Task AddOrderAsync(Order order)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            if (order == null)
-                throw new ArgumentNullException(nameof(order));
-
-            await _context.Orders.AddAsync(order);
-            await _context.SaveChangesAsync();
-        }
-        public async Task SetBookingStatusAsync(int bookingId, BookingStatus status)
-        {
-            await using var _context = await _factory.CreateDbContextAsync();
-            var booking = await _context.Bookings.FindAsync(bookingId);
-            if (booking == null) return;
-            booking.Status = status;
-            await _context.SaveChangesAsync();
-        }
-
     }
 }

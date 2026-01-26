@@ -1,6 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.TreatmentProducts;
 using _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules;
+using _2nd.Semester.Eksamen.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,24 +16,23 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
     public class Employee : Person
     {
         //Employee Person details
-        public string Type { get; private set; } = null!; // Shown as an enum in DTO and blazor
-        public string LastName { get; private set; } = null!;
-        public string Gender { get; private set; } // Shown as an enum in DTO and blazor
+        public string Type { get; protected set; } = null!; // Shown as an enum in DTO and blazor
+        public string LastName { get; protected set; } = null!;
+        public string Gender { get; protected set; } = null!; // Shown as an enum in DTO and blazor
 
 
 
 
         //Employee Work details
-        public string Specialties { get; set; }
-        public TimeOnly WorkStart { get; set; }
-        public TimeOnly WorkEnd { get; set; }
-        public string ExperienceLevel { get; private set; } = null!; // Shown as an enum in DTO and blazor
-        public decimal BasePriceMultiplier { get; set; } = 1;
+        public List<string> Specialties { get; protected set; } = new();
+        public TimeOnly WorkStart { get; protected set; }
+        public TimeOnly WorkEnd { get; protected set; }
+        public string ExperienceLevel { get; protected set; } = null!; // Shown as an enum in DTO and blazor
+        public decimal BasePriceMultiplier { get; protected set; } = 1;
 
         //Schedule details
-        public IEnumerable<ScheduleDay> Schedule { get; set; }
-        public List<TreatmentBooking> Appointments { get; set; } = new List<TreatmentBooking>();
-        //public List<Treatment> TreatmentHistory { get; set; } = new List<TreatmentBooking>();
+        public List<ScheduleDay> Schedule { get; protected set; } = new();
+        public List<TreatmentBooking> Appointments { get; protected set; } = new List<TreatmentBooking>();
 
 
         public Employee() { }
@@ -46,7 +46,7 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
             decimal basePriceMultiplier,
             string experience,
             string type,
-            string specialties,
+            List<string> specialties,
             string gender,
             TimeOnly workStart,
             TimeOnly workEnd
@@ -87,11 +87,22 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
         }
 
         //method to add to work schedule
-        public bool TryAddToWorkSchedule(DateTime start, DateTime end)
+        public bool TryAddToWorkSchedule(TreatmentBooking treatment)
         {
-            if (IsAvailable(start, end)) //checks if new time range overlaps with any existing time ranges
+            if (IsAvailable(treatment.Start, treatment.End)) //checks if new time range overlaps with any existing time ranges
             {
-                //Appointments.Add(new TreatmentBooking(this,start,end));
+                Appointments.Add(treatment);
+                var day = Schedule.FirstOrDefault(sd => sd.Date == DateOnly.FromDateTime(treatment.Start));
+                if (day == null)
+                {
+                    day = new ScheduleDay(DateOnly.FromDateTime(treatment.Start), WorkStart, WorkEnd);
+                    day.AddBooking(treatment, treatment.BookingID, treatment.Treatment.Name);
+                    Schedule.Add(day);
+                }
+                else
+                {
+                    day.AddBooking(treatment, treatment.BookingID, treatment.Treatment.Name);
+                }
                 return true;
             }
             return false;
@@ -119,14 +130,14 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
         public bool TrySetSpecialties(string specialties)
         {
             if (string.IsNullOrEmpty(specialties)) return false;
-            Specialties = specialties;
+            Specialties.AddRange(specialties.Split(','));
             return true;
         }
 
         public bool TryAddSpecialty(string specialty)
         {
             if (string.IsNullOrEmpty(specialty)) return false;
-            Specialties += ","+specialty;
+            Specialties.Add(specialty);
             return true;
         }
         public bool TrySetExperience(string experience)
@@ -163,6 +174,10 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees
                 Address = new Address(city, postalCode, streetName, houseNumber);
             }
         }
-
+        public void Delete()
+        {
+            if (!(Appointments.Any(b => b.Start >= DateTime.UtcNow || b.Booking.Status == BookingStatus.Pending)))
+                throw new DomainException("Medarbejder med planlagte behandlinger kan ikke slettes");
+        }
     }
 }

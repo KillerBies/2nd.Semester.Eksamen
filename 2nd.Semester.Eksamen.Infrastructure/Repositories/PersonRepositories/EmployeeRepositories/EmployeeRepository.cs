@@ -22,13 +22,12 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
         {
             _factory = factory;
         }
-        public async Task CreateNewAsync(Employee employee)
+        public async Task CreateNewEmployeeAsync(Employee employee)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
-                employee.Guid = Guid.NewGuid();
                 await _context.Employees.AddAsync(employee);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -39,17 +38,7 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
                 throw;
             }
         }
-        public async Task<IEnumerable<Employee>> GetAllAsync()
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees.Include(c => c.Address).ToListAsync();
-        }
-        public async Task<Employee?> GetByGuidAsync(Guid guid)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees.Include(e=>e.Address).FirstOrDefaultAsync(e => e.Guid == guid);
-        }
-        public async Task UpdateAsync(Employee employee)
+        public async Task UpdateEmployeeAsync(Employee employee)
         {
             var _context = await _factory.CreateDbContextAsync();
 
@@ -57,6 +46,8 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
             try
             {
                 var employeeToUpdate = await _context.Employees.FirstOrDefaultAsync(e => e.Id == employee.Id);
+                if (employeeToUpdate == null)
+                    throw new ArgumentNullException("Denne medarbejder kan ikke findes");
                 employeeToUpdate.WorkEnd = employee.WorkEnd;
                 employeeToUpdate.WorkStart = employee.WorkStart;
                 employeeToUpdate.Specialties = employee.Specialties;
@@ -77,14 +68,14 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
                 throw;
             }
         }
-        public async Task DeleteAsync(Employee employee)
+        public async Task DeleteEmployeeAsync(Employee employee)
         {
             var _context = await _factory.CreateDbContextAsync();
             using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
             try
             {
                 if (await _context.BookedTreatments.AnyAsync(t => t.EmployeeId == employee.Id))
-                    throw new Exception("Employee Cannot Be Deleted with pending treatments");
+                    throw new Exception("Medarbejder kan ikke slettes med pending behandlinger");
                 _context.Employees.Remove(employee);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -94,33 +85,6 @@ namespace _2nd.Semester.Eksamen.Infrastructure.Repositories.PersonRepositories.E
                 await transaction.RollbackAsync();
                 throw;
             }
-        }
-        public async Task<IEnumerable<Employee?>> GetByFilterAsync(Filter filter)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            // Example filtering – adjust as needed
-            var query = _context.Employees.AsQueryable();
-
-            if (!string.IsNullOrEmpty("filter.Name")) // Implement filter feature to actually make this work
-                query = query.Where(e => e.Name.Contains("filter.Name"));
-
-            return await query.ToListAsync();
-        }
-        public async Task<Employee?> GetByIDAsync(int id)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            var result = await _context.Employees.Include(e=>e.Address).FirstOrDefaultAsync(e => e.Id ==id);
-            return result;
-        }
-        public async Task<IEnumerable<Employee?>> GetByTreatmentSpecialtiesAsync(List<string> specialties)
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees.Where(e => specialties.All(s=>e.Specialties.Contains(s))).ToListAsync();
-        }
-        public async Task<List<string>> GetAllSpecialtiesAsync()
-        {
-            var _context = await _factory.CreateDbContextAsync();
-            return await _context.Employees.Select(e => e.Specialties).ToListAsync();
         }
     }
 }

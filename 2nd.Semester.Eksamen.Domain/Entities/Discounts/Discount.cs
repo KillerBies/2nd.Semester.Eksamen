@@ -29,11 +29,14 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Discounts
 
         public Discount() { }
 
-        public Discount(string name, decimal treatmentDiscount, decimal productDiscount)
+        public Discount(string name, decimal treatmentDiscount, decimal productDiscount, bool tValid, bool pValid)
         {
             Name = name;
             TreatmentDiscount = treatmentDiscount;
             ProductDiscount = productDiscount;
+            AppliesToProduct = pValid;
+            AppliesToTreatment = tValid;
+            NumberOfUses = 0;
         }
         public decimal GetDiscountAmountFor(Product product)
         {

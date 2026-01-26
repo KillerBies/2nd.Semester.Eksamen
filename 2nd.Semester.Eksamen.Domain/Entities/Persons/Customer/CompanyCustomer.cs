@@ -3,17 +3,13 @@
     public class CompanyCustomer : Customer
     {
         // Customer who is a company
-        public string CVRNumber { get; private set; } = null!;
+        public string CVRNumber { get; protected set; } = null!;
 
         public CompanyCustomer(
-            string name,
-            string cvrnumber,
-            Address address,
-            string phonenumber,
-            string email,
-            string notes,
-            bool saveAsCustomer
-        ) : base(name, address, phonenumber, email, notes, saveAsCustomer)
+            string name,string cvrnumber,Address address,
+            string phonenumber,string email,string notes,
+            bool saveAsCustomer) 
+        : base(name, address, phonenumber, email, notes, saveAsCustomer)
         {
             TrySetCVRNumber(cvrnumber);
         }

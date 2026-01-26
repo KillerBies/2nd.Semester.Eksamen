@@ -25,6 +25,13 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Schedules.EmployeeSchedules
             Start = start;
             End = end;
         }
+        public TimeRange(TimeOnly start, TimeOnly end, string treatmentName, Guid bookingId)
+        {
+            Start = start;
+            End = end;
+            ActivityGuid = bookingId;
+            Name = treatmentName;
+        }
         public bool HasOverlap(TimeRange other)
         {
             return Start < other.End && End > other.Start;

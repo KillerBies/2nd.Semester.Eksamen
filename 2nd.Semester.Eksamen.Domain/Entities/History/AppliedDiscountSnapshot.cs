@@ -9,19 +9,18 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
 {
     public record AppliedDiscountSnapshot : BaseSnapshot
     {
-        public string? Name { get; private set; }
-        public decimal? ProductDiscount { get; private set; }
-        public decimal? TreatmentDiscount { get; private set; }
+        public string? Name { get; protected set; }
+        public decimal? ProductDiscount { get; protected set; }
+        public decimal? TreatmentDiscount { get; protected set; }
         
-        public OrderSnapshot OrderSnapshot { get; set; }
+        public OrderSnapshot OrderSnapshot { get; protected set; }
         private AppliedDiscountSnapshot() { }
-        public AppliedDiscountSnapshot(Discount discount)
+        public AppliedDiscountSnapshot(Discount discount) : base(discount.RefrenceId)
         {
             if (discount == null) return;
             Name = discount.Name;
             ProductDiscount = discount.ProductDiscount * 100; 
             TreatmentDiscount = discount.TreatmentDiscount * 100;
-            Guid = discount.Guid;
         }
     }
 }

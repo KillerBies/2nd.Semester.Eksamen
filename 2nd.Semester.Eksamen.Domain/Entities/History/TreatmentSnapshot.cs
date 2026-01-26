@@ -13,32 +13,33 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.History
     {
         //Snapshot of a treatment that had been booked
         //Snapshot is made at time of payment so no need to change anything here when its made.
-        public string Category { get; private set; }
-        public int BookingSnapshotId { get; set; }
-        public Guid EmployeeGuid { get; set; }
-        public TimeSpan Duration { get; set; }
-        public string EmployeeName { get; set; }
-        public BookingSnapshot? BookingSnapshot { get; set; }
-        public int EmployeeId { get; set; }
-        public Guid TreatmentBookingGuid { get; set; }
-        public EmployeeSnapshot? EmployeeSnapshot { get; set; }
+        public TimeSpan Duration { get; protected set; }
+        public decimal Price { get; protected set; }
+
+        //Booking
+        public int BookingSnapshotId { get; protected set; }
+        public BookingSnapshot? BookingSnapshot { get; protected set; }
+
+
+
+
+        //Employee
+        public int EmployeeSnapshotId { get; protected set; }
+        public EmployeeSnapshot EmployeeSnapshot { get; protected set; }
+
         private TreatmentSnapshot() { }
 
-        public TreatmentSnapshot(TreatmentBooking treatment, BookingSnapshot bookingSnapshot, Guid tbGuid, string empName = "", Guid empGuid = default)
+        public TreatmentSnapshot(TreatmentBooking treatment, BookingSnapshot bookingSnapshot) : base(treatment.Treatment)
         {
-            if(empGuid != default && empName != "")
-            {
-                EmployeeGuid = empGuid;
-                EmployeeName = empName;
-            }
-            Name = treatment.Treatment.Name;
-            PricePerUnit = treatment.Price;
-            DiscountedPrice = treatment.Treatment.DiscountedPrice;
-            Category = treatment.Treatment.Category;
             BookingSnapshot = bookingSnapshot;
-            Guid = treatment.Guid;
             Duration = treatment.Treatment.Duration;
-            TreatmentBookingGuid = tbGuid;
+            Price = treatment.Price;
+
+            BookingSnapshot = bookingSnapshot;
+            BookingSnapshotId = bookingSnapshot.Id;
+
+            EmployeeSnapshot = new EmployeeSnapshot(treatment.Employee);
+            EmployeeSnapshotId = EmployeeSnapshot.Id;
         }
 
 

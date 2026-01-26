@@ -1,5 +1,7 @@
 ﻿using _2nd.Semester.Eksamen.Domain.Entities.History;
 using _2nd.Semester.Eksamen.Domain.Entities.Persons;
+using _2nd.Semester.Eksamen.Domain.Entities.Persons.Employees;
+using _2nd.Semester.Eksamen.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,19 +15,15 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
     {
         //Elements of a treatment. Its info is stored in the database.
         //Treatment details
+        public List<TreatmentBooking> Bookings { get; set; } = new();
         public List<string>? RequiredSpecialties { get; set; } = new();
         public TimeSpan Duration { get; private set; }
 
-        public Treatment(string name, decimal price, string discription, string category, TimeSpan duration) : base(name, price, discription)
+        public Treatment(string name, decimal price, string discription, string category, TimeSpan duration, List<string>? requiredSpecialties = null) : base(name, price, discription)
         {
             Category = category;
             Duration = duration;
-        }
-        public Treatment(string name, decimal price, string discription, string category, TimeSpan duration, List<string> requiredSpecialties) : base(name, price, discription)
-        {
-            Category = category;
-            Duration = duration;
-            RequiredSpecialties = requiredSpecialties;
+            RequiredSpecialties = requiredSpecialties == null ? new() : requiredSpecialties;
         }
         public Treatment() { }
 
@@ -38,6 +36,11 @@ namespace _2nd.Semester.Eksamen.Domain.Entities.Products.BookingProducts.Treatme
                 return true;
             }
             return false;
+        }
+        public void Delete()
+        {
+            if (!(Bookings.Any(b => b.Start >= DateTime.UtcNow || b.Booking.Status == BookingStatus.Pending)))
+                throw new DomainException("Behandling kan ikke slettes da den har planlagt bookinger");
         }
     }
 }

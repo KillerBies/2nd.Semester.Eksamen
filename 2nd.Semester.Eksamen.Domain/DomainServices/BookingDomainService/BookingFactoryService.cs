@@ -17,31 +17,36 @@ namespace _2nd.Semester.Eksamen.Domain.DomainServices.BookingDomainService
 {
     public class BookingFactoryService : IBookingFactoryService
     {
-        private readonly IBookingQueryRepository _bookingRepository;
+        private readonly IBookingQueryRepository _bookingQueryRepository;
         private readonly ITreatmentBookingQueryRepository _treatmentBookingRepository;
-        public BookingFactoryService(IBookingQueryRepository bookingRepository, ITreatmentBookingQueryRepository treatmentBookingRepository)
+        private readonly IBookingRepository _bookingRepository;
+        public BookingFactoryService(IBookingQueryRepository bookingQueryRepository, ITreatmentBookingQueryRepository treatmentBookingRepository, IBookingRepository bookingRepository)
         {
             _treatmentBookingRepository = treatmentBookingRepository;
+            _bookingQueryRepository = bookingQueryRepository;
             _bookingRepository = bookingRepository;
         }
-        public async Task CreateBookingAsync(Guid customerId, DateTime start, DateTime end, IReadOnlyCollection<TreatmentBooking> treatments)
+        public async Task CreateBookingAsync(Guid customerId, DateTime start, DateTime end, List<TreatmentBooking> treatments)
         {
-            var booking = new Booking(customerId,start,end,(List<TreatmentBooking>)treatments)
-            if(await CustomerIsDoubleBooked(Booking booking))
+            var booking = new Booking(customerId, start, end, treatments);
+            //Check customer double booking
+            if(await CustomerIsDoubleBooked(booking))
                 throw new BookingOverlapException("Denne booking overlapper");
+            //check employee double booking
             if(await EmployeeIsDoubleBooked(treatments))
                 throw new BookingOverlapException("Denne booking overlapper");
-
+            //insert booking
+            await _bookingRepository.CreateNewBookingAsync(booking);
         }
         private async Task<bool> CustomerIsDoubleBooked(Booking booking)
         {
-            return (await _bookingRepository.GetForCustomerAsync(booking.Guid, booking.Start, booking.End)).Any();
+            return (await _bookingQueryRepository.GetForCustomerAsync(booking.Id, booking.Start, booking.End)).Any();
         }
         private async Task<bool> EmployeeIsDoubleBooked(IReadOnlyCollection<TreatmentBooking> treatments)
         {
             foreach(var treatment in treatments)
             {
-                if ((await _treatmentBookingRepository.GetForEmployeeAsync(treatment.Employee.Guid, treatment.Start, treatment.End)).Any())
+                if ((await _bookingQueryRepository.GetForEmployeeAsync(treatment.Employee.Id, treatment.Start, treatment.End)).Any())
                     return true;
             }
             return false;
